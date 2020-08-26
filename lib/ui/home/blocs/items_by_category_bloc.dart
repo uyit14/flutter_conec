@@ -13,6 +13,8 @@ class ItemsByCategoryBloc {
     _repository = HomeRemoteRepository();
   }
 
+  List<LatestItem> _originalItems = List<LatestItem>();
+
   //all item
   StreamController<ApiResponse<List<LatestItem>>> _allItemController =
       StreamController();
@@ -48,6 +50,7 @@ class ItemsByCategoryBloc {
     _allItemController.sink.add(ApiResponse.loading());
     try {
       final items = await _repository.fetchAllItem();
+      _originalItems.addAll(items);
       _allItemController.sink.add(ApiResponse.completed(items));
     } catch (e) {
       _allItemController.sink.addError(ApiResponse.error(e.toString()));
@@ -190,6 +193,34 @@ class ItemsByCategoryBloc {
 //  void requestCancel() {
 //    _itemController.sink.add(ApiResponse.completed(_totalList));
 //  }
+
+  void filterByCategory(String topicName){
+    List<LatestItem> _filterResult = List<LatestItem>();
+    _filterResult = _originalItems.where((element) => element.topic.toLowerCase() == topicName).toList();
+    _allItemController.sink.add(ApiResponse.completed(_filterResult));
+  }
+
+  void clearSearch(){
+    _allItemController.sink.add(ApiResponse.completed(_originalItems));
+  }
+
+  void searchAction(String keyWord){
+    print("keyword: " + keyWord);
+    List<LatestItem> _searchResult = List<LatestItem>();
+    _originalItems.forEach((item) {
+      if(_search(item, keyWord)){
+        print(item.title);
+        _searchResult.add(item);
+      }
+    });
+    _allItemController.sink.add(ApiResponse.completed(_searchResult));
+  }
+  bool _search(LatestItem item, String txtSearch){
+    if (item.title.toLowerCase().contains(txtSearch.toLowerCase())) {
+      return true;
+    }
+    return false;
+  }
 
   void dispose() {
     _allItemController?.close();

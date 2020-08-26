@@ -19,17 +19,15 @@ class ItemCommentParent extends StatefulWidget {
 }
 
 class _ItemCommentParentState extends State<ItemCommentParent> {
-  Comment parentComment;
   ItemsByCategoryBloc _itemsByCategoryBloc;
   bool _isLikeComment = false;
   int _commentLikeCount = 0;
 
   @override
   void initState() {
-    parentComment = widget.comment;
     _itemsByCategoryBloc = widget.bloc;
-    _isLikeComment = parentComment.userHasUpvoted;
-    _commentLikeCount = parentComment.upvoteCount;
+    _isLikeComment = widget.comment.userHasUpvoted;
+    _commentLikeCount = widget.comment.upvoteCount;
     super.initState();
   }
 
@@ -43,7 +41,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () {
-        widget.callback(parentComment.id, true);
+        widget.callback(widget.comment.id, true);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 12),
@@ -54,10 +52,10 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
               children: <Widget>[
                 CircleAvatar(
                   radius: 16,
-                  backgroundImage: parentComment.profilePictureUrl !=
+                  backgroundImage: widget.comment.profilePictureUrl !=
                       null
                       ? NetworkImage(
-                      parentComment.profilePictureUrl)
+                      widget.comment.profilePictureUrl)
                       : AssetImage(
                       "assets/images/avatar.png"),
                 ),
@@ -68,7 +66,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
 //                ),
                 SizedBox(width: 4),
                 Container(
-                  width: MediaQuery.of(context).size.width - 75,
+                  width: MediaQuery.of(context).size.width - 90,
                   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
@@ -81,19 +79,19 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(parentComment.fullname,
+                          Text(widget.comment.fullname,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue)),
                           Text(
-                            Helper.calculatorTime(parentComment.created),
+                            Helper.calculatorTime(widget.comment.created),
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w400),
                           )
                         ],
                       ),
                       Text(
-                        parentComment.content,
+                        widget.comment.content,
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
@@ -111,10 +109,10 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                         Helper.showAuthenticationDialog(context);
                       }else{
                         if (!_isLikeComment) {
-                          _itemsByCategoryBloc.requestLikeComment(parentComment.id);
+                          _itemsByCategoryBloc.requestLikeComment(widget.comment.id);
                           _commentLikeCount++;
                         } else {
-                          _itemsByCategoryBloc.requestUnLikeComment(parentComment.id);
+                          _itemsByCategoryBloc.requestUnLikeComment(widget.comment.id);
                           _commentLikeCount--;
                         }
                         setState(() {
@@ -123,7 +121,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                       }
                     },
                     child: Text("Thích",
-                        key: ValueKey(parentComment.id),
+                        key: ValueKey(widget.comment.id),
                         style: TextStyle(
                             fontSize: 14,
                             color:
@@ -132,7 +130,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                   SizedBox(width: 32),
                   InkWell(
                     onTap: () {
-                      widget.callback(parentComment.id, false);
+                      widget.callback(widget.comment.id, false);
                     },
                     child: Row(
                       children: <Widget>[
@@ -159,7 +157,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
             ),
             Column(
               children: List<Widget>.from(
-                  getChildCommentByParentId(parentComment.id).map(
+                  getChildCommentByParentId(widget.comment.id).map(
                 (childComment) =>
                     ChildCommentWidget(childComment, ValueKey(childComment.id), widget.callback),
               )).toList(),

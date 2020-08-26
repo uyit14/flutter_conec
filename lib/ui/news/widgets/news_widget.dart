@@ -17,6 +17,7 @@ class NewsWidget extends StatefulWidget {
 class _NewsWidgetState extends State<NewsWidget> {
   NewsBloc _newsBloc = NewsBloc();
 
+  TextEditingController _searchController = TextEditingController();
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -55,6 +56,10 @@ class _NewsWidgetState extends State<NewsWidget> {
                     height: 40,
                     child: TextFormField(
                       maxLines: 1,
+                      onChanged: (value){
+                        _newsBloc.searchAction(value);
+                      },
+                      controller: _searchController,
                       style: TextStyle(fontSize: 18),
                       decoration: InputDecoration(
                           hintText: 'Nhập thông tin bạn muốn tìm kiếm',
@@ -74,7 +79,8 @@ class _NewsWidgetState extends State<NewsWidget> {
                 InkWell(
                   child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   onTap: () {
-                    //TODO - clear seach
+                    _newsBloc.clearSearch();
+                    _searchController.clear();
                   },
                 )
               ],
@@ -90,6 +96,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
                         List<News> news = snapshot.data.data;
+                        print("at UI: " + news.length.toString());
                         return ListView.builder(
                             itemCount: news.length,
                             itemBuilder: (context, index) {

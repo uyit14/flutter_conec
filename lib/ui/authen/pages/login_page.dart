@@ -78,7 +78,6 @@ class _LoginPageState extends State<LoginPage> {
   void gotoHome(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
-    print("tokeeeeen: " + token);
     Navigator.of(context).pushNamedAndRemoveUntil(
         ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
   }

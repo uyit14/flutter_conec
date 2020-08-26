@@ -17,16 +17,14 @@ class ChildCommentWidget extends StatefulWidget {
 }
 
 class _ChildCommentWidgetState extends State<ChildCommentWidget> {
-  Comment _comment;
   bool _isLikeComment = false;
   int _commentLikeCount = 0;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
 
   @override
   void initState() {
-    _comment = widget.comment;
-    _isLikeComment = _comment.userHasUpvoted;
-    _commentLikeCount = _comment.upvoteCount;
+    _isLikeComment = widget.comment.userHasUpvoted;
+    _commentLikeCount = widget.comment.upvoteCount;
     super.initState();
   }
 
@@ -34,7 +32,7 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: (){
-        widget.callback(_comment.id, true);
+        widget.callback(widget.comment.id, true);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 12, left: 40, top: 8),
@@ -50,16 +48,16 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
 //                ),
                 CircleAvatar(
                   radius: 16,
-                  backgroundImage: _comment.profilePictureUrl !=
+                  backgroundImage: widget.comment.profilePictureUrl !=
                       null
                       ? NetworkImage(
-                      _comment.profilePictureUrl)
+                      widget.comment.profilePictureUrl)
                       : AssetImage(
                       "assets/images/avatar.png"),
                 ),
                 SizedBox(width: 4),
                 Container(
-                  width: MediaQuery.of(context).size.width - 115,
+                  width: MediaQuery.of(context).size.width - 125,
                   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
@@ -72,19 +70,19 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(_comment.fullname,
+                          Text(widget.comment.fullname,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue)),
                           Text(
-                              Helper.calculatorTime(_comment.created),
+                              Helper.calculatorTime(widget.comment.created),
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w400),
                           )
                         ],
                       ),
                       Text(
-                        _comment.content,
+                        widget.comment.content,
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
@@ -97,16 +95,16 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
               child: Row(
                 children: <Widget>[
                   InkWell(
-                    key: ValueKey(_comment.id),
+                    key: ValueKey(widget.comment.id),
                     onTap: () {
                       if(!globals.isSigned){
                         Helper.showAuthenticationDialog(context);
                       }else{
                         if (!_isLikeComment) {
-                          _itemsByCategoryBloc.requestLikeComment(_comment.id);
+                          _itemsByCategoryBloc.requestLikeComment(widget.comment.id);
                           _commentLikeCount++;
                         } else {
-                          _itemsByCategoryBloc.requestUnLikeComment(_comment.id);
+                          _itemsByCategoryBloc.requestUnLikeComment(widget.comment.id);
                           _commentLikeCount--;
                         }
                         setState(() {
@@ -115,7 +113,7 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                       }
                     },
                     child: Text("Thích",
-                        key: ValueKey(_comment.id),
+                        key: ValueKey(widget.comment.id),
                         style: TextStyle(
                             fontSize: 14,
                             color:
@@ -124,7 +122,7 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                   SizedBox(width: 32),
                   InkWell(
                     onTap: () {
-                     widget.callback(_comment.parent, false);
+                     widget.callback(widget.comment.parent, false);
                     },
                     child: Row(
                       children: <Widget>[

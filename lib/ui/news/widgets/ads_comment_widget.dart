@@ -5,6 +5,7 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/models/response/ads_detail.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
@@ -14,18 +15,18 @@ import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 import '../../../common/globals.dart' as globals;
 
-class CommentWidget extends StatefulWidget {
+class AdsCommentWidget extends StatefulWidget {
   final String postId;
-  final ItemDetail itemDetail;
+  final AdsDetail itemDetail;
   final Function reloadPage;
 
-  CommentWidget(this.postId, this.itemDetail, this.reloadPage);
+  AdsCommentWidget(this.postId, this.itemDetail, this.reloadPage);
 
   @override
   _CommentWidgetState createState() => _CommentWidgetState();
 }
 
-class _CommentWidgetState extends State<CommentWidget> {
+class _CommentWidgetState extends State<AdsCommentWidget> {
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
   TextEditingController _controller = TextEditingController();
   bool _isLikeOwner = false;

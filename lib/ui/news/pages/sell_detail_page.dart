@@ -5,7 +5,9 @@ import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/ads_detail.dart';
+import 'package:conecapp/ui/home/widgets/comment_widget.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
+import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -32,6 +34,12 @@ class _SellDetailPageState extends State<SellDetailPage> {
     _newsBloc.requestAdsDetail(postId);
   }
 
+  void doReload() {
+    debugPrint("doReload");
+    _newsBloc.requestAdsDetail(postId);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -47,18 +55,20 @@ class _SellDetailPageState extends State<SellDetailPage> {
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.favorite_border,
-                color: Colors.red,
-              ),
-            ),
-            IconButton(
               onPressed: () {
                 Share.share('check out my website https://example.com');
               },
               icon: Icon(
                 Icons.share,
+                color: Colors.red,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                //TODO - report
+              },
+              icon: Icon(
+                Icons.report,
                 color: Colors.red,
               ),
             ),
@@ -270,25 +280,26 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                     style: TextStyle(fontSize: 15),
                                   ),
                                 ),
-                                Center(
-                                  child: FlatButton.icon(
-                                      shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                              width: 0.5,
-                                              color: Colors.orangeAccent),
-                                          borderRadius:
-                                              BorderRadius.circular(8)),
-                                      onPressed: () {
-                                        //
-                                      },
-                                      color: Colors.white,
-                                      textColor: Colors.orangeAccent,
-                                      icon: Icon(Icons.report),
-                                      label: Text("Báo cáo vi phạm",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w400))),
-                                ),
+                                AdsCommentWidget(postId, adsDetail, doReload)
+//                                Center(
+//                                  child: FlatButton.icon(
+//                                      shape: RoundedRectangleBorder(
+//                                          side: BorderSide(
+//                                              width: 0.5,
+//                                              color: Colors.orangeAccent),
+//                                          borderRadius:
+//                                              BorderRadius.circular(8)),
+//                                      onPressed: () {
+//                                        //
+//                                      },
+//                                      color: Colors.white,
+//                                      textColor: Colors.orangeAccent,
+//                                      icon: Icon(Icons.report),
+//                                      label: Text("Báo cáo vi phạm",
+//                                          style: TextStyle(
+//                                              fontSize: 14,
+//                                              fontWeight: FontWeight.w400))),
+//                                ),
                               ],
                             ),
                           )
@@ -306,28 +317,28 @@ class _SellDetailPageState extends State<SellDetailPage> {
                   child: Text(
                       "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
-        floatingActionButton: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            FloatingActionButton(
-              heroTag: "call",
-              onPressed: () async {
-                await launch('tel:$phoneNumber');
-              },
-              backgroundColor: Colors.blue,
-              child: Icon(Icons.call),
-            ),
-            SizedBox(height: 4),
-            FloatingActionButton(
-              heroTag: "mess",
-              onPressed: () async {
-                await launch('sms:$phoneNumber');
-              },
-              backgroundColor: Colors.green,
-              child: Icon(Icons.message),
-            )
-          ],
-        ),
+//        floatingActionButton: Column(
+//          mainAxisSize: MainAxisSize.min,
+//          children: <Widget>[
+//            FloatingActionButton(
+//              heroTag: "call",
+//              onPressed: () async {
+//                await launch('tel:$phoneNumber');
+//              },
+//              backgroundColor: Colors.blue,
+//              child: Icon(Icons.call),
+//            ),
+//            SizedBox(height: 4),
+//            FloatingActionButton(
+//              heroTag: "mess",
+//              onPressed: () async {
+//                await launch('sms:$phoneNumber');
+//              },
+//              backgroundColor: Colors.green,
+//              child: Icon(Icons.message),
+//            )
+//          ],
+//        ),
       ),
     );
   }

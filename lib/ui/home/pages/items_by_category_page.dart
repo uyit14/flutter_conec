@@ -25,6 +25,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   final _scrollThreshold = 250.0;
   bool _firstTime;
   ItemsByCategoryBloc _itemsByCategoryBloc;
+  var routeArgs;
+  String categoryTitle;
+  var categoryId;
 
   @override
   void initState() {
@@ -37,19 +40,18 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     debugPrint("didChangeDependencies");
+    routeArgs = ModalRoute.of(context).settings.arguments as Map<String, Object>;
+    categoryTitle = routeArgs['title'] as String;
+    categoryId = routeArgs['id'] as String;
     _itemsByCategoryBloc = Provider.of<ItemsByCategoryBloc>(context);
     if (_firstTime) {
-      _itemsByCategoryBloc.requestGetAllItem();
+        _itemsByCategoryBloc.requestGetAllItem();
       _firstTime = false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final routeArgs =
-        ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    final categoryTitle = routeArgs['title'] as String;
-    final categoryId = routeArgs['id'] as String;
     return SafeArea(
       child: Scaffold(
           body: Column(
@@ -73,8 +75,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   height: 35,
                   child: TextFormField(
                     maxLines: 1,
-                    onChanged: (query) {
-                      //_itemsByCategoryBloc.requestSearch(query);
+                    onChanged: (value){
+                      _itemsByCategoryBloc.searchAction(value);
                     },
                     controller: _controller,
                     style: TextStyle(fontSize: 18),
@@ -94,7 +96,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                 InkWell(
                   child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   onTap: () {
-                    //_itemsByCategoryBloc.requestCancel();
+                    _itemsByCategoryBloc.clearSearch();
                     _controller.clear();
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
@@ -193,6 +195,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
                         List<LatestItem> items = snapshot.data.data;
+                        if(categoryTitle!=null){
+                          _itemsByCategoryBloc.filterByCategory(categoryTitle.toLowerCase());
+                        }
                         return ListView.builder(
                             controller: _scrollController,
                             itemCount: items.length,

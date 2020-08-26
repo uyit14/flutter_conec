@@ -19,6 +19,7 @@ class SellWidget extends StatefulWidget {
 
 class _SellWidgetState extends State<SellWidget> {
   NewsBloc _newsBloc = NewsBloc();
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void didChangeDependencies() {
@@ -52,7 +53,11 @@ class _SellWidgetState extends State<SellWidget> {
                     height: 40,
                     child: TextFormField(
                       maxLines: 1,
+                      onChanged: (value){
+                        _newsBloc.searchSportAction(value);
+                      },
                       style: TextStyle(fontSize: 18),
+                      controller: _searchController,
                       decoration: InputDecoration(
                           hintText: 'Nhập thông tin bạn muốn tìm kiếm',
                           enabledBorder: OutlineInputBorder(
@@ -71,7 +76,8 @@ class _SellWidgetState extends State<SellWidget> {
                 InkWell(
                   child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   onTap: () {
-                    //TODO - clear seach
+                    _newsBloc.clearSportSearch();
+                    _searchController.clear();
                   },
                 )
               ],

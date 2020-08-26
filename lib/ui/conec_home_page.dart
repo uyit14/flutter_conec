@@ -46,7 +46,6 @@ class _ConecHomePageState extends State<ConecHomePage> {
   detectToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
-    print("tokeeeeen222222: " + token);
     globals.isSigned = token != null ? true : false;
     globals.token = token;
   }
@@ -171,30 +170,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
 }
 
 /*
-BottomNavigationBar(
-          onTap: _selectPage,
-          backgroundColor: Colors.red,
-          unselectedItemColor: Colors.grey,
-          selectedItemColor: Colors.red,
-          currentIndex: _selectedPageIndex,
-          type: BottomNavigationBarType.shifting,
-          items: [
-            BottomNavigationBarItem(
-                backgroundColor: Colors.white,
-                icon: Icon(Icons.home, size: 26),
-                title: Text("Trang chủ")),
-            BottomNavigationBarItem(
-                backgroundColor: Colors.white,
-                icon: Icon(Icons.hot_tub, size: 26),
-                title: Text("Tin tức")),
-            BottomNavigationBarItem(
-                backgroundColor: Colors.white,
-                icon: Icon(Icons.list, size: 26),
-                title: Text("Tin đã đăng")),
-            BottomNavigationBarItem(
-                backgroundColor: Colors.white,
-                icon: Icon(Icons.more, size: 26),
-                title: Text("Thêm")),
-          ],
-        )
-* */
+- filter at home
+- filter at ads
+- add, update ads, news
+- google map
+*/

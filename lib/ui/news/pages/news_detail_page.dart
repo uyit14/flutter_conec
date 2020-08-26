@@ -44,18 +44,20 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.favorite_border,
-                color: Colors.red,
-              ),
-            ),
-            IconButton(
               onPressed: () {
                 Share.share('check out my website https://example.com');
               },
               icon: Icon(
                 Icons.share,
+                color: Colors.red,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                //TODO - report
+              },
+              icon: Icon(
+                Icons.report,
                 color: Colors.red,
               ),
             ),
