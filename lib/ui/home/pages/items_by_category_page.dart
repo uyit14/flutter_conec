@@ -4,10 +4,13 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
-import 'package:conecapp/dummy/dummy_data.dart';
 import 'package:conecapp/models/response/latest_item.dart';
+import 'package:conecapp/models/response/location/city_response.dart';
+import 'package:conecapp/models/response/topic.dart';
+import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
+import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,29 +26,51 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   final _scrollController = ScrollController();
   final _controller = TextEditingController();
   final _scrollThreshold = 250.0;
-  bool _firstTime;
   ItemsByCategoryBloc _itemsByCategoryBloc;
+  PostActionBloc _postActionBloc = PostActionBloc();
+  HomeBloc _homeBloc = HomeBloc();
+  List<Province> _listProvinces = List<Province>();
+  List<Topic> _listTopic = List<Topic>();
   var routeArgs;
   String categoryTitle;
   var categoryId;
+  bool _firstTime;
 
   @override
   void initState() {
     super.initState();
-    _firstTime = true;
     _scrollController.addListener(_onScroll);
+    _itemsByCategoryBloc = ItemsByCategoryBloc();
+    _firstTime = true;
+    _postActionBloc.requestGetProvinces();
+    _postActionBloc.provincesStream.listen((event) {
+      switch (event.status) {
+        case Status.COMPLETED:
+          _listProvinces.addAll(event.data);
+          break;
+      }
+    });
+    _homeBloc.requestGetTopic();
+    _homeBloc.topicStream.listen((event) {
+      switch (event.status) {
+        case Status.COMPLETED:
+          _listTopic.addAll(event.data);
+          break;
+      }
+    });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     debugPrint("didChangeDependencies");
-    routeArgs = ModalRoute.of(context).settings.arguments as Map<String, Object>;
+    routeArgs =
+        ModalRoute.of(context).settings.arguments as Map<String, Object>;
     categoryTitle = routeArgs['title'] as String;
     categoryId = routeArgs['id'] as String;
     _itemsByCategoryBloc = Provider.of<ItemsByCategoryBloc>(context);
     if (_firstTime) {
-        _itemsByCategoryBloc.requestGetAllItem();
+      _itemsByCategoryBloc.requestGetAllItem();
       _firstTime = false;
     }
   }
@@ -75,7 +100,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   height: 35,
                   child: TextFormField(
                     maxLines: 1,
-                    onChanged: (value){
+                    onChanged: (value) {
                       _itemsByCategoryBloc.searchAction(value);
                     },
                     controller: _controller,
@@ -117,8 +142,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               child: Row(
                 children: <Widget>[
                   InkWell(
-                    onTap: () => showCityList(
-                        getIndex(DummyData.cityList, selectedCity)),
+                    onTap: () =>
+                        showCityList(getIndex(_listProvinces, selectedCity)),
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
@@ -136,7 +161,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   InkWell(
                     onTap: () => selectedCity != null
                         ? showDistrictList(
-                            getIndex(DummyData.districtList, selectedDistrict))
+                            getIndex(_districtList, selectedDistrict))
                         : null,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
@@ -163,7 +188,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   SizedBox(width: 4),
                   InkWell(
                     onTap: () => showCategoryList(categoryId != null
-                        ? DummyData.categories.indexOf(DummyData.categories
+                        ?_listTopic.indexOf(_listTopic
                             .firstWhere((element) => element.id == categoryId))
                         : 0),
                     child: Container(
@@ -195,8 +220,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
                         List<LatestItem> items = snapshot.data.data;
-                        if(categoryTitle!=null){
-                          _itemsByCategoryBloc.filterByCategory(categoryTitle.toLowerCase());
+                        if (categoryTitle != null) {
+                          _itemsByCategoryBloc
+                              .filterTopic(categoryTitle.toLowerCase());
                         }
                         return ListView.builder(
                             controller: _scrollController,
@@ -268,7 +294,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(
-                                                    items[index].description ?? "",
+                                                    items[index].description ??
+                                                        "",
                                                     maxLines: 3,
                                                     style:
                                                         TextStyle(fontSize: 16),
@@ -294,7 +321,17 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
-                                            Text("Thủ Đức, Hồ Chí Minh"),
+                                            Container(
+                                              width: MediaQuery.of(context).size.width/2,
+                                              child: Text(
+                                                '${items[index].district} - ${items[index].province}',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.grey),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
                                             Text(items[index].publishedDate,
                                                 style: TextStyle(
                                                     fontStyle:
@@ -339,11 +376,30 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   var selectedCity;
   var selectedDistrict;
   var selectedCategory;
+  String _selectCityId;
+  String _selectDistrictId;
+  List<Province> _districtList = List<Province>();
 
-  int getIndex(List<String> list, String selectedItem) {
-    return selectedItem != null
-        ? list.indexOf(list.firstWhere((element) => element == selectedItem))
-        : 0;
+  //
+  int getIndex(List<Province> list, String selectedItemId) {
+    int index = list.indexOf(list.firstWhere(
+        (element) => element.id == selectedItemId,
+        orElse: () => list != null ? list[0] : null));
+    if (index == -1) {
+      return 0;
+    }
+    return selectedItemId != null ? index : 0;
+  }
+
+  void getDistrictByProvinceId(String id) {
+    _postActionBloc.requestGetDistricts(id);
+    _postActionBloc.districtsStream.listen((event) {
+      switch (event.status) {
+        case Status.COMPLETED:
+          _districtList = event.data;
+          break;
+      }
+    });
   }
 
   void showCityList(int index) {
@@ -358,14 +414,24 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               scrollController: controller,
               onSelectedItemChanged: (value) {
                 setState(() {
-                  selectedCity = DummyData.cityList[value];
+                  selectedCity = _listProvinces[value].name;
+                  _selectCityId = _listProvinces[value].id;
                 });
               },
               itemExtent: 32,
-              children: DummyData.cityList.map((e) => Text(e)).toList(),
+              children: _listProvinces.map((e) => Text(e.name)).toList(),
             ),
           );
-        }).then((value) => debugPrint(selectedCity));
+        }).then((value) {
+      selectedDistrict = null;
+      if (selectedCity == null) {
+        selectedCity = _listProvinces[0].name;
+        _selectCityId = _listProvinces[0].id;
+      }
+      _itemsByCategoryBloc.filterCity(selectedCity.toString().toLowerCase());
+      getDistrictByProvinceId(
+          _selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
+    });
   }
 
   void showDistrictList(int index) {
@@ -380,14 +446,23 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               scrollController: controller,
               onSelectedItemChanged: (value) {
                 setState(() {
-                  selectedDistrict = DummyData.districtList[value];
+                  selectedDistrict = _districtList[value].name;
+                  _selectDistrictId = _districtList[value].id;
                 });
               },
               itemExtent: 32,
-              children: DummyData.districtList.map((e) => Text(e)).toList(),
+              children: _districtList.map((e) => Text(e.name)).toList(),
             ),
           );
-        }).then((value) => debugPrint(selectedDistrict));
+        }).then((value) {
+      if (selectedCity == null) {
+        selectedDistrict = _districtList[0].name;
+        _selectDistrictId = _districtList[0].id;
+      }
+      print(selectedDistrict);
+      _itemsByCategoryBloc
+          .filterDistrict(selectedDistrict.toString().toLowerCase());
+    });
   }
 
   void showCategoryList(int index) {
@@ -402,13 +477,18 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               scrollController: controller,
               onSelectedItemChanged: (value) {
                 setState(() {
-                  selectedCategory = DummyData.categories[value].title;
+                  selectedCategory = _listTopic[value].title;
                 });
               },
               itemExtent: 32,
-              children: DummyData.categories.map((e) => Text(e.title)).toList(),
+              children: _listTopic.map((e) => Text(e.title)).toList(),
             ),
           );
-        }).then((value) => debugPrint(selectedCategory));
+        }).then((value) {
+          if(selectedCategory==null){
+            selectedCategory = _listTopic[0].title;
+          }
+          _itemsByCategoryBloc.filterTopic(selectedCategory);
+    });
   }
 }

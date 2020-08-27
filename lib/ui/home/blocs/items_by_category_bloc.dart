@@ -194,11 +194,11 @@ class ItemsByCategoryBloc {
 //    _itemController.sink.add(ApiResponse.completed(_totalList));
 //  }
 
-  void filterByCategory(String topicName){
-    List<LatestItem> _filterResult = List<LatestItem>();
-    _filterResult = _originalItems.where((element) => element.topic.toLowerCase() == topicName).toList();
-    _allItemController.sink.add(ApiResponse.completed(_filterResult));
-  }
+//  void filterByCategory(String topicName){
+//    List<LatestItem> _filterResult = List<LatestItem>();
+//    _filterResult = _originalItems.where((element) => element.topic.toLowerCase() == topicName).toList();
+//    _allItemController.sink.add(ApiResponse.completed(_filterResult));
+//  }
 
   void clearSearch(){
     _allItemController.sink.add(ApiResponse.completed(_originalItems));
@@ -220,6 +220,21 @@ class ItemsByCategoryBloc {
       return true;
     }
     return false;
+  }
+
+  void filterCity(String cityName){
+    var filterList = _originalItems.where((element) => element.province.toLowerCase() == cityName).toList();
+    _allItemController.sink.add(ApiResponse.completed(filterList));
+  }
+
+  void filterDistrict(String districtName){
+    var filterList = _originalItems.where((element) => element.district.toLowerCase() == districtName || element.district.toLowerCase() == 'quận $districtName').toList();
+    _allItemController.sink.add(ApiResponse.completed(filterList));
+  }
+
+  void filterTopic(String topicName){
+    var filterList = _originalItems.where((element) => element.topic.toLowerCase() == topicName).toList();
+    _allItemController.sink.add(ApiResponse.completed(filterList));
   }
 
   void dispose() {

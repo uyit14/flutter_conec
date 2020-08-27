@@ -102,15 +102,18 @@ class NewsBloc {
     });
     _newsController.sink.add(ApiResponse.completed(_searchResult));
   }
+
   bool _search(News news, String txtSearch){
     if (news.title.toLowerCase().contains(txtSearch.toLowerCase())) {
       return true;
     }
     return false;
   }
+
   void clearSportSearch(){
     _allAdsController.sink.add(ApiResponse.completed(_originalSport));
   }
+
   void searchSportAction(String keyWord){
     print("keyword: " + keyWord);
     List<Sport> _searchResult = List<Sport>();
@@ -122,11 +125,22 @@ class NewsBloc {
     });
     _allAdsController.sink.add(ApiResponse.completed(_searchResult));
   }
+
   bool _searchSport(Sport sport, String txtSearch){
     if (sport.title.toLowerCase().contains(txtSearch.toLowerCase())) {
       return true;
     }
     return false;
+  }
+
+  void filterCity(String cityName){
+    var filterList = _originalSport.where((element) => element.province.toLowerCase() == cityName).toList();
+    _allAdsController.sink.add(ApiResponse.completed(filterList));
+  }
+
+  void filterDistrict(String districtName){
+    var filterList = _originalSport.where((element) => element.district.toLowerCase() == districtName || element.district.toLowerCase() == 'quận $districtName').toList();
+    _allAdsController.sink.add(ApiResponse.completed(filterList));
   }
 
   void dispose() {

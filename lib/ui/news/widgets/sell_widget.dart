@@ -4,13 +4,13 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/sport.dart';
+import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../dummy/dummy_data.dart';
 
 class SellWidget extends StatefulWidget {
   @override
@@ -20,11 +20,21 @@ class SellWidget extends StatefulWidget {
 class _SellWidgetState extends State<SellWidget> {
   NewsBloc _newsBloc = NewsBloc();
   TextEditingController _searchController = TextEditingController();
+  List<Province> _listProvinces = List<Province>();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    _postActionBloc = PostActionBloc();
     _newsBloc.requestGetAllAds();
+    _postActionBloc.requestGetProvinces();
+    _postActionBloc.provincesStream.listen((event) {
+      switch (event.status) {
+        case Status.COMPLETED:
+          _listProvinces.addAll(event.data);
+          break;
+      }
+    });
   }
 
   @override
@@ -53,8 +63,12 @@ class _SellWidgetState extends State<SellWidget> {
                     height: 40,
                     child: TextFormField(
                       maxLines: 1,
-                      onChanged: (value){
+                      onChanged: (value) {
                         _newsBloc.searchSportAction(value);
+                        setState(() {
+                          selectedCity = null;
+                          selectedDistrict = null;
+                        });
                       },
                       style: TextStyle(fontSize: 18),
                       controller: _searchController,
@@ -99,7 +113,7 @@ class _SellWidgetState extends State<SellWidget> {
                   SizedBox(width: 4),
                   InkWell(
                     onTap: () => showCityList(
-                        getIndex(DummyData.cityList, selectedCity)),
+                        getIndex(_listProvinces, _selectCityId)),
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
@@ -117,7 +131,7 @@ class _SellWidgetState extends State<SellWidget> {
                   InkWell(
                     onTap: () => selectedCity != null
                         ? showDistrictList(
-                            getIndex(DummyData.districtList, selectedDistrict))
+                            getIndex(_listProvinces, _selectDistrictId))
                         : null,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
@@ -295,13 +309,32 @@ class _SellWidgetState extends State<SellWidget> {
 
   //bottom sheet
   var selectedCity;
+  String _selectCityId;
   var selectedDistrict;
   var selectedSellType;
+  String _selectDistrictId;
+  PostActionBloc _postActionBloc = PostActionBloc();
+  List<Province> _districtList = List<Province>();
 
-  int getIndex(List<String> list, String selectedItem) {
-    return selectedItem != null
-        ? list.indexOf(list.firstWhere((element) => element == selectedItem))
+  int getIndex(List<Province> list, String selectedItemId) {
+    int index = list.indexOf(list.firstWhere((element) => element.id == selectedItemId, orElse: () => list != null ? list[0] : null));
+    if(index == -1){
+      return 0;
+    }
+    return selectedItemId != null
+        ? index
         : 0;
+  }
+
+  void getDistrictByProvinceId(String id){
+    _postActionBloc.requestGetDistricts(id);
+    _postActionBloc.districtsStream.listen((event) {
+      switch(event.status){
+        case Status.COMPLETED:
+          _districtList = event.data;
+          break;
+      }
+    });
   }
 
   void showCityList(int index) {
@@ -316,14 +349,23 @@ class _SellWidgetState extends State<SellWidget> {
               scrollController: controller,
               onSelectedItemChanged: (value) {
                 setState(() {
-                  selectedCity = DummyData.cityList[value];
+                  selectedCity = _listProvinces[value].name;
+                  _selectCityId = _listProvinces[value].id;
                 });
               },
               itemExtent: 32,
-              children: DummyData.cityList.map((e) => Text(e)).toList(),
+              children: _listProvinces.map((e) => Text(e.name)).toList(),
             ),
           );
-        }).then((value) => debugPrint(selectedCity));
+        }).then((value){
+          selectedDistrict = null;
+          if(selectedCity == null){
+            selectedCity = _listProvinces[0].name;
+            _selectCityId = _listProvinces[0].id;
+          }
+          _newsBloc.filterCity(selectedCity.toString().toLowerCase());
+          getDistrictByProvinceId(_selectCityId);
+    });
   }
 
   void showDistrictList(int index) {
@@ -338,13 +380,21 @@ class _SellWidgetState extends State<SellWidget> {
               scrollController: controller,
               onSelectedItemChanged: (value) {
                 setState(() {
-                  selectedDistrict = DummyData.districtList[value];
+                  selectedDistrict = _districtList[value].name;
+                  _selectDistrictId = _districtList[value].id;
                 });
               },
               itemExtent: 32,
-              children: DummyData.districtList.map((e) => Text(e)).toList(),
+              children: _districtList.map((e) => Text(e.name)).toList(),
             ),
           );
-        }).then((value) => debugPrint(selectedDistrict));
+        }).then((value){
+      if(selectedCity == null){
+        selectedDistrict = _districtList[0].name;
+        _selectDistrictId = _districtList[0].id;
+      }
+      print(selectedDistrict);
+      _newsBloc.filterDistrict(selectedDistrict.toString().toLowerCase());
+    });
   }
 }

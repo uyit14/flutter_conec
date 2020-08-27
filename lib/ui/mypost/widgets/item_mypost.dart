@@ -69,7 +69,7 @@ class _ItemMyPostState extends State<ItemMyPost> {
                     break;
                   case Status.COMPLETED:
                     Fluttertoast.showToast(
-                        msg: event.data, textColor: Colors.black87);
+                        msg: event.data, textColor: Colors.black87, gravity: ToastGravity.CENTER);
                     widget.callback(widget.myPost.postId);
                     Navigator.pop(context);
                     break;

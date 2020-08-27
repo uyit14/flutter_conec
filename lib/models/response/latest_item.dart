@@ -11,6 +11,10 @@ class LatestItem {
   String topic;
   String topicMetaLink;
   String metaLink;
+  String province;
+  String district;
+  String ward;
+  String address;
 
   LatestItem(
       {this.postId,
@@ -22,7 +26,12 @@ class LatestItem {
       this.thumbnail,
       this.topic,
       this.topicMetaLink,
-      this.metaLink});
+      this.metaLink,
+        this.province,
+        this.district,
+        this.ward,
+        this.address,
+      });
 
   LatestItem.fromJson(Map<String, dynamic> json) {
     postId = json['postId'];
@@ -35,5 +44,9 @@ class LatestItem {
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];
+    province = json['province'];
+    district = json['district'];
+    ward = json['ward'];
+    address = json['address'];
   }
 }
