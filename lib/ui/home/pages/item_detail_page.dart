@@ -8,6 +8,7 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
+import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/widgets/comment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import '../../../common/globals.dart' as globals;
+import '../../../common/helper.dart';
 
 class ItemDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/items-detail';
@@ -32,6 +34,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   int _currentIndex = 0;
   String postId;
   String title;
+  double lat = 10.8483258;
+  double lng = 106.7686185;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
 
   @override
@@ -457,6 +461,26 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   child: Text(
                                       '${itemDetail.address} ${itemDetail.ward} ${itemDetail.district} ${itemDetail.province}',
                                       style: TextStyle(fontSize: 14)),
+                                ),
+                                //TODO - map image here, set lat lng later
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                        GoogleMapPage.ROUTE_NAME,
+                                        arguments: {
+                                          'lat': lat,
+                                          'lng': lng,
+                                          'postId': itemDetail.postId,
+                                          'title': itemDetail.title,
+                                          'address': '${itemDetail.address} ${itemDetail.ward} ${itemDetail.district} ${itemDetail.province}'
+                                        });
+                                  },
+                                  child: Image.network(
+                                    Helper.generateLocationPreviewImage(
+                                        lat: lat, lng: lng),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
                                 ),
                                 Container(
                                     width: double.infinity,

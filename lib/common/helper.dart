@@ -5,8 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart' as globals;
 import 'dart:developer' as dev;
-
+const GOOGLE_API_KEY = 'AIzaSyCB6MXwv-kgX2ecqg020GAIAV_VsHoKX8Y';
 class Helper {
+  //location halper
+  static String generateLocationPreviewImage({double lat, double lng}){
+    return 'https://maps.googleapis.com/maps/api/staticmap?center=&$lat,$lng&zoom=16&size=600x300&maptype=roadmap &markers=color:red%7Clabel:C%7C$lat,$lng&key=$GOOGLE_API_KEY';
+  }
+
   static String formatData(String publishedDate) {
     return publishedDate != null ?DateFormat("dd-MM-yyyy hh:mm:ss")
         .format(DateTime.parse(publishedDate)) : "";

@@ -87,7 +87,8 @@ class Comment {
     }
     creator = json['creator'];
     fullname = json['fullname'];
-    profilePictureUrl = json['profile_picture_url'];
+    profilePictureUrl = json['profile_picture_url'] !=null ? "http://149.28.140.240:8088" + json['profile_picture_url'] : null;
+
     createdByAdmin = json['created_by_admin'];
     createdByCurrentUser = json['created_by_current_user'];
     upvoteCount = json['upvote_count'];

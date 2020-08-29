@@ -50,6 +50,7 @@ dependencies:
   flutter_slidable: ^0.5.5
   fluttertoast: ^7.0.2
   file_picker: ^1.13.3
+  google_maps_flutter: ^0.5.30
 
 
 dev_dependencies:
