@@ -436,7 +436,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               SizedBox(height: 12),
               //STEP 7
               Text("Hình Ảnh"),
-              _images.length == 0
+              _images.length == 0 && _urlImages.length == 0
                   ? Align(
                       alignment: Alignment.centerLeft,
                       child: _cameraHolder(),
@@ -446,36 +446,71 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: List.from(_urlImages
-                            .map((e) => Container(
-                                  margin: EdgeInsets.only(right: 4),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
-                                    child: e != null
-                                        ? Image.network(
-                                            e.fileName,
-                                            fit: BoxFit.cover,
-                                            width: 100,
-                                            height: 100,
-                                          )
-                                        : Container(),
+                            .map((e) => Stack(
+                              children: [
+                                Container(
+                                      margin: EdgeInsets.only(right: 4),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(6),
+                                        child: e != null
+                                            ? Image.network(
+                                                e.fileName,
+                                                fit: BoxFit.cover,
+                                                width: 100,
+                                                height: 100,
+                                              )
+                                            : Container(),
+                                      ),
+                                    ),
+                                Positioned(
+                                  top: -14,
+                                  right: -10,
+                                  child: IconButton(
+                                    onPressed: (){
+                                      //TODO - call api
+                                      _urlImages.removeWhere((element) => element.id == e.id);
+                                      setState(() {
+
+                                      });
+                                    },
+                                    icon: Icon(Icons.remove_circle, color: Colors.red,),
                                   ),
-                                ))
+                                )
+                              ],
+                            ))
                             .toList())
                           ..addAll(List.from(_images
-                              .map((e) => Container(
-                                    margin: EdgeInsets.only(right: 4),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: e != null
-                                          ? Image.file(
-                                              e,
-                                              fit: BoxFit.cover,
-                                              width: 100,
-                                              height: 100,
-                                            )
-                                          : Container(),
+                              .map((e) => Stack(
+                                children: [
+                                  Container(
+                                        margin: EdgeInsets.only(right: 4),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(6),
+                                          child: e != null
+                                              ? Image.file(
+                                                  e,
+                                                  fit: BoxFit.cover,
+                                                  width: 100,
+                                                  height: 100,
+                                                )
+                                              : Container(),
+                                        ),
+                                      ),
+                                  Positioned(
+                                    top: -14,
+                                    right: -10,
+                                    child: IconButton(
+                                      onPressed: (){
+                                        _images.removeWhere((element) => element == e);
+                                        setState(() {
+
+                                        });
+                                      },
+                                      icon: Icon(Icons.remove_circle, color: Colors.red,),
                                     ),
-                                  ))
+                                  )
+                                ],
+                              ))
                               .toList()))
                           ..add(_cameraHolder()),
                       ),

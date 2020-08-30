@@ -57,7 +57,7 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                 ),
                 SizedBox(width: 4),
                 Container(
-                  width: MediaQuery.of(context).size.width - 125,
+                  width: MediaQuery.of(context).size.width - 124,
                   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(

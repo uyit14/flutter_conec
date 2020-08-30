@@ -42,6 +42,8 @@ class _PostActionPageState extends State<PostActionPage> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _joiningFreeController = TextEditingController();
+  TextEditingController _conditionController = TextEditingController();
+  TextEditingController _usesController = TextEditingController();
   List<Province> _listProvinces = List<Province>();
 
   ZefyrController _controller;
@@ -269,9 +271,7 @@ class _PostActionPageState extends State<PostActionPage> {
                           TextFormField(
                             maxLines: 1,
                             style: TextStyle(fontSize: 18),
-                            onChanged: (value) {
-                              //TODO - do this later
-                            },
+                             controller: _usesController,
                             decoration: InputDecoration(
                                 hintText: 'Nhập công dụng',
                                 focusedBorder: const OutlineInputBorder(
@@ -295,9 +295,7 @@ class _PostActionPageState extends State<PostActionPage> {
                           TextFormField(
                             maxLines: 1,
                             style: TextStyle(fontSize: 18),
-                            onChanged: (value) {
-                              //TODO - do this later
-                            },
+                            controller: _conditionController,
                             decoration: InputDecoration(
                                 hintText: 'Nhập tình trạng (Còn hàng, hết hàng, ...)',
                                 focusedBorder: const OutlineInputBorder(
@@ -585,6 +583,28 @@ class _PostActionPageState extends State<PostActionPage> {
     );
   }
 
+  int getJoiningFree(){
+    if(_currentSelectedIndex==7){
+      return -1;
+    }else{
+      int i = _joiningFreeController.text.length > 0
+          ? int.parse(_joiningFreeController.text)
+          : 0;
+      return i;
+    }
+  }
+
+  int getPrice(){
+    if(_currentSelectedIndex==7){
+      int i = _joiningFreeController.text.length > 0
+          ? int.parse(_joiningFreeController.text)
+          : 0;
+      return i;
+    }else{
+      return -1;
+    }
+  }
+
   void doPostAction() {
     PostActionRequest _postActionRequest = PostActionRequest.create(
         title: _title,
@@ -603,9 +623,10 @@ class _PostActionPageState extends State<PostActionPage> {
         district: selectedDistrict ?? "null",
         ward: selectedWard ?? "null",
         address: _addressController.text ?? "null",
-        joiningFee: _joiningFreeController.text.length > 0
-            ? int.parse(_joiningFreeController.text)
-            : 0,
+        joiningFee: getJoiningFree(),
+        price: 100000,
+        uses: _usesController.text ?? null,
+        generalCondition: _conditionController.text ?? null,
         phoneNumber: _phoneController.text ?? "null",
         status: "SUBMITTED");
 //    Map inputs = jsonDecode(_postActionRequest);
