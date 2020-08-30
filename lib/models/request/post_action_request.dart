@@ -66,6 +66,39 @@ class PostActionRequest {
     'phoneNumber': phoneNumber,
   };
 
+  Map<String, dynamic> toUpdateAdsJson() => {
+    'postId':postId,
+    'title': title,
+    'content': content,
+    'thumbnail': thumbnail,
+    'topicId': topicId,
+    'province': province,
+    'images': images,
+    'status': status,
+    'district': district,
+    'ward': ward,
+    'address': address,
+    'price': price,
+    'uses': uses,
+    'generalCondition': generalCondition,
+    'phoneNumber': phoneNumber,
+  };
+
+  Map<String, dynamic> toUpdateNewsJson() => {
+    'postId':postId,
+    'title': title,
+    'content': content,
+    'thumbnail': thumbnail,
+    'topicId': topicId,
+    'province': province,
+    'images': images,
+    'status': status,
+    'district': district,
+    'ward': ward,
+    'address': address,
+    'phoneNumber': phoneNumber,
+  };
+
   Map<String, dynamic> toJson() => {
         'title': title,
         'content': content,

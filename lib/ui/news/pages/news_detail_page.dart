@@ -98,7 +98,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(newsDetail.title, style: AppTheme.title),
-                                Text(newsDetail.publishedDate,
+                                Text(newsDetail.approvedDate,
                                     style: TextStyle(
                                         fontSize: 15, color: Colors.grey)),
                                 SizedBox(height: 8),

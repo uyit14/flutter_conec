@@ -406,7 +406,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     Text("Ngày đăng",
                                         style: AppTheme.commonDetail),
                                     Spacer(),
-                                    Text(itemDetail.publishedDate ?? "",
+                                    Text(itemDetail.approvedDate ?? "",
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontStyle: FontStyle.italic))

@@ -171,7 +171,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                                           ),
                                           Container(
                                             child: Text(
-                                              news[index].publishedDate,
+                                              news[index].approvedDate,
                                               textAlign: TextAlign.end,
                                             ),
                                             width: double.infinity,

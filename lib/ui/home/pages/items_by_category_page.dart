@@ -332,7 +332,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            Text(items[index].publishedDate,
+                                            Text(items[index].approvedDate,
                                                 style: TextStyle(
                                                     fontStyle:
                                                         FontStyle.italic))

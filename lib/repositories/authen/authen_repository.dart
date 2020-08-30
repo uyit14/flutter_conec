@@ -11,7 +11,7 @@ class AuthenRepository {
   };
 
   Future<String> doLogin(String phone, String passWord) async {
-    final response = await _helper.post("/api/token",
+    final response = await _helper.post("/account/login",
         body: jsonEncode({'UserName': phone, 'Password': passWord}),
         headers: header);
     return Future.value(response['token']);

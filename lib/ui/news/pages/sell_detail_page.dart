@@ -180,7 +180,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                     Text("Ngày đăng",
                                         style: AppTheme.commonDetail),
                                     Spacer(),
-                                    Text(adsDetail.publishedDate,
+                                    Text(adsDetail.approvedDate,
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontStyle: FontStyle.italic))

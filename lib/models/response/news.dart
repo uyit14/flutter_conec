@@ -4,7 +4,7 @@ class News {
   String postId;
   String title;
   String description;
-  String publishedDate;
+  String approvedDate;
   String owner;
   String thumbnail;
   String topic;
@@ -15,7 +15,7 @@ class News {
       {this.postId,
       this.title,
       this.description,
-      this.publishedDate,
+      this.approvedDate,
       this.owner,
       this.thumbnail,
       this.topic,
@@ -26,7 +26,7 @@ class News {
     postId = json['postId'];
     title = json['title'];
     description = json['description'];
-    publishedDate = Helper.formatData(json['publishedDate']);
+    approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
     thumbnail = json['thumbnail'] !=null ? "http://149.28.140.240:8088" + json['thumbnail'] : null;
     topic = json['topic'];

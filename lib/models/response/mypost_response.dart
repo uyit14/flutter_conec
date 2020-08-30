@@ -28,7 +28,7 @@ class MyPost {
   String title;
   String description;
   int joiningFee;
-  String publishedDate;
+  String approvedDate;
   String owner;
   String thumbnail;
   String topic;
@@ -40,7 +40,7 @@ class MyPost {
         this.title,
         this.description,
         this.joiningFee,
-        this.publishedDate,
+        this.approvedDate,
         this.owner,
         this.thumbnail,
         this.topic,
@@ -52,7 +52,7 @@ class MyPost {
     title = json['title'];
     description = json['description'];
     joiningFee = json['joiningFee'];
-    publishedDate = Helper.formatData(json['publishedDate']);
+    approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
     thumbnail = json['thumbnail'] !=null ? "http://149.28.140.240:8088" + json['thumbnail'] : null;
     topic = json['topic'];
@@ -66,7 +66,7 @@ class MyPost {
     data['title'] = this.title;
     data['description'] = this.description;
     data['joiningFee'] = this.joiningFee;
-    data['publishedDate'] = this.publishedDate;
+    data['approvedDate'] = this.approvedDate;
     data['owner'] = this.owner;
     data['thumbnail'] = this.thumbnail;
     data['topic'] = this.topic;

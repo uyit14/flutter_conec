@@ -17,6 +17,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zefyr/zefyr.dart';
@@ -71,24 +72,16 @@ class _PostActionPageState extends State<PostActionPage> {
 
   Future getImage() async {
     final pickedFile =
-    await picker.getImage(source: ImageSource.camera, imageQuality: 75);
+        await picker.getImage(source: ImageSource.camera, imageQuality: 75);
     _images.add(File(pickedFile.path));
     setState(() {});
     Navigator.pop(context);
   }
 
-  clearAllFocus() {
-    _addressController.clear();
-    _phoneController.clear();
-    _joiningFreeController.clear();
-  }
-
   bool _isPostButtonEnable() {
     if (_selectedCategoryId == null ||
         _title == null ||
-        _controller.document
-            .toPlainText()
-            .length <= 0 && !_term) {
+        _controller.document.toPlainText().length <= 0 && !_term) {
       return false;
     }
     return true;
@@ -188,32 +181,37 @@ class _PostActionPageState extends State<PostActionPage> {
                                                     side: BorderSide(
                                                         color: Colors.grey,
                                                         width: 1,
-                                                        style: BorderStyle.solid),
+                                                        style:
+                                                            BorderStyle.solid),
                                                     borderRadius:
-                                                    BorderRadius.circular(50)),
-                                                color:
-                                                _currentSelectedIndex == index
+                                                        BorderRadius.circular(
+                                                            50)),
+                                                color: _currentSelectedIndex ==
+                                                        index
                                                     ? Colors.green
                                                     : Colors.white,
                                                 textColor:
-                                                _currentSelectedIndex == index
-                                                    ? Colors.white
-                                                    : Colors.black,
+                                                    _currentSelectedIndex ==
+                                                            index
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                 onPressed: () {
                                                   setState(() {
                                                     _selectedCategoryId =
                                                         topics[index].id;
-                                                    _currentSelectedIndex = index;
+                                                    _currentSelectedIndex =
+                                                        index;
                                                   });
                                                 },
-                                                child: Text(topics[index].title)),
+                                                child:
+                                                    Text(topics[index].title)),
                                           );
                                         });
                                   case Status.ERROR:
                                     return UIError(
                                         errorMessage: snapshot.data.message,
-                                        onRetryPressed: () =>
-                                            _postActionBloc.requestGetTopicWithHeader());
+                                        onRetryPressed: () => _postActionBloc
+                                            .requestGetTopicWithHeader());
                                 }
                               }
                               return Container(child: Text("Không có dữ liệu"));
@@ -235,7 +233,7 @@ class _PostActionPageState extends State<PostActionPage> {
                             hintText: 'Nhập tiêu đề',
                             focusedBorder: const OutlineInputBorder(
                                 borderSide:
-                                BorderSide(color: Colors.green, width: 1)),
+                                    BorderSide(color: Colors.green, width: 1)),
                             contentPadding: EdgeInsets.only(left: 8),
                             prefixIcon: Icon(
                               Icons.title,
@@ -263,76 +261,96 @@ class _PostActionPageState extends State<PostActionPage> {
                         ),
                       ),
                       SizedBox(height: 12),
-                      _currentSelectedIndex == 7 ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Công dụng"),
-                          SizedBox(height: 4),
-                          TextFormField(
-                            maxLines: 1,
-                            style: TextStyle(fontSize: 18),
-                             controller: _usesController,
-                            decoration: InputDecoration(
-                                hintText: 'Nhập công dụng',
-                                focusedBorder: const OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.green, width: 1)),
-                                contentPadding: EdgeInsets.only(left: 8),
-                                prefixIcon: Icon(
-                                  Icons.accessibility,
-                                  color: Colors.black,
+                      _currentSelectedIndex == 7
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Công dụng"),
+                                SizedBox(height: 4),
+                                TextFormField(
+                                  maxLines: 1,
+                                  style: TextStyle(fontSize: 18),
+                                  controller: _usesController,
+                                  decoration: InputDecoration(
+                                      hintText: 'Nhập công dụng',
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.green, width: 1)),
+                                      contentPadding: EdgeInsets.only(left: 8),
+                                      prefixIcon: Icon(
+                                        Icons.accessibility,
+                                        color: Colors.black,
+                                      ),
+                                      border: const OutlineInputBorder()),
                                 ),
-                                border: const OutlineInputBorder()),
-                          ),
-                        ],
-                      ) : Container(),
-                      _currentSelectedIndex == 7 ? SizedBox(height: 12) : SizedBox(height: 0,),
-                      _currentSelectedIndex == 7 ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Tình trạng"),
-                          SizedBox(height: 4),
-                          TextFormField(
-                            maxLines: 1,
-                            style: TextStyle(fontSize: 18),
-                            controller: _conditionController,
-                            decoration: InputDecoration(
-                                hintText: 'Nhập tình trạng (Còn hàng, hết hàng, ...)',
-                                focusedBorder: const OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.green, width: 1)),
-                                contentPadding: EdgeInsets.only(left: 8),
-                                prefixIcon: Icon(
-                                  Icons.check,
-                                  color: Colors.black,
+                              ],
+                            )
+                          : Container(),
+                      _currentSelectedIndex == 7
+                          ? SizedBox(height: 12)
+                          : SizedBox(
+                              height: 0,
+                            ),
+                      _currentSelectedIndex == 7
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Tình trạng"),
+                                SizedBox(height: 4),
+                                TextFormField(
+                                  maxLines: 1,
+                                  style: TextStyle(fontSize: 18),
+                                  controller: _conditionController,
+                                  decoration: InputDecoration(
+                                      hintText:
+                                          'Nhập tình trạng (Còn hàng, hết hàng, ...)',
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.green, width: 1)),
+                                      contentPadding: EdgeInsets.only(left: 8),
+                                      prefixIcon: Icon(
+                                        Icons.check,
+                                        color: Colors.black,
+                                      ),
+                                      border: const OutlineInputBorder()),
                                 ),
-                                border: const OutlineInputBorder()),
-                          ),
-                        ],
-                      ) : Container(),
+                              ],
+                            )
+                          : Container(),
                       SizedBox(height: 12),
                       //STEP 4
-                      Text(_currentSelectedIndex == 7 ? "Giá" : "Phí tham gia"),
-                      SizedBox(height: 4),
-                      TextFormField(
-                        maxLines: 1,
-                        controller: _joiningFreeController,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.done,
-                        style: TextStyle(fontSize: 18),
-                        decoration: InputDecoration(
-                            hintText: _currentSelectedIndex == 7 ? "Nhập giá" : 'Nhập phí tham gia',
-                            focusedBorder: const OutlineInputBorder(
-                                borderSide:
-                                BorderSide(color: Colors.green, width: 1)),
-                            contentPadding: EdgeInsets.only(left: 8),
-                            prefixIcon: Icon(
-                              Icons.attach_money,
-                              color: Colors.black,
+                      _currentSelectedIndex == 6
+                          ? Container()
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(_currentSelectedIndex == 7
+                                    ? "Giá"
+                                    : "Phí tham gia"),
+                                SizedBox(height: 4),
+                                TextFormField(
+                                  maxLines: 1,
+                                  controller: _joiningFreeController,
+                                  keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.done,
+                                  style: TextStyle(fontSize: 18),
+                                  decoration: InputDecoration(
+                                      hintText: _currentSelectedIndex == 7
+                                          ? "Nhập giá"
+                                          : 'Nhập phí tham gia',
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.green, width: 1)),
+                                      contentPadding: EdgeInsets.only(left: 8),
+                                      prefixIcon: Icon(
+                                        Icons.attach_money,
+                                        color: Colors.black,
+                                      ),
+                                      border: const OutlineInputBorder()),
+                                ),
+                                SizedBox(height: 12),
+                              ],
                             ),
-                            border: const OutlineInputBorder()),
-                      ),
-                      SizedBox(height: 12),
                       //STEP 5
                       Text("Số điện thoại"),
                       SizedBox(height: 4),
@@ -346,7 +364,7 @@ class _PostActionPageState extends State<PostActionPage> {
                             hintText: 'Nhập số điện thoại',
                             focusedBorder: const OutlineInputBorder(
                                 borderSide:
-                                BorderSide(color: Colors.green, width: 1)),
+                                    BorderSide(color: Colors.green, width: 1)),
                             contentPadding: EdgeInsets.only(left: 8),
                             prefixIcon: Icon(
                               Icons.phone,
@@ -361,16 +379,18 @@ class _PostActionPageState extends State<PostActionPage> {
                       Column(
                         children: <Widget>[
                           InkWell(
-                            onTap: () =>
-                                showCityList(
-                                    getIndex(_listProvinces, _selectCityId)),
+                            onTap: () {
+                              showCityList(
+                                  getIndex(_listProvinces, _selectCityId));
+                            },
                             child: Card(
                               margin: EdgeInsets.symmetric(horizontal: 0),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 8),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Icon(Icons.location_city),
                                     Text(
@@ -389,10 +409,9 @@ class _PostActionPageState extends State<PostActionPage> {
                           ),
                           SizedBox(height: 8),
                           InkWell(
-                            onTap: () =>
-                            selectedCity != null
-                                ? showDistrictList(getIndex(
-                                _districtList, _selectDistrictId))
+                            onTap: () => selectedCity != null
+                                ? showDistrictList(
+                                    getIndex(_districtList, _selectDistrictId))
                                 : null,
                             child: Card(
                               margin: EdgeInsets.symmetric(horizontal: 0),
@@ -400,7 +419,8 @@ class _PostActionPageState extends State<PostActionPage> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 8),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Icon(Icons.home),
                                     Text(
@@ -420,10 +440,9 @@ class _PostActionPageState extends State<PostActionPage> {
                           ),
                           SizedBox(height: 8),
                           InkWell(
-                            onTap: () =>
-                            selectedDistrict != null
+                            onTap: () => selectedDistrict != null
                                 ? showWardList(
-                                getIndex(_wardList, _selectWardId))
+                                    getIndex(_wardList, _selectWardId))
                                 : null,
                             child: Card(
                               margin: EdgeInsets.symmetric(horizontal: 0),
@@ -431,7 +450,8 @@ class _PostActionPageState extends State<PostActionPage> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 12, horizontal: 8),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Icon(Icons.wallpaper),
                                     Text(
@@ -458,8 +478,8 @@ class _PostActionPageState extends State<PostActionPage> {
                             decoration: InputDecoration(
                                 hintText: 'Số nhà, tên đường',
                                 focusedBorder: const OutlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.green, width: 1)),
+                                    borderSide: BorderSide(
+                                        color: Colors.green, width: 1)),
                                 contentPadding: EdgeInsets.only(left: 8),
                                 prefixIcon: Icon(
                                   Icons.location_on,
@@ -475,33 +495,50 @@ class _PostActionPageState extends State<PostActionPage> {
                       SizedBox(height: 4),
                       _images.length == 0
                           ? Align(
-                        alignment: Alignment.centerLeft,
-                        child: _cameraHolder(),
-                      )
+                              alignment: Alignment.centerLeft,
+                              child: _cameraHolder(),
+                            )
                           : Container(
-                        height: 100,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: List.from(_images
-                              .map((e) =>
-                              Container(
-                                margin: EdgeInsets.only(right: 4),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: e != null
-                                      ? Image.file(
-                                    e,
-                                    fit: BoxFit.cover,
-                                    width: 100,
-                                    height: 100,
-                                  )
-                                      : Container(),
-                                ),
-                              ))
-                              .toList())
-                            ..add(_cameraHolder()),
-                        ),
-                      ),
+                              height: 100,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: List.from(_images
+                                    .map((e) => Stack(
+                                      children: [
+                                        Container(
+                                              margin: EdgeInsets.only(right: 4),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                                child: e != null
+                                                    ? Image.file(
+                                                        e,
+                                                        fit: BoxFit.cover,
+                                                        width: 100,
+                                                        height: 100,
+                                                      )
+                                                    : Container(),
+                                              ),
+                                            ),
+                                        Positioned(
+                                          top: -14,
+                                          right: -10,
+                                          child: IconButton(
+                                            onPressed: (){
+                                              _images.removeWhere((element) => element == e);
+                                              setState(() {
+
+                                              });
+                                            },
+                                            icon: Icon(Icons.remove_circle, color: Colors.red,),
+                                          ),
+                                        )
+                                      ],
+                                    ))
+                                    .toList())
+                                  ..add(_cameraHolder()),
+                              ),
+                            ),
                       SizedBox(height: 12),
                       //STEP 8
                       Text("Chính sách của Conec"),
@@ -511,14 +548,14 @@ class _PostActionPageState extends State<PostActionPage> {
                           RichText(
                             text: TextSpan(
                                 text: "Tôi đồng ý với các điều khoản ",
-                                style: TextStyle(color: Colors.black, fontSize: 14),
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 14),
                                 children: <TextSpan>[
                                   TextSpan(
                                       text: "Chính sách của Conec ",
                                       recognizer: TapGestureRecognizer()
-                                        ..onTap = () =>
-                                            Navigator.of(context)
-                                                .pushNamed(
+                                        ..onTap = () => Navigator.of(context)
+                                            .pushNamed(
                                                 TermConditionPage.ROUTE_NAME),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -526,7 +563,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                           fontSize: 14)),
                                   TextSpan(
                                       text:
-                                      "Nếu vi phạm sẽ chịu mọi xử lý từ Conec",
+                                          "Nếu vi phạm sẽ chịu mọi xử lý từ Conec",
                                       style: TextStyle(
                                           color: Colors.black, fontSize: 14))
                                 ]),
@@ -564,10 +601,7 @@ class _PostActionPageState extends State<PostActionPage> {
                             icon: Icon(Icons.check),
                             padding: EdgeInsets.symmetric(
                                 horizontal:
-                                MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width / 5),
+                                    MediaQuery.of(context).size.width / 5),
                             label: Text("Đăng tin",
                                 style: TextStyle(
                                     fontSize: 18,
@@ -583,10 +617,11 @@ class _PostActionPageState extends State<PostActionPage> {
     );
   }
 
-  int getJoiningFree(){
-    if(_currentSelectedIndex==7){
+
+  int getJoiningFree() {
+    if (_currentSelectedIndex == 7 || _currentSelectedIndex == 6) {
       return -1;
-    }else{
+    } else {
       int i = _joiningFreeController.text.length > 0
           ? int.parse(_joiningFreeController.text)
           : 0;
@@ -594,28 +629,28 @@ class _PostActionPageState extends State<PostActionPage> {
     }
   }
 
-  int getPrice(){
-    if(_currentSelectedIndex==7){
+  int getPrice() {
+    if (_currentSelectedIndex == 6) {
+      return -1;
+    }
+    if (_currentSelectedIndex == 7) {
       int i = _joiningFreeController.text.length > 0
           ? int.parse(_joiningFreeController.text)
           : 0;
       return i;
-    }else{
+    } else {
       return -1;
     }
   }
-
   void doPostAction() {
     PostActionRequest _postActionRequest = PostActionRequest.create(
         title: _title,
         content: _controller.document.toPlainText(),
         thumbnail: _images.length > 0
             ? {
-          "fileName": _images[0].path
-              .split("/")
-              .last,
-          "base64": base64Encode(_images[0].readAsBytesSync())
-        }
+                "fileName": _images[0].path.split("/").last,
+                "base64": base64Encode(_images[0].readAsBytesSync())
+              }
             : {"fileName": "null", "base64": "null"},
         topicId: _selectedCategoryId,
         images: base64ListImage(_images) ?? [],
@@ -624,7 +659,7 @@ class _PostActionPageState extends State<PostActionPage> {
         ward: selectedWard ?? "null",
         address: _addressController.text ?? "null",
         joiningFee: getJoiningFree(),
-        price: 100000,
+        price: getPrice(),
         uses: _usesController.text ?? null,
         generalCondition: _conditionController.text ?? null,
         phoneNumber: _phoneController.text ?? "null",
@@ -632,7 +667,8 @@ class _PostActionPageState extends State<PostActionPage> {
 //    Map inputs = jsonDecode(_postActionRequest);
     //print("aa: " + inputs.toString());
     print("images: " + base64ListImage(_images).length.toString());
-    _postActionBloc.requestAddMyPost(jsonEncode(_postActionRequest.toJson()), "Add");
+    _postActionBloc.requestAddMyPost(
+        jsonEncode(_postActionRequest.toJson()), "Add");
     _postActionBloc.addMyPostStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
@@ -660,9 +696,7 @@ class _PostActionPageState extends State<PostActionPage> {
     if (fileList.length > 0)
       fileList.forEach((element) {
         Map a = {
-          'fileName': element.path
-              .split("/")
-              .last,
+          'fileName': element.path.split("/").last,
           'base64': base64Encode(element.readAsBytesSync())
         };
         s.add(a);
@@ -673,17 +707,15 @@ class _PostActionPageState extends State<PostActionPage> {
   showOKDialog() {
     showDialog(
         context: context,
-        builder: (BuildContext context) =>
-            CupertinoAlertDialog(
+        builder: (BuildContext context) => CupertinoAlertDialog(
               title: Text("Đăng bài thành công"),
               content: Text("Bạn đã đăng bài thành công, quay lại trang chủ?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                     child: Text("OK"),
-                    onPressed: () =>
-                        Navigator.of(context)
-                            .pushNamedAndRemoveUntil(ConecHomePage.ROUTE_NAME,
-                                (Route<dynamic> route) => false))
+                    onPressed: () => Navigator.of(context)
+                        .pushNamedAndRemoveUntil(ConecHomePage.ROUTE_NAME,
+                            (Route<dynamic> route) => false))
               ],
             ));
   }
@@ -691,8 +723,7 @@ class _PostActionPageState extends State<PostActionPage> {
   showFailDialog() {
     showDialog(
         context: context,
-        builder: (BuildContext context) =>
-            CupertinoAlertDialog(
+        builder: (BuildContext context) => CupertinoAlertDialog(
               title: Text("Lỗi nhập thiếu"),
               content: Text("Bạn vui lòng điền đầy đủ thông tin bắt buộc"),
               actions: <Widget>[
@@ -714,13 +745,13 @@ class _PostActionPageState extends State<PostActionPage> {
 
   //
   int getIndex(List<Province> list, String selectedItemId) {
-    int index = list.indexOf(list.firstWhere((element) => element.id == selectedItemId, orElse: () => list != null ? list[0] : null));
-    if(index == -1){
+    int index = list.indexOf(list.firstWhere(
+        (element) => element.id == selectedItemId,
+        orElse: () => list != null ? list[0] : null));
+    if (index == -1) {
       return 0;
     }
-    return selectedItemId != null
-        ? index
-        : 0;
+    return selectedItemId != null ? index : 0;
   }
 
   void showCityList(int index) {
@@ -744,15 +775,16 @@ class _PostActionPageState extends State<PostActionPage> {
             ),
           );
         }).then((value) {
-      getDistrictByProvinceId(_selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
+      getDistrictByProvinceId(
+          _selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
       print(_selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
     });
   }
 
-  void getDistrictByProvinceId(String id){
+  void getDistrictByProvinceId(String id) {
     _postActionBloc.requestGetDistricts(id);
     _postActionBloc.districtsStream.listen((event) {
-      switch(event.status){
+      switch (event.status) {
         case Status.COMPLETED:
           _districtList = event.data;
           break;
@@ -781,15 +813,16 @@ class _PostActionPageState extends State<PostActionPage> {
             ),
           );
         }).then((value) {
-      getWardByDistrictId(_selectDistrictId ?? "83e9ce08-92da-4208-b178-2beb51a405ad");
+      getWardByDistrictId(
+          _selectDistrictId ?? "83e9ce08-92da-4208-b178-2beb51a405ad");
       print(_selectDistrictId ?? "83e9ce08-92da-4208-b178-2beb51a405ad");
     });
   }
 
-  void getWardByDistrictId(String id){
+  void getWardByDistrictId(String id) {
     _postActionBloc.requestGetWards(id);
     _postActionBloc.wardsStream.listen((event) {
-      switch(event.status){
+      switch (event.status) {
         case Status.COMPLETED:
           print("data: " + event.data.length.toString());
           _wardList = event.data;

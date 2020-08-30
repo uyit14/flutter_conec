@@ -14,12 +14,28 @@ class ArchiveMyPost extends StatefulWidget {
 
 class _ArchiveMyPostState extends State<ArchiveMyPost> {
   MyPostBloc _myPostBloc;
+  final _scrollController = ScrollController();
+  int _currentPage = 0;
+  bool _shouldLoadMore = true;
+  //
+  List<MyPost> archivedList = List<MyPost>();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
     _myPostBloc = MyPostBloc();
-    _myPostBloc.requestGetArchive(0);
+    _myPostBloc.requestGetArchive(_currentPage);
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= 20) {
+      if(_shouldLoadMore){
+        _myPostBloc.requestGetArchive(_currentPage);
+      }
+    }
   }
 
   @override
@@ -34,16 +50,22 @@ class _ArchiveMyPostState extends State<ArchiveMyPost> {
                 case Status.LOADING:
                   return UILoading(loadingMessage: snapshot.data.message);
                 case Status.COMPLETED:
-                  List<MyPost> myPosts = snapshot.data.data;
+                  if(snapshot.data.data.length > 0){
+                    archivedList.addAll(snapshot.data.data);
+                    _currentPage++;
+                  }else{
+                    _shouldLoadMore = false;
+                  }
                   return ListView.builder(
-                      itemCount: myPosts.length,
+                      controller: _scrollController,
+                      itemCount: archivedList.length,
                       itemBuilder: (context, index) {
                         return ItemMyPost(
-                            myPost: myPosts[index],
+                            myPost: archivedList[index],
                             key: ValueKey("archive"),
                             status: MyPostStatus.Archive,
                         callback: (id){
-                              myPosts.removeWhere((element) => element.postId == id);
+                          archivedList.removeWhere((element) => element.postId == id);
                               setState(() {
                               });
                         }, refresh: (value){

@@ -18,7 +18,7 @@ class ItemDetail {
   String title;
   String description;
   String content;
-  String publishedDate;
+  String approvedDate;
   String owner;
   String ownerAvatar;
   int ratingCount;
@@ -46,10 +46,9 @@ class ItemDetail {
 
   ItemDetail(
       {this.postId,
-        this.title,
         this.description,
         this.content,
-        this.publishedDate,
+        this.approvedDate,
         this.owner,
         this.ownerAvatar,
         this.ratingCount,
@@ -58,6 +57,7 @@ class ItemDetail {
         this.viewCount,
         this.commentCount,
         this.likeCount,
+        this.title,
         this.likeOwner,
         this.isLikeOwner,
         this.thumbnail,
@@ -81,7 +81,7 @@ class ItemDetail {
     title = json['title'];
     description = json['description'];
     content = json['content'];
-    publishedDate = Helper.formatData(json['publishedDate']);
+    approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
     ownerAvatar = json['ownerAvatar'] !=null ? "http://149.28.140.240:8088" + json['ownerAvatar'] : null;
     ratingCount = json['ratingCount'];

@@ -4,7 +4,7 @@ class Sport {
   String postId;
   String title;
   String description;
-  String publishedDate;
+  String approvedDate;
   String owner;
   int price;
   String generalCondition;
@@ -21,7 +21,7 @@ class Sport {
       {this.postId,
       this.title,
       this.description,
-      this.publishedDate,
+      this.approvedDate,
       this.owner,
       this.price,
       this.generalCondition,
@@ -39,7 +39,7 @@ class Sport {
     postId = json['postId'];
     title = json['title'];
     description = json['description'];
-    publishedDate = Helper.formatData(json['publishedDate']);
+    approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
     price = json['price'];
     generalCondition = json['generalCondition'];

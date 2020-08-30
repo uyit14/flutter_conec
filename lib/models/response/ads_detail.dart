@@ -25,7 +25,7 @@ class AdsDetail {
   String title;
   String description;
   String content;
-  String publishedDate;
+  String approvedDate;
   String owner;
   String ownerAvatar;
   int ratingCount;
@@ -59,7 +59,7 @@ class AdsDetail {
       this.title,
       this.description,
       this.content,
-      this.publishedDate,
+      this.approvedDate,
       this.owner,
       this.ownerAvatar,
       this.ratingCount,
@@ -93,7 +93,7 @@ class AdsDetail {
     title = json['title'];
     description = json['description'];
     content = json['content'];
-    publishedDate = Helper.formatData(json['publishedDate']);
+    approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
     ownerAvatar = json['ownerAvatar'] !=null ? "http://149.28.140.240:8088" + json['ownerAvatar'] : null;
     ratingCount = json['ratingCount'];
@@ -134,7 +134,7 @@ class AdsDetail {
     data['title'] = this.title;
     data['description'] = this.description;
     data['content'] = this.content;
-    data['publishedDate'] = this.publishedDate;
+    data['approvedDate'] = this.approvedDate;
     data['owner'] = this.owner;
     data['ownerAvatar'] = this.ownerAvatar;
     data['ratingCount'] = this.ratingCount;

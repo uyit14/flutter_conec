@@ -12,9 +12,9 @@ class Helper {
     return 'https://maps.googleapis.com/maps/api/staticmap?center=&$lat,$lng&zoom=16&size=600x300&maptype=roadmap &markers=color:red%7Clabel:C%7C$lat,$lng&key=$GOOGLE_API_KEY';
   }
 
-  static String formatData(String publishedDate) {
-    return publishedDate != null ?DateFormat("dd-MM-yyyy hh:mm:ss")
-        .format(DateTime.parse(publishedDate)) : "";
+  static String formatData(String approvedDate) {
+    return approvedDate != null ?DateFormat("dd-MM-yyyy hh:mm:ss")
+        .format(DateTime.parse(approvedDate)) : "";
   }
 
   static log(var tag, var message) {

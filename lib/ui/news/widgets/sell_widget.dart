@@ -258,7 +258,7 @@ class _SellWidgetState extends State<SellWidget> {
                                                   child: Container(),
                                                 ),
                                                 Text(
-                                                  sports[index].publishedDate,
+                                                  sports[index].approvedDate,
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     color: Colors.grey,

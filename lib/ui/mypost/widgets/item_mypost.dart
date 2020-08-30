@@ -146,7 +146,7 @@ class _ItemMyPostState extends State<ItemMyPost> {
                       ),
                       Spacer(),
                       Text(
-                        widget.myPost.publishedDate,
+                        widget.myPost.approvedDate,
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey,

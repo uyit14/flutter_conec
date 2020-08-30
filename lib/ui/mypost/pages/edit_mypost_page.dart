@@ -48,6 +48,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   TextEditingController _joiningFreeController;
   TextEditingController _phoneController;
   TextEditingController _addressController;
+  TextEditingController _usesController;
+  TextEditingController _conditionController;
   bool _isLoading = false;
   bool _isFirstTime = true;
 
@@ -144,6 +146,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       selectedDistrict = _itemDetail.district ?? "";
       selectedWard = _itemDetail.ward ?? "";
       _urlImages = _itemDetail.images;
+      _usesController = TextEditingController(text: _itemDetail.uses ?? "");
+      _conditionController = TextEditingController(text: _itemDetail.generalCondition ?? "");
     });
   }
 
@@ -293,26 +297,88 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                 ),
               ),
               SizedBox(height: 12),
-              //STEP 4
-              Text("Phí tham gia"),
-              TextFormField(
-                maxLines: 1,
-                keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.done,
-                style: TextStyle(fontSize: 18),
-                controller: _joiningFreeController,
-                decoration: InputDecoration(
-                    hintText: 'Nhập phí tham gia',
-                    focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green, width: 1)),
-                    contentPadding: EdgeInsets.only(left: 8),
-                    prefixIcon: Icon(
-                      Icons.attach_money,
-                      color: Colors.black,
-                    ),
-                    border: const OutlineInputBorder()),
+              _currentSelectedIndex == 7
+                  ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Công dụng"),
+                  SizedBox(height: 4),
+                  TextFormField(
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 18),
+                    controller: _usesController,
+                    decoration: InputDecoration(
+                        hintText: 'Nhập công dụng',
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.green, width: 1)),
+                        contentPadding: EdgeInsets.only(left: 8),
+                        prefixIcon: Icon(
+                          Icons.accessibility,
+                          color: Colors.black,
+                        ),
+                        border: const OutlineInputBorder()),
+                  ),
+                ],
+              )
+                  : Container(),
+              _currentSelectedIndex == 7
+                  ? SizedBox(height: 12)
+                  : SizedBox(
+                height: 0,
               ),
-              SizedBox(height: 12),
+              _currentSelectedIndex == 7
+                  ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Tình trạng"),
+                  SizedBox(height: 4),
+                  TextFormField(
+                    maxLines: 1,
+                    style: TextStyle(fontSize: 18),
+                    controller: _conditionController,
+                    decoration: InputDecoration(
+                        hintText:
+                        'Nhập tình trạng (Còn hàng, hết hàng, ...)',
+                        focusedBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Colors.green, width: 1)),
+                        contentPadding: EdgeInsets.only(left: 8),
+                        prefixIcon: Icon(
+                          Icons.check,
+                          color: Colors.black,
+                        ),
+                        border: const OutlineInputBorder()),
+                  ),
+                ],
+              )
+                  : Container(),
+              //STEP 4
+              _currentSelectedIndex == 6 ? Container() : Column(children: [
+                Text(_currentSelectedIndex == 7
+                    ? "Giá"
+                    : "Phí tham gia"),
+                TextFormField(
+                  maxLines: 1,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                  style: TextStyle(fontSize: 18),
+                  controller: _joiningFreeController,
+                  decoration: InputDecoration(
+                      hintText: _currentSelectedIndex == 7
+                          ? "Nhập giá"
+                          : 'Nhập phí tham gia',
+                      focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green, width: 1)),
+                      contentPadding: EdgeInsets.only(left: 8),
+                      prefixIcon: Icon(
+                        Icons.attach_money,
+                        color: Colors.black,
+                      ),
+                      border: const OutlineInputBorder()),
+                ),
+                SizedBox(height: 12),
+              ],),
               //STEP 5
               Text("Số điện thoại"),
               TextFormField(
@@ -543,8 +609,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   }
 
   //-----------------------post action -----------------------------//
+  PostActionRequest _postActionRequest;
   void doUpdateAction() {
-    PostActionRequest _postActionRequest = PostActionRequest.update(
+      _postActionRequest = PostActionRequest.update(
         postId: _itemDetail.postId,
         title: _titleController.text,
         content: _controller.document.toPlainText(),
@@ -563,13 +630,23 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
         joiningFee: _joiningFreeController.text.length > 0
             ? int.parse(_joiningFreeController.text)
             : 0,
+          price: _joiningFreeController.text.length > 0
+              ? int.parse(_joiningFreeController.text)
+              : 0,
+          uses: _usesController.text ?? "null",
+          generalCondition: _conditionController.text ?? "null",
         phoneNumber: _phoneController.text ?? "null",
         status: "SUBMITTED");
-//    Map inputs = jsonDecode(_postActionRequest);
-    //print("aa: " + inputs.toString());
-    print("images: " + base64ListImage(_images).length.toString());
-    _postActionBloc
-        .requestAddMyPost(jsonEncode(_postActionRequest.toUpdateJson()), "Update");
+      if(_currentSelectedIndex == 6){
+        _postActionBloc
+            .requestAddMyPost(jsonEncode(_postActionRequest.toUpdateNewsJson()), "Update");
+      }else if(_currentSelectedIndex ==7){
+        _postActionBloc
+            .requestAddMyPost(jsonEncode(_postActionRequest.toUpdateAdsJson()), "Update");
+      }else{
+        _postActionBloc
+            .requestAddMyPost(jsonEncode(_postActionRequest.toUpdateJson()), "Update");
+      }
     _postActionBloc.addMyPostStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
