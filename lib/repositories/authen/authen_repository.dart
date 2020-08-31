@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/models/request/signup_request.dart';
+import 'package:conecapp/models/response/login_response.dart';
+import 'package:conecapp/models/response/signup_response.dart';
 
 class AuthenRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
@@ -10,17 +12,19 @@ class AuthenRepository {
     'Content-Type': 'application/json'
   };
 
-  Future<String> doLogin(String phone, String passWord) async {
-    final response = await _helper.post("/account/login",
+  Future<LoginResponse> doLogin(String phone, String passWord) async {
+    final response = await _helper.post("/api/account/login",
         body: jsonEncode({'UserName': phone, 'Password': passWord}),
         headers: header);
-    return Future.value(response['token']);
+    print(response.toString());
+    return LoginResponse.fromJson(response);
   }
 
-  Future<bool> doSignUp(SignUpRequest request) async {
-    final response = await _helper.post("https://google.com/getcategory",
-        body: request.toJsonClub(), headers: header);
-    return true;
+  Future<SignUpResponse> doSignUp(String userName, String email, String passWord, String confirmPass) async {
+    final response = await _helper.post("/api/account/register",
+        body: jsonEncode({'userName': userName, 'email': email, 'password': passWord, "confirmPassword": confirmPass}),
+        headers: header);
+    return SignUpResponse.fromJson(response);
   }
 
   Future<bool> doForgotPass(String email) async {

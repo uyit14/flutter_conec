@@ -51,6 +51,7 @@ dependencies:
   fluttertoast: ^7.0.2
   file_picker: ^1.13.3
   google_maps_flutter: ^0.5.30
+  geocoder: ^0.2.1
 
 
 dev_dependencies:

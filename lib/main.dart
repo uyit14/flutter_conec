@@ -1,5 +1,6 @@
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
+import 'package:conecapp/ui/authen/pages/register_page.dart';
 import 'package:conecapp/ui/authen/pages/signup_page.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
@@ -59,6 +60,7 @@ class ConecApp extends StatelessWidget {
             create: (_) => AuthenBloc(),
             dispose: (_, AuthenBloc bloc) => bloc.dispose(),
             child: SignUpPage()),
+        RegisterPage.ROUTE_NAME: (context) => RegisterPage(),
         SearchPage.ROUTE_NAME: (context) => SearchPage(),
         ItemByCategory.ROUTE_NAME: (context) => Provider<ItemsByCategoryBloc>(
               create: (_) => ItemsByCategoryBloc(),

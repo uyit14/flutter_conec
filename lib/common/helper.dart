@@ -1,6 +1,8 @@
+import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'globals.dart' as globals;
@@ -11,6 +13,8 @@ class Helper {
   static String generateLocationPreviewImage({double lat, double lng}){
     return 'https://maps.googleapis.com/maps/api/staticmap?center=&$lat,$lng&zoom=16&size=600x300&maptype=roadmap &markers=color:red%7Clabel:C%7C$lat,$lng&key=$GOOGLE_API_KEY';
   }
+
+  static const baseURL = "http://149.28.140.240:8088";
 
   static String formatData(String approvedDate) {
     return approvedDate != null ?DateFormat("dd-MM-yyyy hh:mm:ss")
@@ -55,6 +59,20 @@ class Helper {
     'authorization': "Bearer ${globals.token}",
     'Content-Type': "application/json"
   };
+
+  static double getScreenHeight(BuildContext context){
+    return MediaQuery.of(context).size.height;
+  }
+
+  static Future<LatLong> getLatLng(String address) async{
+    var addresses = await Geocoder.local.findAddressesFromQuery(address);
+    var first = addresses.first;
+    return LatLong(lat: first.coordinates.latitude, long: first.coordinates.longitude);
+  }
+
+  static double getScreenWidth(BuildContext context){
+    return MediaQuery.of(context).size.width;
+  }
 
   static void showDeleteDialog(BuildContext context, VoidCallback onOK) {
     showDialog(

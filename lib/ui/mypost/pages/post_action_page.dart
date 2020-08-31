@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
@@ -588,13 +589,15 @@ class _PostActionPageState extends State<PostActionPage> {
                         child: FlatButton.icon(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
-                            onPressed: () {
+                            onPressed: () async{
                               //debugPrint(_selectedCategory + "_title: " + _title + "_des: " +_controller.document.toPlainText() + "_term: " + _term.toString());
                               if (!_isPostButtonEnable()) {
                                 showFailDialog();
                               } else {
                                 doPostAction();
                               }
+//                              final result = await Helper.getLatLng('${_addressController.text}, $selectedWard, $selectedDistrict, $selectedCity');
+//                              print(result.lat.toString() + "----" + result.long.toString());
                             },
                             color: Colors.orange,
                             textColor: Colors.white,
@@ -642,7 +645,7 @@ class _PostActionPageState extends State<PostActionPage> {
       return -1;
     }
   }
-  void doPostAction() {
+  void doPostAction() async{
     PostActionRequest _postActionRequest = PostActionRequest.create(
         title: _title,
         content: _controller.document.toPlainText(),

@@ -119,7 +119,7 @@ class _CommonInfoState extends State<CommonInfo> with AutomaticKeepAliveClientMi
           ward: _ward ?? "");
     }
     //call api here
-    final result = _authenBloc.requestSignUp(_signUpRequest);
+    //final result = _authenBloc.requestSignUp(_signUpRequest);
     //TODO - call api
   }
 

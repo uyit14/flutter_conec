@@ -79,7 +79,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(widget.comment.fullname,
+                          Text(widget.comment.fullname ?? "",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue)),

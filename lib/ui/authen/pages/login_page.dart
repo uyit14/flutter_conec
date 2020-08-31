@@ -1,6 +1,7 @@
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/ui/authen/blocs/authen_bloc.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
+import 'package:conecapp/ui/authen/pages/register_page.dart';
 import 'package:conecapp/ui/authen/pages/signup_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   AuthenBloc _authenBloc = AuthenBloc();
   bool _loadingStatus = false;
   bool _loginFail = false;
+  String _loginFailMessage;
 
   @override
   void didChangeDependencies() {
@@ -37,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _loginFail = false;
     });
-    if (_emailController.text.length < 9) {
+    if (_emailController.text.length < 1) {
       setState(() {
         _passWordValidate = false;
         _emailValidate = true;
@@ -52,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     //{"UserName" : "chuongnh.hcm@gmail.com", "Password": "&&**14110013Hc"}
-    //_authenBloc.requestLogin(_emailController.text, _passWordController.text);
-    _authenBloc.requestLogin("chuongnh.hcm@gmail.com", "&&**14110013Hc");
+    _authenBloc.requestLogin(_emailController.text, _passWordController.text);
+    //_authenBloc.requestLogin("chuongnh.hcm@gmail.com", "&&**14110013Hc");
     _authenBloc.loginStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
@@ -67,9 +69,11 @@ class _LoginPageState extends State<LoginPage> {
           break;
         case Status.ERROR:
           setState(() {
+            _loginFailMessage = event.message;
             _loadingStatus = false;
             _loginFail = true;
           });
+          _authenBloc = AuthenBloc();
           return;
       }
     });
@@ -144,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w400)),
                     SizedBox(height: screenHeight * 0.01),
-                    Text('Nhập email và mật khẩu để đăng nhập',
+                    Text('Nhập tài khoản và mật khẩu để đăng nhập',
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.w400)),
                     SizedBox(
@@ -161,9 +165,9 @@ class _LoginPageState extends State<LoginPage> {
                       keyboardType: TextInputType.emailAddress,
                       style: TextStyle(fontSize: 18),
                       decoration: InputDecoration(
-                          hintText: 'Nhập email của bạn',
+                          hintText: 'Nhập tài khoản của bạn',
                           errorText:
-                              _emailValidate ? "Email không hợp lệ" : null,
+                              _emailValidate ? "Tài khoản không hợp lệ" : null,
                           enabledBorder: const OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: Colors.red, width: 1)),
@@ -224,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Text(
-                                "Email hoặc mật khẩu không đúng, vui lòng đăng nhập lại",
+                                _loginFailMessage ?? "",
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic,
                                     color: Colors.red,
@@ -272,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                                   text: "Đăng ký",
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () => Navigator.of(context)
-                                        .pushNamed(SignUpPage.ROUTE_NAME),
+                                        .pushNamed(RegisterPage.ROUTE_NAME),
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red,
