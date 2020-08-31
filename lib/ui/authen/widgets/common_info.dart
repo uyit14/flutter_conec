@@ -120,7 +120,6 @@ class _CommonInfoState extends State<CommonInfo> with AutomaticKeepAliveClientMi
     }
     //call api here
     //final result = _authenBloc.requestSignUp(_signUpRequest);
-    //TODO - call api
   }
 
   @override

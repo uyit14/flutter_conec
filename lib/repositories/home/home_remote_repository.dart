@@ -47,8 +47,8 @@ class HomeRemoteRepository {
     return NewsResponse.fromJson(response).news;
   }
 
-  Future<List<LatestItem>> fetchAllItem() async {
-    final response = await _helper.get("/api/Post/GetAll");
+  Future<List<LatestItem>> fetchAllItem(int page) async {
+    final response = await _helper.get('/api/Post/GetAll?page=$page');
     return LatestResponse.fromJson(response).items;
   }
 

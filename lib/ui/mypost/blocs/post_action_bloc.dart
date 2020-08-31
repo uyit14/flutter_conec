@@ -138,15 +138,15 @@ class PostActionBloc {
     }
   }
 
-  void requestUpdateMyPost(dynamic body) async {
-    _updatePostController.sink.add(ApiResponse.loading());
-    try {
-      final result = await _repository.updateMyPost(body);
-      _updatePostController.sink.add(ApiResponse.completed(result));
-    } catch (e) {
-      _updatePostController.sink.add(ApiResponse.error(e.toString()));
-    }
-  }
+//  void requestUpdateMyPost(dynamic body) async {
+//    _updatePostController.sink.add(ApiResponse.loading());
+//    try {
+//      final result = await _repository.updateMyPost(body);
+//      _updatePostController.sink.add(ApiResponse.completed(result));
+//    } catch (e) {
+//      _updatePostController.sink.add(ApiResponse.error(e.toString()));
+//    }
+//  }
 
   void dispose() {
     _deleteMyPostController.close();

@@ -9,7 +9,9 @@ class ProfileResponse {
 
   ProfileResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    error = json['error'];
+    if(json['error']!=null){
+      error = json['error'];
+    }
     profile =
     json['profile'] != null ? new Profile.fromJson(json['profile']) : null;
   }
@@ -56,19 +58,19 @@ class Profile {
         this.lng});
 
   Profile.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    email = json['email'];
-    avatar = Helper.baseURL + json['avatar'];
-    gender = json['gender'];
-    dob = json['dob'];
-    phoneNumber = json['phoneNumber'];
-    type = json['type'];
-    province = json['province'];
-    district = json['district'];
-    ward = json['ward'];
-    address = json['address'];
-    lat = json['lat'];
-    lng = json['lng'];
+    name = json['name'] == null ? null : json['name'];
+    email = json['email'] == null ? null : json['email'];
+    avatar = json['avatar'] == null ? null : Helper.baseURL + json['avatar'];
+    gender = json['gender'] == null ? null : json['gender'];
+    dob = json['dob'] == null ? null : Helper.formatDob(json['dob']);
+    phoneNumber = json['phoneNumber'] == null ? null : json['phoneNumber'];
+    type = json['type'] == null ? null : json['type'];
+    province = json['province'] == null ? null : json['province'];
+    district = json['district'] == null ? null : json['district'];
+    ward = json['ward'] == null ? null : json['ward'];
+    address = json['address'] == null ? null : json['address'];
+    lat = json['lat'] == null ? null : json['lat'];
+    lng = json['lng'] == null ? null : json['lng'];
   }
 
   Map<String, dynamic> toJson() {

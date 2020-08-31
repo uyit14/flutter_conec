@@ -46,15 +46,21 @@ class ItemsByCategoryBloc {
 //  Stream<List<Comment>> get childCommentStream =>
 //      _childCommentController.stream;
 
-  void requestGetAllItem() async {
-    _allItemController.sink.add(ApiResponse.loading());
-    try {
-      final items = await _repository.fetchAllItem();
+  void requestGetAllItem(int page) async {
+    if(page != 0){
+      final items = await _repository.fetchAllItem(page);
       _originalItems.addAll(items);
       _allItemController.sink.add(ApiResponse.completed(items));
-    } catch (e) {
-      _allItemController.sink.addError(ApiResponse.error(e.toString()));
-      debugPrint(e.toString());
+    }else{
+      _allItemController.sink.add(ApiResponse.loading());
+      try {
+        final items = await _repository.fetchAllItem(page);
+        _originalItems.addAll(items);
+        _allItemController.sink.add(ApiResponse.completed(items));
+      } catch (e) {
+        _allItemController.sink.addError(ApiResponse.error(e.toString()));
+        debugPrint(e.toString());
+      }
     }
   }
 

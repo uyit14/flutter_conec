@@ -37,6 +37,8 @@ class ItemDetail {
   String district;
   String ward;
   String address;
+  double lat;
+  double long;
   int joiningFee;
   String uses;
   String price;
@@ -68,6 +70,8 @@ class ItemDetail {
         this.district,
         this.ward,
         this.address,
+        this.lat,
+        this.long,
         this.joiningFee,
         this.uses,
         this.price,
@@ -105,6 +109,8 @@ class ItemDetail {
     district = json['district'];
     ward = json['ward'];
     address = json['address'];
+    lat = json['lat'];
+    long = json['lng'];
     joiningFee = json['joiningFee'];
     uses = json['uses'];
     price = json['price'];

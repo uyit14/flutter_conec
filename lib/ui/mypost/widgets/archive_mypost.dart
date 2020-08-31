@@ -31,7 +31,7 @@ class _ArchiveMyPostState extends State<ArchiveMyPost> {
   void _onScroll() {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    if (maxScroll - currentScroll <= 20) {
+    if (maxScroll - currentScroll <= 250) {
       if(_shouldLoadMore){
         _myPostBloc.requestGetArchive(_currentPage);
       }

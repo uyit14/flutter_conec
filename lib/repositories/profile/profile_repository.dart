@@ -10,7 +10,7 @@ class ProfileRepository{
   };
 
   Future<ProfileResponse> fetchProfile() async {
-    final response = await _helper.get("/api/Account/GetProfile", headers: _header);
+    final response = await _helper.post("/api/Account/GetProfile", headers: _header);
     print(response);
     return ProfileResponse.fromJson(response);
   }

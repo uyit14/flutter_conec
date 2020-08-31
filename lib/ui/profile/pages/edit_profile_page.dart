@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/custom_icons.dart';
 import 'package:conecapp/dummy/dummy_data.dart';
-import 'package:conecapp/models/response/user_info.dart';
+import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,6 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  bool _isClub = false;
   File _image;
   final picker = ImagePicker();
 
@@ -36,7 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     final bool _showFab = MediaQuery.of(context).viewInsets.bottom == 0.0;
     final routeArgs = ModalRoute.of(context).settings.arguments;
-    UserInfo _userInfo = routeArgs;
+    Profile profile = routeArgs;
     return Scaffold(
       appBar: AppBar(title: Text("Chỉnh sửa thông tin"), elevation: 0),
       body: SafeArea(
@@ -119,9 +118,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         maxLines: 1,
                         style: TextStyle(fontSize: 18),
                         textInputAction: TextInputAction.done,
-                        initialValue: _userInfo.userName,
+                        initialValue: profile.name ?? "",
                         decoration: InputDecoration(
-                            hintText: _isClub ? "Tên CLB" : 'Họ và tên',
+                            hintText: profile.type == "Club" ? "Tên CLB" : 'Họ và tên',
                             //errorText: _nameValidate ? "Vui lòng nhập họ tên" : null,
                             focusedBorder: const OutlineInputBorder(
                                 borderSide:
@@ -134,7 +133,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             border: const OutlineInputBorder()),
                       ),
                       SizedBox(height: 8),
-                      _isClub
+                      profile.type == "club"
                           ? Container()
                           : Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +152,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           Icon(Icons.date_range),
                                           SizedBox(width: 16),
                                           Text(
-                                            _birthDay ?? _userInfo.birthDay,
+                                            _birthDay ?? profile.dob,
                                             textAlign: TextAlign.left,
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -183,7 +182,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                           Icon(Icons.group),
                                           SizedBox(width: 16),
                                           Text(
-                                            _gender ?? _userInfo.gender,
+                                            _gender ?? profile.gender ?? "",
                                             textAlign: TextAlign.left,
                                             style: TextStyle(
                                                 fontSize: 16,
@@ -215,7 +214,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Icon(Icons.location_city),
                                 SizedBox(width: 16),
                                 Text(
-                                  selectedCity ?? _userInfo.city,
+                                  selectedCity ?? profile.province ?? "",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 16,
@@ -246,7 +245,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Icon(Icons.home),
                                 SizedBox(width: 16),
                                 Text(
-                                  selectedDistrict ?? _userInfo.district,
+                                  selectedDistrict ?? profile.district ?? "",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 16,
@@ -276,7 +275,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Icon(Icons.wallpaper),
                                 SizedBox(width: 16),
                                 Text(
-                                  selectedWard ?? _userInfo.ward,
+                                  selectedWard ?? profile.ward ?? "",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 16,
@@ -295,7 +294,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         maxLines: 1,
                         style: TextStyle(fontSize: 18),
                         textInputAction: TextInputAction.next,
-                        initialValue: _userInfo.address,
+                        initialValue: profile.address ?? "",
                         decoration: InputDecoration(
                             hintText: 'Số nhà, tên đường',
                             focusedBorder: const OutlineInputBorder(
@@ -314,7 +313,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         style: TextStyle(fontSize: 18),
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        initialValue: _userInfo.email,
+                        initialValue: profile.email ?? "",
                         decoration: InputDecoration(
                             hintText: 'Email',
                             focusedBorder: const OutlineInputBorder(

@@ -31,10 +31,13 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   HomeBloc _homeBloc = HomeBloc();
   List<Province> _listProvinces = List<Province>();
   List<Topic> _listTopic = List<Topic>();
+  List<LatestItem> totalItemList = List<LatestItem>();
   var routeArgs;
   String categoryTitle;
   var categoryId;
   bool _firstTime;
+  int _currentPage = 0;
+  bool _shouldLoadMore = true;
 
   @override
   void initState() {
@@ -70,8 +73,19 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     categoryId = routeArgs['id'] as String;
     _itemsByCategoryBloc = Provider.of<ItemsByCategoryBloc>(context);
     if (_firstTime) {
-      _itemsByCategoryBloc.requestGetAllItem();
+      _itemsByCategoryBloc.requestGetAllItem(_currentPage);
       _firstTime = false;
+    }
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= 250) {
+      if(_shouldLoadMore){
+        _itemsByCategoryBloc.requestGetAllItem(_currentPage);
+      }
+      // _itemsByCategoryBloc.requestLoadList(true);
     }
   }
 
@@ -219,22 +233,28 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                       case Status.LOADING:
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
-                        List<LatestItem> items = snapshot.data.data;
+                        //List<LatestItem> items = snapshot.data.data;
+                        if(snapshot.data.data.length > 0){
+                          totalItemList.addAll(snapshot.data.data);
+                          _currentPage++;
+                        }else{
+                          _shouldLoadMore = false;
+                        }
                         if (categoryTitle != null) {
                           _itemsByCategoryBloc
                               .filterTopic(categoryTitle.toLowerCase());
                         }
                         return ListView.builder(
                             controller: _scrollController,
-                            itemCount: items.length,
+                            itemCount: totalItemList.length,
                             itemBuilder: (context, index) {
                               return InkWell(
                                 onTap: () {
                                   Navigator.of(context).pushNamed(
                                       ItemDetailPage.ROUTE_NAME,
                                       arguments: {
-                                        'postId': items[index].postId,
-                                        'title': items[index].title
+                                        'postId': totalItemList[index].postId,
+                                        'title': totalItemList[index].title
                                       });
                                 },
                                 child: Card(
@@ -246,7 +266,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
-                                          items[index].title,
+                                          totalItemList[index].title,
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 18),
@@ -261,13 +281,13 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                             Flexible(
                                                 flex: 4,
                                                 child: Hero(
-                                                  tag: items[index].postId,
+                                                  tag: totalItemList[index].postId,
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             6),
                                                     child: CachedNetworkImage(
-                                                      imageUrl: items[index]
+                                                      imageUrl: totalItemList[index]
                                                           .thumbnail,
                                                       progressIndicatorBuilder: (context,
                                                               url,
@@ -294,7 +314,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(
-                                                    items[index].description ??
+                                                    totalItemList[index].description ??
                                                         "",
                                                     maxLines: 3,
                                                     style:
@@ -304,9 +324,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                   ),
                                                   SizedBox(height: 4),
                                                   Text(
-                                                    items[index].joiningFee !=
+                                                    totalItemList[index].joiningFee !=
                                                             null
-                                                        ? '${Helper.formatCurrency(items[index].joiningFee)} VND'
+                                                        ? '${Helper.formatCurrency(totalItemList[index].joiningFee)} VND'
                                                         : "Không tốn phí tham gia",
                                                     style: TextStyle(
                                                         color: Colors.red),
@@ -324,7 +344,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                             Container(
                                               width: MediaQuery.of(context).size.width/2,
                                               child: Text(
-                                                '${items[index].district} - ${items[index].province}',
+                                                '${totalItemList[index].district} - ${totalItemList[index].province}',
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     color: Colors.grey),
@@ -332,7 +352,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            Text(items[index].approvedDate,
+                                            Text(totalItemList[index].approvedDate,
                                                 style: TextStyle(
                                                     fontStyle:
                                                         FontStyle.italic))
@@ -361,15 +381,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     _itemsByCategoryBloc.dispose();
     super.dispose();
     _scrollController.dispose();
-  }
-
-  void _onScroll() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    if (maxScroll - currentScroll <= _scrollThreshold) {
-      //TODO - do load more later
-      // _itemsByCategoryBloc.requestLoadList(true);
-    }
   }
 
   //bottom sheet

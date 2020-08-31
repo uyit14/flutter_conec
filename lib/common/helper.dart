@@ -21,6 +21,11 @@ class Helper {
         .format(DateTime.parse(approvedDate)) : "";
   }
 
+  static String formatDob(String dob) {
+    return dob != null ? DateFormat("dd-MM-yyyy")
+        .format(DateTime.parse(dob)) : "";
+  }
+
   static log(var tag, var message) {
     dev.log ('\n\n*****************\n$tag\n$message\n*****************\n\n');
   }

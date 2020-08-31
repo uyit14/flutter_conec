@@ -462,7 +462,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                       '${itemDetail.address} ${itemDetail.ward} ${itemDetail.district} ${itemDetail.province}',
                                       style: TextStyle(fontSize: 14)),
                                 ),
-                                //TODO - map image here, set lat lng later
                                 InkWell(
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
@@ -477,7 +476,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   },
                                   child: Image.network(
                                     Helper.generateLocationPreviewImage(
-                                        lat: lat, lng: lng),
+                                        lat: itemDetail.lat ?? lat, lng: itemDetail.lat ?? lng),
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                   ),
