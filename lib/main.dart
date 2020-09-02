@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'ui/authen/blocs/authen_bloc.dart';
+import 'ui/authen/pages/reset_pass_page.dart';
 import 'ui/conec_home_page.dart';
 import 'ui/home/pages/items_by_category_page.dart';
 import 'ui/mypost/pages/post_action_page.dart';
@@ -79,7 +80,8 @@ class ConecApp extends StatelessWidget {
         NewsDetailPage.ROUTE_NAME: (context) => NewsDetailPage(),
         ForGotPasswordPage.ROUTE_NAME: (context) => ForGotPasswordPage(),
         EditMyPostPage.ROUTE_NAME: (context) => EditMyPostPage(),
-        GoogleMapPage.ROUTE_NAME: (context) => GoogleMapPage()
+        GoogleMapPage.ROUTE_NAME: (context) => GoogleMapPage(),
+        ResetPasswordPage.ROUTE_NAME: (context) => ResetPasswordPage(),
       },
     );
   }

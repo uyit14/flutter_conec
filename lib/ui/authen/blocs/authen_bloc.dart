@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:conecapp/common/api/api_response.dart';
-import 'package:conecapp/models/request/signup_request.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/repositories/authen/authen_repository.dart';
 
 class AuthenBloc{
@@ -13,6 +13,12 @@ class AuthenBloc{
 
   StreamController _signUpController = StreamController<ApiResponse<dynamic>>();
   Stream<ApiResponse<dynamic>> get signUpStream => _signUpController.stream;
+
+  StreamController _verifyUserController = StreamController<ApiResponse<dynamic>>();
+  Stream<ApiResponse<dynamic>> get verifyUserStream => _verifyUserController.stream;
+
+  StreamController _resetPassController = StreamController<ApiResponse<dynamic>>();
+  Stream<ApiResponse<dynamic>> get resetPassStream => _resetPassController.stream;
 
   AuthenBloc(){
     _repository = AuthenRepository();
@@ -47,14 +53,31 @@ class AuthenBloc{
     }
   }
 
-  void requestForgotPass(String email) async{
-    final result = await _repository.doForgotPass(email);
-    //sink to ui
+  void requestVerifyUsername(String userName) async{
+    _verifyUserController.sink.add(ApiResponse.loading());
+    final result = await _repository.verifyUserName(userName);
+    if(result.status){
+      _verifyUserController.sink.add(ApiResponse.completed(Helper.verifyMessage));
+    }else{
+      _verifyUserController.sink.add(ApiResponse.error(result.error));
+    }
+  }
+
+  void requestResetPass(String userName, String newPassword, String code) async{
+    _resetPassController.sink.add(ApiResponse.loading());
+    final result = await _repository.resetPassword(userName, newPassword, code);
+    if(result.status){
+      _resetPassController.sink.add(ApiResponse.completed(result.status));
+    }else{
+      _resetPassController.sink.add(ApiResponse.error(result.errors[0].description));
+    }
   }
 
   void dispose() {
     //dispose stream
     _loginController?.close();
     _signUpController?.close();
+    _verifyUserController?.close();
+    _resetPassController?.close();
   }
 }

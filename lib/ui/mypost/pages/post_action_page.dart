@@ -646,7 +646,7 @@ class _PostActionPageState extends State<PostActionPage> {
     }
   }
   void doPostAction() async{
-    PostActionRequest _postActionRequest = PostActionRequest.create(
+    PostActionRequest _postActionRequest = PostActionRequest(
         title: _title,
         content: _controller.document.toPlainText(),
         thumbnail: _images.length > 0
@@ -654,18 +654,18 @@ class _PostActionPageState extends State<PostActionPage> {
                 "fileName": _images[0].path.split("/").last,
                 "base64": base64Encode(_images[0].readAsBytesSync())
               }
-            : {"fileName": "null", "base64": "null"},
+            : null,
         topicId: _selectedCategoryId,
-        images: base64ListImage(_images) ?? [],
-        province: selectedCity ?? "null",
-        district: selectedDistrict ?? "null",
-        ward: selectedWard ?? "null",
-        address: _addressController.text ?? "null",
+        images: base64ListImage(_images),
+        province: selectedCity,
+        district: selectedDistrict,
+        ward: selectedWard,
+        address: _addressController.text,
         joiningFee: getJoiningFree(),
         price: getPrice(),
         uses: _usesController.text ?? null,
         generalCondition: _conditionController.text ?? null,
-        phoneNumber: _phoneController.text ?? "null",
+        phoneNumber: _phoneController.text,
         status: "SUBMITTED");
 //    Map inputs = jsonDecode(_postActionRequest);
     //print("aa: " + inputs.toString());

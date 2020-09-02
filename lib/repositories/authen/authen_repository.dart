@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/models/request/signup_request.dart';
+import 'package:conecapp/models/response/authen/authen_response.dart';
+import 'package:conecapp/models/response/authen/reset_password_response.dart';
 import 'package:conecapp/models/response/login_response.dart';
 import 'package:conecapp/models/response/signup_response.dart';
 
@@ -27,9 +29,17 @@ class AuthenRepository {
     return SignUpResponse.fromJson(response);
   }
 
-  Future<bool> doForgotPass(String email) async {
-    final response = await _helper.post("https://google.com/getcategory",
-        body: {'email': email}, headers: header);
-    return true;
+  Future<VerifyUserNameResponse> verifyUserName(String userName) async {
+    final response = await _helper.post("/api/Account/ForgotPassword",
+        body: jsonEncode({'userName': userName}));
+    print(response.toString());
+    return VerifyUserNameResponse.fromJson(response);
+  }
+
+  Future<ResetResponse> resetPassword(String userName, String newPassword, String code) async {
+    final response = await _helper.post("/api/Account/ResetPassword",
+        body: jsonEncode({'userName': userName, 'password': newPassword, 'code': code}));
+    print(response.toString());
+    return ResetResponse.fromJson(response);
   }
 }

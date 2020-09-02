@@ -133,21 +133,19 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
 
   initValue() {
     setState(() {
-      _titleController = TextEditingController(text: _itemDetail.title ?? "");
+      _titleController = TextEditingController(text: _itemDetail.title);
       _joiningFreeController = TextEditingController(
-          text: _itemDetail.joiningFee != null
-              ? _itemDetail.joiningFee.toString()
-              : "");
+          text: _itemDetail.joiningFee.toString());
       _phoneController =
-          TextEditingController(text: _itemDetail.phoneNumber ?? "");
+          TextEditingController(text: _itemDetail.phoneNumber);
       _addressController =
-          TextEditingController(text: _itemDetail.address ?? "");
-      selectedCity = _itemDetail.province ?? "";
-      selectedDistrict = _itemDetail.district ?? "";
-      selectedWard = _itemDetail.ward ?? "";
+          TextEditingController(text: _itemDetail.address);
+      selectedCity = _itemDetail.province;
+      selectedDistrict = _itemDetail.district;
+      selectedWard = _itemDetail.ward;
       _urlImages = _itemDetail.images;
-      _usesController = TextEditingController(text: _itemDetail.uses ?? "");
-      _conditionController = TextEditingController(text: _itemDetail.generalCondition ?? "");
+      _usesController = TextEditingController(text: _itemDetail.uses);
+      _conditionController = TextEditingController(text: _itemDetail.generalCondition);
     });
   }
 
@@ -403,7 +401,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               Text("Địa chỉ"),
               InkWell(
                 onTap: () =>
-                    showCityList(getIndex(_listProvinces, _selectCityId)),
+                    showCityList(getIndex(_listProvinces, selectedCity)),
                 child: Card(
                   margin: EdgeInsets.symmetric(horizontal: 0),
                   child: Padding(
@@ -429,7 +427,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               InkWell(
                 onTap: () => selectedCity != null
                     ? showDistrictList(
-                        getIndex(_districtList, _selectDistrictId))
+                        getIndex(_districtList, selectedDistrict))
                     : null,
                 child: Card(
                   margin: EdgeInsets.symmetric(horizontal: 0),
@@ -457,7 +455,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               SizedBox(height: 12),
               InkWell(
                 onTap: () => selectedDistrict != null
-                    ? showWardList(getIndex(_wardList, _selectWardId))
+                    ? showWardList(getIndex(_wardList, selectedWard))
                     : null,
                 child: Card(
                   margin: EdgeInsets.symmetric(horizontal: 0),
@@ -611,48 +609,81 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   //-----------------------post action -----------------------------//
   PostActionRequest _postActionRequest;
   void doUpdateAction() {
-      _postActionRequest = PostActionRequest.update(
-        postId: _itemDetail.postId,
-        title: _titleController.text,
-        content: _controller.document.toPlainText(),
-        thumbnail: _images.length > 0
-            ? {
-                "fileName": _images[0].path.split("/").last,
-                "base64": base64Encode(_images[0].readAsBytesSync())
-              }
-            : {"fileName": "null", "base64": "null"},
-        topicId: _selectedCategoryId,
-        images: base64ListImage(_images) ?? [],
-        province: selectedCity ?? "null",
-        district: selectedDistrict ?? "null",
-        ward: selectedWard ?? "null",
-        address: _addressController.text ?? "null",
-        joiningFee: _joiningFreeController.text.length > 0
-            ? int.parse(_joiningFreeController.text)
-            : 0,
-          price: _joiningFreeController.text.length > 0
-              ? int.parse(_joiningFreeController.text)
-              : 0,
-          uses: _usesController.text ?? "null",
-          generalCondition: _conditionController.text ?? "null",
-        phoneNumber: _phoneController.text ?? "null",
-        status: "SUBMITTED");
-      if(_currentSelectedIndex == 6){
-        _postActionBloc
-            .requestAddMyPost(jsonEncode(_postActionRequest.toUpdateNewsJson()), "Update");
-      }else if(_currentSelectedIndex ==7){
-        _postActionBloc
-            .requestAddMyPost(jsonEncode(_postActionRequest.toUpdateAdsJson()), "Update");
-      }else{
-        _postActionBloc
-            .requestAddMyPost(jsonEncode(_postActionRequest.toUpdateJson()), "Update");
-      }
+     if(_currentSelectedIndex == 7){
+       _postActionRequest = PostActionRequest(
+           postId: _itemDetail.postId,
+           title: _titleController.text,
+           content: _controller.document.toPlainText(),
+           thumbnail: _images.length > 0 && _urlImages.length ==0
+               ? {
+             "fileName": _images[0].path.split("/").last,
+             "base64": base64Encode(_images[0].readAsBytesSync())
+           } : null,
+           topicId: _selectedCategoryId,
+           images: _images.length > 0 ? base64ListImage(_images) : null,
+           province: selectedCity,
+           district: selectedDistrict,
+           ward: selectedWard,
+           address: _addressController.text,
+           price: _joiningFreeController.text.length > 0
+               ? int.parse(_joiningFreeController.text)
+               : null,
+           uses: _usesController.text,
+           generalCondition: _conditionController.text,
+           phoneNumber: _phoneController.text,
+           status: "SUBMITTED");
+     }else if(_currentSelectedIndex == 6){
+       _postActionRequest = PostActionRequest(
+           postId: _itemDetail.postId,
+           title: _titleController.text,
+           content: _controller.document.toPlainText(),
+           thumbnail: _images.length > 0
+               ? {
+             "fileName": _images[0].path.split("/").last,
+             "base64": base64Encode(_images[0].readAsBytesSync())
+           }
+               : null,
+           topicId: _selectedCategoryId,
+           images: _images.length > 0 ? base64ListImage(_images) : null,
+           province: selectedCity,
+           district: selectedDistrict,
+           ward: selectedWard,
+           address: _addressController.text,
+           phoneNumber: _phoneController.text,
+           status: "SUBMITTED");
+     }
+       else{
+       _postActionRequest = PostActionRequest(
+           postId: _itemDetail.postId,
+           title: _titleController.text,
+           content: _controller.document.toPlainText(),
+           thumbnail: _images.length > 0
+               ? {
+             "fileName": _images[0].path.split("/").last,
+             "base64": base64Encode(_images[0].readAsBytesSync())
+           }
+               : null,
+           topicId: _selectedCategoryId,
+           images: _images.length > 0 ? base64ListImage(_images) : null,
+           province: selectedCity,
+           district: selectedDistrict,
+           ward: selectedWard,
+           address: _addressController.text,
+           joiningFee: _joiningFreeController.text.length > 0
+               ? int.parse(_joiningFreeController.text)
+               : null,
+           phoneNumber: _phoneController.text,
+           status: "SUBMITTED");
+     }
+      _postActionBloc
+          .requestAddMyPost(jsonEncode(_postActionRequest.toJson()), "Update");
     _postActionBloc.addMyPostStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
           setState(() {
             _isLoading = true;
           });
+          break;
           break;
         case Status.COMPLETED:
           setState(() {
@@ -694,14 +725,14 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   String _selectWardId;
 
   //
-  int getIndex(List<Province> list, String selectedItemId) {
+  int getIndex(List<Province> list, String selectedItem) {
     int index = list.indexOf(list.firstWhere(
-        (element) => element.id == selectedItemId,
+        (element) => element.name == selectedItem,
         orElse: () => list != null ? list[0] : null));
     if (index == -1) {
       return 0;
     }
-    return selectedItemId != null ? index : 0;
+    return selectedItem != null ? index : 0;
   }
 
   void showCityList(int index) {

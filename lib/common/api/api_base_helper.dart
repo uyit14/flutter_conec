@@ -19,27 +19,30 @@ class ApiBaseHelper {
     } on SocketException {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
-    } catch(e){
+    } catch (e) {
       print("aaaa" + e.toString());
     }
     debugPrint('api get recieved!');
-    Helper.log("Api Get, body",'${responseJson.toString()}');
+    Helper.log("Api Get, body", '${responseJson.toString()}');
     return responseJson;
   }
 
   Future<dynamic> post(String url, {dynamic body, dynamic headers}) async {
     debugPrint('Api Post, url $url');
-    Helper.log("Api Post, body",'$body');
+    Helper.log("Api Post, body", '$body');
     debugPrint('Api Post, header $headers');
     var responseJson;
+    var response;
     try {
-      final response = await http
-          .post(_baseUrl + url, body: body, headers: headers)
+      response = await http
+          .post(_baseUrl + url,
+              body: body,
+              headers: headers == null ? Helper.headerNoToken : headers)
           .timeout(Duration(seconds: 15));
       responseJson = _returnResponse(response);
-    } catch(e) {
+    } catch (e) {
       debugPrint(e.toString() + "--------");
-      throw FetchDataException('Error when communication with server!');
+      throw FetchDataException("Có lỗi xảy ra, vui lòng thử lại sau!");
     }
     debugPrint('api post.');
     return responseJson;
@@ -87,8 +90,7 @@ dynamic _returnResponse(http.Response response) {
     case 403:
       throw UnauthorisedException(response.body.toString());
     case 500:
-      throw FetchDataException(
-          'Error : ${response.body.toString()}');
+      throw FetchDataException('Error : ${response.body.toString()}');
     default:
       throw FetchDataException(
           'Error occured while Communication with Server with StatusCode : ${response.statusCode}');
