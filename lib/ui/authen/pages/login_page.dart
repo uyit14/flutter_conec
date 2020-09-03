@@ -108,21 +108,15 @@ class _LoginPageState extends State<LoginPage> {
                       ? screenHeight * 0.2
                       : screenWidth * 0.2,
                   decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.red, Colors.redAccent[200]],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter),
+                      color: Color(0xffff3b30),
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(screenHeight * 0.3 / 2))),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Expanded(
-                          child: FlutterLogo(
-                        size: screenHeight > screenWidth
-                            ? screenHeight * 0.1
-                            : screenWidth * 0.1,
-                      )),
+                        child: Image.asset("assets/images/conec_logo.png", width: 200, height: 100, fit: BoxFit.cover,),
+                      ),
                       Container(
                         width: double.infinity,
                         child: Text(

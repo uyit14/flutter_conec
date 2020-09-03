@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
@@ -13,14 +14,13 @@ import 'package:conecapp/models/response/sport.dart';
 import 'package:conecapp/models/response/sport_response.dart';
 import 'package:conecapp/models/response/topic.dart';
 import 'package:conecapp/models/response/topic_response.dart';
-import '../../common/globals.dart' as globals;
 
 class HomeRemoteRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
-  static final _header = {
-    'authorization': "Bearer ${globals.token}",
-    'Content-Type': "application/json"
-  };
+//  static final _header = {
+//    'authorization': "Bearer ${Helper.getToken()}",
+//    'Content-Type': "application/json"
+//  };
 
   Future<List<Topic>> fetchTopic() async {
     final response = await _helper.get("/api/topic");
@@ -65,37 +65,37 @@ class HomeRemoteRepository {
 
   Future<Comment> postComment(dynamic body) async {
     final response = await _helper.post("/api/Comment/postComment",
-        body: body, headers: _header);
+        body: body, headers: await Helper.header());
     return PostCommentResponse.fromJson(response).comments;
   }
 
   Future<bool> deleteComment(String commentId) async {
     final response = await _helper.post("/api/Comment/deleteComment",
-        body: jsonEncode(commentId), headers: _header);
+        body: jsonEncode(commentId), headers: await Helper.header());
     return response['status'];
   }
 
   Future<bool> likeComment(String commentId) async{
     final response = await _helper.post("/api/Comment/upvoteComment",
-        body: jsonEncode(commentId), headers: _header);
+        body: jsonEncode(commentId), headers: await Helper.header());
     return response['status'];
   }
 
   Future<bool> unLikeComment(String commentId) async{
     final response = await _helper.post("/api/Comment/downvoteComment",
-        body: jsonEncode(commentId), headers: _header);
+        body: jsonEncode(commentId), headers: await Helper.header());
     return response['status'];
   }
 
   Future<bool> ratingPost(dynamic body) async{
     final response = await _helper.post("/api/Comment/postRating",
-        body: body, headers: _header);
+        body: body, headers: await Helper.header());
     return response['status'];
   }
 
   Future<bool> likePost(String postId) async{
     final response = await _helper.post("/api/Comment/likePost",
-        body: jsonEncode(postId), headers: _header);
+        body: jsonEncode(postId), headers: await Helper.header());
     return response['status'];
   }
 }

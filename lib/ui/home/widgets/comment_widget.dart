@@ -34,14 +34,22 @@ class _CommentWidgetState extends State<CommentWidget> {
   bool _isLoading = false;
   List<Comment> comments = List();
   bool _addDataToList = false;
-
   String _parentId;
   var _focusNode = FocusNode();
+
+  String _token;
+  void getToken() async{
+    String token = await Helper.getToken();
+    setState(() {
+      _token = token;
+    });
+  }
 
   @override
   void initState() {
     _addDataToList = true;
     super.initState();
+    getToken();
   }
 
   @override
@@ -53,7 +61,7 @@ class _CommentWidgetState extends State<CommentWidget> {
 
   void requestFocus(String parentId, bool isDelete) {
     debugPrint(parentId ?? "NULL");
-    if (!globals.isSigned) {
+    if (_token == null) {
       Helper.showAuthenticationDialog(context);
     } else {
       if (!isDelete) {
@@ -128,7 +136,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      if(!globals.isSigned){
+                      if(_token == null){
                         Helper.showAuthenticationDialog(context);
                       }else{
                         _itemsByCategoryBloc.requestLikePost(widget.itemDetail.postId);

@@ -65,12 +65,13 @@ class Profile {
     dob = json['dob'] == null ? null : Helper.formatDob(json['dob']);
     phoneNumber = json['phoneNumber'] == null ? null : json['phoneNumber'];
     type = json['type'] == null ? null : json['type'];
+    //type = 'Club';
     province = json['province'] == null ? null : json['province'];
     district = json['district'] == null ? null : json['district'];
     ward = json['ward'] == null ? null : json['ward'];
     address = json['address'] == null ? null : json['address'];
-    lat = json['lat'] == null ? null : json['lat'];
-    lng = json['lng'] == null ? null : json['lng'];
+//    lat = json['lat'] == null ? null : json['lat'];
+//    lng = json['lng'] == null ? null : json['lng'];
   }
 
   Map<String, dynamic> toJson() {

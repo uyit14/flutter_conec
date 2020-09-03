@@ -1,74 +1,46 @@
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/ui/authen/blocs/authen_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ResetPasswordPage extends StatefulWidget {
-  static const ROUTE_NAME = '/reset-pass';
+import '../../conec_home_page.dart';
+
+class ConfirmEmailPage extends StatefulWidget {
+  static const ROUTE_NAME = '/confirm-email-page';
 
   @override
-  _ResetPasswordPageState createState() => _ResetPasswordPageState();
+  _ConfirmEmailPageState createState() => _ConfirmEmailPageState();
 }
 
-class _ResetPasswordPageState extends State<ResetPasswordPage> {
-  TextEditingController _userNameController;
-  TextEditingController _newPassController = TextEditingController();
-  TextEditingController _codeController = TextEditingController();
-  AuthenBloc _authenBloc = AuthenBloc();
-
-  //
-  bool _newPassError = false;
-  bool _codeError = false;
-  var username;
+class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
+  String email;
+  String password;
   String _apiErrorMess;
   bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  bool _codeError = false;
+  TextEditingController _codeController = TextEditingController();
+  AuthenBloc _authenBloc = AuthenBloc();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    username = routeArgs['userName'];
-    _userNameController = TextEditingController(text: username);
+    email = routeArgs['email'];
+    password = routeArgs['password'];
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _authenBloc.dispose();
-  }
-
-  void resetPassword() {
-    if (_newPassController.text.length < 7) {
-      setState(() {
-        _newPassError = true;
-        _codeError = false;
-      });
-      return;
-    }
+  void confirmEmail() {
     if (_codeController.text.length == 0) {
       setState(() {
         _codeError = true;
-        _newPassError = false;
       });
       return;
     }
     //
-    setState(() {
-      _codeError = false;
-      _newPassError = false;
-    });
-    _authenBloc.requestResetPass(
-        username, _newPassController.text.trim(), _codeController.text.trim());
-    listenStream();
-  }
-
-  void listenStream() {
-    _authenBloc.resetPassStream.listen((event) {
+    _authenBloc.requestConfirmEmail(
+        email, password, _codeController.text.trim());
+    _authenBloc.confirmEmailStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
           setState(() {
@@ -79,11 +51,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           setState(() {
             _isLoading = false;
           });
-          if (event.data) {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-            //print("success");
-          }
+          gotoHome(event.data);
           break;
         case Status.ERROR:
           setState(() {
@@ -97,59 +65,23 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     });
   }
 
+  void gotoHome(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Reset mật khẩu")),
+      appBar: AppBar(title: Text("Xác nhận email")),
       resizeToAvoidBottomPadding: false,
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: <Widget>[
             SizedBox(height: 32),
-            TextFormField(
-              maxLines: 1,
-              enabled: false,
-              textInputAction: TextInputAction.done,
-              controller: _userNameController,
-              keyboardType: TextInputType.text,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                  enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red, width: 1)),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green, width: 1)),
-                  contentPadding: EdgeInsets.only(left: 8),
-                  suffixIcon: Icon(
-                    Icons.person,
-                    color: Colors.black,
-                  ),
-                  border: const OutlineInputBorder()),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              maxLines: 1,
-              controller: _newPassController,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.text,
-              obscureText: true,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                  hintText: "Nhập mật khẩu mới",
-                  errorText:
-                      _newPassError ? "Mật khẩu phải nhiều hơn 7 ký tự" : null,
-                  enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red, width: 1)),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green, width: 1)),
-                  contentPadding: EdgeInsets.only(left: 8),
-                  suffixIcon: Icon(
-                    Icons.vpn_key,
-                    color: Colors.black,
-                  ),
-                  border: const OutlineInputBorder()),
-            ),
-            SizedBox(height: 16),
             TextFormField(
               maxLines: 1,
               controller: _codeController,
@@ -186,7 +118,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 : Container(),
             SizedBox(height: 24),
             InkWell(
-              onTap: resetPassword,
+              onTap: confirmEmail,
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.red,

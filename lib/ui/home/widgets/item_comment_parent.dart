@@ -22,6 +22,13 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
   ItemsByCategoryBloc _itemsByCategoryBloc;
   bool _isLikeComment = false;
   int _commentLikeCount = 0;
+  String _token;
+  void getToken() async{
+    String token = await Helper.getToken();
+    setState(() {
+      _token = token;
+    });
+  }
 
   @override
   void initState() {
@@ -29,6 +36,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
     _isLikeComment = widget.comment.userHasUpvoted;
     _commentLikeCount = widget.comment.upvoteCount;
     super.initState();
+    getToken();
   }
 
   List<Comment> getChildCommentByParentId(String parentID) {
@@ -105,7 +113,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      if(!globals.isSigned){
+                      if(_token == null){
                         Helper.showAuthenticationDialog(context);
                       }else{
                         if (!_isLikeComment) {

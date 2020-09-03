@@ -70,6 +70,7 @@ class _ArchiveMyPostState extends State<ArchiveMyPost> {
                               });
                         }, refresh: (value){
                               if(value!=null && value){
+                                archivedList.clear();
                                 _myPostBloc.requestGetArchive(0);
                               }
                         },);

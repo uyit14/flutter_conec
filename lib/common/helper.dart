@@ -63,10 +63,21 @@ class Helper {
     return different.toString() + " " + suffix;
   }
 
-  static final header = {
-    'authorization': "Bearer ${globals.token}",
-    'Content-Type': "application/json"
-  };
+//  static final header = {
+//    'authorization': "Bearer $getToken",
+//    'Content-Type': "application/json"
+//  };
+
+  static Future<Map<String, String>> header() async {
+    var prefs = await SharedPreferences.getInstance();
+    Map<String, String> header = {
+      "Authorization":
+      "Bearer ${prefs.getString("token")} ",
+      "Content-Type": "application/json"
+    };
+
+    return header;
+  }
 
   static final headerNoToken = {
     'Accept': "application/json",
@@ -133,6 +144,8 @@ class Helper {
     var token = prefs.getString('token');
     return token;
   }
+
+
 
   static const String loadingMessage = "Đang tải...";
   static const String verifyMessage =

@@ -38,10 +38,19 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   double lng = 106.7686185;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
 
+  String _token;
+  void getToken() async{
+    String token = await Helper.getToken();
+    setState(() {
+      _token = token;
+    });
+  }
+
   @override
   void initState() {
     _isCallApi = true;
     super.initState();
+    getToken();
   }
 
   @override
@@ -272,7 +281,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                           FlatButton.icon(
                                               padding: EdgeInsets.all(0),
                                               onPressed: () {
-                                                if (!globals.isSigned) {
+                                                if (_token == null) {
                                                   Helper
                                                       .showAuthenticationDialog(
                                                           context);

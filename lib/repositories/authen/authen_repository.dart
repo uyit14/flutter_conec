@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/request/signup_request.dart';
 import 'package:conecapp/models/response/authen/authen_response.dart';
+import 'package:conecapp/models/response/authen/confirm_email_response.dart';
 import 'package:conecapp/models/response/authen/reset_password_response.dart';
 import 'package:conecapp/models/response/login_response.dart';
 import 'package:conecapp/models/response/signup_response.dart';
@@ -41,5 +43,21 @@ class AuthenRepository {
         body: jsonEncode({'userName': userName, 'password': newPassword, 'code': code}));
     print(response.toString());
     return ResetResponse.fromJson(response);
+  }
+
+  Future<VerifyUserNameResponse> verifyEmail(String email) async {
+    final response = await _helper.post("/api/Account/VerificationEmail",
+        headers: await Helper.header(),
+        body: jsonEncode({'email': email}));
+    print(response.toString());
+    return VerifyUserNameResponse.fromJson(response);
+  }
+
+  Future<ConfirmEmailResponse> confirmEmail(String email, String passWord, String code) async {
+    final response = await _helper.post("/api/Account/VerificationEmail",
+        headers: await Helper.header(),
+        body: jsonEncode({'email': email, 'password': passWord, 'code': code}));
+    print(response.toString());
+    return ConfirmEmailResponse.fromJson(response);
   }
 }

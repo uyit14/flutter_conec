@@ -23,7 +23,7 @@ class ItemByCategory extends StatefulWidget {
 }
 
 class _ItemByCategoryState extends State<ItemByCategory> {
-  final _scrollController = ScrollController();
+  ScrollController _scrollController;
   final _controller = TextEditingController();
   final _scrollThreshold = 250.0;
   ItemsByCategoryBloc _itemsByCategoryBloc;
@@ -42,7 +42,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
+    _scrollController = new ScrollController()..addListener(_scrollListener);
     _itemsByCategoryBloc = ItemsByCategoryBloc();
     _firstTime = true;
     _postActionBloc.requestGetProvinces();
@@ -78,16 +78,24 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     }
   }
 
-  void _onScroll() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    if (maxScroll - currentScroll <= 250) {
+  void _scrollListener() {
+    if (_scrollController.position.extentAfter < 500) {
       if(_shouldLoadMore){
         _itemsByCategoryBloc.requestGetAllItem(_currentPage);
       }
-      // _itemsByCategoryBloc.requestLoadList(true);
     }
   }
+
+//  void _onScroll() {
+//    final maxScroll = _scrollController.position.maxScrollExtent;
+//    final currentScroll = _scrollController.position.pixels;
+//    if (maxScroll - currentScroll <= 250) {
+//      if(_shouldLoadMore){
+//        _itemsByCategoryBloc.requestGetAllItem(_currentPage);
+//      }
+//      // _itemsByCategoryBloc.requestLoadList(true);
+//    }
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +123,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   child: TextFormField(
                     maxLines: 1,
                     onChanged: (value) {
+                      totalItemList.clear();
                       _itemsByCategoryBloc.searchAction(value);
                     },
                     controller: _controller,
@@ -235,6 +244,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                       case Status.COMPLETED:
                         //List<LatestItem> items = snapshot.data.data;
                         if(snapshot.data.data.length > 0){
+                          print("at UI: " + snapshot.data.data.length.toString());
                           totalItemList.addAll(snapshot.data.data);
                           _currentPage++;
                         }else{
@@ -439,6 +449,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
         selectedCity = _listProvinces[0].name;
         _selectCityId = _listProvinces[0].id;
       }
+      totalItemList.clear();
       _itemsByCategoryBloc.filterCity(selectedCity.toString().toLowerCase());
       getDistrictByProvinceId(
           _selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
@@ -471,6 +482,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
         _selectDistrictId = _districtList[0].id;
       }
       print(selectedDistrict);
+      totalItemList.clear();
       _itemsByCategoryBloc
           .filterDistrict(selectedDistrict.toString().toLowerCase());
     });
@@ -499,6 +511,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
           if(selectedCategory==null){
             selectedCategory = _listTopic[0].title;
           }
+          totalItemList.clear();
           _itemsByCategoryBloc.filterTopic(selectedCategory);
     });
   }

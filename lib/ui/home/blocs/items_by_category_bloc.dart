@@ -211,7 +211,6 @@ class ItemsByCategoryBloc {
   }
 
   void searchAction(String keyWord){
-    print("keyword: " + keyWord);
     List<LatestItem> _searchResult = List<LatestItem>();
     _originalItems.forEach((item) {
       if(_search(item, keyWord)){
@@ -239,7 +238,8 @@ class ItemsByCategoryBloc {
   }
 
   void filterTopic(String topicName){
-    var filterList = _originalItems.where((element) => element.topic.toLowerCase() == topicName).toList();
+    var filterList = _originalItems.where((element) => element.topic.toLowerCase() == topicName.toLowerCase()).toList();
+    print("filter with $topicName ==> data: " + filterList.length.toString());
     _allItemController.sink.add(ApiResponse.completed(filterList));
   }
 

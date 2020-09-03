@@ -35,6 +35,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   bool _isLoading = false;
   List<Comment> comments = List();
   bool _addDataToList = false;
+  String _token;
 
   String _parentId;
   var _focusNode = FocusNode();
@@ -43,6 +44,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   void initState() {
     _addDataToList = true;
     super.initState();
+    getToken();
   }
 
   @override
@@ -51,10 +53,17 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
     if (_addDataToList) _itemsByCategoryBloc.requestComment(widget.postId);
     _likeCount = widget.itemDetail.likeCount;
   }
+  void getToken() async{
+    String token = await Helper.getToken();
+    setState(() {
+      _token = token;
+    });
+  }
+
 
   void requestFocus(String parentId, bool isDelete) {
     debugPrint(parentId ?? "NULL");
-    if (!globals.isSigned) {
+    if (_token == null) {
       Helper.showAuthenticationDialog(context);
     } else {
       if (!isDelete) {
@@ -129,7 +138,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      if(!globals.isSigned){
+                      if(_token == null){
                         Helper.showAuthenticationDialog(context);
                       }else{
                         _itemsByCategoryBloc.requestLikePost(widget.itemDetail.postId);

@@ -1,3 +1,4 @@
+import 'package:conecapp/ui/authen/pages/confirm_email_page.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/authen/pages/register_page.dart';
@@ -15,6 +16,7 @@ import 'package:conecapp/ui/others/open_letter_page.dart';
 import 'package:conecapp/ui/others/terms_condition_page.dart';
 import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
+import 'package:conecapp/ui/profile/pages/change_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -81,7 +83,9 @@ class ConecApp extends StatelessWidget {
         ForGotPasswordPage.ROUTE_NAME: (context) => ForGotPasswordPage(),
         EditMyPostPage.ROUTE_NAME: (context) => EditMyPostPage(),
         GoogleMapPage.ROUTE_NAME: (context) => GoogleMapPage(),
+        ChangePassWordPage.ROUTE_NAME: (context) => ChangePassWordPage(),
         ResetPasswordPage.ROUTE_NAME: (context) => ResetPasswordPage(),
+        ConfirmEmailPage.ROUTE_NAME: (context) => ConfirmEmailPage()
       },
     );
   }

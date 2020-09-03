@@ -37,6 +37,11 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
   void initState() {
     super.initState();
     _profileBloc = ProfileBloc();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _profileBloc.requestGetProfile();
   }
 
@@ -264,7 +269,11 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context)
-              .pushNamed(EditProfilePage.ROUTE_NAME, arguments: _profile);
+              .pushNamed(EditProfilePage.ROUTE_NAME, arguments: _profile).then((value) {
+                setState(() {
+
+                });
+          });
         },
         backgroundColor: Colors.blue,
         label: Text("Chỉnh sửa"),

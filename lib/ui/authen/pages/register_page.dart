@@ -1,8 +1,10 @@
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/ui/authen/blocs/authen_bloc.dart';
+import 'package:conecapp/ui/authen/pages/confirm_email_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../common/globals.dart' as globals;
 
 import '../../conec_home_page.dart';
 
@@ -90,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
           });
           return;
         case Status.COMPLETED:
-          gotoHome(event.data);
+          saveToken(event.data);
           break;
         case Status.ERROR:
           setState(() {
@@ -103,11 +105,35 @@ class _RegisterPageState extends State<RegisterPage> {
     });
   }
 
-  void gotoHome(String token) async {
+  void saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
+    //call api confirm email
+    _authenBloc.requestVerifyEmail(_emailController.text.trim());
+    _authenBloc.verifyEmailStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+          setState(() {
+            _loginFail = false;
+            _loadingStatus = true;
+          });
+          return;
+        case Status.COMPLETED:
+          //
+        Navigator.of(context).pushNamed(ConfirmEmailPage.ROUTE_NAME, arguments: {
+          'email' : _emailController.text.trim(),
+          'password' : _passWordController.text.trim()
+        });
+          break;
+        case Status.ERROR:
+          setState(() {
+            _loadingStatus = false;
+            _loginFail = true;
+            _statusMessage = event.message;
+          });
+          return;
+      }
+    });
   }
 
   @override
@@ -121,7 +147,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
-        body: Container(
+        body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               Stack(
@@ -133,10 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ? Helper.getScreenHeight(context) * 0.2
                           : Helper.getScreenWidth(context) * 0.2,
                       decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [Colors.red, Colors.redAccent[200]],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter),
+                          color: Color(0xffff3b30),
                           borderRadius: BorderRadius.only(
                               bottomLeft:
                               Radius.circular(Helper.getScreenHeight(context) * 0.3 / 2))),
@@ -144,11 +167,8 @@ class _RegisterPageState extends State<RegisterPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Expanded(
-                              child: FlutterLogo(
-                                size: Helper.getScreenHeight(context) > Helper.getScreenWidth(context)
-                                    ? Helper.getScreenHeight(context) * 0.1
-                                    : Helper.getScreenWidth(context) * 0.1,
-                              )),
+                            child: Image.asset("assets/images/conec_logo.png", width: 200, height: 100, fit: BoxFit.cover,),
+                              ),
                           Container(
                             width: double.infinity,
                             child: Text(

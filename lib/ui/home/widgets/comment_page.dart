@@ -24,10 +24,12 @@ class _CommentPageState extends State<CommentPage> {
   int _likeCount = 0;
   bool _isLoading = false;
   var _focusNode = FocusNode();
+  String _token;
 
   @override
   void initState() {
     super.initState();
+    getToken();
     _likeCount = widget.itemDetail.likeCount;
   }
 
@@ -36,9 +38,16 @@ class _CommentPageState extends State<CommentPage> {
     super.didChangeDependencies();
   }
 
+  void getToken() async{
+    String token = await Helper.getToken();
+    setState(() {
+      _token = token;
+    });
+  }
+
   void requestFocus(String parentId, bool isDelete) {
     debugPrint(parentId ?? "NULL");
-    if (!globals.isSigned) {
+    if (_token == null) {
       Helper.showAuthenticationDialog(context);
     } else {
       if (!isDelete) {
@@ -86,7 +95,7 @@ class _CommentPageState extends State<CommentPage> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      if (!globals.isSigned) {
+                      if (_token == null) {
                         Helper.showAuthenticationDialog(context);
                       } else {
                         if (!_isLikeOwner) {

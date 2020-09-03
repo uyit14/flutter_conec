@@ -50,21 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width * 0.6,
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50), color: Colors.red),
-              child: Text(
-                "Conec Sport",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.08,
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.yellowAccent),
-              ),
-            ),
+            Image.asset("assets/images/conec_logo.png", width: 200, height: 100, fit: BoxFit.fill,),
             SizedBox(height: 8,),
             Text(
               "Kết nối thể thao",

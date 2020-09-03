@@ -17,8 +17,14 @@ class AuthenBloc{
   StreamController _verifyUserController = StreamController<ApiResponse<dynamic>>();
   Stream<ApiResponse<dynamic>> get verifyUserStream => _verifyUserController.stream;
 
+  StreamController _verifyEmailController = StreamController<ApiResponse<dynamic>>();
+  Stream<ApiResponse<dynamic>> get verifyEmailStream => _verifyEmailController.stream;
+
   StreamController _resetPassController = StreamController<ApiResponse<dynamic>>();
   Stream<ApiResponse<dynamic>> get resetPassStream => _resetPassController.stream;
+
+  StreamController _confirmEmailController = StreamController<ApiResponse<dynamic>>();
+  Stream<ApiResponse<dynamic>> get confirmEmailStream => _confirmEmailController.stream;
 
   AuthenBloc(){
     _repository = AuthenRepository();
@@ -63,6 +69,16 @@ class AuthenBloc{
     }
   }
 
+  void requestVerifyEmail(String email) async{
+    _verifyEmailController.sink.add(ApiResponse.loading());
+    final result = await _repository.verifyEmail(email);
+    if(result.status){
+      _verifyEmailController.sink.add(ApiResponse.completed(Helper.verifyMessage));
+    }else{
+      _verifyEmailController.sink.add(ApiResponse.error(result.error));
+    }
+  }
+
   void requestResetPass(String userName, String newPassword, String code) async{
     _resetPassController.sink.add(ApiResponse.loading());
     final result = await _repository.resetPassword(userName, newPassword, code);
@@ -73,11 +89,23 @@ class AuthenBloc{
     }
   }
 
+  void requestConfirmEmail(String email, String passWord, String code) async{
+    _confirmEmailController.sink.add(ApiResponse.loading());
+    final result = await _repository.confirmEmail(email, passWord, code);
+    if(result.status){
+      _confirmEmailController.sink.add(ApiResponse.completed(result.token));
+    }else{
+      _confirmEmailController.sink.add(ApiResponse.error(result.error));
+    }
+  }
+
   void dispose() {
     //dispose stream
     _loginController?.close();
     _signUpController?.close();
     _verifyUserController?.close();
     _resetPassController?.close();
+    _verifyEmailController?.close();
+    _confirmEmailController?.close();
   }
 }

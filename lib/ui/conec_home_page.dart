@@ -6,15 +6,11 @@ import 'package:conecapp/ui/notify/pages/notify_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../common/globals.dart' as globals;
-import 'authen/pages/login_page.dart';
 import 'home/blocs/home_bloc.dart';
 import 'home/pages/items_by_category_page.dart';
 import 'mypost/pages/mypost_page.dart';
 import 'news/pages/news_page.dart';
 import 'profile/pages/profile_pages.dart';
-//0367480933
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';
@@ -27,6 +23,14 @@ class _ConecHomePageState extends State<ConecHomePage> {
   PageController _pageController = PageController(initialPage: 0);
   int _selectedPageIndex = 0;
   int _initIndex = 0;
+
+  String _token;
+  void getToken() async{
+    String token = await Helper.getToken();
+    setState(() {
+      _token = token;
+    });
+  }
 
   void _selectPage(int index) {
     setState(() {
@@ -43,17 +47,18 @@ class _ConecHomePageState extends State<ConecHomePage> {
     });
   }
 
-  detectToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var token = prefs.getString('token');
-    globals.isSigned = token != null ? true : false;
-    globals.token = token;
-  }
+//  detectToken() async {
+//    SharedPreferences prefs = await SharedPreferences.getInstance();
+//    var token = prefs.getString('token');
+//    globals.isSigned = token != null ? true : false;
+//    globals.token = token;
+//  }
 
   @override
   void initState() {
     super.initState();
-    detectToken();
+    //detectToken();
+    getToken();
   }
 
   @override
@@ -110,7 +115,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
         floatingActionButton: Container(
           child: FloatingActionButton(
             onPressed: () {
-              if (globals.isSigned) {
+              if (_token != null) {
                 Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
               } else {
                 Helper.showAuthenticationDialog(context);
