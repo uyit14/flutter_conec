@@ -14,6 +14,8 @@ class PostActionRequest {
   String generalCondition;
   String uses;
   String phoneNumber;
+  double lat;
+  double lng;
   String status;
 
 
@@ -34,6 +36,8 @@ class PostActionRequest {
     this.generalCondition,
     this.uses,
     this.phoneNumber,
+    this.lat,
+    this.lng,
     this.status
 });
 
@@ -53,6 +57,8 @@ class PostActionRequest {
     if(joiningFee!=null) 'joiningFee': joiningFee,
     if(generalCondition!=null) 'generalCondition': generalCondition,
     if(phoneNumber!=null) 'phoneNumber': phoneNumber,
+    if(lat!=null) 'lat': lat,
+    if(lng!=null) 'lng': lng,
     if(status!=null) 'status': status,
   };
 }

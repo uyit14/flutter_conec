@@ -6,6 +6,7 @@ import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
+import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/models/request/post_action_request.dart';
 import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/topic.dart';
@@ -646,6 +647,11 @@ class _PostActionPageState extends State<PostActionPage> {
     }
   }
   void doPostAction() async{
+    final result = selectedCity != null
+        ? await Helper.getLatLng(
+        '$_addressController.text, $selectedWard, $selectedDistrict, $selectedCity')
+        : LatLong(lat: 0.0, long: 0.0);
+    print(result.lat.toString() + "----" + result.long.toString());
     PostActionRequest _postActionRequest = PostActionRequest(
         title: _title,
         content: _controller.document.toPlainText(),
@@ -666,6 +672,8 @@ class _PostActionPageState extends State<PostActionPage> {
         uses: _usesController.text ?? null,
         generalCondition: _conditionController.text ?? null,
         phoneNumber: _phoneController.text,
+        lat: result.lat ?? 0.0,
+        lng: result.long ?? 0.0,
         status: "SUBMITTED");
 //    Map inputs = jsonDecode(_postActionRequest);
     //print("aa: " + inputs.toString());

@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/models/request/post_action_request.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/location/city_response.dart';
@@ -134,18 +136,17 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   initValue() {
     setState(() {
       _titleController = TextEditingController(text: _itemDetail.title);
-      _joiningFreeController = TextEditingController(
-          text: _itemDetail.joiningFee.toString());
-      _phoneController =
-          TextEditingController(text: _itemDetail.phoneNumber);
-      _addressController =
-          TextEditingController(text: _itemDetail.address);
+      _joiningFreeController =
+          TextEditingController(text: _itemDetail.joiningFee.toString());
+      _phoneController = TextEditingController(text: _itemDetail.phoneNumber);
+      _addressController = TextEditingController(text: _itemDetail.address);
       selectedCity = _itemDetail.province;
       selectedDistrict = _itemDetail.district;
       selectedWard = _itemDetail.ward;
       _urlImages = _itemDetail.images;
       _usesController = TextEditingController(text: _itemDetail.uses);
-      _conditionController = TextEditingController(text: _itemDetail.generalCondition);
+      _conditionController =
+          TextEditingController(text: _itemDetail.generalCondition);
     });
   }
 
@@ -213,7 +214,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                               _currentSelectedIndex = topics.indexWhere(
                                   (element) =>
                                       element.title == _selectedTopicName);
-                              _selectedCategoryId = topics[_currentSelectedIndex].id;
+                              _selectedCategoryId =
+                                  topics[_currentSelectedIndex].id;
                               _isFirstTime = false;
                             }
                             return ListView.builder(
@@ -297,86 +299,93 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               SizedBox(height: 12),
               _currentSelectedIndex == 7
                   ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Công dụng"),
-                  SizedBox(height: 4),
-                  TextFormField(
-                    maxLines: 1,
-                    style: TextStyle(fontSize: 18),
-                    controller: _usesController,
-                    decoration: InputDecoration(
-                        hintText: 'Nhập công dụng',
-                        focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.green, width: 1)),
-                        contentPadding: EdgeInsets.only(left: 8),
-                        prefixIcon: Icon(
-                          Icons.accessibility,
-                          color: Colors.black,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Công dụng"),
+                        SizedBox(height: 4),
+                        TextFormField(
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 18),
+                          controller: _usesController,
+                          decoration: InputDecoration(
+                              hintText: 'Nhập công dụng',
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.green, width: 1)),
+                              contentPadding: EdgeInsets.only(left: 8),
+                              prefixIcon: Icon(
+                                Icons.accessibility,
+                                color: Colors.black,
+                              ),
+                              border: const OutlineInputBorder()),
                         ),
-                        border: const OutlineInputBorder()),
-                  ),
-                ],
-              )
+                      ],
+                    )
                   : Container(),
               _currentSelectedIndex == 7
                   ? SizedBox(height: 12)
                   : SizedBox(
-                height: 0,
-              ),
+                      height: 0,
+                    ),
               _currentSelectedIndex == 7
                   ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Tình trạng"),
-                  SizedBox(height: 4),
-                  TextFormField(
-                    maxLines: 1,
-                    style: TextStyle(fontSize: 18),
-                    controller: _conditionController,
-                    decoration: InputDecoration(
-                        hintText:
-                        'Nhập tình trạng (Còn hàng, hết hàng, ...)',
-                        focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.green, width: 1)),
-                        contentPadding: EdgeInsets.only(left: 8),
-                        prefixIcon: Icon(
-                          Icons.check,
-                          color: Colors.black,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Tình trạng"),
+                        SizedBox(height: 4),
+                        TextFormField(
+                          maxLines: 1,
+                          style: TextStyle(fontSize: 18),
+                          controller: _conditionController,
+                          decoration: InputDecoration(
+                              hintText:
+                                  'Nhập tình trạng (Còn hàng, hết hàng, ...)',
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.green, width: 1)),
+                              contentPadding: EdgeInsets.only(left: 8),
+                              prefixIcon: Icon(
+                                Icons.check,
+                                color: Colors.black,
+                              ),
+                              border: const OutlineInputBorder()),
                         ),
-                        border: const OutlineInputBorder()),
-                  ),
-                ],
-              )
+                      ],
+                    )
                   : Container(),
+              SizedBox(height: 12),
               //STEP 4
-              _currentSelectedIndex == 6 ? Container() : Column(children: [
-                Text(_currentSelectedIndex == 7
-                    ? "Giá"
-                    : "Phí tham gia"),
-                TextFormField(
-                  maxLines: 1,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  style: TextStyle(fontSize: 18),
-                  controller: _joiningFreeController,
-                  decoration: InputDecoration(
-                      hintText: _currentSelectedIndex == 7
-                          ? "Nhập giá"
-                          : 'Nhập phí tham gia',
-                      focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.green, width: 1)),
-                      contentPadding: EdgeInsets.only(left: 8),
-                      prefixIcon: Icon(
-                        Icons.attach_money,
-                        color: Colors.black,
-                      ),
-                      border: const OutlineInputBorder()),
-                ),
-                SizedBox(height: 12),
-              ],),
+              _currentSelectedIndex == 6
+                  ? Container()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(_currentSelectedIndex == 7
+                            ? "Giá"
+                            : "Phí tham gia"),
+                        TextFormField(
+                          maxLines: 1,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.done,
+                          style: TextStyle(fontSize: 18),
+                          controller: _joiningFreeController,
+                          decoration: InputDecoration(
+                              hintText: _currentSelectedIndex == 7
+                                  ? "Nhập giá"
+                                  : 'Nhập phí tham gia',
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.green, width: 1)),
+                              contentPadding: EdgeInsets.only(left: 8),
+                              prefixIcon: Icon(
+                                Icons.attach_money,
+                                color: Colors.black,
+                              ),
+                              border: const OutlineInputBorder()),
+                        ),
+                        SizedBox(height: 12),
+                      ],
+                    ),
               //STEP 5
               Text("Số điện thoại"),
               TextFormField(
@@ -511,8 +520,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                         scrollDirection: Axis.horizontal,
                         children: List.from(_urlImages
                             .map((e) => Stack(
-                              children: [
-                                Container(
+                                  children: [
+                                    Container(
                                       margin: EdgeInsets.only(right: 4),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(6),
@@ -526,30 +535,33 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                             : Container(),
                                       ),
                                     ),
-                                Positioned(
-                                  top: -14,
-                                  right: -10,
-                                  child: IconButton(
-                                    onPressed: (){
-                                      //TODO - call api
-                                      _urlImages.removeWhere((element) => element.id == e.id);
-                                      setState(() {
-
-                                      });
-                                    },
-                                    icon: Icon(Icons.remove_circle, color: Colors.red,),
-                                  ),
-                                )
-                              ],
-                            ))
+                                    Positioned(
+                                      top: -14,
+                                      right: -10,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          //TODO - call api
+                                          _urlImages.removeWhere(
+                                              (element) => element.id == e.id);
+                                          setState(() {});
+                                        },
+                                        icon: Icon(
+                                          Icons.remove_circle,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ))
                             .toList())
                           ..addAll(List.from(_images
                               .map((e) => Stack(
-                                children: [
-                                  Container(
+                                    children: [
+                                      Container(
                                         margin: EdgeInsets.only(right: 4),
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
                                           child: e != null
                                               ? Image.file(
                                                   e,
@@ -560,21 +572,23 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                               : Container(),
                                         ),
                                       ),
-                                  Positioned(
-                                    top: -14,
-                                    right: -10,
-                                    child: IconButton(
-                                      onPressed: (){
-                                        _images.removeWhere((element) => element == e);
-                                        setState(() {
-
-                                        });
-                                      },
-                                      icon: Icon(Icons.remove_circle, color: Colors.red,),
-                                    ),
-                                  )
-                                ],
-                              ))
+                                      Positioned(
+                                        top: -14,
+                                        right: -10,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            _images.removeWhere(
+                                                (element) => element == e);
+                                            setState(() {});
+                                          },
+                                          icon: Icon(
+                                            Icons.remove_circle,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ))
                               .toList()))
                           ..add(_cameraHolder()),
                       ),
@@ -608,75 +622,87 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
 
   //-----------------------post action -----------------------------//
   PostActionRequest _postActionRequest;
-  void doUpdateAction() {
-     if(_currentSelectedIndex == 7){
-       _postActionRequest = PostActionRequest(
-           postId: _itemDetail.postId,
-           title: _titleController.text,
-           content: _controller.document.toPlainText(),
-           thumbnail: _images.length > 0 && _urlImages.length ==0
-               ? {
-             "fileName": _images[0].path.split("/").last,
-             "base64": base64Encode(_images[0].readAsBytesSync())
-           } : null,
-           topicId: _selectedCategoryId,
-           images: _images.length > 0 ? base64ListImage(_images) : null,
-           province: selectedCity,
-           district: selectedDistrict,
-           ward: selectedWard,
-           address: _addressController.text,
-           price: _joiningFreeController.text.length > 0
-               ? int.parse(_joiningFreeController.text)
-               : null,
-           uses: _usesController.text,
-           generalCondition: _conditionController.text,
-           phoneNumber: _phoneController.text,
-           status: "SUBMITTED");
-     }else if(_currentSelectedIndex == 6){
-       _postActionRequest = PostActionRequest(
-           postId: _itemDetail.postId,
-           title: _titleController.text,
-           content: _controller.document.toPlainText(),
-           thumbnail: _images.length > 0
-               ? {
-             "fileName": _images[0].path.split("/").last,
-             "base64": base64Encode(_images[0].readAsBytesSync())
-           }
-               : null,
-           topicId: _selectedCategoryId,
-           images: _images.length > 0 ? base64ListImage(_images) : null,
-           province: selectedCity,
-           district: selectedDistrict,
-           ward: selectedWard,
-           address: _addressController.text,
-           phoneNumber: _phoneController.text,
-           status: "SUBMITTED");
-     }
-       else{
-       _postActionRequest = PostActionRequest(
-           postId: _itemDetail.postId,
-           title: _titleController.text,
-           content: _controller.document.toPlainText(),
-           thumbnail: _images.length > 0
-               ? {
-             "fileName": _images[0].path.split("/").last,
-             "base64": base64Encode(_images[0].readAsBytesSync())
-           }
-               : null,
-           topicId: _selectedCategoryId,
-           images: _images.length > 0 ? base64ListImage(_images) : null,
-           province: selectedCity,
-           district: selectedDistrict,
-           ward: selectedWard,
-           address: _addressController.text,
-           joiningFee: _joiningFreeController.text.length > 0
-               ? int.parse(_joiningFreeController.text)
-               : null,
-           phoneNumber: _phoneController.text,
-           status: "SUBMITTED");
-     }
-      _postActionBloc
-          .requestAddMyPost(jsonEncode(_postActionRequest.toJson()), "Update");
+
+  void doUpdateAction() async{
+    final result = selectedCity != null
+        ? await Helper.getLatLng(
+        '$_addressController.text, $selectedWard, $selectedDistrict, $selectedCity')
+        : LatLong(lat: 0.0, long: 0.0);
+    print(result.lat.toString() + "----" + result.long.toString());
+    if (_currentSelectedIndex == 7) {
+      _postActionRequest = PostActionRequest(
+          postId: _itemDetail.postId,
+          title: _titleController.text,
+          content: _controller.document.toPlainText(),
+          thumbnail: _images.length > 0 && _urlImages.length == 0
+              ? {
+                  "fileName": _images[0].path.split("/").last,
+                  "base64": base64Encode(_images[0].readAsBytesSync())
+                }
+              : null,
+          topicId: _selectedCategoryId,
+          images: _images.length > 0 ? base64ListImage(_images) : null,
+          province: selectedCity,
+          district: selectedDistrict,
+          ward: selectedWard,
+          address: _addressController.text,
+          price: _joiningFreeController.text.length > 0
+              ? int.parse(_joiningFreeController.text)
+              : null,
+          uses: _usesController.text,
+          generalCondition: _conditionController.text,
+          phoneNumber: _phoneController.text,
+          lat: result.lat ?? 0.0,
+          lng: result.long ?? 0.0,
+          status: "SUBMITTED");
+    } else if (_currentSelectedIndex == 6) {
+      _postActionRequest = PostActionRequest(
+          postId: _itemDetail.postId,
+          title: _titleController.text,
+          content: _controller.document.toPlainText(),
+          thumbnail: _images.length > 0
+              ? {
+                  "fileName": _images[0].path.split("/").last,
+                  "base64": base64Encode(_images[0].readAsBytesSync())
+                }
+              : null,
+          topicId: _selectedCategoryId,
+          images: _images.length > 0 ? base64ListImage(_images) : null,
+          province: selectedCity,
+          district: selectedDistrict,
+          ward: selectedWard,
+          address: _addressController.text,
+          phoneNumber: _phoneController.text,
+          lat: result.lat ?? 0.0,
+          lng: result.long ?? 0.0,
+          status: "SUBMITTED");
+    } else {
+      _postActionRequest = PostActionRequest(
+          postId: _itemDetail.postId,
+          title: _titleController.text,
+          content: _controller.document.toPlainText(),
+          thumbnail: _images.length > 0
+              ? {
+                  "fileName": _images[0].path.split("/").last,
+                  "base64": base64Encode(_images[0].readAsBytesSync())
+                }
+              : null,
+          topicId: _selectedCategoryId,
+          images: _images.length > 0 ? base64ListImage(_images) : null,
+          province: selectedCity,
+          district: selectedDistrict,
+          ward: selectedWard,
+          address: _addressController.text,
+          joiningFee: _joiningFreeController.text.length > 0
+              ? int.parse(_joiningFreeController.text)
+              : null,
+          phoneNumber: _phoneController.text,
+          lat: result.lat ?? 0.0,
+          lng: result.long ?? 0.0,
+          status: "SUBMITTED");
+    }
+    _postActionBloc.requestAddMyPost(
+        jsonEncode(_postActionRequest.toJson()), "Update");
     _postActionBloc.addMyPostStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
@@ -709,7 +735,10 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               actions: <Widget>[
                 CupertinoDialogAction(
                     child: Text("OK"),
-                    onPressed: () { Navigator.of(context).pop(); Navigator.of(context).pop(true);})
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop(true);
+                    })
               ],
             ));
   }
