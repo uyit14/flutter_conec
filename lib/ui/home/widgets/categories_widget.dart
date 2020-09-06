@@ -57,6 +57,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                 });
                           },
                           child: Container(
+                            width: 145,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(6),
@@ -85,7 +86,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                         errorWidget: (context, url, error) =>
                                             Image.asset(
                                                 "assets/images/error.png"),
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fill,
                                       ),
                                     ),
                                   ),

@@ -92,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
           });
           return;
         case Status.COMPLETED:
-          saveToken(event.data);
+          gotoHome(event.data);
           break;
         case Status.ERROR:
           setState(() {
@@ -103,6 +103,13 @@ class _RegisterPageState extends State<RegisterPage> {
           return;
       }
     });
+  }
+
+  void gotoHome(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
   }
 
   void saveToken(String token) async {

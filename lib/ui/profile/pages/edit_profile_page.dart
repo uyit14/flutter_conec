@@ -428,7 +428,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           TextFormField(
                             maxLines: 1,
                             style: TextStyle(fontSize: 18),
-                            textInputAction: TextInputAction.next,
+                            textInputAction: TextInputAction.done,
                             initialValue: profile.address ?? "",
                             onChanged: (value) {
                              setState(() {
@@ -452,7 +452,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             maxLines: 1,
                             style: TextStyle(fontSize: 18),
                             keyboardType: TextInputType.phone,
-                            textInputAction: TextInputAction.next,
+                            textInputAction: TextInputAction.done,
                             initialValue: profile.phoneNumber ?? "",
                             onChanged: (value) {
                               setState(() {
@@ -476,7 +476,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             maxLines: 1,
                             style: TextStyle(fontSize: 18),
                             keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
+                            textInputAction: TextInputAction.done,
                             initialValue: profile.email ?? "",
                             onChanged: (value) {
                               _email = value;

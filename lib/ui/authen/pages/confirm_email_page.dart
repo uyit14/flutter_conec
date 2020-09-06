@@ -128,7 +128,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                 width: double.infinity,
                 child: Center(
                   child: Text(
-                    'Reset mật khẩu',
+                    'Xác nhận',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 18,

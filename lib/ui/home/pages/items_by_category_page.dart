@@ -74,7 +74,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     _itemsByCategoryBloc = Provider.of<ItemsByCategoryBloc>(context);
     if (_firstTime) {
       _itemsByCategoryBloc.requestGetAllItem(_currentPage);
-      _firstTime = false;
     }
   }
 
@@ -250,10 +249,12 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         }else{
                           _shouldLoadMore = false;
                         }
-                        if (categoryTitle != null) {
+                        if (categoryTitle != null && _firstTime) {
+                          totalItemList.clear();
                           _itemsByCategoryBloc
                               .filterTopic(categoryTitle.toLowerCase());
                         }
+                        _firstTime = false;
                         return ListView.builder(
                             controller: _scrollController,
                             itemCount: totalItemList.length,
