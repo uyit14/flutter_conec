@@ -543,6 +543,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                           //TODO - call api
                                           _urlImages.removeWhere(
                                               (element) => element.id == e.id);
+                                          _postActionBloc.requestDeleteImage(e.id);
                                           setState(() {});
                                         },
                                         icon: Icon(

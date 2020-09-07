@@ -7,8 +7,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="flutter_conec"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Conec"
+        android:icon="@mipmap/launcher_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCB6MXwv-kgX2ecqg020GAIAV_VsHoKX8Y"/>
         <activity

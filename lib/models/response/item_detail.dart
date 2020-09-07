@@ -109,8 +109,8 @@ class ItemDetail {
     district = json['district'];
     ward = json['ward'];
     address = json['address'];
-    lat = json['lat'];
-    long = json['lng'];
+    lat = double.parse(json['lat']);
+    long = double.parse(json['lng']);
     joiningFee = json['joiningFee'];
     uses = json['uses'];
     price = json['price'];

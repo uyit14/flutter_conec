@@ -49,12 +49,12 @@ class PostActionBloc {
   Stream<ApiResponse<String>> get deleteMyPostStream =>
       _deleteMyPostController.stream;
 
-  //delete image
-  StreamController<ApiResponse<String>> _deleteImageController =
-      StreamController();
-
-  Stream<ApiResponse<String>> get deleteImageStream =>
-      _deleteMyPostController.stream;
+//  //delete image
+//  StreamController<ApiResponse<String>> _deleteImageController =
+//      StreamController();
+//
+//  Stream<ApiResponse<String>> get deleteImageStream =>
+//      _deleteMyPostController.stream;
 
   //topic
   StreamController<ApiResponse<List<Topic>>> _topicController =
@@ -117,13 +117,11 @@ class PostActionBloc {
   }
 
   void requestDeleteImage(String id) async {
-    _deleteImageController.sink.add(ApiResponse.loading());
     final result = await _repository.deleteImage(id);
     if (result.status) {
-      _deleteImageController.sink
-          .add(ApiResponse.completed("Xóa thành công"));
+      print("Success");
     } else {
-      _deleteImageController.sink.add(ApiResponse.completed(result.message));
+     print("Fail");
     }
   }
 
@@ -150,7 +148,7 @@ class PostActionBloc {
 
   void dispose() {
     _deleteMyPostController.close();
-    _deleteImageController.close();
+    //_deleteImageController.close();
     _addPostController.close();
     _updatePostController.close();
     _provincesController.close();
