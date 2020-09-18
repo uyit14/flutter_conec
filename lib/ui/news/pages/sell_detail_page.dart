@@ -204,7 +204,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                         style: AppTheme.commonDetail),
                                     Spacer(),
                                     Text(
-                                      '${Helper.formatCurrency(adsDetail.price ?? 0)} VND',
+                                        adsDetail.price != null ? '${Helper.formatCurrency(adsDetail.price)} VND' : "Liên hệ",
                                       style: TextStyle(
                                           color: Colors.red,
                                           fontSize: 18,

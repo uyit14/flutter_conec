@@ -20,7 +20,7 @@ class Helper {
 
   static String formatData(String approvedDate) {
     return approvedDate != null
-        ? DateFormat("dd-MM-yyyy hh:mm:ss").format(DateTime.parse(approvedDate))
+        ? DateFormat("dd-MM-yyyy").format(DateTime.parse(approvedDate))
         : "";
   }
 

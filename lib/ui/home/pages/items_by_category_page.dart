@@ -7,12 +7,15 @@ import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/topic.dart';
+import 'package:conecapp/ui/address/district_page.dart';
+import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class ItemByCategory extends StatefulWidget {
@@ -25,13 +28,14 @@ class ItemByCategory extends StatefulWidget {
 class _ItemByCategoryState extends State<ItemByCategory> {
   ScrollController _scrollController;
   final _controller = TextEditingController();
-  final _scrollThreshold = 250.0;
   ItemsByCategoryBloc _itemsByCategoryBloc;
-  PostActionBloc _postActionBloc = PostActionBloc();
+
+  //PostActionBloc _postActionBloc = PostActionBloc();
   HomeBloc _homeBloc = HomeBloc();
-  List<Province> _listProvinces = List<Province>();
+
+  //List<Province> _listProvinces = List<Province>();
   List<Topic> _listTopic = List<Topic>();
-  List<LatestItem> totalItemList = List<LatestItem>();
+  //List<LatestItem> totalItemList = List<LatestItem>();
   var routeArgs;
   String categoryTitle;
   var categoryId;
@@ -39,20 +43,24 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   int _currentPage = 0;
   bool _shouldLoadMore = true;
 
+  //
+  Province provinceData;
+  Province districtData;
+
   @override
   void initState() {
     super.initState();
     _scrollController = new ScrollController()..addListener(_scrollListener);
     _itemsByCategoryBloc = ItemsByCategoryBloc();
     _firstTime = true;
-    _postActionBloc.requestGetProvinces();
-    _postActionBloc.provincesStream.listen((event) {
-      switch (event.status) {
-        case Status.COMPLETED:
-          _listProvinces.addAll(event.data);
-          break;
-      }
-    });
+    //_postActionBloc.requestGetProvinces();
+    // _postActionBloc.provincesStream.listen((event) {
+    //   switch (event.status) {
+    //     case Status.COMPLETED:
+    //       _listProvinces.addAll(event.data);
+    //       break;
+    //   }
+    // });
     _homeBloc.requestGetTopic();
     _homeBloc.topicStream.listen((event) {
       switch (event.status) {
@@ -73,14 +81,18 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     categoryId = routeArgs['id'] as String;
     _itemsByCategoryBloc = Provider.of<ItemsByCategoryBloc>(context);
     if (_firstTime) {
-      _itemsByCategoryBloc.requestGetAllItem(_currentPage);
+      _itemsByCategoryBloc.requestGetAllItem(_currentPage, topic: categoryTitle??"");
     }
   }
 
   void _scrollListener() {
     if (_scrollController.position.extentAfter < 500) {
-      if(_shouldLoadMore){
-        _itemsByCategoryBloc.requestGetAllItem(_currentPage);
+      if (_shouldLoadMore) {
+        _itemsByCategoryBloc.requestGetAllItem(_currentPage,
+            province: provinceData!= null ? provinceData.name : "",
+            district: districtData!=null ? districtData.name : "",
+            topic: selectedCategory ?? "",
+            club: "");
       }
     }
   }
@@ -122,7 +134,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   child: TextFormField(
                     maxLines: 1,
                     onChanged: (value) {
-                      totalItemList.clear();
+                      //totalItemList.clear();
                       _itemsByCategoryBloc.searchAction(value);
                     },
                     controller: _controller,
@@ -164,8 +176,24 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               child: Row(
                 children: <Widget>[
                   InkWell(
-                    onTap: () =>
-                        showCityList(getIndex(_listProvinces, selectedCity)),
+                    // onTap: () =>
+                    //     showCityList(getIndex(_listProvinces, selectedCity)),
+                    onTap: () {
+                      Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
+                          arguments: {'province': provinceData}).then((value) {
+                        if (value != null) {
+                          setState(() {
+                            provinceData = value;
+                          });
+                          //TODO - call api with province here
+                          setState(() {
+                            _currentPage = 0;
+                          });
+                          _itemsByCategoryBloc.requestGetAllItem(0,
+                              province: provinceData.name);
+                        }
+                      });
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
@@ -173,7 +201,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                           borderRadius: BorderRadius.circular(8)),
                       child: Row(
                         children: <Widget>[
-                          Text(selectedCity ?? "Tỉnh/Thành phố"),
+                          Text(provinceData != null
+                              ? provinceData.name
+                              : "Tỉnh/Thành phố"),
                           Icon(Icons.keyboard_arrow_down)
                         ],
                       ),
@@ -181,14 +211,39 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   ),
                   SizedBox(width: 4),
                   InkWell(
-                    onTap: () => selectedCity != null
-                        ? showDistrictList(
-                            getIndex(_districtList, selectedDistrict))
-                        : null,
+                    // onTap: () => selectedCity != null
+                    //     ? showDistrictList(
+                    //         getIndex(_districtList, selectedDistrict))
+                    //     : null,
+                    onTap: () {
+                      if (provinceData != null) {
+                        Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
+                            arguments: {
+                              'district': districtData,
+                              'provinceId': provinceData.id
+                            }).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              districtData = value;
+                            });
+                            //TODO - call api with district here
+                            setState(() {
+                              _currentPage = 0;
+                            });
+                            _itemsByCategoryBloc.requestGetAllItem(0,
+                                province: provinceData.name,
+                                district: districtData.name);
+                          }
+                        });
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "Vui lòng chọn tỉnh, thành");
+                      }
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
-                          color: selectedCity != null
+                          color: provinceData != null
                               ? Colors.white
                               : Colors.black12,
                           border: Border.all(width: 0.5, color: Colors.grey),
@@ -196,9 +251,11 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                       child: Row(
                         children: <Widget>[
                           Text(
-                            selectedDistrict ?? "Quận/Huyện",
+                            districtData != null
+                                ? districtData.name
+                                : "Quận/Huyện",
                             style: TextStyle(
-                                color: selectedCity != null
+                                color: provinceData != null
                                     ? Colors.black87
                                     : Colors.grey),
                           ),
@@ -209,10 +266,13 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   ),
                   SizedBox(width: 4),
                   InkWell(
-                    onTap: () => showCategoryList(categoryId != null
-                        ?_listTopic.indexOf(_listTopic
-                            .firstWhere((element) => element.id == categoryId))
-                        : 0),
+                    // onTap: () => showCategoryList(categoryId != null
+                    //     ? _listTopic.indexOf(_listTopic
+                    //         .firstWhere((element) => element.id == categoryId))
+                    //     : 0),
+                    onTap: (){
+                      //
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
@@ -241,18 +301,19 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                       case Status.LOADING:
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
-                        //List<LatestItem> items = snapshot.data.data;
-                        if(snapshot.data.data.length > 0){
-                          print("at UI: " + snapshot.data.data.length.toString());
-                          totalItemList.addAll(snapshot.data.data);
+                        List<LatestItem> totalItemList = snapshot.data.data;
+                        if (snapshot.data.data.length > 0) {
+                          print(
+                              "at UI: " + snapshot.data.data.length.toString());
+                          //totalItemList.addAll(snapshot.data.data);
                           _currentPage++;
-                        }else{
+                        } else {
                           _shouldLoadMore = false;
                         }
                         if (categoryTitle != null && _firstTime) {
-                          totalItemList.clear();
-                          _itemsByCategoryBloc
-                              .filterTopic(categoryTitle.toLowerCase());
+                          //totalItemList.clear();
+                          // _itemsByCategoryBloc
+                          //     .filterTopic(categoryTitle.toLowerCase());
                         }
                         _firstTime = false;
                         return ListView.builder(
@@ -292,14 +353,16 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                             Flexible(
                                                 flex: 4,
                                                 child: Hero(
-                                                  tag: totalItemList[index].postId,
+                                                  tag: totalItemList[index]
+                                                      .postId,
                                                   child: ClipRRect(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             6),
                                                     child: CachedNetworkImage(
-                                                      imageUrl: totalItemList[index]
-                                                          .thumbnail,
+                                                      imageUrl:
+                                                          totalItemList[index]
+                                                              .thumbnail,
                                                       progressIndicatorBuilder: (context,
                                                               url,
                                                               downloadProgress) =>
@@ -310,7 +373,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                       errorWidget: (context,
                                                               url, error) =>
                                                           Image.asset(
-                                                              "assets/images/error.png"),
+                                                              "assets/images/error.png", height: 100, width: 120,),
                                                       fit: BoxFit.cover,
                                                       height: 100,
                                                       width: 120,
@@ -325,7 +388,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(
-                                                    totalItemList[index].description ??
+                                                    totalItemList[index]
+                                                            .description ??
                                                         "",
                                                     maxLines: 3,
                                                     style:
@@ -335,7 +399,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                   ),
                                                   SizedBox(height: 4),
                                                   Text(
-                                                    totalItemList[index].joiningFee !=
+                                                    totalItemList[index]
+                                                                .joiningFee !=
                                                             null
                                                         ? '${Helper.formatCurrency(totalItemList[index].joiningFee)} VND'
                                                         : "Không tốn phí tham gia",
@@ -353,7 +418,10 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Container(
-                                              width: MediaQuery.of(context).size.width/2,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2,
                                               child: Text(
                                                 '${totalItemList[index].district} - ${totalItemList[index].province}',
                                                 style: TextStyle(
@@ -363,7 +431,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            Text(totalItemList[index].approvedDate,
+                                            Text(
+                                                totalItemList[index]
+                                                    .approvedDate,
                                                 style: TextStyle(
                                                     fontStyle:
                                                         FontStyle.italic))
@@ -394,126 +464,127 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     _scrollController.dispose();
   }
 
-  //bottom sheet
-  var selectedCity;
-  var selectedDistrict;
+  // //bottom sheet
+  // var selectedCity;
+  // var selectedDistrict;
   var selectedCategory;
-  String _selectCityId;
-  String _selectDistrictId;
-  List<Province> _districtList = List<Province>();
 
+  // String _selectCityId;
+  // String _selectDistrictId;
+  // List<Province> _districtList = List<Province>();
   //
-  int getIndex(List<Province> list, String selectedItemId) {
-    int index = list.indexOf(list.firstWhere(
-        (element) => element.id == selectedItemId,
-        orElse: () => list != null ? list[0] : null));
-    if (index == -1) {
-      return 0;
-    }
-    return selectedItemId != null ? index : 0;
-  }
+  // //
+  // int getIndex(List<Province> list, String selectedItemId) {
+  //   int index = list.indexOf(list.firstWhere(
+  //       (element) => element.id == selectedItemId,
+  //       orElse: () => list != null ? list[0] : null));
+  //   if (index == -1) {
+  //     return 0;
+  //   }
+  //   return selectedItemId != null ? index : 0;
+  // }
+  //
+  // void getDistrictByProvinceId(String id) {
+  //   _postActionBloc.requestGetDistricts(id);
+  //   _postActionBloc.districtsStream.listen((event) {
+  //     switch (event.status) {
+  //       case Status.COMPLETED:
+  //         _districtList = event.data;
+  //         break;
+  //     }
+  //   });
+  // }
+  //
+  // void showCityList(int index) {
+  //   var controller = FixedExtentScrollController(initialItem: index);
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return Container(
+  //           color: Colors.white,
+  //           height: 250,
+  //           child: CupertinoPicker(
+  //             scrollController: controller,
+  //             onSelectedItemChanged: (value) {
+  //               setState(() {
+  //                 selectedCity = _listProvinces[value].name;
+  //                 _selectCityId = _listProvinces[value].id;
+  //               });
+  //             },
+  //             itemExtent: 32,
+  //             children: _listProvinces.map((e) => Text(e.name)).toList(),
+  //           ),
+  //         );
+  //       }).then((value) {
+  //     selectedDistrict = null;
+  //     if (selectedCity == null) {
+  //       selectedCity = _listProvinces[0].name;
+  //       _selectCityId = _listProvinces[0].id;
+  //     }
+  //     totalItemList.clear();
+  //     _itemsByCategoryBloc.filterCity(selectedCity.toString().toLowerCase());
+  //     getDistrictByProvinceId(
+  //         _selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
+  //   });
+  // }
+  //
+  // void showDistrictList(int index) {
+  //   var controller = FixedExtentScrollController(initialItem: index);
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return Container(
+  //           color: Colors.white,
+  //           height: 250,
+  //           child: CupertinoPicker(
+  //             scrollController: controller,
+  //             onSelectedItemChanged: (value) {
+  //               setState(() {
+  //                 selectedDistrict = _districtList[value].name;
+  //                 _selectDistrictId = _districtList[value].id;
+  //               });
+  //             },
+  //             itemExtent: 32,
+  //             children: _districtList.map((e) => Text(e.name)).toList(),
+  //           ),
+  //         );
+  //       }).then((value) {
+  //     if (selectedCity == null) {
+  //       selectedDistrict = _districtList[0].name;
+  //       _selectDistrictId = _districtList[0].id;
+  //     }
+  //     print(selectedDistrict);
+  //     totalItemList.clear();
+  //     _itemsByCategoryBloc
+  //         .filterDistrict(selectedDistrict.toString().toLowerCase());
+  //   });
+  // }
 
-  void getDistrictByProvinceId(String id) {
-    _postActionBloc.requestGetDistricts(id);
-    _postActionBloc.districtsStream.listen((event) {
-      switch (event.status) {
-        case Status.COMPLETED:
-          _districtList = event.data;
-          break;
-      }
-    });
-  }
-
-  void showCityList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedCity = _listProvinces[value].name;
-                  _selectCityId = _listProvinces[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _listProvinces.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) {
-      selectedDistrict = null;
-      if (selectedCity == null) {
-        selectedCity = _listProvinces[0].name;
-        _selectCityId = _listProvinces[0].id;
-      }
-      totalItemList.clear();
-      _itemsByCategoryBloc.filterCity(selectedCity.toString().toLowerCase());
-      getDistrictByProvinceId(
-          _selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
-    });
-  }
-
-  void showDistrictList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedDistrict = _districtList[value].name;
-                  _selectDistrictId = _districtList[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _districtList.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) {
-      if (selectedCity == null) {
-        selectedDistrict = _districtList[0].name;
-        _selectDistrictId = _districtList[0].id;
-      }
-      print(selectedDistrict);
-      totalItemList.clear();
-      _itemsByCategoryBloc
-          .filterDistrict(selectedDistrict.toString().toLowerCase());
-    });
-  }
-
-  void showCategoryList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedCategory = _listTopic[value].title;
-                });
-              },
-              itemExtent: 32,
-              children: _listTopic.map((e) => Text(e.title)).toList(),
-            ),
-          );
-        }).then((value) {
-          if(selectedCategory==null){
-            selectedCategory = _listTopic[0].title;
-          }
-          totalItemList.clear();
-          _itemsByCategoryBloc.filterTopic(selectedCategory);
-    });
-  }
+  // void showCategoryList(int index) {
+  //   var controller = FixedExtentScrollController(initialItem: index);
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return Container(
+  //           color: Colors.white,
+  //           height: 250,
+  //           child: CupertinoPicker(
+  //             scrollController: controller,
+  //             onSelectedItemChanged: (value) {
+  //               setState(() {
+  //                 selectedCategory = _listTopic[value].title;
+  //               });
+  //             },
+  //             itemExtent: 32,
+  //             children: _listTopic.map((e) => Text(e.title)).toList(),
+  //           ),
+  //         );
+  //       }).then((value) {
+  //     if (selectedCategory == null) {
+  //       selectedCategory = _listTopic[0].title;
+  //     }
+  //     totalItemList.clear();
+  //     _itemsByCategoryBloc.filterTopic(selectedCategory);
+  //   });
+  // }
 }

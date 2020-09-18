@@ -17,6 +17,7 @@ import 'package:conecapp/models/response/topic_response.dart';
 
 class HomeRemoteRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
+
 //  static final _header = {
 //    'authorization': "Bearer ${Helper.getToken()}",
 //    'Content-Type': "application/json"
@@ -47,8 +48,10 @@ class HomeRemoteRepository {
     return NewsResponse.fromJson(response).news;
   }
 
-  Future<List<LatestItem>> fetchAllItem(int page) async {
-    final response = await _helper.get('/api/Post/GetAll?page=$page');
+  Future<List<LatestItem>> fetchAllItem(int page,
+      {String province, String district, String topic, String club}) async {
+    final response = await _helper.get(
+        '/api/Post/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}');
     return LatestResponse.fromJson(response).items;
   }
 
@@ -75,25 +78,25 @@ class HomeRemoteRepository {
     return response['status'];
   }
 
-  Future<bool> likeComment(String commentId) async{
+  Future<bool> likeComment(String commentId) async {
     final response = await _helper.post("/api/Comment/upvoteComment",
         body: jsonEncode(commentId), headers: await Helper.header());
     return response['status'];
   }
 
-  Future<bool> unLikeComment(String commentId) async{
+  Future<bool> unLikeComment(String commentId) async {
     final response = await _helper.post("/api/Comment/downvoteComment",
         body: jsonEncode(commentId), headers: await Helper.header());
     return response['status'];
   }
 
-  Future<bool> ratingPost(dynamic body) async{
+  Future<bool> ratingPost(dynamic body) async {
     final response = await _helper.post("/api/Comment/postRating",
         body: body, headers: await Helper.header());
     return response['status'];
   }
 
-  Future<bool> likePost(String postId) async{
+  Future<bool> likePost(String postId) async {
     final response = await _helper.post("/api/Comment/likePost",
         body: jsonEncode(postId), headers: await Helper.header());
     return response['status'];

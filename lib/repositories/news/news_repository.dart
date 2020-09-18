@@ -6,7 +6,7 @@ import 'package:conecapp/models/response/news_reponse.dart';
 import 'package:conecapp/models/response/sport.dart';
 import 'package:conecapp/models/response/sport_response.dart';
 
-class NewsRepository{
+class NewsRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
 
   Future<List<News>> fetchAllNews() async {
@@ -19,8 +19,10 @@ class NewsRepository{
     return NewsDetailResponse.fromJson(response).news;
   }
 
-  Future<List<Sport>> fetchAllAds() async {
-    final response = await _helper.get("/api/Ads/GetAll");
+  Future<List<Sport>> fetchAllAds(int page,
+      {String province, String district, String topic, String club}) async {
+    final response = await _helper.get(
+        "/api/Ads/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}");
     return SportResponse.fromJson(response).sports;
   }
 

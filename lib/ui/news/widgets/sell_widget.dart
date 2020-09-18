@@ -26,7 +26,7 @@ class _SellWidgetState extends State<SellWidget> {
   void initState() {
     super.initState();
     _postActionBloc = PostActionBloc();
-    _newsBloc.requestGetAllAds();
+    _newsBloc.requestGetAllAds(0);
     _postActionBloc.requestGetProvinces();
     _postActionBloc.provincesStream.listen((event) {
       switch (event.status) {
@@ -112,8 +112,8 @@ class _SellWidgetState extends State<SellWidget> {
                 children: <Widget>[
                   SizedBox(width: 4),
                   InkWell(
-                    onTap: () => showCityList(
-                        getIndex(_listProvinces, _selectCityId)),
+                    onTap: () =>
+                        showCityList(getIndex(_listProvinces, _selectCityId)),
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
@@ -235,7 +235,9 @@ class _SellWidgetState extends State<SellWidget> {
                                                 ),
                                                 SizedBox(height: 6),
                                                 Text(
-                                                  '${Helper.formatCurrency(sports[index].price ?? 0)} VND',
+                                                  sports[index].price != null
+                                                      ? '${Helper.formatCurrency(sports[index].price)} VND'
+                                                      : "Liên hệ",
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       color: Colors.red),
@@ -246,7 +248,7 @@ class _SellWidgetState extends State<SellWidget> {
                                                 SizedBox(height: 6),
                                                 //TODO - add address
                                                 Text(
-                                                  '${sports[index].address} ${sports[index].ward} ${sports[index].district} ${sports[index].province}',
+                                                  '${sports[index].address ?? ""} ${sports[index].ward ?? ""} ${sports[index].district ?? ""} ${sports[index].province ?? ""}',
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       color: Colors.grey),
@@ -293,7 +295,7 @@ class _SellWidgetState extends State<SellWidget> {
                       case Status.ERROR:
                         return UIError(
                             errorMessage: snapshot.data.message,
-                            onRetryPressed: () => _newsBloc.requestGetAllAds());
+                            onRetryPressed: () => _newsBloc.requestGetAllAds(0));
                     }
                   }
                   return Container(
@@ -317,19 +319,19 @@ class _SellWidgetState extends State<SellWidget> {
   List<Province> _districtList = List<Province>();
 
   int getIndex(List<Province> list, String selectedItemId) {
-    int index = list.indexOf(list.firstWhere((element) => element.id == selectedItemId, orElse: () => list != null ? list[0] : null));
-    if(index == -1){
+    int index = list.indexOf(list.firstWhere(
+        (element) => element.id == selectedItemId,
+        orElse: () => list != null ? list[0] : null));
+    if (index == -1) {
       return 0;
     }
-    return selectedItemId != null
-        ? index
-        : 0;
+    return selectedItemId != null ? index : 0;
   }
 
-  void getDistrictByProvinceId(String id){
+  void getDistrictByProvinceId(String id) {
     _postActionBloc.requestGetDistricts(id);
     _postActionBloc.districtsStream.listen((event) {
-      switch(event.status){
+      switch (event.status) {
         case Status.COMPLETED:
           _districtList = event.data;
           break;
@@ -357,14 +359,14 @@ class _SellWidgetState extends State<SellWidget> {
               children: _listProvinces.map((e) => Text(e.name)).toList(),
             ),
           );
-        }).then((value){
-          selectedDistrict = null;
-          if(selectedCity == null){
-            selectedCity = _listProvinces[0].name;
-            _selectCityId = _listProvinces[0].id;
-          }
-          _newsBloc.filterCity(selectedCity.toString().toLowerCase());
-          getDistrictByProvinceId(_selectCityId);
+        }).then((value) {
+      selectedDistrict = null;
+      if (selectedCity == null) {
+        selectedCity = _listProvinces[0].name;
+        _selectCityId = _listProvinces[0].id;
+      }
+      _newsBloc.filterCity(selectedCity.toString().toLowerCase());
+      getDistrictByProvinceId(_selectCityId);
     });
   }
 
@@ -388,8 +390,8 @@ class _SellWidgetState extends State<SellWidget> {
               children: _districtList.map((e) => Text(e.name)).toList(),
             ),
           );
-        }).then((value){
-      if(selectedCity == null){
+        }).then((value) {
+      if (selectedCity == null) {
         selectedDistrict = _districtList[0].name;
         _selectDistrictId = _districtList[0].id;
       }

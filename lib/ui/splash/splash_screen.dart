@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:conecapp/ui/onboarding/onboarding_screen.dart';
@@ -27,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void navigationToHome() {
     Navigator.of(context).pushNamedAndRemoveUntil(
         ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
-  //Navigator.of(context).pushNamed(ForGotPasswordPage.ROUTE_NAME);
+  //Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME);
   }
 
   void navigationToOnBoarding() {

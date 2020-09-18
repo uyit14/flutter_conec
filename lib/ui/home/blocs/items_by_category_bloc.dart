@@ -5,6 +5,7 @@ import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/repositories/home/home_remote_repository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:tiengviet/tiengviet.dart';
 
 class ItemsByCategoryBloc {
   HomeRemoteRepository _repository;
@@ -46,15 +47,15 @@ class ItemsByCategoryBloc {
 //  Stream<List<Comment>> get childCommentStream =>
 //      _childCommentController.stream;
 
-  void requestGetAllItem(int page) async {
+  void requestGetAllItem(int page, {String province, String district, String topic, String club}) async {
     if(page != 0){
-      final items = await _repository.fetchAllItem(page);
+      final items = await _repository.fetchAllItem(page, province: province, district: district, club: club, topic: topic);
       _originalItems.addAll(items);
       _allItemController.sink.add(ApiResponse.completed(items));
     }else{
       _allItemController.sink.add(ApiResponse.loading());
       try {
-        final items = await _repository.fetchAllItem(page);
+        final items = await _repository.fetchAllItem(page, province: province, district: district, club: club, topic: topic);
         _originalItems.addAll(items);
         _allItemController.sink.add(ApiResponse.completed(items));
       } catch (e) {
@@ -221,27 +222,27 @@ class ItemsByCategoryBloc {
     _allItemController.sink.add(ApiResponse.completed(_searchResult));
   }
   bool _search(LatestItem item, String txtSearch){
-    if (item.title.toLowerCase().contains(txtSearch.toLowerCase())) {
+    if (TiengViet.parse(item.title).toLowerCase().contains(txtSearch.toLowerCase())) {
       return true;
     }
     return false;
   }
 
-  void filterCity(String cityName){
-    var filterList = _originalItems.where((element) => element.province.toLowerCase() == cityName).toList();
-    _allItemController.sink.add(ApiResponse.completed(filterList));
-  }
-
-  void filterDistrict(String districtName){
-    var filterList = _originalItems.where((element) => element.district.toLowerCase() == districtName || element.district.toLowerCase() == 'quận $districtName').toList();
-    _allItemController.sink.add(ApiResponse.completed(filterList));
-  }
-
-  void filterTopic(String topicName){
-    var filterList = _originalItems.where((element) => element.topic.toLowerCase() == topicName.toLowerCase()).toList();
-    print("filter with $topicName ==> data: " + filterList.length.toString());
-    _allItemController.sink.add(ApiResponse.completed(filterList));
-  }
+  // void filterCity(String cityName){
+  //   var filterList = _originalItems.where((element) => element.province.toLowerCase() == cityName).toList();
+  //   _allItemController.sink.add(ApiResponse.completed(filterList));
+  // }
+  //
+  // void filterDistrict(String districtName){
+  //   var filterList = _originalItems.where((element) => element.district.toLowerCase() == districtName || element.district.toLowerCase() == 'quận $districtName').toList();
+  //   _allItemController.sink.add(ApiResponse.completed(filterList));
+  // }
+  //
+  // void filterTopic(String topicName){
+  //   var filterList = _originalItems.where((element) => element.topic.toLowerCase() == topicName.toLowerCase()).toList();
+  //   print("filter with $topicName ==> data: " + filterList.length.toString());
+  //   _allItemController.sink.add(ApiResponse.completed(filterList));
+  // }
 
   void dispose() {
     _allItemController?.close();

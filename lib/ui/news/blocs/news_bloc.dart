@@ -7,6 +7,7 @@ import 'package:conecapp/models/response/news_detail.dart';
 import 'package:conecapp/models/response/sport.dart';
 import 'package:conecapp/repositories/news/news_repository.dart';
 import 'package:flutter/foundation.dart';
+import 'package:tiengviet/tiengviet.dart';
 
 class NewsBloc {
   NewsRepository _repository;
@@ -65,15 +66,24 @@ class NewsBloc {
     }
   }
 
-  void requestGetAllAds() async {
-    _allAdsController.sink.add(ApiResponse.loading());
-    try {
-      final allAds = await _repository.fetchAllAds();
+  void requestGetAllAds(int page,
+      {String province, String district, String topic, String club}) async {
+    if (page != 0) {
+      final allAds = await _repository.fetchAllAds(page,
+          province: province, district: district, club: club, topic: topic);
       _originalSport.addAll(allAds);
       _allAdsController.sink.add(ApiResponse.completed(allAds));
-    } catch (e) {
-      _allAdsController.sink.addError(ApiResponse.error(e.toString()));
-      debugPrint(e.toString());
+    } else {
+      _allAdsController.sink.add(ApiResponse.loading());
+      try {
+        final allAds = await _repository.fetchAllAds(page,
+            province: province, district: district, club: club, topic: topic);
+        _originalSport.addAll(allAds);
+        _allAdsController.sink.add(ApiResponse.completed(allAds));
+      } catch (e) {
+        _allAdsController.sink.addError(ApiResponse.error(e.toString()));
+        debugPrint(e.toString());
+      }
     }
   }
 
@@ -87,15 +97,15 @@ class NewsBloc {
     }
   }
 
-  void clearSearch(){
+  void clearSearch() {
     _newsController.sink.add(ApiResponse.completed(_originalNews));
   }
 
-  void searchAction(String keyWord){
+  void searchAction(String keyWord) {
     print("keyword: " + keyWord);
     List<News> _searchResult = List<News>();
     _originalNews.forEach((news) {
-      if(_search(news, keyWord)){
+      if (_search(news, keyWord)) {
         print(news.title);
         _searchResult.add(news);
       }
@@ -103,22 +113,24 @@ class NewsBloc {
     _newsController.sink.add(ApiResponse.completed(_searchResult));
   }
 
-  bool _search(News news, String txtSearch){
-    if (news.title.toLowerCase().contains(txtSearch.toLowerCase())) {
+  bool _search(News news, String txtSearch) {
+    if (TiengViet.parse(news.title)
+        .toLowerCase()
+        .contains(txtSearch.toLowerCase())) {
       return true;
     }
     return false;
   }
 
-  void clearSportSearch(){
+  void clearSportSearch() {
     _allAdsController.sink.add(ApiResponse.completed(_originalSport));
   }
 
-  void searchSportAction(String keyWord){
+  void searchSportAction(String keyWord) {
     print("keyword: " + keyWord);
     List<Sport> _searchResult = List<Sport>();
     _originalSport.forEach((sport) {
-      if(_searchSport(sport, keyWord)){
+      if (_searchSport(sport, keyWord)) {
         print(sport.title);
         _searchResult.add(sport);
       }
@@ -126,20 +138,26 @@ class NewsBloc {
     _allAdsController.sink.add(ApiResponse.completed(_searchResult));
   }
 
-  bool _searchSport(Sport sport, String txtSearch){
+  bool _searchSport(Sport sport, String txtSearch) {
     if (sport.title.toLowerCase().contains(txtSearch.toLowerCase())) {
       return true;
     }
     return false;
   }
 
-  void filterCity(String cityName){
-    var filterList = _originalSport.where((element) => element.province.toLowerCase() == cityName).toList();
+  void filterCity(String cityName) {
+    var filterList = _originalSport
+        .where((element) => element.province.toLowerCase() == cityName)
+        .toList();
     _allAdsController.sink.add(ApiResponse.completed(filterList));
   }
 
-  void filterDistrict(String districtName){
-    var filterList = _originalSport.where((element) => element.district.toLowerCase() == districtName || element.district.toLowerCase() == 'quận $districtName').toList();
+  void filterDistrict(String districtName) {
+    var filterList = _originalSport
+        .where((element) =>
+            element.district.toLowerCase() == districtName ||
+            element.district.toLowerCase() == 'quận $districtName')
+        .toList();
     _allAdsController.sink.add(ApiResponse.completed(filterList));
   }
 

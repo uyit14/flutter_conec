@@ -1,3 +1,5 @@
+import 'package:conecapp/ui/address/province_page.dart';
+import 'package:conecapp/ui/address/ward_page.dart';
 import 'package:conecapp/ui/authen/pages/confirm_email_page.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
@@ -20,6 +22,7 @@ import 'package:conecapp/ui/profile/pages/change_password_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'ui/address/district_page.dart';
 import 'ui/authen/blocs/authen_bloc.dart';
 import 'ui/authen/pages/reset_pass_page.dart';
 import 'ui/conec_home_page.dart';
@@ -85,7 +88,10 @@ class ConecApp extends StatelessWidget {
         GoogleMapPage.ROUTE_NAME: (context) => GoogleMapPage(),
         ChangePassWordPage.ROUTE_NAME: (context) => ChangePassWordPage(),
         ResetPasswordPage.ROUTE_NAME: (context) => ResetPasswordPage(),
-        ConfirmEmailPage.ROUTE_NAME: (context) => ConfirmEmailPage()
+        ConfirmEmailPage.ROUTE_NAME: (context) => ConfirmEmailPage(),
+        ProvincePage.ROUTE_NAME: (context) => ProvincePage(),
+        DistrictPage.ROUTE_NAME: (context) => DistrictPage(),
+        WardPage.ROUTE_NAME: (context) => WardPage()
       },
     );
   }
