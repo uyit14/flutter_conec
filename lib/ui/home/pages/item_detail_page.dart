@@ -6,6 +6,7 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
@@ -36,6 +37,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   String title;
   double lat = 10.8483258;
   double lng = 106.7686185;
+  bool _firstCalculate = true;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
 
   String _token;
@@ -76,6 +78,14 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       return thumnail ?? "";
     }
     return img[0].fileName;
+  }
+
+  void getLatLng(String address) async{
+    final result = await Helper.getLatLng(address);
+    setState(() {
+      lat = result.lat;
+      lng = result.long;
+    });
   }
 
   @override
@@ -133,6 +143,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   case Status.COMPLETED:
                     ItemDetail itemDetail = snapshot.data.data;
                     phoneNumber = itemDetail.phoneNumber;
+                    if(_firstCalculate){
+                      getLatLng(itemDetail.address);
+                      _firstCalculate = false;
+                    }
                     return SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
@@ -485,7 +499,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   },
                                   child: Image.network(
                                     Helper.generateLocationPreviewImage(
-                                        lat: itemDetail.lat ?? lat, lng: itemDetail.lat ?? lng),
+                                        lat: itemDetail.lat != 0.0 ? itemDetail.lat : lat, lng: itemDetail.long != 0.0 ? itemDetail.long : lng),
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                   ),

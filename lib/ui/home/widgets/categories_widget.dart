@@ -5,6 +5,7 @@ import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/topic.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/pages/items_by_category_page.dart';
+import 'package:conecapp/ui/home/pages/nearby_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +48,50 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                       itemCount: topics.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                  NearByPage.ROUTE_NAME);
+                            },
+                            child: Container(
+                                width: 145,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(6),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      offset: Offset(
+                                          2, 2), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                margin: EdgeInsets.all(4),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    SizedBox(height: 4,),
+                                    Expanded(
+                                      child: Image.asset(
+                                        "assets/images/GoogleMap_Icon.png",
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      "Gần tôi",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    SizedBox(height: 4),
+                                  ],
+                                )),
+                          );
+                        }
                         return InkWell(
                           onTap: () {
                             Navigator.of(context).pushNamed(
@@ -57,7 +102,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                 });
                           },
                           child: Container(
-                            width: 145,
+                              width: 145,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(6),
@@ -110,7 +155,9 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                       onRetryPressed: () => _homeBloc.requestGetTopic());
               }
             }
-            return Container(child: Text("Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+            return Container(
+                child: Text(
+                    "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
           }),
     );
   }

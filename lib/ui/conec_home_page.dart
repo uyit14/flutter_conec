@@ -5,12 +5,14 @@ import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'home/blocs/home_bloc.dart';
 import 'home/pages/items_by_category_page.dart';
 import 'mypost/pages/mypost_page.dart';
 import 'news/pages/news_page.dart';
 import 'profile/pages/profile_pages.dart';
+import '../common/globals.dart' as globals;
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';
@@ -23,6 +25,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   PageController _pageController = PageController(initialPage: 0);
   int _selectedPageIndex = 0;
   int _initIndex = 0;
+  Geolocator _geoLocator = Geolocator()..forceAndroidLocationManager;
 
   String _token;
   void getToken() async{
@@ -58,7 +61,19 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     //detectToken();
+    _getCurrentLocation();
     getToken();
+  }
+
+  _getCurrentLocation() {
+    _geoLocator
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position position) {
+          globals.latitude = position.latitude;
+          globals.longitude = position.longitude;
+    }).catchError((e) {
+      print(e);
+    });
   }
 
   @override

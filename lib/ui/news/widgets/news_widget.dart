@@ -149,9 +149,10 @@ class _NewsWidgetState extends State<NewsWidget> {
                                                     errorWidget: (context, url,
                                                             error) =>
                                                         Image.asset(
-                                                            "assets/images/error.png"),
+                                                            "assets/images/error.png", height: 100, width: 120,),
                                                     fit: BoxFit.cover,
                                                     height: 100,
+                                                    width: 120,
                                                   ),
                                                 ),
                                               ),

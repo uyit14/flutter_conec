@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/models/response/latest_item.dart';
+import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/slider.dart';
 import 'package:conecapp/models/response/sport.dart';
@@ -38,8 +39,24 @@ class HomeBloc {
   StreamController();
   Stream<ApiResponse<List<News>>> get newsStream => _newsController.stream;
 
+  //nearby
+  StreamController<ApiResponse<NearbyResponse>> _nearByController =
+  StreamController();
+  Stream<ApiResponse<NearbyResponse>> get nearByStream => _nearByController.stream;
+
   HomeBloc() {
     _repository = HomeRemoteRepository();
+  }
+
+  void requestGetNearBy(double lat, double lng, int distance) async {
+    _nearByController.sink.add(ApiResponse.loading());
+    try {
+      final nearby = await _repository.fetchNearBy(lat, lng, distance);
+      _nearByController.sink.add(ApiResponse.completed(nearby));
+    } catch (e) {
+      _nearByController.sink.addError(ApiResponse.error(e.toString()));
+      debugPrint(e.toString());
+    }
   }
 
   void requestGetTopic() async {
@@ -103,5 +120,9 @@ class HomeBloc {
     _latestItemController.close();
     _sportController.close();
     _newsController.close();
+  }
+
+  void disposeNearBy(){
+    _nearByController.close();
   }
 }

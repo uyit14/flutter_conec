@@ -35,7 +35,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
 
   //List<Province> _listProvinces = List<Province>();
   List<Topic> _listTopic = List<Topic>();
-  //List<LatestItem> totalItemList = List<LatestItem>();
+  List<LatestItem> totalItemList = List<LatestItem>();
   var routeArgs;
   String categoryTitle;
   var categoryId;
@@ -75,24 +75,30 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     debugPrint("didChangeDependencies");
-    routeArgs =
-        ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    categoryTitle = routeArgs['title'] as String;
-    categoryId = routeArgs['id'] as String;
     _itemsByCategoryBloc = Provider.of<ItemsByCategoryBloc>(context);
     if (_firstTime) {
+      routeArgs =
+      ModalRoute.of(context).settings.arguments as Map<String, Object>;
+      categoryTitle = routeArgs['title'] as String;
+      categoryId = routeArgs['id'] as String;
       _itemsByCategoryBloc.requestGetAllItem(_currentPage, topic: categoryTitle??"");
+      _currentPage = 1;
     }
   }
 
   void _scrollListener() {
+    print(_scrollController.position.extentAfter);
     if (_scrollController.position.extentAfter < 500) {
       if (_shouldLoadMore) {
+        _shouldLoadMore = false;
         _itemsByCategoryBloc.requestGetAllItem(_currentPage,
             province: provinceData!= null ? provinceData.name : "",
             district: districtData!=null ? districtData.name : "",
-            topic: selectedCategory ?? "",
+            topic: selectedCategory ?? categoryTitle ?? "",
             club: "");
+        setState(() {
+          _currentPage++;
+        });
       }
     }
   }
@@ -134,7 +140,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   child: TextFormField(
                     maxLines: 1,
                     onChanged: (value) {
-                      //totalItemList.clear();
+                      totalItemList.clear();
                       _itemsByCategoryBloc.searchAction(value);
                     },
                     controller: _controller,
@@ -186,11 +192,11 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                             provinceData = value;
                           });
                           //TODO - call api with province here
-                          setState(() {
                             _currentPage = 0;
-                          });
-                          _itemsByCategoryBloc.requestGetAllItem(0,
-                              province: provinceData.name);
+                          totalItemList.clear();
+                          _itemsByCategoryBloc.requestGetAllItem(_currentPage,
+                              province: provinceData.name, topic: selectedCategory ?? categoryTitle ?? "");
+                          _currentPage = 1;
                         }
                       });
                     },
@@ -227,12 +233,12 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                               districtData = value;
                             });
                             //TODO - call api with district here
-                            setState(() {
                               _currentPage = 0;
-                            });
-                            _itemsByCategoryBloc.requestGetAllItem(0,
+                            totalItemList.clear();
+                            _itemsByCategoryBloc.requestGetAllItem(_currentPage,
                                 province: provinceData.name,
                                 district: districtData.name);
+                            _currentPage = 1;
                           }
                         });
                       } else {
@@ -266,13 +272,10 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   ),
                   SizedBox(width: 4),
                   InkWell(
-                    // onTap: () => showCategoryList(categoryId != null
-                    //     ? _listTopic.indexOf(_listTopic
-                    //         .firstWhere((element) => element.id == categoryId))
-                    //     : 0),
-                    onTap: (){
-                      //
-                    },
+                     onTap: () => showCategoryList(categoryId != null
+                         ? _listTopic.indexOf(_listTopic
+                             .firstWhere((element) => element.id == categoryId))
+                         : 0),
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
@@ -301,12 +304,12 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                       case Status.LOADING:
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
-                        List<LatestItem> totalItemList = snapshot.data.data;
+                        //List<LatestItem> totalItemList = snapshot.data.data;
                         if (snapshot.data.data.length > 0) {
                           print(
                               "at UI: " + snapshot.data.data.length.toString());
-                          //totalItemList.addAll(snapshot.data.data);
-                          _currentPage++;
+                          totalItemList.addAll(snapshot.data.data);
+                          _shouldLoadMore = true;
                         } else {
                           _shouldLoadMore = false;
                         }
@@ -560,31 +563,39 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   //   });
   // }
 
-  // void showCategoryList(int index) {
-  //   var controller = FixedExtentScrollController(initialItem: index);
-  //   showModalBottomSheet(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return Container(
-  //           color: Colors.white,
-  //           height: 250,
-  //           child: CupertinoPicker(
-  //             scrollController: controller,
-  //             onSelectedItemChanged: (value) {
-  //               setState(() {
-  //                 selectedCategory = _listTopic[value].title;
-  //               });
-  //             },
-  //             itemExtent: 32,
-  //             children: _listTopic.map((e) => Text(e.title)).toList(),
-  //           ),
-  //         );
-  //       }).then((value) {
-  //     if (selectedCategory == null) {
-  //       selectedCategory = _listTopic[0].title;
-  //     }
-  //     totalItemList.clear();
-  //     _itemsByCategoryBloc.filterTopic(selectedCategory);
-  //   });
-  // }
+   void showCategoryList(int index) {
+     var controller = FixedExtentScrollController(initialItem: index);
+     showModalBottomSheet(
+         context: context,
+         builder: (BuildContext context) {
+           return Container(
+             color: Colors.white,
+             height: 250,
+             child: CupertinoPicker(
+               scrollController: controller,
+               onSelectedItemChanged: (value) {
+                 setState(() {
+                   selectedCategory = _listTopic[value].title;
+                 });
+               },
+               itemExtent: 32,
+               children: _listTopic.map((e) => Text(e.title)).toList(),
+             ),
+           );
+         }).then((value) {
+       if (selectedCategory == null) {
+         selectedCategory = _listTopic[0].title;
+       }
+       totalItemList.clear();
+       setState(() {
+         _currentPage = 0;
+       });
+       _itemsByCategoryBloc.requestGetAllItem(_currentPage,
+           province: provinceData!= null ? provinceData.name : "",
+           district: districtData!=null ? districtData.name : "",
+           topic: selectedCategory ?? "",
+           club: "");
+       _currentPage = 1;
+     });
+   }
 }

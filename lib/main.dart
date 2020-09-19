@@ -8,6 +8,7 @@ import 'package:conecapp/ui/authen/pages/signup_page.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
+import 'package:conecapp/ui/home/pages/nearby_page.dart';
 import 'package:conecapp/ui/home/widgets/scroll_behavior.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/mypost/pages/edit_mypost_page.dart';
@@ -91,7 +92,8 @@ class ConecApp extends StatelessWidget {
         ConfirmEmailPage.ROUTE_NAME: (context) => ConfirmEmailPage(),
         ProvincePage.ROUTE_NAME: (context) => ProvincePage(),
         DistrictPage.ROUTE_NAME: (context) => DistrictPage(),
-        WardPage.ROUTE_NAME: (context) => WardPage()
+        WardPage.ROUTE_NAME: (context) => WardPage(),
+        NearByPage.ROUTE_NAME: (context) => NearByPage()
       },
     );
   }

@@ -145,22 +145,6 @@ class NewsBloc {
     return false;
   }
 
-  void filterCity(String cityName) {
-    var filterList = _originalSport
-        .where((element) => element.province.toLowerCase() == cityName)
-        .toList();
-    _allAdsController.sink.add(ApiResponse.completed(filterList));
-  }
-
-  void filterDistrict(String districtName) {
-    var filterList = _originalSport
-        .where((element) =>
-            element.district.toLowerCase() == districtName ||
-            element.district.toLowerCase() == 'quận $districtName')
-        .toList();
-    _allAdsController.sink.add(ApiResponse.completed(filterList));
-  }
-
   void dispose() {
     _newsController.close();
     _newsDetailController.close();

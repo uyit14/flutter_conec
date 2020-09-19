@@ -6,11 +6,14 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/sport.dart';
+import 'package:conecapp/ui/address/district_page.dart';
+import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SellWidget extends StatefulWidget {
   @override
@@ -20,21 +23,37 @@ class SellWidget extends StatefulWidget {
 class _SellWidgetState extends State<SellWidget> {
   NewsBloc _newsBloc = NewsBloc();
   TextEditingController _searchController = TextEditingController();
-  List<Province> _listProvinces = List<Province>();
+  List<Sport> totalItemList = List<Sport>();
+  ScrollController _scrollController;
+  //
+  Province provinceData;
+  Province districtData;
+  //
+  int _currentPage = 0;
+  bool _shouldLoadMore = true;
 
   @override
   void initState() {
     super.initState();
-    _postActionBloc = PostActionBloc();
-    _newsBloc.requestGetAllAds(0);
-    _postActionBloc.requestGetProvinces();
-    _postActionBloc.provincesStream.listen((event) {
-      switch (event.status) {
-        case Status.COMPLETED:
-          _listProvinces.addAll(event.data);
-          break;
+    _scrollController = new ScrollController()..addListener(_scrollListener);
+    _newsBloc.requestGetAllAds(_currentPage);
+    _currentPage = 1;
+  }
+
+  void _scrollListener() {
+    print(_scrollController.position.extentAfter);
+    if (_scrollController.position.extentAfter < 300) {
+      if (_shouldLoadMore) {
+        _shouldLoadMore = false;
+        _newsBloc.requestGetAllAds(_currentPage,
+            province: provinceData!= null ? provinceData.name : "",
+            district: districtData!=null ? districtData.name : "",
+            club: "");
+        setState(() {
+          _currentPage++;
+        });
       }
-    });
+    }
   }
 
   @override
@@ -112,8 +131,22 @@ class _SellWidgetState extends State<SellWidget> {
                 children: <Widget>[
                   SizedBox(width: 4),
                   InkWell(
-                    onTap: () =>
-                        showCityList(getIndex(_listProvinces, _selectCityId)),
+                    onTap: () {
+                      Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
+                          arguments: {'province': provinceData}).then((value) {
+                        if (value != null) {
+                          setState(() {
+                            provinceData = value;
+                          });
+                          //TODO - call api with province here
+                          _currentPage = 0;
+                          totalItemList.clear();
+                          _newsBloc.requestGetAllAds(_currentPage,
+                              province: provinceData.name);
+                          _currentPage = 1;
+                        }
+                      });
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
@@ -121,7 +154,9 @@ class _SellWidgetState extends State<SellWidget> {
                           borderRadius: BorderRadius.circular(8)),
                       child: Row(
                         children: <Widget>[
-                          Text(selectedCity ?? "Tỉnh/Thành phố"),
+                          Text(provinceData != null
+                              ? provinceData.name
+                              : "Tỉnh/Thành phố"),
                           Icon(Icons.keyboard_arrow_down)
                         ],
                       ),
@@ -129,23 +164,46 @@ class _SellWidgetState extends State<SellWidget> {
                   ),
                   SizedBox(width: 4),
                   InkWell(
-                    onTap: () => selectedCity != null
-                        ? showDistrictList(
-                            getIndex(_listProvinces, _selectDistrictId))
-                        : null,
+                    onTap: () {
+                      if (provinceData != null) {
+                        Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
+                            arguments: {
+                              'district': districtData,
+                              'provinceId': provinceData.id
+                            }).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              districtData = value;
+                            });
+                            //TODO - call api with district here
+                            _currentPage = 0;
+                            totalItemList.clear();
+                            _newsBloc.requestGetAllAds(_currentPage,
+                                province: provinceData.name,
+                                district: districtData.name);
+                            _currentPage = 1;
+                          }
+                        });
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "Vui lòng chọn tỉnh, thành");
+                      }
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
-                          color: selectedCity != null
+                          color: provinceData != null
                               ? Colors.white
                               : Colors.black12,
                           border: Border.all(width: 0.5, color: Colors.grey),
                           borderRadius: BorderRadius.circular(8)),
                       child: Row(
                         children: <Widget>[
-                          Text(selectedDistrict ?? "Quận/Huyện",
+                          Text(districtData != null
+                      ? districtData.name
+                          : "Quận/Huyện",
                               style: TextStyle(
-                                  color: selectedCity != null
+                                  color: provinceData != null
                                       ? Colors.black87
                                       : Colors.grey)),
                           Icon(Icons.keyboard_arrow_down)
@@ -166,10 +224,19 @@ class _SellWidgetState extends State<SellWidget> {
                       case Status.LOADING:
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
-                        List<Sport> sports = snapshot.data.data;
+                        //List<Sport> sports = snapshot.data.data;
+                        if (snapshot.data.data.length > 0) {
+                          print(
+                              "at UI: " + snapshot.data.data.length.toString());
+                          totalItemList.addAll(snapshot.data.data);
+                          _shouldLoadMore = true;
+                        } else {
+                          _shouldLoadMore = false;
+                        }
                         return ListView.builder(
                             shrinkWrap: true,
-                            itemCount: sports.length,
+                            controller: _scrollController,
+                            itemCount: totalItemList.length,
                             itemBuilder: (context, index) {
                               return ConstrainedBox(
                                 constraints: BoxConstraints(
@@ -179,7 +246,7 @@ class _SellWidgetState extends State<SellWidget> {
                                     Navigator.of(context).pushNamed(
                                         SellDetailPage.ROUTE_NAME,
                                         arguments: {
-                                          'postId': sports[index].postId,
+                                          'postId': totalItemList[index].postId,
                                         });
                                   },
                                   child: Card(
@@ -193,10 +260,10 @@ class _SellWidgetState extends State<SellWidget> {
                                             borderRadius:
                                                 BorderRadius.circular(6),
                                             child: Hero(
-                                              tag: sports[index].postId,
+                                              tag: totalItemList[index].postId,
                                               child: CachedNetworkImage(
                                                 imageUrl:
-                                                    sports[index].thumbnail,
+                                                totalItemList[index].thumbnail,
                                                 progressIndicatorBuilder:
                                                     (context, url,
                                                             downloadProgress) =>
@@ -207,7 +274,7 @@ class _SellWidgetState extends State<SellWidget> {
                                                 errorWidget: (context, url,
                                                         error) =>
                                                     Image.asset(
-                                                        "assets/images/error.png"),
+                                                        "assets/images/error.png", height: 100, width: 100,),
                                                 fit: BoxFit.cover,
                                                 width: 100,
                                                 height: 100,
@@ -224,7 +291,7 @@ class _SellWidgetState extends State<SellWidget> {
                                                   CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 Text(
-                                                  sports[index].title,
+                                                  totalItemList[index].title,
                                                   style: TextStyle(
                                                       fontSize: 18,
                                                       fontWeight:
@@ -235,8 +302,8 @@ class _SellWidgetState extends State<SellWidget> {
                                                 ),
                                                 SizedBox(height: 6),
                                                 Text(
-                                                  sports[index].price != null
-                                                      ? '${Helper.formatCurrency(sports[index].price)} VND'
+                                                  totalItemList[index].price != null
+                                                      ? '${Helper.formatCurrency(totalItemList[index].price)} VND'
                                                       : "Liên hệ",
                                                   style: TextStyle(
                                                       fontSize: 16,
@@ -248,7 +315,7 @@ class _SellWidgetState extends State<SellWidget> {
                                                 SizedBox(height: 6),
                                                 //TODO - add address
                                                 Text(
-                                                  '${sports[index].address ?? ""} ${sports[index].ward ?? ""} ${sports[index].district ?? ""} ${sports[index].province ?? ""}',
+                                                  '${totalItemList[index].address ?? ""} ${totalItemList[index].ward ?? ""} ${totalItemList[index].district ?? ""} ${totalItemList[index].province ?? ""}',
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       color: Colors.grey),
@@ -260,7 +327,7 @@ class _SellWidgetState extends State<SellWidget> {
                                                   child: Container(),
                                                 ),
                                                 Text(
-                                                  sports[index].approvedDate,
+                                                  totalItemList[index].approvedDate,
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     color: Colors.grey,
@@ -311,92 +378,7 @@ class _SellWidgetState extends State<SellWidget> {
 
   //bottom sheet
   var selectedCity;
-  String _selectCityId;
   var selectedDistrict;
   var selectedSellType;
-  String _selectDistrictId;
-  PostActionBloc _postActionBloc = PostActionBloc();
-  List<Province> _districtList = List<Province>();
 
-  int getIndex(List<Province> list, String selectedItemId) {
-    int index = list.indexOf(list.firstWhere(
-        (element) => element.id == selectedItemId,
-        orElse: () => list != null ? list[0] : null));
-    if (index == -1) {
-      return 0;
-    }
-    return selectedItemId != null ? index : 0;
-  }
-
-  void getDistrictByProvinceId(String id) {
-    _postActionBloc.requestGetDistricts(id);
-    _postActionBloc.districtsStream.listen((event) {
-      switch (event.status) {
-        case Status.COMPLETED:
-          _districtList = event.data;
-          break;
-      }
-    });
-  }
-
-  void showCityList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedCity = _listProvinces[value].name;
-                  _selectCityId = _listProvinces[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _listProvinces.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) {
-      selectedDistrict = null;
-      if (selectedCity == null) {
-        selectedCity = _listProvinces[0].name;
-        _selectCityId = _listProvinces[0].id;
-      }
-      _newsBloc.filterCity(selectedCity.toString().toLowerCase());
-      getDistrictByProvinceId(_selectCityId);
-    });
-  }
-
-  void showDistrictList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedDistrict = _districtList[value].name;
-                  _selectDistrictId = _districtList[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _districtList.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) {
-      if (selectedCity == null) {
-        selectedDistrict = _districtList[0].name;
-        _selectDistrictId = _districtList[0].id;
-      }
-      print(selectedDistrict);
-      _newsBloc.filterDistrict(selectedDistrict.toString().toLowerCase());
-    });
-  }
 }

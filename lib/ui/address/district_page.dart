@@ -133,7 +133,7 @@ class _DistrictPageState extends State<DistrictPage> {
                                           CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              provinces[index].name,
+                                              provinces[index].name ?? "",
                                               style: TextStyle(fontSize: 16),
                                             ),
                                             SizedBox(height: 12),

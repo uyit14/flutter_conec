@@ -6,6 +6,7 @@ import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/latest_response.dart';
+import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/news_reponse.dart';
 import 'package:conecapp/models/response/slider.dart';
@@ -101,4 +102,10 @@ class HomeRemoteRepository {
         body: jsonEncode(postId), headers: await Helper.header());
     return response['status'];
   }
+
+  Future<NearbyResponse> fetchNearBy(double lat, double lng, int distance)async{
+    final response = await _helper.get('/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance');
+    return NearbyResponse.fromJson(response);
+  }
+
 }

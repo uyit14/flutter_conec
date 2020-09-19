@@ -96,9 +96,10 @@ class _NewProductWidgetState extends State<NewProductWidget> {
                                               errorWidget: (context, url,
                                                       error) =>
                                                   Image.asset(
-                                                      "assets/images/error.png"),
+                                                      "assets/images/error.png", height: 100, width: 120,),
                                               fit: BoxFit.cover,
                                               height: 100,
+                                              width: 120,
                                             ),
                                           ),
                                         ),
