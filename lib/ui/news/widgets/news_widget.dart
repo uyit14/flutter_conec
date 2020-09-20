@@ -57,6 +57,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                     child: TextFormField(
                       maxLines: 1,
                       onChanged: (value){
+                        //totalItemList.clear();
                         _newsBloc.searchAction(value);
                       },
                       controller: _searchController,
@@ -96,7 +97,6 @@ class _NewsWidgetState extends State<NewsWidget> {
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
                         List<News> news = snapshot.data.data;
-                        print("at UI: " + news.length.toString());
                         return ListView.builder(
                             itemCount: news.length,
                             itemBuilder: (context, index) {

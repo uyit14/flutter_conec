@@ -10,6 +10,7 @@ import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/widgets/comment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
 
   String _token;
-  void getToken() async{
+
+  void getToken() async {
     String token = await Helper.getToken();
     setState(() {
       _token = token;
@@ -80,7 +82,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     return img[0].fileName;
   }
 
-  void getLatLng(String address) async{
+  void getLatLng(String address) async {
     final result = await Helper.getLatLng(address);
     setState(() {
       lat = result.lat;
@@ -143,8 +145,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   case Status.COMPLETED:
                     ItemDetail itemDetail = snapshot.data.data;
                     phoneNumber = itemDetail.phoneNumber;
-                    if(_firstCalculate){
-                      getLatLng(itemDetail.address);
+                    if (_firstCalculate) {
+                      getLatLng(itemDetail.getAddress);
                       _firstCalculate = false;
                     }
                     return SingleChildScrollView(
@@ -244,24 +246,38 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     children: <Widget>[
                                       Row(
                                         children: <Widget>[
-                                          CircleAvatar(
-                                            radius: 25,
-                                            backgroundImage: itemDetail
-                                                        .ownerAvatar !=
-                                                    null
-                                                ? NetworkImage(
-                                                    itemDetail.ownerAvatar)
-                                                : AssetImage(
-                                                    "assets/images/avatar.png"),
-                                          ),
-                                          SizedBox(width: 8),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width -
-                                                250,
-                                            child: Text(itemDetail.title,
-                                                style: TextStyle(fontSize: 18)),
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                  IntroducePage.ROUTE_NAME,
+                                                  arguments: {
+                                                    'clubId': itemDetail.ownerId
+                                                  });
+                                            },
+                                            child: Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 25,
+                                                  backgroundImage: itemDetail
+                                                              .ownerAvatar !=
+                                                          null
+                                                      ? NetworkImage(itemDetail
+                                                          .ownerAvatar)
+                                                      : AssetImage(
+                                                          "assets/images/avatar.png"),
+                                                ),
+                                                SizedBox(width: 8),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width -
+                                                      250,
+                                                  child: Text(itemDetail.title,
+                                                      style: TextStyle(
+                                                          fontSize: 18)),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           Spacer(),
                                           FlatButton.icon(
@@ -494,12 +510,18 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                           'lng': lng,
                                           'postId': itemDetail.postId,
                                           'title': itemDetail.title,
-                                          'address': '${itemDetail.address} ${itemDetail.ward} ${itemDetail.district} ${itemDetail.province}'
+                                          'address':
+                                              '${itemDetail.address} ${itemDetail.ward} ${itemDetail.district} ${itemDetail.province}'
                                         });
                                   },
                                   child: Image.network(
                                     Helper.generateLocationPreviewImage(
-                                        lat: itemDetail.lat != 0.0 ? itemDetail.lat : lat, lng: itemDetail.long != 0.0 ? itemDetail.long : lng),
+                                        lat: itemDetail.lat != 0.0
+                                            ? itemDetail.lat
+                                            : lat,
+                                        lng: itemDetail.long != 0.0
+                                            ? itemDetail.long
+                                            : lng),
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                   ),

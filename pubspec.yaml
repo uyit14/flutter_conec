@@ -54,7 +54,8 @@ dependencies:
   geocoder: ^0.2.1
   tiengviet: ^0.4.1
   geolocator: ^5.3.1
-
+  video_player: ^0.10.12+3
+  html_editor: ^1.0.1
 
 dev_dependencies:
   flutter_test:

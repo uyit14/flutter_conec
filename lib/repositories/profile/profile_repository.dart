@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 
@@ -30,4 +31,19 @@ class ProfileRepository {
     print(response);
     return ChangePassWordResponse.fromJson(response);
   }
+
+  Future<PageResponse> fetchPageInfo() async {
+    final response =
+    await _helper.get("/api/Account/GetMyPage", headers: await Helper.header());
+    print(response);
+    return PageResponse.fromJson(response);
+  }
+
+  Future<PageResponse> updatePageInfo(dynamic body) async {
+    final response = await _helper.post("/api/account/SavePage",
+        headers: await Helper.header(), body: body);
+    print(response);
+    return PageResponse.fromJson(response);
+  }
+
 }

@@ -3,6 +3,7 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
+import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/models/response/slider.dart';
 import 'package:conecapp/models/response/sport.dart';
 import 'package:conecapp/models/response/topic.dart';
@@ -44,8 +45,23 @@ class HomeBloc {
   StreamController();
   Stream<ApiResponse<NearbyResponse>> get nearByStream => _nearByController.stream;
 
+  //page response
+  StreamController<ApiResponse<Profile>> _pageIntroController =
+  StreamController();
+  Stream<ApiResponse<Profile>> get pageIntroStream => _pageIntroController.stream;
+
   HomeBloc() {
     _repository = HomeRemoteRepository();
+  }
+
+  void requestPageIntroduce(String clubId)async{
+    _pageIntroController.sink.add(ApiResponse.loading());
+    final _pageData = await _repository.fetchPageIntroduce(clubId);
+    if(_pageData.status){
+      _pageIntroController.sink.add(ApiResponse.completed(_pageData.profile));
+    }else{
+      _pageIntroController.sink.addError(ApiResponse.error(_pageData.error));
+    }
   }
 
   void requestGetNearBy(double lat, double lng, int distance) async {
@@ -124,5 +140,9 @@ class HomeBloc {
 
   void disposeNearBy(){
     _nearByController.close();
+  }
+
+  void disposePage(){
+    _pageIntroController.close();
   }
 }

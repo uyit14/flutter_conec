@@ -42,6 +42,8 @@ PODS:
   - FMDB/standard (2.7.5)
   - geocoder (0.0.1):
     - Flutter
+  - "geolocator (5.3.2+2)":
+    - Flutter
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps (< 3.10)
@@ -51,6 +53,8 @@ PODS:
   - GoogleMaps/Maps (2.7.0):
     - GoogleMaps/Base
   - image_picker (0.0.1):
+    - Flutter
+  - "location_permissions (3.0.0+1)":
     - Flutter
   - path_provider (0.0.1):
     - Flutter
@@ -83,8 +87,10 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoder (from `.symlinks/plugins/geocoder/ios`)
+  - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - share (from `.symlinks/plugins/share/ios`)
@@ -114,10 +120,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geocoder:
     :path: ".symlinks/plugins/geocoder/ios"
+  geolocator:
+    :path: ".symlinks/plugins/geolocator/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  location_permissions:
+    :path: ".symlinks/plugins/location_permissions/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   screen:
@@ -146,9 +156,11 @@ SPEC CHECKSUMS:
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
+  geolocator: f7622e0e7e2a24718285b73916d60c4a54b9f5b6
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
   GoogleMaps: f79af95cb24d869457b1f961c93d3ce8b2f3b848
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
+  location_permissions: 7e0f9aa0f60deb8ff93ddf0e2a164c7e8197bc94
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9

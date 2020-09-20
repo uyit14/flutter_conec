@@ -275,6 +275,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.14.0+3"
+  html_editor:
+    dependency: "direct main"
+    description:
+      name: html_editor
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   http:
     dependency: "direct main"
     description:
@@ -338,6 +345,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.8"
+  mime:
+    dependency: transitive
+    description:
+      name: mime
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.7"
   nested:
     dependency: transitive
     description:
@@ -673,12 +687,12 @@ packages:
     source: hosted
     version: "2.0.8"
   video_player:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: video_player
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.12"
+    version: "0.10.12+3"
   video_player_platform_interface:
     dependency: transitive
     description:

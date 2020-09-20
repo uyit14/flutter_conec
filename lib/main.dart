@@ -7,6 +7,7 @@ import 'package:conecapp/ui/authen/pages/register_page.dart';
 import 'package:conecapp/ui/authen/pages/signup_page.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/home/pages/nearby_page.dart';
 import 'package:conecapp/ui/home/widgets/scroll_behavior.dart';
@@ -18,8 +19,10 @@ import 'package:conecapp/ui/notify/pages/notify_page.dart';
 import 'package:conecapp/ui/others/open_letter_page.dart';
 import 'package:conecapp/ui/others/terms_condition_page.dart';
 import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
+import 'package:conecapp/ui/profile/pages/edit_info_page.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/change_password_page.dart';
+import 'package:conecapp/ui/profile/pages/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -93,7 +96,10 @@ class ConecApp extends StatelessWidget {
         ProvincePage.ROUTE_NAME: (context) => ProvincePage(),
         DistrictPage.ROUTE_NAME: (context) => DistrictPage(),
         WardPage.ROUTE_NAME: (context) => WardPage(),
-        NearByPage.ROUTE_NAME: (context) => NearByPage()
+        NearByPage.ROUTE_NAME: (context) => NearByPage(),
+        IntroducePage.ROUTE_NAME: (context) => IntroducePage(),
+        InfoPage.ROUTE_NAME: (context) => InfoPage(),
+        EditInfoPage.ROUTE_NAME: (context) => EditInfoPage(),
       },
     );
   }

@@ -83,11 +83,8 @@ class _SellWidgetState extends State<SellWidget> {
                     child: TextFormField(
                       maxLines: 1,
                       onChanged: (value) {
+                        totalItemList.clear();
                         _newsBloc.searchSportAction(value);
-                        setState(() {
-                          selectedCity = null;
-                          selectedDistrict = null;
-                        });
                       },
                       style: TextStyle(fontSize: 18),
                       controller: _searchController,

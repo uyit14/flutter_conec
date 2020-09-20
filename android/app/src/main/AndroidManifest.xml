@@ -7,9 +7,11 @@
          FlutterApplication and put your custom class here. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="Conec"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/launcher_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCB6MXwv-kgX2ecqg020GAIAV_VsHoKX8Y"/>

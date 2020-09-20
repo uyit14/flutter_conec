@@ -74,71 +74,73 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Xác nhận email")),
-      resizeToAvoidBottomPadding: false,
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 32),
-            TextFormField(
-              maxLines: 1,
-              controller: _codeController,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.text,
-              style: TextStyle(fontSize: 18),
-              decoration: InputDecoration(
-                  hintText: "Nhập mã code 5 ký tự",
-                  errorText: _codeError ? "Vui lòng nhập mã" : null,
-                  enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.red, width: 1)),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green, width: 1)),
-                  contentPadding: EdgeInsets.only(left: 8),
-                  suffixIcon: Icon(
-                    Icons.code,
-                    color: Colors.black,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text("Xác nhận email")),
+        resizeToAvoidBottomPadding: false,
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 32),
+              TextFormField(
+                maxLines: 1,
+                controller: _codeController,
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.text,
+                style: TextStyle(fontSize: 18),
+                decoration: InputDecoration(
+                    hintText: "Nhập mã code 5 ký tự",
+                    errorText: _codeError ? "Vui lòng nhập mã" : null,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 1)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 1)),
+                    contentPadding: EdgeInsets.only(left: 8),
+                    suffixIcon: Icon(
+                      Icons.code,
+                      color: Colors.black,
+                    ),
+                    border: const OutlineInputBorder()),
+              ),
+              SizedBox(height: 8),
+              _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : Container(),
+              _apiErrorMess != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(_apiErrorMess,
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.red,
+                              fontSize: 16)),
+                    )
+                  : Container(),
+              SizedBox(height: 24),
+              InkWell(
+                onTap: confirmEmail,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  border: const OutlineInputBorder()),
-            ),
-            SizedBox(height: 8),
-            _isLoading
-                ? Center(child: CircularProgressIndicator())
-                : Container(),
-            _apiErrorMess != null
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Text(_apiErrorMess,
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            color: Colors.red,
-                            fontSize: 16)),
-                  )
-                : Container(),
-            SizedBox(height: 24),
-            InkWell(
-              onTap: confirmEmail,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                height: 45,
-                width: double.infinity,
-                child: Center(
-                  child: Text(
-                    'Xác nhận',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500),
+                  height: 45,
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      'Xác nhận',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

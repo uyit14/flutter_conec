@@ -581,7 +581,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       child: Text("OK"),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(0);
                       })
                 ]));
   }

@@ -102,11 +102,10 @@ class NewsBloc {
   }
 
   void searchAction(String keyWord) {
-    print("keyword: " + keyWord);
     List<News> _searchResult = List<News>();
+    _newsController.sink.add(ApiResponse.completed(_searchResult));
     _originalNews.forEach((news) {
       if (_search(news, keyWord)) {
-        print(news.title);
         _searchResult.add(news);
       }
     });
@@ -127,11 +126,9 @@ class NewsBloc {
   }
 
   void searchSportAction(String keyWord) {
-    print("keyword: " + keyWord);
     List<Sport> _searchResult = List<Sport>();
     _originalSport.forEach((sport) {
       if (_searchSport(sport, keyWord)) {
-        print(sport.title);
         _searchResult.add(sport);
       }
     });
