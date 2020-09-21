@@ -5,10 +5,10 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
+import 'package:conecapp/ui/profile/pages/video_player_page.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:video_player/video_player.dart';
 
 import 'item_detail_page.dart';
 
@@ -21,7 +21,6 @@ class IntroducePage extends StatefulWidget {
 
 class _IntroducePageState extends State<IntroducePage> {
   HomeBloc _homeBloc = HomeBloc();
-  VideoPlayerController _controller;
 
   @override
   void didChangeDependencies() {
@@ -48,14 +47,6 @@ class _IntroducePageState extends State<IntroducePage> {
                       return UILoading();
                     case Status.COMPLETED:
                       Profile profile = snapshot.data.data;
-                      //
-                      _controller =
-                          VideoPlayerController.network("http://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4")
-                            ..initialize().then((_) {
-                              // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-                              setState(() {});
-                              print("initVideo");
-                            });
                       return Column(
                         children: <Widget>[
                           Stack(
@@ -221,34 +212,39 @@ class _IntroducePageState extends State<IntroducePage> {
                                 Text("Thư viện video",
                                     style: AppTheme.profileTitle),
                                 SizedBox(height: 8),
-                                Container(
+                                profile.videoLink == null
+                                    ? Container(
+                                  color: Colors.black12,
+                                  height: 200,
                                   child: Stack(
                                     children: <Widget>[
-                                      _controller.value.initialized ? AspectRatio(
-                                          aspectRatio:
-                                              _controller.value.aspectRatio,
-                                          child: VideoPlayer(_controller)) : Container(),
+                                      // Center(
+                                      //   child: Image.asset(
+                                      //       "assets/images/placeholder.png",
+                                      //      fit: BoxFit.cover,),
+                                      // ),
                                       Align(
                                         alignment: Alignment.center,
-                                        child: IconButton(
-                                          icon: Icon(
-                                            _controller.value.isPlaying
-                                                ? Icons.pause
-                                                : Icons.play_arrow,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _controller.value.isPlaying
-                                                  ? _controller.pause()
-                                                  : _controller.play();
-                                            });
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                                VideoPlayerPage.ROUTE_NAME,
+                                                arguments: {
+                                                  "videoLink":
+                                                  profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                                });
                                           },
+                                          child: Icon(
+                                            Icons.play_arrow,
+                                            color: Colors.black,
+                                            size: 58,
+                                          ),
                                         ),
                                       )
                                     ],
                                   ),
-                                ),
+                                )
+                                    : Container(),
                                 Container(
                                   height: 0.5,
                                   color: Colors.black12,
