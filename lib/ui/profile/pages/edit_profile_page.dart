@@ -36,7 +36,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String _address;
   String _email;
   String _phone;
-  bool isClub;
+  int _selectedType;
   String _type;
   bool _isLoading = false;
   List<Province> _listProvinces = List<Province>();
@@ -85,11 +85,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
      _phone = profile.phoneNumber;
      _type = profile.type;
      if (profile.type != null && profile.type == "Club") {
-       isClub = true;
+       _selectedType = 0;
        _type = "Club";
-     } else {
+     } else if (profile.type == "Personal") {
        _type = "Personal";
-       isClub = false;
+       _selectedType = 1;
+     }else{
+       _type = "Trainer";
+       _selectedType = 2;
      }
      _isApiCall = false;
    }
@@ -182,51 +185,72 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              FlatButton.icon(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color:
-                                              isClub ? Colors.red : Colors.grey,
-                                          width: 1,
-                                          style: BorderStyle.solid),
-                                      borderRadius: BorderRadius.circular(50)),
-                                  onPressed: () {
-                                    setState(() {
-                                      _type = "Club";
-                                      isClub = true;
-                                    });
-                                  },
-                                  textColor: isClub ? Colors.red : Colors.grey,
-                                  icon: Icon(Icons.group),
-                                  label: Text("Câu lạc bộ",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold))),
-                              FlatButton.icon(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: !isClub
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          width: 1,
-                                          style: BorderStyle.solid),
-                                      borderRadius: BorderRadius.circular(50)),
-                                  textColor: !isClub ? Colors.red : Colors.grey,
-                                  onPressed: () {
-                                    setState(() {
-                                      _type = "Personal";
-                                      isClub = false;
-                                    });
-                                  },
-                                  icon: Icon(Icons.person),
-                                  label: Text("Cá nhân",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold)))
-                            ],
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                FlatButton(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color:
+                                            _selectedType == 0 ? Colors.red : Colors.grey,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius: BorderRadius.circular(50)),
+                                    onPressed: () {
+                                      setState(() {
+                                        _type = "Club";
+                                        _selectedType = 0;
+                                      });
+                                    },
+                                    textColor: _selectedType == 0 ? Colors.red : Colors.grey,
+                                    child: Text("Câu lạc bộ",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold))),
+                                FlatButton(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: _selectedType == 1
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius: BorderRadius.circular(50)),
+                                    textColor: _selectedType == 1 ? Colors.red : Colors.grey,
+                                    onPressed: () {
+                                      setState(() {
+                                        _type = "Personal";
+                                        _selectedType = 1;
+                                      });
+                                    },
+                                    child: Text("Cá nhân",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold))),
+                                FlatButton(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: _selectedType == 2
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius: BorderRadius.circular(50)),
+                                    textColor: _selectedType == 2 ? Colors.red : Colors.grey,
+                                    onPressed: () {
+                                      setState(() {
+                                        _type = "Trainer";
+                                       _selectedType = 2;
+                                      });
+                                    },
+                                    child: Text("Huấn luyện viên",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold)))
+                              ],
+                            ),
                           ),
                           SizedBox(height: 8),
                           TextFormField(
@@ -242,7 +266,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               print(_name);
                             },
                             decoration: InputDecoration(
-                                hintText: isClub ? "Tên CLB" : 'Họ và tên',
+                                hintText: _selectedType == 0 ? "Tên CLB" : 'Họ và tên',
                                 //errorText: _nameValidate ? "Vui lòng nhập họ tên" : null,
                                 focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
@@ -255,7 +279,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 border: const OutlineInputBorder()),
                           ),
                           SizedBox(height: 8),
-                          isClub
+                          _selectedType == 0
                               ? Container()
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

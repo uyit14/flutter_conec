@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
@@ -9,6 +10,7 @@ import 'package:conecapp/ui/profile/pages/video_player_page.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'item_detail_page.dart';
 
@@ -21,6 +23,21 @@ class IntroducePage extends StatefulWidget {
 
 class _IntroducePageState extends State<IntroducePage> {
   HomeBloc _homeBloc = HomeBloc();
+
+  String _token;
+
+  void getToken() async {
+    String token = await Helper.getToken();
+    setState(() {
+      _token = token;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
 
   @override
   void didChangeDependencies() {
@@ -78,6 +95,136 @@ class _IntroducePageState extends State<IntroducePage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                        profile.ratingAvg.toString() ??
+                                            "0", style: TextStyle(fontSize: 18),),
+                                    Icon(Icons.star, color: Colors.amber),
+//                                    Text(
+//                                        "(${profile.ratingCount ?? "0"} đánh giá)"),
+                                    SizedBox(width: 32,),
+                                    FlatButton.icon(
+                                        padding: EdgeInsets.all(0),
+                                        onPressed: () {
+                                          if (_token == null) {
+                                            Helper
+                                                .showAuthenticationDialog(
+                                                context);
+                                          } else {
+                                            showModalBottomSheet(
+                                                context: context,
+                                                builder: (BuildContext
+                                                context) {
+                                                  int rating = 5;
+                                                  return Container(
+                                                    height: 150,
+                                                    alignment:
+                                                    Alignment
+                                                        .center,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                      children: <
+                                                          Widget>[
+                                                        RatingBar(
+                                                          initialRating:
+                                                          5,
+                                                          minRating:
+                                                          1,
+                                                          direction: Axis
+                                                              .horizontal,
+                                                          allowHalfRating:
+                                                          true,
+                                                          itemCount:
+                                                          5,
+                                                          itemPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal:
+                                                              4.0),
+                                                          itemBuilder:
+                                                              (context,
+                                                              _) =>
+                                                              Icon(
+                                                                Icons
+                                                                    .star,
+                                                                color: Colors
+                                                                    .amber,
+                                                              ),
+                                                          onRatingUpdate:
+                                                              (value) {
+                                                            rating = value
+                                                                .toInt();
+                                                          },
+                                                        ),
+                                                        InkWell(
+                                                          onTap: () {
+//                                                            print(
+//                                                                "uprating");
+//                                                            _itemsByCategoryBloc
+//                                                                .requestRating(
+//                                                                jsonEncode({
+//                                                                  "postId":
+//                                                                  profile.id,
+//                                                                  "rating":
+//                                                                  rating
+//                                                                }));
+                                                            Navigator.of(
+                                                                context)
+                                                                .pop();
+                                                          },
+                                                          child:
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                                color: Colors
+                                                                    .white,
+                                                                borderRadius: BorderRadius.circular(
+                                                                    8),
+                                                                border: Border.all(
+                                                                    width: 1,
+                                                                    color: Colors.grey)),
+                                                            height:
+                                                            45,
+                                                            width:
+                                                            250,
+                                                            child:
+                                                            Center(
+                                                              child:
+                                                              Text(
+                                                                'Gửi đánh giá',
+                                                                textAlign:
+                                                                TextAlign.center,
+                                                                style: TextStyle(
+                                                                    fontSize: 18,
+                                                                    color: Colors.black87,
+                                                                    fontWeight: FontWeight.w500),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                })
+                                                .then((value) =>
+                                                debugPrint(
+                                                    "selectedCity"));
+                                          }
+                                        },
+                                        icon: Icon(
+                                          Icons.rate_review,
+                                          color: Colors.blue,
+                                        ),
+                                        label: Text(
+                                          "Đánh giá",
+                                          style: TextStyle(
+                                              color: Colors.blue,
+                                              fontSize: 18),
+                                        ))
+                                  ],
+                                ),
                                 Text(
                                     profile.type == "Club"
                                         ? "Tên CLB"
