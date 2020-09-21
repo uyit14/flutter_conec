@@ -10,6 +10,9 @@ import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/models/request/post_action_request.dart';
 import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/topic.dart';
+import 'package:conecapp/ui/address/district_page.dart';
+import 'package:conecapp/ui/address/province_page.dart';
+import 'package:conecapp/ui/address/ward_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
@@ -48,6 +51,9 @@ class _PostActionPageState extends State<PostActionPage> {
   TextEditingController _conditionController = TextEditingController();
   TextEditingController _usesController = TextEditingController();
   List<Province> _listProvinces = List<Province>();
+  Province provinceData;
+  Province districtData;
+  Province wardData;
 
   ZefyrController _controller;
   FocusNode _focusNode = FocusNode();
@@ -382,8 +388,14 @@ class _PostActionPageState extends State<PostActionPage> {
                         children: <Widget>[
                           InkWell(
                             onTap: () {
-                              showCityList(
-                                  getIndex(_listProvinces, _selectCityId));
+                              Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
+                                  arguments: {'province': provinceData}).then((value) {
+                                if (value != null) {
+                                  setState(() {
+                                    provinceData = value;
+                                  });
+                                }
+                              });
                             },
                             child: Card(
                               margin: EdgeInsets.symmetric(horizontal: 0),
@@ -396,7 +408,9 @@ class _PostActionPageState extends State<PostActionPage> {
                                   children: <Widget>[
                                     Icon(Icons.location_city),
                                     Text(
-                                      selectedCity ?? "Tỉnh/Thành phố",
+                                      provinceData != null
+                                          ? provinceData.name
+                                          : "Tỉnh/Thành phố",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                           fontSize: 16,
@@ -411,10 +425,24 @@ class _PostActionPageState extends State<PostActionPage> {
                           ),
                           SizedBox(height: 8),
                           InkWell(
-                            onTap: () => selectedCity != null
-                                ? showDistrictList(
-                                    getIndex(_districtList, _selectDistrictId))
-                                : null,
+                            onTap: () {
+                              if (provinceData != null) {
+                                Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
+                                    arguments: {
+                                      'district': districtData,
+                                      'provinceId': provinceData.id
+                                    }).then((value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      districtData = value;
+                                    });
+                                  }
+                                });
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg: "Vui lòng chọn tỉnh, thành");
+                              }
+                            },
                             child: Card(
                               margin: EdgeInsets.symmetric(horizontal: 0),
                               child: Padding(
@@ -426,7 +454,9 @@ class _PostActionPageState extends State<PostActionPage> {
                                   children: <Widget>[
                                     Icon(Icons.home),
                                     Text(
-                                      selectedDistrict ?? "Quận/Huyện",
+                                      districtData != null
+                                          ? districtData.name
+                                          : "Quận/Huyện",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                           fontSize: 16,
@@ -434,7 +464,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                     ),
                                     Text("Thay đổi",
                                         style: AppTheme.changeTextStyle(
-                                            selectedCity != null))
+                                            provinceData != null))
                                   ],
                                 ),
                               ),
@@ -442,10 +472,23 @@ class _PostActionPageState extends State<PostActionPage> {
                           ),
                           SizedBox(height: 8),
                           InkWell(
-                            onTap: () => selectedDistrict != null
-                                ? showWardList(
-                                    getIndex(_wardList, _selectWardId))
-                                : null,
+                            onTap: () {
+                              if (districtData != null) {
+                                Navigator.of(context).pushNamed(WardPage.ROUTE_NAME,
+                                    arguments: {
+                                      'districtId': districtData.id
+                                    }).then((value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      wardData = value;
+                                    });
+                                  }
+                                });
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg: "Vui lòng chọn quận, huyện");
+                              }
+                            },
                             child: Card(
                               margin: EdgeInsets.symmetric(horizontal: 0),
                               child: Padding(
@@ -457,7 +500,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                   children: <Widget>[
                                     Icon(Icons.wallpaper),
                                     Text(
-                                      selectedWard ?? "Phường/Xã",
+                                      wardData!=null ? wardData.name : "Phường/Xã",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                           fontSize: 16,
@@ -465,7 +508,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                     ),
                                     Text("Thay đổi",
                                         style: AppTheme.changeTextStyle(
-                                            selectedDistrict != null))
+                                            districtData != null))
                                   ],
                                 ),
                               ),
@@ -647,9 +690,9 @@ class _PostActionPageState extends State<PostActionPage> {
     }
   }
   void doPostAction() async{
-    final result = selectedCity != null
+    final result = provinceData.name != null
         ? await Helper.getLatLng(
-        '$_addressController.text, $selectedWard, $selectedDistrict, $selectedCity')
+        '$_addressController.text, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
         : LatLong(lat: 0.0, long: 0.0);
     print(result.lat.toString() + "----" + result.long.toString());
     PostActionRequest _postActionRequest = PostActionRequest(
@@ -663,9 +706,9 @@ class _PostActionPageState extends State<PostActionPage> {
             : null,
         topicId: _selectedCategoryId,
         images: base64ListImage(_images),
-        province: selectedCity,
-        district: selectedDistrict,
-        ward: selectedWard,
+        province: provinceData.name,
+        district: districtData.name,
+        ward: wardData.name,
         address: _addressController.text,
         joiningFee: getJoiningFree(),
         price: getPrice(),
@@ -743,125 +786,5 @@ class _PostActionPageState extends State<PostActionPage> {
                     onPressed: () => Navigator.of(context).pop())
               ],
             ));
-  }
-
-  var selectedCity;
-  String _selectCityId;
-  var selectedDistrict;
-  String _selectDistrictId;
-  List<Province> _districtList = List<Province>();
-  List<Province> _wardList = List<Province>();
-  var selectedWard;
-  String _selectWardId;
-
-  //
-  int getIndex(List<Province> list, String selectedItemId) {
-    int index = list.indexOf(list.firstWhere(
-        (element) => element.id == selectedItemId,
-        orElse: () => list != null ? list[0] : null));
-    if (index == -1) {
-      return 0;
-    }
-    return selectedItemId != null ? index : 0;
-  }
-
-  void showCityList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedCity = _listProvinces[value].name;
-                  _selectCityId = _listProvinces[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _listProvinces.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) {
-      getDistrictByProvinceId(
-          _selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
-      print(_selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
-    });
-  }
-
-  void getDistrictByProvinceId(String id) {
-    _postActionBloc.requestGetDistricts(id);
-    _postActionBloc.districtsStream.listen((event) {
-      switch (event.status) {
-        case Status.COMPLETED:
-          _districtList = event.data;
-          break;
-      }
-    });
-  }
-
-  void showDistrictList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedDistrict = _districtList[value].name;
-                  _selectDistrictId = _districtList[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _districtList.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) {
-      getWardByDistrictId(
-          _selectDistrictId ?? "83e9ce08-92da-4208-b178-2beb51a405ad");
-      print(_selectDistrictId ?? "83e9ce08-92da-4208-b178-2beb51a405ad");
-    });
-  }
-
-  void getWardByDistrictId(String id) {
-    _postActionBloc.requestGetWards(id);
-    _postActionBloc.wardsStream.listen((event) {
-      switch (event.status) {
-        case Status.COMPLETED:
-          print("data: " + event.data.length.toString());
-          _wardList = event.data;
-          break;
-      }
-    });
-  }
-
-  void showWardList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedWard = _wardList[value].name;
-                  _selectWardId = _wardList[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _wardList.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) => debugPrint(_selectWardId));
   }
 }

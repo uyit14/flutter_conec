@@ -33,6 +33,7 @@ import 'ui/conec_home_page.dart';
 import 'ui/home/pages/items_by_category_page.dart';
 import 'ui/mypost/pages/post_action_page.dart';
 import 'ui/onboarding/onboarding_screen.dart';
+import 'ui/profile/pages/video_player_page.dart';
 import 'ui/search/pages/search_page.dart';
 import 'ui/splash/splash_screen.dart';
 
@@ -100,6 +101,7 @@ class ConecApp extends StatelessWidget {
         IntroducePage.ROUTE_NAME: (context) => IntroducePage(),
         InfoPage.ROUTE_NAME: (context) => InfoPage(),
         EditInfoPage.ROUTE_NAME: (context) => EditInfoPage(),
+        VideoPlayerPage.ROUTE_NAME: (context) => VideoPlayerPage(),
       },
     );
   }

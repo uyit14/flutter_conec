@@ -28,6 +28,7 @@ class AdsDetail {
   String approvedDate;
   String owner;
   String ownerAvatar;
+  String ownerId;
   int ratingCount;
   int ratingAvg;
   bool isRating;
@@ -48,6 +49,9 @@ class AdsDetail {
   String district;
   String ward;
   String address;
+  String getAddress;
+  double lat;
+  double long;
   int joiningFee;
   String uses;
   int price;
@@ -62,6 +66,7 @@ class AdsDetail {
       this.approvedDate,
       this.owner,
       this.ownerAvatar,
+        this.ownerId,
       this.ratingCount,
       this.ratingAvg,
       this.isRating,
@@ -82,6 +87,9 @@ class AdsDetail {
       this.district,
       this.ward,
       this.address,
+        this.getAddress,
+        this.lat,
+        this.long,
       this.joiningFee,
       this.uses,
       this.price,
@@ -96,6 +104,7 @@ class AdsDetail {
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
     ownerAvatar = json['ownerAvatar'] !=null ? "http://149.28.140.240:8088" + json['ownerAvatar'] : null;
+    ownerId = json['ownerId'] ?? null;
     ratingCount = json['ratingCount'];
     ratingAvg = json['ratingAvg'];
     isRating = json['isRating'];
@@ -121,6 +130,9 @@ class AdsDetail {
     district = json['district'];
     ward = json['ward'];
     address = json['address'];
+    getAddress = json['getAddress'];
+    lat = double.parse(json['lat']);
+    long = double.parse(json['lng']);
     joiningFee = json['joiningFee'];
     uses = json['uses'];
     price = json['price'];

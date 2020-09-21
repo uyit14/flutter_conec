@@ -6,9 +6,9 @@ import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_info_page.dart';
+import 'package:conecapp/ui/profile/pages/video_player_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:video_player/video_player.dart';
 
 class InfoPage extends StatefulWidget {
   static const ROUTE_NAME = "/page-info";
@@ -19,7 +19,6 @@ class InfoPage extends StatefulWidget {
 
 class _InfoPageState extends State<InfoPage> {
   ProfileBloc _profileBloc = ProfileBloc();
-  VideoPlayerController _controller;
   Profile _profile = Profile();
 
   @override
@@ -44,17 +43,10 @@ class _InfoPageState extends State<InfoPage> {
                   case Status.COMPLETED:
                     Profile profile = snapshot.data.data;
                     _profile = snapshot.data.data;
-                    //
-                    _controller = VideoPlayerController.network(
-                        "http://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4")
-                      ..initialize().then((_) {
-                        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-                        setState(() {});
-                        print("initVideo");
-                      });
                     return Container(
                       width: double.infinity,
-                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -117,36 +109,39 @@ class _InfoPageState extends State<InfoPage> {
                           ),
                           Text("Thư viện video", style: AppTheme.profileTitle),
                           SizedBox(height: 8),
-                          Container(
-                            child: Stack(
-                              children: <Widget>[
-                                _controller.value.initialized
-                                    ? AspectRatio(
-                                        aspectRatio:
-                                            _controller.value.aspectRatio,
-                                        child: VideoPlayer(_controller))
-                                    : Container(),
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: IconButton(
-                                    icon: Icon(
-                                      _controller.value.isPlaying
-                                          ? Icons.pause
-                                          : Icons.play_arrow,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _controller.value.isPlaying
-                                            ? _controller.pause()
-                                            : _controller.play();
-                                      });
-                                    },
+                          _profile.videoLink == null
+                              ? Container(
+                                  color: Colors.black12,
+                                  height: 200,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      // Center(
+                                      //   child: Image.asset(
+                                      //       "assets/images/placeholder.png",
+                                      //      fit: BoxFit.cover,),
+                                      // ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                                VideoPlayerPage.ROUTE_NAME,
+                                                arguments: {
+                                                  "videoLink":
+                                                      _profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                                });
+                                          },
+                                          child: Icon(
+                                            Icons.play_arrow,
+                                            color: Colors.black,
+                                            size: 58,
+                                          ),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                 )
-                              ],
-                            ),
-                          ),
+                              : Container(),
                         ],
                       ),
                     );
@@ -160,8 +155,9 @@ class _InfoPageState extends State<InfoPage> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.of(context)
-              .pushNamed(EditInfoPage.ROUTE_NAME, arguments: _profile).then((value) {
-            if(value==0){
+              .pushNamed(EditInfoPage.ROUTE_NAME, arguments: _profile)
+              .then((value) {
+            if (value == 0) {
               print("0");
               _profileBloc.requestGetPage();
             }

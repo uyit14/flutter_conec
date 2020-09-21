@@ -5,9 +5,11 @@ import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/ads_detail.dart';
-import 'package:conecapp/ui/home/widgets/comment_widget.dart';
+import 'package:conecapp/ui/home/pages/google_map_page.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
+import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
@@ -24,6 +26,11 @@ class _SellDetailPageState extends State<SellDetailPage> {
   String postId;
   NewsBloc _newsBloc = NewsBloc();
   String phoneNumber;
+  String _currentImageUrl;
+  int _currentIndex = 0;
+  double lat = 10.8483258;
+  double lng = 106.7686185;
+  bool _firstCalculate = true;
 
   @override
   void didChangeDependencies() {
@@ -34,9 +41,24 @@ class _SellDetailPageState extends State<SellDetailPage> {
     _newsBloc.requestAdsDetail(postId);
   }
 
+  void getLatLng(String address) async {
+    final result = await Helper.getLatLng(address);
+    setState(() {
+      lat = result.lat;
+      lng = result.long;
+    });
+  }
+
   void doReload() {
     debugPrint("doReload");
     _newsBloc.requestAdsDetail(postId);
+  }
+
+  String getImageUrl(String thumnail, List<myImage.Image> img) {
+    if (img == null || img.length == 0) {
+      return thumnail ?? "";
+    }
+    return img[0].fileName;
   }
 
 
@@ -83,6 +105,10 @@ class _SellDetailPageState extends State<SellDetailPage> {
                     return UILoading(loadingMessage: snapshot.data.message);
                   case Status.COMPLETED:
                     AdsDetail adsDetail = snapshot.data.data;
+                    if (_firstCalculate) {
+                      getLatLng(adsDetail.getAddress);
+                      _firstCalculate = false;
+                    }
                     phoneNumber = adsDetail.phoneNumber;
                     return SingleChildScrollView(
                       child: Column(
@@ -90,7 +116,10 @@ class _SellDetailPageState extends State<SellDetailPage> {
                           Hero(
                             tag: postId,
                             child: CachedNetworkImage(
-                              imageUrl: adsDetail.thumbnail ?? "",
+                              imageUrl: _currentImageUrl ??
+                                  getImageUrl(
+                                      adsDetail.thumbnail, adsDetail.images),
+                              key: new ValueKey<String>(_currentImageUrl ?? ""),
                               progressIndicatorBuilder:
                                   (context, url, downloadProgress) =>
                                       CircularProgressIndicator(
@@ -102,6 +131,61 @@ class _SellDetailPageState extends State<SellDetailPage> {
                               height: 225,
                             ),
                           ),
+                          if (adsDetail.images.length > 0)
+                            Container(
+                              height: 55,
+                              margin: EdgeInsets.only(top: 4),
+                              child: Center(
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: adsDetail.images.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            _currentImageUrl = adsDetail
+                                                .images[index].fileName;
+                                            _currentIndex = index;
+                                          });
+                                        },
+                                        child: Container(
+                                          decoration: _currentIndex == index
+                                              ? BoxDecoration(
+                                            border: Border.all(
+                                                width: 2,
+                                                color: Colors.green),
+                                            borderRadius:
+                                            BorderRadius.all(
+                                                Radius.circular(8)),
+                                          )
+                                              : null,
+                                          margin: EdgeInsets.only(right: 2),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(6)),
+                                            child: CachedNetworkImage(
+                                              imageUrl: adsDetail
+                                                  .images[index].fileName,
+                                              placeholder: (context, url) =>
+                                                  Image.asset(
+                                                      "assets/images/placeholder.png"),
+                                              errorWidget: (context, url,
+                                                  error) =>
+                                                  Image.asset(
+                                                      "assets/images/error.png"),
+                                              fit: BoxFit.cover,
+                                              width: 55,
+                                              height: 55,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              ),
+                            )
+                          else
+                            Container(),
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
@@ -134,18 +218,31 @@ class _SellDetailPageState extends State<SellDetailPage> {
 //                                              CachedNetworkImageProvider(
 //                                                  adsDetail.ownerAvatar ?? ""),
 //                                        ),
-                                        CircleAvatar(
-                                          radius: 25,
-                                          backgroundImage: adsDetail.ownerAvatar !=
-                                              null
-                                              ? NetworkImage(
-                                              adsDetail.ownerAvatar)
-                                              : AssetImage(
-                                              "assets/images/avatar.png"),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                                IntroducePage.ROUTE_NAME,
+                                                arguments: {
+                                                  'clubId': adsDetail.ownerId
+                                                });
+                                          },
+                                          child: Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 25,
+                                                backgroundImage: adsDetail.ownerAvatar !=
+                                                    null
+                                                    ? NetworkImage(
+                                                    adsDetail.ownerAvatar)
+                                                    : AssetImage(
+                                                    "assets/images/avatar.png"),
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(adsDetail.owner,
+                                                  style: TextStyle(fontSize: 18)),
+                                            ],
+                                          ),
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(adsDetail.owner,
-                                            style: TextStyle(fontSize: 18)),
                                         SizedBox(width: 12),
                                         FlatButton.icon(
                                             padding: EdgeInsets.only(right: 0),
@@ -231,8 +328,33 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                      '${adsDetail.address} ${adsDetail.ward} ${adsDetail.district} ${adsDetail.province}',
+                                      adsDetail.getAddress ?? "",
                                       style: TextStyle(fontSize: 14)),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                        GoogleMapPage.ROUTE_NAME,
+                                        arguments: {
+                                          'lat': lat,
+                                          'lng': lng,
+                                          'postId': adsDetail.postId,
+                                          'title': adsDetail.title,
+                                          'address':
+                                          '${adsDetail.getAddress}'
+                                        });
+                                  },
+                                  child: Image.network(
+                                    Helper.generateLocationPreviewImage(
+                                        lat: adsDetail.lat != 0.0
+                                            ? adsDetail.lat
+                                            : lat,
+                                        lng: adsDetail.long != 0.0
+                                            ? adsDetail.long
+                                            : lng),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
                                 ),
                                 Container(
                                     width: double.infinity,

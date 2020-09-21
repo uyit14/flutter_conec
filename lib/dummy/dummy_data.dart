@@ -104,11 +104,8 @@ class DummyData {
   ];
 
   static final List<Notify> notifyList = [
-    Notify(title: "Notify 01", content: "Content notify 01", date: "1:11 21-01-2020", isRead: false),
-    Notify(title: "Notify 02", content: "Content notify 02", date: "2:12 22-02-2020", isRead: false),
-    Notify(title: "Notify 03", content: "Content notify 03", date: "3:13 23-03-2020", isRead: false),
-    Notify(title: "Notify 04", content: "Content notify 04", date: "4:14 24-04-2020"),
-    Notify(title: "Notify 05", content: "Content notify 05", date: "5:15 25-05-2020"),
-    Notify(title: "Notify 06", content: "Content notify 06", date: "6:16 26-06-2020"),
+    Notify(title: "Bài đăng 01 đã được duyệt", content: "The Gym Thủ Đức", date: "1:11 21-01-2020", isRead: false),
+    Notify(title: "Bài đăng 02 đã được duyệt", content: "An Yoga Thủ Đức", date: "2:12 22-02-2020", isRead: true),
+    Notify(title: "Bài đăng 03 đã được duyệt", content: "Sân bóng đá đại học SPKT", date: "3:13 23-03-2020", isRead: true),
   ];
 }

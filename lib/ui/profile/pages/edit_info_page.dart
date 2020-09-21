@@ -159,8 +159,8 @@ class _EditInfoPageState extends State<EditInfoPage> {
                   Text("Giới thiệu", style: AppTheme.profileTitle),
                   SizedBox(height: 8,),
                   HtmlEditor(
-                      //hint: "Your text here...",
-                      value: profile.about ?? "Nhập thông tin giới thiệu",
+                      hint: "Nhập thông tin giới thiệu",
+                      value: profile.about ?? "",
                       key: keyEditor,
                       showBottomToolbar: false),
                   SizedBox(height: 8,),

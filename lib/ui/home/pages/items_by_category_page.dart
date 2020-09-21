@@ -29,6 +29,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   ScrollController _scrollController;
   final _controller = TextEditingController();
   ItemsByCategoryBloc _itemsByCategoryBloc;
+  var selectedCategory;
 
   //PostActionBloc _postActionBloc = PostActionBloc();
   HomeBloc _homeBloc = HomeBloc();
@@ -53,14 +54,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     _scrollController = new ScrollController()..addListener(_scrollListener);
     _itemsByCategoryBloc = ItemsByCategoryBloc();
     _firstTime = true;
-    //_postActionBloc.requestGetProvinces();
-    // _postActionBloc.provincesStream.listen((event) {
-    //   switch (event.status) {
-    //     case Status.COMPLETED:
-    //       _listProvinces.addAll(event.data);
-    //       break;
-    //   }
-    // });
     _homeBloc.requestGetTopic();
     _homeBloc.topicStream.listen((event) {
       switch (event.status) {
@@ -102,17 +95,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
       }
     }
   }
-
-//  void _onScroll() {
-//    final maxScroll = _scrollController.position.maxScrollExtent;
-//    final currentScroll = _scrollController.position.pixels;
-//    if (maxScroll - currentScroll <= 250) {
-//      if(_shouldLoadMore){
-//        _itemsByCategoryBloc.requestGetAllItem(_currentPage);
-//      }
-//      // _itemsByCategoryBloc.requestLoadList(true);
-//    }
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -182,8 +164,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               child: Row(
                 children: <Widget>[
                   InkWell(
-                    // onTap: () =>
-                    //     showCityList(getIndex(_listProvinces, selectedCity)),
                     onTap: () {
                       Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
                           arguments: {'province': provinceData}).then((value) {
@@ -191,7 +171,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                           setState(() {
                             provinceData = value;
                           });
-                          //TODO - call api with province here
                             _currentPage = 0;
                           totalItemList.clear();
                           _itemsByCategoryBloc.requestGetAllItem(_currentPage,
@@ -217,10 +196,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   ),
                   SizedBox(width: 4),
                   InkWell(
-                    // onTap: () => selectedCity != null
-                    //     ? showDistrictList(
-                    //         getIndex(_districtList, selectedDistrict))
-                    //     : null,
                     onTap: () {
                       if (provinceData != null) {
                         Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
@@ -232,7 +207,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                             setState(() {
                               districtData = value;
                             });
-                            //TODO - call api with district here
                               _currentPage = 0;
                             totalItemList.clear();
                             _itemsByCategoryBloc.requestGetAllItem(_currentPage,
@@ -406,7 +380,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                                 .joiningFee !=
                                                             null
                                                         ? '${Helper.formatCurrency(totalItemList[index].joiningFee)} VND'
-                                                        : "Không tốn phí tham gia",
+                                                        : "Liên hệ",
                                                     style: TextStyle(
                                                         color: Colors.red),
                                                   )
@@ -466,102 +440,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     super.dispose();
     _scrollController.dispose();
   }
-
-  // //bottom sheet
-  // var selectedCity;
-  // var selectedDistrict;
-  var selectedCategory;
-
-  // String _selectCityId;
-  // String _selectDistrictId;
-  // List<Province> _districtList = List<Province>();
-  //
-  // //
-  // int getIndex(List<Province> list, String selectedItemId) {
-  //   int index = list.indexOf(list.firstWhere(
-  //       (element) => element.id == selectedItemId,
-  //       orElse: () => list != null ? list[0] : null));
-  //   if (index == -1) {
-  //     return 0;
-  //   }
-  //   return selectedItemId != null ? index : 0;
-  // }
-  //
-  // void getDistrictByProvinceId(String id) {
-  //   _postActionBloc.requestGetDistricts(id);
-  //   _postActionBloc.districtsStream.listen((event) {
-  //     switch (event.status) {
-  //       case Status.COMPLETED:
-  //         _districtList = event.data;
-  //         break;
-  //     }
-  //   });
-  // }
-  //
-  // void showCityList(int index) {
-  //   var controller = FixedExtentScrollController(initialItem: index);
-  //   showModalBottomSheet(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return Container(
-  //           color: Colors.white,
-  //           height: 250,
-  //           child: CupertinoPicker(
-  //             scrollController: controller,
-  //             onSelectedItemChanged: (value) {
-  //               setState(() {
-  //                 selectedCity = _listProvinces[value].name;
-  //                 _selectCityId = _listProvinces[value].id;
-  //               });
-  //             },
-  //             itemExtent: 32,
-  //             children: _listProvinces.map((e) => Text(e.name)).toList(),
-  //           ),
-  //         );
-  //       }).then((value) {
-  //     selectedDistrict = null;
-  //     if (selectedCity == null) {
-  //       selectedCity = _listProvinces[0].name;
-  //       _selectCityId = _listProvinces[0].id;
-  //     }
-  //     totalItemList.clear();
-  //     _itemsByCategoryBloc.filterCity(selectedCity.toString().toLowerCase());
-  //     getDistrictByProvinceId(
-  //         _selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
-  //   });
-  // }
-  //
-  // void showDistrictList(int index) {
-  //   var controller = FixedExtentScrollController(initialItem: index);
-  //   showModalBottomSheet(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return Container(
-  //           color: Colors.white,
-  //           height: 250,
-  //           child: CupertinoPicker(
-  //             scrollController: controller,
-  //             onSelectedItemChanged: (value) {
-  //               setState(() {
-  //                 selectedDistrict = _districtList[value].name;
-  //                 _selectDistrictId = _districtList[value].id;
-  //               });
-  //             },
-  //             itemExtent: 32,
-  //             children: _districtList.map((e) => Text(e.name)).toList(),
-  //           ),
-  //         );
-  //       }).then((value) {
-  //     if (selectedCity == null) {
-  //       selectedDistrict = _districtList[0].name;
-  //       _selectDistrictId = _districtList[0].id;
-  //     }
-  //     print(selectedDistrict);
-  //     totalItemList.clear();
-  //     _itemsByCategoryBloc
-  //         .filterDistrict(selectedDistrict.toString().toLowerCase());
-  //   });
-  // }
 
    void showCategoryList(int index) {
      var controller = FixedExtentScrollController(initialItem: index);

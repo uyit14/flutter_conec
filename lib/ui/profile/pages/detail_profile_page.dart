@@ -37,11 +37,6 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
   void initState() {
     super.initState();
     _profileBloc = ProfileBloc();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
     _profileBloc.requestGetProfile();
   }
 
@@ -138,7 +133,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                   Text(
                                       profile.province == null
                                           ? ""
-                                          : '${profile.ward ?? ""}, ${profile.district ?? ""}, ${profile.province ?? ""}',
+                                          : '${profile.ward ?? ""} ${profile.district ?? ""} ${profile.province ?? ""}',
                                       style: AppTheme.profileInfo),
                                   Container(
                                     height: 0.5,
@@ -175,7 +170,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
             Navigator.of(context)
                 .pushNamed(EditProfilePage.ROUTE_NAME, arguments: _profile).then((value) {
                   if(value==0){
-                    _profileBloc.requestGetPage();
+                    _profileBloc.requestGetProfile();
                   }
             });
           },

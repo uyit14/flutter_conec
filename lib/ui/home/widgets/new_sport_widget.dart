@@ -99,7 +99,9 @@ class _NewSportWidgetState extends State<NewSportWidget> {
                                       ),
                                       SizedBox(height: 4),
                                       Text(
-                                        '${Helper.formatCurrency(sports[index].price ?? 0)} VND',
+                                        sports[index].price != null
+                                            ? '${Helper.formatCurrency(sports[index].price)} VND'
+                                            : "Liên hệ",
                                         style: TextStyle(
                                             fontSize: 14, color: Colors.red),
                                         maxLines: 1,

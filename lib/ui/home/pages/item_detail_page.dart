@@ -471,7 +471,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     Text(
                                       itemDetail.joiningFee != null
                                           ? '${Helper.formatCurrency(itemDetail.joiningFee)} VND'
-                                          : "Không tốn phí tham gia",
+                                          : "Liên hệ",
                                       style: TextStyle(
                                           color: Colors.red,
                                           fontSize: 18,
@@ -498,7 +498,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                      '${itemDetail.address} ${itemDetail.ward} ${itemDetail.district} ${itemDetail.province}',
+                                      itemDetail.getAddress ?? "",
                                       style: TextStyle(fontSize: 14)),
                                 ),
                                 InkWell(
@@ -511,7 +511,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                           'postId': itemDetail.postId,
                                           'title': itemDetail.title,
                                           'address':
-                                              '${itemDetail.address} ${itemDetail.ward} ${itemDetail.district} ${itemDetail.province}'
+                                          '${itemDetail.getAddress}'
                                         });
                                   },
                                   child: Image.network(

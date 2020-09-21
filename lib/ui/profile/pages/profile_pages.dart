@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
               _isLoading = false;
               _name = profile.name;
               _province = profile.province;
-              _address = '${profile.district} ${profile.province}';
+              _address = '${profile.district ?? ""} ${profile.province}';
               _avatar = profile.avatar;
             });
             break;

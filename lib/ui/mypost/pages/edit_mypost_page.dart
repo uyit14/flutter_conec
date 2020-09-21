@@ -822,7 +822,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                 });
               },
               itemExtent: 32,
-              children: _districtList.map((e) => Text(e.name)).toList(),
+              children: _districtList.map((e) => Text(e.name ?? "")).toList(),
             ),
           );
         }).then((value) {

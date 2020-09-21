@@ -35,22 +35,25 @@ class _ApproveMyPostState extends State<ApproveMyPost> {
                   return UILoading(loadingMessage: snapshot.data.message);
                 case Status.COMPLETED:
                   List<MyPost> myPosts = snapshot.data.data;
-                  return ListView.builder(
-                      itemCount: myPosts.length,
-                      itemBuilder: (context, index) {
-                        return ItemMyPost(
+                  if(myPosts.length > 0){
+                    return ListView.builder(
+                        itemCount: myPosts.length,
+                        itemBuilder: (context, index) {
+                          return ItemMyPost(
                             myPost: myPosts[index],
                             key: ValueKey("approve"),
                             status: MyPostStatus.Approve, callback: (id){
-                          myPosts.removeWhere((element) => element.postId == id);
-                          setState(() {
-                          });
-                        }, refresh: (value){
-                          if(value!=null && value){
-                            _myPostBloc.requestApprove(0);
-                          }
-                        },);
-                      });
+                            myPosts.removeWhere((element) => element.postId == id);
+                            setState(() {
+                            });
+                          }, refresh: (value){
+                            if(value!=null && value){
+                              _myPostBloc.requestApprove(0);
+                            }
+                          },);
+                        });
+                  }
+                  return Container(child: Center(child: Text("Không có dữ liệu")));
                 case Status.ERROR:
                   return UIError(errorMessage: snapshot.data.message);
               }
