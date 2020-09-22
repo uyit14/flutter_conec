@@ -130,6 +130,11 @@ class HomeBloc {
     }
   }
 
+  Future<bool> requestRatingClub(dynamic body) async{
+    final response = await _repository.ratingClub(body);
+    return response;
+  }
+
   void dispose() {
     _topicController.close();
     _sliderController.close();

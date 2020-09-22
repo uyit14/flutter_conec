@@ -232,6 +232,7 @@ class _PostActionPageState extends State<PostActionPage> {
                       TextFormField(
                         maxLines: 1,
                         style: TextStyle(fontSize: 18),
+                        textInputAction: TextInputAction.done,
                         onChanged: (value) {
                           setState(() {
                             _title = value;
@@ -278,6 +279,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                 TextFormField(
                                   maxLines: 1,
                                   style: TextStyle(fontSize: 18),
+                                  textInputAction: TextInputAction.done,
                                   controller: _usesController,
                                   decoration: InputDecoration(
                                       hintText: 'Nhập công dụng',
@@ -309,6 +311,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                   maxLines: 1,
                                   style: TextStyle(fontSize: 18),
                                   controller: _conditionController,
+                                  textInputAction: TextInputAction.done,
                                   decoration: InputDecoration(
                                       hintText:
                                           'Nhập tình trạng (Còn hàng, hết hàng, ...)',
@@ -690,7 +693,7 @@ class _PostActionPageState extends State<PostActionPage> {
     }
   }
   void doPostAction() async{
-    final result = provinceData.name != null
+    final result = provinceData != null
         ? await Helper.getLatLng(
         '$_addressController.text, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
         : LatLong(lat: 0.0, long: 0.0);
@@ -706,9 +709,9 @@ class _PostActionPageState extends State<PostActionPage> {
             : null,
         topicId: _selectedCategoryId,
         images: base64ListImage(_images),
-        province: provinceData.name,
-        district: districtData.name,
-        ward: wardData.name,
+        province: provinceData!=null ? provinceData.name : null,
+        district: districtData!=null ? districtData.name : null,
+        ward: wardData!=null ? wardData.name : null,
         address: _addressController.text,
         joiningFee: getJoiningFree(),
         price: getPrice(),

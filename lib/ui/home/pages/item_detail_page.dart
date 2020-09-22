@@ -62,7 +62,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     super.didChangeDependencies();
     if (_isCallApi) {
       final routeArgs =
-          ModalRoute.of(context).settings.arguments as Map<String, Object>;
+      ModalRoute.of(context).settings.arguments as Map<String, Object>;
       postId = routeArgs['postId'];
       title = routeArgs['title'];
       _itemsByCategoryBloc.requestItemDetail(postId);
@@ -189,13 +189,13 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                         child: Container(
                                           decoration: _currentIndex == index
                                               ? BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 2,
-                                                      color: Colors.green),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(8)),
-                                                )
+                                            border: Border.all(
+                                                width: 2,
+                                                color: Colors.green),
+                                            borderRadius:
+                                            BorderRadius.all(
+                                                Radius.circular(8)),
+                                          )
                                               : null,
                                           margin: EdgeInsets.only(right: 2),
                                           child: ClipRRect(
@@ -208,7 +208,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                   Image.asset(
                                                       "assets/images/placeholder.png"),
                                               errorWidget: (context, url,
-                                                      error) =>
+                                                  error) =>
                                                   Image.asset(
                                                       "assets/images/error.png"),
                                               fit: BoxFit.cover,
@@ -259,18 +259,18 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                 CircleAvatar(
                                                   radius: 25,
                                                   backgroundImage: itemDetail
-                                                              .ownerAvatar !=
-                                                          null
+                                                      .ownerAvatar !=
+                                                      null
                                                       ? NetworkImage(itemDetail
-                                                          .ownerAvatar)
+                                                      .ownerAvatar)
                                                       : AssetImage(
-                                                          "assets/images/avatar.png"),
+                                                      "assets/images/avatar.png"),
                                                 ),
                                                 SizedBox(width: 8),
                                                 Container(
                                                   width: MediaQuery.of(context)
-                                                          .size
-                                                          .width -
+                                                      .size
+                                                      .width -
                                                       250,
                                                   child: Text(itemDetail.title,
                                                       style: TextStyle(
@@ -282,7 +282,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                           Spacer(),
                                           FlatButton.icon(
                                               padding:
-                                                  EdgeInsets.only(right: 0),
+                                              EdgeInsets.only(right: 0),
                                               onPressed: () async {
                                                 await launch(
                                                     'tel:${itemDetail.phoneNumber}');
@@ -295,10 +295,139 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                     color: Colors.blue,
                                                     fontSize: 16,
                                                     fontWeight:
-                                                        FontWeight.w500),
+                                                    FontWeight.w500),
                                               ))
                                         ],
                                       ),
+                                      // Row(
+                                      //   children: <Widget>[
+                                      //     Text(
+                                      //         itemDetail.ratingAvg.toString() ??
+                                      //             "0"),
+                                      //     Icon(Icons.star, color: Colors.amber),
+                                      //     Text(
+                                      //         "(${itemDetail.ratingCount ?? "0"} đánh giá)"),
+                                      //     Spacer(),
+                                      //     FlatButton.icon(
+                                      //         padding: EdgeInsets.all(0),
+                                      //         onPressed: () {
+                                      //           if (_token == null) {
+                                      //             Helper
+                                      //                 .showAuthenticationDialog(
+                                      //                 context);
+                                      //           } else {
+                                      //             showModalBottomSheet(
+                                      //                 context: context,
+                                      //                 builder: (BuildContext
+                                      //                 context) {
+                                      //                   int rating = 5;
+                                      //                   return Container(
+                                      //                     height: 150,
+                                      //                     alignment:
+                                      //                     Alignment
+                                      //                         .center,
+                                      //                     child: Column(
+                                      //                       mainAxisAlignment:
+                                      //                       MainAxisAlignment
+                                      //                           .spaceAround,
+                                      //                       children: <
+                                      //                           Widget>[
+                                      //                         RatingBar(
+                                      //                           initialRating:
+                                      //                           5,
+                                      //                           minRating:
+                                      //                           1,
+                                      //                           direction: Axis
+                                      //                               .horizontal,
+                                      //                           allowHalfRating:
+                                      //                           true,
+                                      //                           itemCount:
+                                      //                           5,
+                                      //                           itemPadding:
+                                      //                           EdgeInsets.symmetric(
+                                      //                               horizontal:
+                                      //                               4.0),
+                                      //                           itemBuilder:
+                                      //                               (context,
+                                      //                               _) =>
+                                      //                               Icon(
+                                      //                                 Icons
+                                      //                                     .star,
+                                      //                                 color: Colors
+                                      //                                     .amber,
+                                      //                               ),
+                                      //                           onRatingUpdate:
+                                      //                               (value) {
+                                      //                             rating = value
+                                      //                                 .toInt();
+                                      //                           },
+                                      //                         ),
+                                      //                         InkWell(
+                                      //                           onTap: () {
+                                      //                             print(
+                                      //                                 "uprating");
+                                      //                             _itemsByCategoryBloc
+                                      //                                 .requestRating(
+                                      //                                 jsonEncode({
+                                      //                                   "postId":
+                                      //                                   itemDetail.postId,
+                                      //                                   "rating":
+                                      //                                   rating
+                                      //                                 }));
+                                      //                             Navigator.of(
+                                      //                                 context)
+                                      //                                 .pop();
+                                      //                           },
+                                      //                           child:
+                                      //                           Container(
+                                      //                             decoration: BoxDecoration(
+                                      //                                 color: Colors
+                                      //                                     .white,
+                                      //                                 borderRadius: BorderRadius.circular(
+                                      //                                     8),
+                                      //                                 border: Border.all(
+                                      //                                     width: 1,
+                                      //                                     color: Colors.grey)),
+                                      //                             height:
+                                      //                             45,
+                                      //                             width:
+                                      //                             250,
+                                      //                             child:
+                                      //                             Center(
+                                      //                               child:
+                                      //                               Text(
+                                      //                                 'Gửi đánh giá',
+                                      //                                 textAlign:
+                                      //                                 TextAlign.center,
+                                      //                                 style: TextStyle(
+                                      //                                     fontSize: 18,
+                                      //                                     color: Colors.black87,
+                                      //                                     fontWeight: FontWeight.w500),
+                                      //                               ),
+                                      //                             ),
+                                      //                           ),
+                                      //                         ),
+                                      //                       ],
+                                      //                     ),
+                                      //                   );
+                                      //                 })
+                                      //                 .then((value) =>
+                                      //                 debugPrint(
+                                      //                     "selectedCity"));
+                                      //           }
+                                      //         },
+                                      //         icon: Icon(
+                                      //           Icons.rate_review,
+                                      //           color: Colors.blue,
+                                      //         ),
+                                      //         label: Text(
+                                      //           "Đánh giá",
+                                      //           style: TextStyle(
+                                      //               color: Colors.blue,
+                                      //               fontSize: 18),
+                                      //         ))
+                                      //   ],
+                                      // )
                                     ],
                                   ),
                                 ),

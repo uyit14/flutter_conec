@@ -26,6 +26,7 @@ class PageResponse {
 }
 
 class Profile {
+  String id;
   String name;
   String email;
   String avatar;
@@ -46,7 +47,8 @@ class Profile {
   List<Posts> posts;
 
   Profile(
-      {this.name,
+      {this.id,
+        this.name,
         this.email,
         this.avatar,
         this.gender,
@@ -66,6 +68,7 @@ class Profile {
         this.posts});
 
   Profile.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     name = json['name'];
     email = json['email'];
     avatar = json['avatar'] == null ? null : Helper.baseURL + json['avatar'];

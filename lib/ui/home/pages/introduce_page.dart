@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
@@ -161,16 +163,16 @@ class _IntroducePageState extends State<IntroducePage> {
                                                         ),
                                                         InkWell(
                                                           onTap: () {
-//                                                            print(
-//                                                                "uprating");
-//                                                            _itemsByCategoryBloc
-//                                                                .requestRating(
-//                                                                jsonEncode({
-//                                                                  "postId":
-//                                                                  profile.id,
-//                                                                  "rating":
-//                                                                  rating
-//                                                                }));
+                                                           print(
+                                                               "uprating");
+                                                           _homeBloc
+                                                               .requestRatingClub(
+                                                               jsonEncode({
+                                                                 "userId":
+                                                                 profile.id,
+                                                                 "rating":
+                                                                 rating
+                                                               }));
                                                             Navigator.of(
                                                                 context)
                                                                 .pop();
@@ -207,10 +209,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                                       ],
                                                     ),
                                                   );
-                                                })
-                                                .then((value) =>
-                                                debugPrint(
-                                                    "selectedCity"));
+                                                });
                                           }
                                         },
                                         icon: Icon(

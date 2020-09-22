@@ -98,6 +98,13 @@ class HomeRemoteRepository {
     return response['status'];
   }
 
+  //TODO - need update rating url
+  Future<bool> ratingClub(dynamic body) async {
+    final response = await _helper.post("/api/club/userRating",
+        body: body, headers: await Helper.header());
+    return response['status'];
+  }
+
   Future<bool> likePost(String postId) async {
     final response = await _helper.post("/api/Comment/likePost",
         body: jsonEncode(postId), headers: await Helper.header());
