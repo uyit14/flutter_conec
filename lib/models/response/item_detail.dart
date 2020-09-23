@@ -47,6 +47,7 @@ class ItemDetail {
   String generalCondition;
   String phoneNumber;
   String status;
+  String shareLink;
 
   ItemDetail(
       {this.postId,
@@ -81,7 +82,8 @@ class ItemDetail {
         this.price,
         this.generalCondition,
         this.phoneNumber,
-        this.status
+        this.status,
+        this.shareLink
       });
 
   ItemDetail.fromJson(Map<String, dynamic> json) {
@@ -123,6 +125,7 @@ class ItemDetail {
     generalCondition = json['generalCondition'];
     phoneNumber = json['phoneNumber'];
     status = json['status'];
+    shareLink = json['shareLink'];
   }
 }
 

@@ -41,6 +41,7 @@ class Profile {
   String lat;
   String lng;
   int ratingAvg;
+  int ratingCount;
   String about;
   String videoLink;
   List<Images> images;
@@ -62,6 +63,7 @@ class Profile {
         this.lat,
         this.lng,
         this.ratingAvg,
+        this.ratingCount,
         this.about,
         this.videoLink,
         this.images,
@@ -83,6 +85,7 @@ class Profile {
     lat = json['lat'];
     lng = json['lng'];
     ratingAvg = json['ratingAvg'];
+    ratingCount = json['ratingCount'];
     about = json['about'];
     videoLink = json['videoLink'] !=null ? "http://149.28.140.240:8088" + json['videoLink'] : null;
     if (json['images'] != null) {

@@ -104,8 +104,8 @@ class _IntroducePageState extends State<IntroducePage> {
                                         profile.ratingAvg.toString() ??
                                             "0", style: TextStyle(fontSize: 18),),
                                     Icon(Icons.star, color: Colors.amber),
-//                                    Text(
-//                                        "(${profile.ratingCount ?? "0"} đánh giá)"),
+                                   Text(
+                                       "(${profile.ratingCount ?? "0"} đánh giá)"),
                                     SizedBox(width: 32,),
                                     FlatButton.icon(
                                         padding: EdgeInsets.all(0),

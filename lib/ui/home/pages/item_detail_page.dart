@@ -6,7 +6,6 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
-import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
@@ -32,6 +31,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   bool _isFavorite = false;
   bool _isCallApi;
   String phoneNumber;
+  String linkShare;
   String _currentImageUrl;
   int _currentIndex = 0;
   String postId;
@@ -117,7 +117,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 //            ),
             IconButton(
               onPressed: () {
-                Share.share(Helper.applicationUrl());
+                Share.share(linkShare ?? Helper.applicationUrl());
               },
               icon: Icon(
                 Icons.share,
@@ -145,6 +145,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   case Status.COMPLETED:
                     ItemDetail itemDetail = snapshot.data.data;
                     phoneNumber = itemDetail.phoneNumber;
+                    linkShare = itemDetail.shareLink;
                     if (_firstCalculate) {
                       getLatLng(itemDetail.getAddress);
                       _firstCalculate = false;
