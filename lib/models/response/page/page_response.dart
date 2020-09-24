@@ -40,8 +40,8 @@ class Profile {
   String address;
   String lat;
   String lng;
-  int ratingAvg;
-  int ratingCount;
+  double ratingAvg;
+  num ratingCount;
   String about;
   String videoLink;
   List<Images> images;
