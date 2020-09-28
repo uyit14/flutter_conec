@@ -13,6 +13,7 @@ import 'mypost/pages/mypost_page.dart';
 import 'news/pages/news_page.dart';
 import 'profile/pages/profile_pages.dart';
 import '../common/globals.dart' as globals;
+import 'package:geocoder/geocoder.dart';
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';
@@ -25,13 +26,15 @@ class _ConecHomePageState extends State<ConecHomePage> {
   PageController _pageController = PageController(initialPage: 0);
   int _selectedPageIndex = 0;
   int _initIndex = 0;
-  Geolocator _geoLocator = Geolocator()..forceAndroidLocationManager;
 
   String _token;
+  bool _isTokenExpired = true;
   void getToken() async{
     String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
+      _isTokenExpired = expired;
     });
   }
 
@@ -61,20 +64,17 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     //detectToken();
-    _getCurrentLocation();
+    getLocation();
     getToken();
   }
 
-  _getCurrentLocation() {
-    _geoLocator
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position position) {
-          globals.latitude = position.latitude;
-          globals.longitude = position.longitude;
-    }).catchError((e) {
-      print(e);
-    });
-  }
+    void getLocation() async {
+      Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      print(position.latitude ?? "---aaa---");
+      print(position.longitude ?? "---aaa---");
+      globals.latitude = position.latitude;
+      globals.longitude = position.longitude;
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -130,10 +130,14 @@ class _ConecHomePageState extends State<ConecHomePage> {
         floatingActionButton: Container(
           child: FloatingActionButton(
             onPressed: () {
-              if (_token != null) {
-                Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
-              } else {
+              if(_token == null || _token.length == 0){
                 Helper.showAuthenticationDialog(context);
+              }else{
+                if(_isTokenExpired){
+                  Helper.showTokenExpiredDialog(context);
+                }else{
+                  Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
+                }
               }
             },
             child: Icon(

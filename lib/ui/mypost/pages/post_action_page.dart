@@ -592,40 +592,46 @@ class _PostActionPageState extends State<PostActionPage> {
                       Text("Chính sách của Conec"),
                       SizedBox(height: 4),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          RichText(
-                            text: TextSpan(
-                                text: "Tôi đồng ý với các điều khoản ",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 14),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: "Chính sách của Conec ",
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () => Navigator.of(context)
-                                            .pushNamed(
-                                                TermConditionPage.ROUTE_NAME),
+                          Row(
+                            children: [
+                              Checkbox(
+                                onChanged: (value) {
+                                  setState(() {
+                                    _term = value;
+                                  });
+                                },
+                                value: _term,
+                                activeColor: const Color(0xff00bbff),
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              Expanded(
+                                child: RichText(
+                                  text: TextSpan(
+                                      text: "Tôi đồng ý với các điều khoản ",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue,
-                                          fontSize: 14)),
-                                  TextSpan(
-                                      text:
-                                          "Nếu vi phạm sẽ chịu mọi xử lý từ Conec",
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 14))
-                                ]),
-                          ),
-                          SizedBox(height: 8),
-                          CustomSwitch(
-                            activeColor: Colors.pinkAccent,
-                            value: _term,
-                            onChanged: (value) {
-                              debugPrint("VALUE : $value");
-                              setState(() {
-                                _term = value;
-                              });
-                            },
+                                          color: Colors.black, fontSize: 14),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text: "Chính sách của Conec ",
+                                            recognizer: TapGestureRecognizer()
+                                              ..onTap = () => Navigator.of(context)
+                                                  .pushNamed(
+                                                      TermConditionPage.ROUTE_NAME),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blue,
+                                                fontSize: 14)),
+                                        TextSpan(
+                                            text:
+                                                "Nếu vi phạm sẽ chịu mọi xử lý từ Conec",
+                                            style: TextStyle(
+                                                color: Colors.black, fontSize: 14))
+                                      ]),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),

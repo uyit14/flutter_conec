@@ -25,6 +25,7 @@ class _CommentPageState extends State<CommentPage> {
   bool _isLoading = false;
   var _focusNode = FocusNode();
   String _token;
+  bool _isTokenExpired = true;
 
   @override
   void initState() {
@@ -40,8 +41,10 @@ class _CommentPageState extends State<CommentPage> {
 
   void getToken() async{
     String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
+      _isTokenExpired = expired;
     });
   }
 
@@ -50,12 +53,17 @@ class _CommentPageState extends State<CommentPage> {
     if (_token == null) {
       Helper.showAuthenticationDialog(context);
     } else {
-      if (!isDelete) {
-        _focusNode.requestFocus();
-        setState(() {
-          _isShowCommentInput = !_isShowCommentInput;
-        });
-      } else {}
+      if(_isTokenExpired){
+        Helper.showTokenExpiredDialog(context);
+      }else{
+        if (!isDelete) {
+          _focusNode.requestFocus();
+          setState(() {
+            _isShowCommentInput = !_isShowCommentInput;
+          });
+        } else {}
+      }
+
     }
   }
 
@@ -98,14 +106,19 @@ class _CommentPageState extends State<CommentPage> {
                       if (_token == null) {
                         Helper.showAuthenticationDialog(context);
                       } else {
-                        if (!_isLikeOwner) {
-                          _likeCount++;
-                        } else {
-                          _likeCount--;
+                        if(_isTokenExpired){
+                          Helper.showTokenExpiredDialog(context);
+                        }else{
+                          if (!_isLikeOwner) {
+                            _likeCount++;
+                          } else {
+                            _likeCount--;
+                          }
+                          setState(() {
+                            _isLikeOwner = !_isLikeOwner;
+                          });
                         }
-                        setState(() {
-                          _isLikeOwner = !_isLikeOwner;
-                        });
+
                       }
                     },
                     child: Row(

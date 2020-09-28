@@ -36,6 +36,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   List<Comment> comments = List();
   bool _addDataToList = false;
   String _token;
+  bool _isTokenExpired = true;
 
   String _parentId;
   var _focusNode = FocusNode();
@@ -55,49 +56,55 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   }
   void getToken() async{
     String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
+      _isTokenExpired = expired;
     });
   }
 
 
   void requestFocus(String parentId, bool isDelete) {
     debugPrint(parentId ?? "NULL");
-    if (_token == null) {
+    if (_token == null || _token.length == 0) {
       Helper.showAuthenticationDialog(context);
     } else {
-      if (!isDelete) {
-        _parentId = parentId;
-        _focusNode.requestFocus();
-        setState(() {
-          _isShowCommentInput = !_isShowCommentInput;
-        });
-      } else {
-        print("ui delete at: " +
-            comments
-                .indexWhere((element) => element.id == parentId)
-                .toString());
-        print("with content ui: " + comments[0].content);
-        int deleteAt = comments.indexWhere((element) => element.id == parentId);
-        Helper.showDeleteDialog(context, () {
-          _itemsByCategoryBloc
-              .requestDeleteComment(parentId)
-              .then((value) {
-            if (deleteAt == -1) {
-              _itemsByCategoryBloc.allComments
-                  .removeWhere((element) => element.id == parentId);
-            }
-
-            setState(() {
-              _addDataToList = true;
-            });
-            comments.clear();
-            Navigator.pop(context);
+      if(_isTokenExpired){
+        Helper.showTokenExpiredDialog(context);
+      }else{
+        if (!isDelete) {
+          _parentId = parentId;
+          _focusNode.requestFocus();
+          setState(() {
+            _isShowCommentInput = !_isShowCommentInput;
           });
-        });
+        } else {
+          print("ui delete at: " +
+              comments
+                  .indexWhere((element) => element.id == parentId)
+                  .toString());
+          print("with content ui: " + comments[0].content);
+          int deleteAt = comments.indexWhere((element) => element.id == parentId);
+          Helper.showDeleteDialog(context, () {
+            _itemsByCategoryBloc
+                .requestDeleteComment(parentId)
+                .then((value) {
+              if (deleteAt == -1) {
+                _itemsByCategoryBloc.allComments
+                    .removeWhere((element) => element.id == parentId);
+              }
+
+              setState(() {
+                _addDataToList = true;
+              });
+              comments.clear();
+              Navigator.pop(context);
+            });
+          });
 //        setState(() {
 //          comments.removeWhere((element) => element.id == parentId);
 //        });
+        }
       }
     }
   }
@@ -138,18 +145,22 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      if(_token == null){
+                      if(_token == null || _token.length == 0){
                         Helper.showAuthenticationDialog(context);
                       }else{
-                        _itemsByCategoryBloc.requestLikePost(widget.itemDetail.postId);
-                        if (!_isLikeOwner) {
-                          _likeCount++;
-                        } else {
-                          _likeCount--;
-                        }
-                        setState(() {
-                          _isLikeOwner = !_isLikeOwner;
-                        });
+                       if(_isTokenExpired){
+                         Helper.showTokenExpiredDialog(context);
+                       }else{
+                         _itemsByCategoryBloc.requestLikePost(widget.itemDetail.postId);
+                         if (!_isLikeOwner) {
+                           _likeCount++;
+                         } else {
+                           _likeCount--;
+                         }
+                         setState(() {
+                           _isLikeOwner = !_isLikeOwner;
+                         });
+                       }
                       }
                     },
                     child: Row(

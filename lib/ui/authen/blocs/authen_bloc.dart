@@ -2,47 +2,45 @@ import 'dart:async';
 
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/models/response/login_response.dart';
+import 'package:conecapp/models/response/signup_response.dart';
 import 'package:conecapp/repositories/authen/authen_repository.dart';
 
 class AuthenBloc{
-  AuthenRepository _repository = AuthenRepository();
+  AuthenRepository _repository;
 
-  StreamController _loginController;
-  Stream<ApiResponse<dynamic>> get loginStream =>
+  StreamController<ApiResponse<LoginResponse>> _loginController = StreamController();
+  Stream<ApiResponse<LoginResponse>> get loginStream =>
       _loginController.stream;
 
-  StreamController _signUpController = StreamController<ApiResponse<dynamic>>();
-  Stream<ApiResponse<dynamic>> get signUpStream => _signUpController.stream;
+  StreamController<ApiResponse<SignUpResponse>> _signUpController = StreamController();
+  Stream<ApiResponse<SignUpResponse>> get signUpStream => _signUpController.stream;
 
-  StreamController _verifyUserController = StreamController<ApiResponse<dynamic>>();
+  StreamController _verifyUserController = StreamController();
   Stream<ApiResponse<dynamic>> get verifyUserStream => _verifyUserController.stream;
 
-  StreamController _verifyEmailController = StreamController<ApiResponse<dynamic>>();
+  StreamController _verifyEmailController = StreamController();
   Stream<ApiResponse<dynamic>> get verifyEmailStream => _verifyEmailController.stream;
 
-  StreamController _resetPassController = StreamController<ApiResponse<dynamic>>();
+  StreamController _resetPassController = StreamController();
   Stream<ApiResponse<dynamic>> get resetPassStream => _resetPassController.stream;
 
-  StreamController _confirmEmailController = StreamController<ApiResponse<dynamic>>();
+  StreamController _confirmEmailController = StreamController();
   Stream<ApiResponse<dynamic>> get confirmEmailStream => _confirmEmailController.stream;
 
   AuthenBloc(){
     _repository = AuthenRepository();
-    _loginController = StreamController<ApiResponse<dynamic>>();
   }
 
   void requestLogin(String phone, String passWord) async{
-    try{
       _loginController.sink.add(ApiResponse.loading());
       final result = await _repository.doLogin(phone, passWord);
       if(result.status){
-        _loginController.sink.add(ApiResponse.completed(result.token));
+        _loginController.sink.add(ApiResponse.completed(result));
       }else{
         _loginController.sink.add(ApiResponse.error(result.error ?? ""));
       }
-    }catch(e){
-      _loginController.sink.add(ApiResponse.error(e.toString()));
-    }
+
   }
 
     void requestSignUp(String userName, String email, String passWord, String confirmPassWord) async{
@@ -50,7 +48,7 @@ class AuthenBloc{
     try{
       final result = await _repository.doSignUp(userName, email, passWord, confirmPassWord);
       if(result.status){
-        _signUpController.sink.add(ApiResponse.completed(result.token));
+        _signUpController.sink.add(ApiResponse.completed(result));
       }else{
         _signUpController.sink.add(ApiResponse.error(result.errors[0].description ?? ""));
       }

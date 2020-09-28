@@ -2,6 +2,9 @@ import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 class NotSigned extends StatelessWidget {
+  final bool isExpired;
+  NotSigned(this.isExpired);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,7 +18,7 @@ class NotSigned extends StatelessWidget {
             size: 40,
           ),
           Text(
-            "Bạn chưa đăng nhập!",
+            isExpired ? "Phiên đăng nhập hết hạn" : "Bạn chưa đăng nhập!",
             style: TextStyle(fontSize: 24),
           ),
           InkWell(
@@ -32,7 +35,7 @@ class NotSigned extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               child: Center(
                 child: Text(
-                  'Đăng nhập ngay',
+                  isExpired ? "Đăng nhập lại": 'Đăng nhập ngay',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 18,

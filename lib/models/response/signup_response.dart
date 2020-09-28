@@ -1,13 +1,15 @@
 class SignUpResponse {
   bool status;
   String token;
+  String expires;
   List<Error> errors;
 
-  SignUpResponse({this.status, this.token, this.errors});
+  SignUpResponse({this.status, this.token, this.errors, this.expires});
 
   SignUpResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     token = json['token'];
+    expires = json['expires'];
     if (json['errors'] != null) {
       errors = new List<Error>();
       json['errors'].forEach((v) {

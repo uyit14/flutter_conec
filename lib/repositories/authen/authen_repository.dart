@@ -28,6 +28,7 @@ class AuthenRepository {
     final response = await _helper.post("/api/account/register",
         body: jsonEncode({'userName': userName, 'email': email, 'password': passWord, "confirmPassword": confirmPass}),
         headers: header);
+    print(response.toString());
     return SignUpResponse.fromJson(response);
   }
 

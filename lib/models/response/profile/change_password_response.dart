@@ -1,13 +1,15 @@
 class ChangePassWordResponse {
   bool status;
   String token;
+  String expires;
   List<Errors> errors;
 
-  ChangePassWordResponse({this.status, this.token, this.errors});
+  ChangePassWordResponse({this.status, this.token, this.errors, this.expires});
 
   ChangePassWordResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     token = json['token'];
+    expires = json['expires'];
     if (json['errors'] != null) {
       errors = new List<Errors>();
       json['errors'].forEach((v) {

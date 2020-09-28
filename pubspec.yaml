@@ -53,7 +53,7 @@ dependencies:
   google_maps_flutter: ^0.5.30
   geocoder: ^0.2.1
   tiengviet: ^0.4.1
-  geolocator: ^5.3.1
+  geolocator: ^6.0.0+4
   video_player: ^0.10.12+3
   html_editor: ^1.0.1
 

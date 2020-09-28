@@ -1,4 +1,5 @@
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/models/response/login_response.dart';
 import 'package:conecapp/ui/authen/blocs/authen_bloc.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/authen/pages/register_page.dart';
@@ -65,7 +66,8 @@ class _LoginPageState extends State<LoginPage> {
           });
           return;
         case Status.COMPLETED:
-          gotoHome(event.data);
+          LoginResponse loginResponse = event.data;
+          gotoHome(loginResponse.token, loginResponse.expires);
           break;
         case Status.ERROR:
           setState(() {
@@ -79,9 +81,10 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void gotoHome(String token) async {
+  void gotoHome(String token, String expiredDay) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
+    prefs.setString('expired', expiredDay);
     Navigator.of(context).pushNamedAndRemoveUntil(
         ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
   }

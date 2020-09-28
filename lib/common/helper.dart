@@ -139,10 +139,41 @@ class Helper {
             ));
   }
 
+  static void showTokenExpiredDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text("Phiên đăng nhập đã hết hạn"),
+          content:
+          Text("Bạn vui lòng đăng nhập lại"),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("OK"),
+              onPressed: () => Navigator.of(context)
+                  .pushReplacementNamed(LoginPage.ROUTE_NAME),
+            )
+          ],
+        ));
+  }
+
   static Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');
     return token;
+  }
+
+  static Future<bool> isTokenExpired() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var expiredDay = prefs.getString('expired');
+    //var expiredDay = "2020-09-28T20:38:41.2397583+07:00";
+    if(expiredDay!=null){
+      if(DateTime.parse(expiredDay).isBefore(DateTime.now())){
+        return true;
+      }else{
+        return false;
+      }
+    }
+    return false;
   }
 
 

@@ -22,10 +22,13 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
 
   String _token;
+  bool _isTokenExpired = true;
   void getToken() async{
     String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
+      _isTokenExpired = expired;
     });
   }
 
@@ -106,19 +109,24 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                   InkWell(
                     key: ValueKey(widget.comment.id),
                     onTap: () {
-                      if(_token == null){
+                      if(_token == null || _token.length == 0){
                         Helper.showAuthenticationDialog(context);
                       }else{
-                        if (!_isLikeComment) {
-                          _itemsByCategoryBloc.requestLikeComment(widget.comment.id);
-                          _commentLikeCount++;
-                        } else {
-                          _itemsByCategoryBloc.requestUnLikeComment(widget.comment.id);
-                          _commentLikeCount--;
+                        if(_isTokenExpired){
+                          Helper.showTokenExpiredDialog(context);
+                        }else{
+                          if (!_isLikeComment) {
+                            _itemsByCategoryBloc.requestLikeComment(widget.comment.id);
+                            _commentLikeCount++;
+                          } else {
+                            _itemsByCategoryBloc.requestUnLikeComment(widget.comment.id);
+                            _commentLikeCount--;
+                          }
+                          setState(() {
+                            _isLikeComment = !_isLikeComment;
+                          });
                         }
-                        setState(() {
-                          _isLikeComment = !_isLikeComment;
-                        });
+
                       }
                     },
                     child: Text("Thích",

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/repositories/profile/profile_repository.dart';
 import '../../../models/response/page/page_response.dart' as page;
@@ -33,9 +34,9 @@ class ProfileBloc {
   Stream<ApiResponse<page.Profile>> get updatePageStream => _updatePageController.stream;
 
   //
-  StreamController<ApiResponse<String>> _changePassController =
+  StreamController<ApiResponse<ChangePassWordResponse>> _changePassController =
   StreamController();
-  Stream<ApiResponse<String>> get changePassStream => _changePassController.stream;
+  Stream<ApiResponse<ChangePassWordResponse>> get changePassStream => _changePassController.stream;
 
 
   void requestGetProfile() async {
@@ -91,7 +92,7 @@ class ProfileBloc {
     try {
       final result = await _repository.changePassword(oldPass, newPass);
       if(result.status){
-        _changePassController.sink.add(ApiResponse.completed(result.token));
+        _changePassController.sink.add(ApiResponse.completed(result));
       }else{
         print("sink----:> ${result.errors[0].description}");
         _changePassController.sink.add(ApiResponse.error(result.errors[0].description));

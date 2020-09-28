@@ -27,11 +27,14 @@ class _IntroducePageState extends State<IntroducePage> {
   HomeBloc _homeBloc = HomeBloc();
 
   String _token;
+  bool _isTokenExpired = true;
 
   void getToken() async {
     String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
+      _isTokenExpired = expired;
     });
   }
 
@@ -110,106 +113,110 @@ class _IntroducePageState extends State<IntroducePage> {
                                     FlatButton.icon(
                                         padding: EdgeInsets.all(0),
                                         onPressed: () {
-                                          if (_token == null) {
+                                          if (_token == null || _token.length == 0) {
                                             Helper
                                                 .showAuthenticationDialog(
                                                 context);
                                           } else {
-                                            showModalBottomSheet(
-                                                context: context,
-                                                builder: (BuildContext
-                                                context) {
-                                                  int rating = 5;
-                                                  return Container(
-                                                    height: 150,
-                                                    alignment:
-                                                    Alignment
-                                                        .center,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceAround,
-                                                      children: <
-                                                          Widget>[
-                                                        RatingBar(
-                                                          initialRating:
-                                                          5,
-                                                          minRating:
-                                                          1,
-                                                          direction: Axis
-                                                              .horizontal,
-                                                          allowHalfRating:
-                                                          true,
-                                                          itemCount:
-                                                          5,
-                                                          itemPadding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal:
-                                                              4.0),
-                                                          itemBuilder:
-                                                              (context,
-                                                              _) =>
-                                                              Icon(
-                                                                Icons
-                                                                    .star,
-                                                                color: Colors
-                                                                    .amber,
-                                                              ),
-                                                          onRatingUpdate:
-                                                              (value) {
-                                                            rating = value
-                                                                .toInt();
-                                                          },
-                                                        ),
-                                                        InkWell(
-                                                          onTap: () {
-                                                           print(
-                                                               "uprating");
-                                                           _homeBloc
-                                                               .requestRatingClub(
-                                                               jsonEncode({
-                                                                 "userId":
-                                                                 profile.id,
-                                                                 "rating":
-                                                                 rating
-                                                               }));
-                                                            Navigator.of(
-                                                                context)
-                                                                .pop();
-                                                          },
-                                                          child:
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                color: Colors
-                                                                    .white,
-                                                                borderRadius: BorderRadius.circular(
-                                                                    8),
-                                                                border: Border.all(
-                                                                    width: 1,
-                                                                    color: Colors.grey)),
-                                                            height:
-                                                            45,
-                                                            width:
-                                                            250,
+                                            if(_isTokenExpired){
+                                              Helper.showTokenExpiredDialog(context);
+                                            }else{
+                                              showModalBottomSheet(
+                                                  context: context,
+                                                  builder: (BuildContext
+                                                  context) {
+                                                    int rating = 5;
+                                                    return Container(
+                                                      height: 150,
+                                                      alignment:
+                                                      Alignment
+                                                          .center,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                        children: <
+                                                            Widget>[
+                                                          RatingBar(
+                                                            initialRating:
+                                                            5,
+                                                            minRating:
+                                                            1,
+                                                            direction: Axis
+                                                                .horizontal,
+                                                            allowHalfRating:
+                                                            true,
+                                                            itemCount:
+                                                            5,
+                                                            itemPadding:
+                                                            EdgeInsets.symmetric(
+                                                                horizontal:
+                                                                4.0),
+                                                            itemBuilder:
+                                                                (context,
+                                                                _) =>
+                                                                Icon(
+                                                                  Icons
+                                                                      .star,
+                                                                  color: Colors
+                                                                      .amber,
+                                                                ),
+                                                            onRatingUpdate:
+                                                                (value) {
+                                                              rating = value
+                                                                  .toInt();
+                                                            },
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              print(
+                                                                  "uprating");
+                                                              _homeBloc
+                                                                  .requestRatingClub(
+                                                                  jsonEncode({
+                                                                    "userId":
+                                                                    profile.id,
+                                                                    "rating":
+                                                                    rating
+                                                                  }));
+                                                              Navigator.of(
+                                                                  context)
+                                                                  .pop();
+                                                            },
                                                             child:
-                                                            Center(
+                                                            Container(
+                                                              decoration: BoxDecoration(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  borderRadius: BorderRadius.circular(
+                                                                      8),
+                                                                  border: Border.all(
+                                                                      width: 1,
+                                                                      color: Colors.grey)),
+                                                              height:
+                                                              45,
+                                                              width:
+                                                              250,
                                                               child:
-                                                              Text(
-                                                                'Gửi đánh giá',
-                                                                textAlign:
-                                                                TextAlign.center,
-                                                                style: TextStyle(
-                                                                    fontSize: 18,
-                                                                    color: Colors.black87,
-                                                                    fontWeight: FontWeight.w500),
+                                                              Center(
+                                                                child:
+                                                                Text(
+                                                                  'Gửi đánh giá',
+                                                                  textAlign:
+                                                                  TextAlign.center,
+                                                                  style: TextStyle(
+                                                                      fontSize: 18,
+                                                                      color: Colors.black87,
+                                                                      fontWeight: FontWeight.w500),
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                });
+                                                        ],
+                                                      ),
+                                                    );
+                                                  });
+                                            }
                                           }
                                         },
                                         icon: Icon(

@@ -11,6 +11,7 @@ class MyPost extends StatefulWidget {
 
 class _MyPostState extends State<MyPost> {
   String _token;
+  bool _isTokenExpired = true;
 
   @override
   void initState() {
@@ -19,16 +20,19 @@ class _MyPostState extends State<MyPost> {
   }
   void getToken() async{
     String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
+      _isTokenExpired = expired;
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    return _token != null
-        ? Signed()
-        : NotSigned();
+    return _token == null || _isTokenExpired
+        ? NotSigned(_isTokenExpired)
+        : Signed();
   }
 }
 

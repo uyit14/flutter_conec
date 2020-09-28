@@ -4,6 +4,7 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
+import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/others/open_letter_page.dart';
@@ -30,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _province;
   String _avatar;
   String _token;
+  bool _isTokenExpired = true;
   bool _isLoading = false;
 
   @override
@@ -40,10 +42,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void getToken() async {
     String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
+      _isTokenExpired = expired;
     });
-    if (token != null) {
+    if (token != null && !expired) {
       _profileBloc.requestGetProfile();
       _profileBloc.profileStream.listen((event) {
         switch (event.status) {
@@ -74,10 +78,10 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  void updateToken(String token) async {
+  void updateToken(String token, String expiredDay) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
-    //
+    prefs.setString('expired', expiredDay);
     _profileBloc.requestGetProfile();
   }
 
@@ -113,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Positioned(
                       left: 18,
                       top: 18,
-                      child: _token != null
+                      child: _token != null && !_isTokenExpired
                           ? Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -145,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             )
                           : Column(
                               children: <Widget>[
-                                Text("Bạn chưa đăng nhập",
+                                Text(_isTokenExpired ? "Phiên đăng nhập hết hạn" : "Bạn chưa đăng nhập",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 22,
@@ -161,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     color: Colors.white,
                                     textColor: Colors.red,
                                     icon: Icon(Icons.assignment_ind),
-                                    label: Text("Đăng nhập ngay",
+                                    label: Text(_isTokenExpired ? "Đăng nhập lại": 'Đăng nhập ngay',
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500))),
@@ -259,8 +263,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-                _token != null ? SizedBox(height: 8) : Container(),
-                _token != null
+                _token != null && !_isTokenExpired ? SizedBox(height: 8) : Container(),
+                _token != null && !_isTokenExpired
                     ? InkWell(
                   onTap: () {
                     Navigator.of(context).pushNamed(InfoPage.ROUTE_NAME);
@@ -288,15 +292,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 )
                     : Container(),
-                _token != null ? SizedBox(height: 8) : Container(),
-                _token != null
+                _token != null && !_isTokenExpired ? SizedBox(height: 8) : Container(),
+                _token != null && !_isTokenExpired
                     ? InkWell(
                         onTap: () {
                           Navigator.of(context)
                               .pushNamed(ChangePassWordPage.ROUTE_NAME)
                               .then((value) {
                             if (value != null) {
-                              updateToken(value);
+                              ChangePassWordResponse changePassWordResponse = value;
+                              updateToken(changePassWordResponse.token, changePassWordResponse.expires);
                             }
                           });
                         },
@@ -332,7 +337,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         LoginPage.ROUTE_NAME, (Route<dynamic> route) => false);
                   },
-                  child: _token != null
+                  child: _token != null && !_isTokenExpired
                       ? Row(
                           children: <Widget>[
                             RawMaterialButton(

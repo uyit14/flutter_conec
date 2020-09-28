@@ -1,4 +1,5 @@
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

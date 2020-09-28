@@ -23,7 +23,7 @@ class ItemDetail {
   String ownerAvatar;
   String ownerId;
   int ratingCount;
-  int ratingAvg;
+  num ratingAvg;
   bool isRating;
   int viewCount;
   int commentCount;

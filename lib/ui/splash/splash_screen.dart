@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:conecapp/ui/address/province_page.dart';
-import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:conecapp/ui/onboarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
