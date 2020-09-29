@@ -549,7 +549,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void doUpdateProfile() async {
-    final result = selectedCity != null
+    final result = selectedCity != null && selectedDistrict!=null && selectedWard!=null
         ? await Helper.getLatLng(
             '$_address, $selectedWard, $selectedDistrict, $selectedCity')
         : LatLong(lat: 0.0, long: 0.0);

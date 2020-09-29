@@ -627,9 +627,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   PostActionRequest _postActionRequest;
 
   void doUpdateAction() async{
-    final result = selectedCity != null
+    final result = selectedCity != null && selectedDistrict!=null && selectedWard!=null
         ? await Helper.getLatLng(
-        '$_addressController.text, $selectedWard, $selectedDistrict, $selectedCity')
+        '${_addressController.text}, $selectedWard, $selectedDistrict, $selectedCity')
         : LatLong(lat: 0.0, long: 0.0);
     print(result.lat.toString() + "----" + result.long.toString());
     if (_currentSelectedIndex == 7) {
