@@ -137,7 +137,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 InkWell(
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
-                                        DetailProfilePage.ROUTE_NAME);
+                                        DetailProfilePage.ROUTE_NAME).then((value) => _profileBloc.requestGetProfile());
                                   },
                                   child: Text("Xem trang cá nhân",
                                       style: TextStyle(

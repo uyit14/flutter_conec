@@ -45,7 +45,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                 case Status.COMPLETED:
                   List<Topic> topics = snapshot.data.data;
                   return ListView.builder(
-                      itemCount: topics.length,
+                      itemCount: topics.length + 1,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         if (index == 0) {
@@ -97,8 +97,8 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                             Navigator.of(context).pushNamed(
                                 ItemByCategory.ROUTE_NAME,
                                 arguments: {
-                                  'id': topics[index].id,
-                                  'title': topics[index].title
+                                  'id': topics[index-1].id,
+                                  'title': topics[index-1].title
                                 });
                           },
                           child: Container(
@@ -124,7 +124,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                           topLeft: Radius.circular(6),
                                           topRight: Radius.circular(6)),
                                       child: CachedNetworkImage(
-                                        imageUrl: topics[index].thumbnail,
+                                        imageUrl: topics[index-1].thumbnail,
                                         placeholder: (context, url) =>
                                             Image.asset(
                                                 "assets/images/placeholder.png"),
@@ -137,7 +137,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    topics[index].title,
+                                    topics[index-1].title,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 18,
