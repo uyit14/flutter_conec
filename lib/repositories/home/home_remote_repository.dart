@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/models/response/avatar_response.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
@@ -103,6 +104,12 @@ class HomeRemoteRepository {
     final response = await _helper.post("/api/club/userRating",
         body: body, headers: await Helper.header());
     return response['status'];
+  }
+
+  Future<AvatarResponse> getUserAvatar() async{
+    final response = await _helper.post("/api/account/GetAvatar", headers: await Helper.header());
+    print(response);
+    return AvatarResponse.fromJson(response);
   }
 
   Future<bool> likePost(String postId) async {

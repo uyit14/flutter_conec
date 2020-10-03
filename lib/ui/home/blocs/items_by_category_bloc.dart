@@ -17,6 +17,11 @@ class ItemsByCategoryBloc {
   List<LatestItem> _originalItems = List<LatestItem>();
 
   //all item
+  StreamController<ApiResponse<String>> _avatarController = StreamController();
+
+  Stream<ApiResponse<String>> get avatarStream => _avatarController.stream;
+
+  //all item
   StreamController<ApiResponse<List<LatestItem>>> _allItemController =
       StreamController();
 
@@ -29,6 +34,7 @@ class ItemsByCategoryBloc {
 
   Stream<ApiResponse<ItemDetail>> get itemDetailStream =>
       _itemDetailController.stream;
+
   //
   final List<Comment> allComments = List();
 
@@ -47,15 +53,18 @@ class ItemsByCategoryBloc {
 //  Stream<List<Comment>> get childCommentStream =>
 //      _childCommentController.stream;
 
-  void requestGetAllItem(int page, {String province, String district, String topic, String club}) async {
-    if(page != 0){
-      final items = await _repository.fetchAllItem(page, province: province, district: district, club: club, topic: topic);
+  void requestGetAllItem(int page,
+      {String province, String district, String topic, String club}) async {
+    if (page != 0) {
+      final items = await _repository.fetchAllItem(page,
+          province: province, district: district, club: club, topic: topic);
       _originalItems.addAll(items);
       _allItemController.sink.add(ApiResponse.completed(items));
-    }else{
+    } else {
       _allItemController.sink.add(ApiResponse.loading());
       try {
-        final items = await _repository.fetchAllItem(page, province: province, district: district, club: club, topic: topic);
+        final items = await _repository.fetchAllItem(page,
+            province: province, district: district, club: club, topic: topic);
         _originalItems.addAll(items);
         _allItemController.sink.add(ApiResponse.completed(items));
       } catch (e) {
@@ -76,12 +85,23 @@ class ItemsByCategoryBloc {
     }
   }
 
+  void requestGetAvatar() async {
+    _avatarController.sink.add(ApiResponse.loading());
+    final avatar = await _repository.getUserAvatar();
+    if (avatar.status) {
+      _avatarController.sink.add(ApiResponse.completed(avatar.avatar));
+    } else {
+      _avatarController.sink.addError(ApiResponse.error(avatar.error));
+    }
+  }
+
   void requestComment(String postId) async {
     _parentCommentController.sink.add(ApiResponse.loading());
     try {
       final comments = await _repository.fetchComments(postId);
       allComments.addAll(comments);
-      parentComment = comments.where((element) => element.parent == null).toList();
+      parentComment =
+          comments.where((element) => element.parent == null).toList();
       debugPrint("parentComment: " + parentComment.length.toString());
       debugPrint("all: " + allComments.length.toString());
       _parentCommentController.sink.add(ApiResponse.completed(parentComment));
@@ -98,28 +118,31 @@ class ItemsByCategoryBloc {
             .toString());
     print("with id: " + commentId);
     print("item deleted: " + parentComment[0].content);
-    print("item deleted 2: " + parentComment[parentComment.indexWhere((element) => element.id == commentId)].content);
-    parentComment.removeWhere((element) => element.id==commentId);
+    print("item deleted 2: " +
+        parentComment[
+                parentComment.indexWhere((element) => element.id == commentId)]
+            .content);
+    parentComment.removeWhere((element) => element.id == commentId);
     _parentCommentController.sink.add(ApiResponse.completed(parentComment));
     return response;
   }
 
-  Future<bool> requestLikeComment(String commentId) async{
+  Future<bool> requestLikeComment(String commentId) async {
     final response = await _repository.likeComment(commentId);
     return response;
   }
 
-  Future<bool> requestUnLikeComment(String commentId) async{
+  Future<bool> requestUnLikeComment(String commentId) async {
     final response = await _repository.unLikeComment(commentId);
     return response;
   }
 
-  Future<bool> requestLikePost(String postId) async{
+  Future<bool> requestLikePost(String postId) async {
     final response = await _repository.likePost(postId);
     return response;
   }
 
-  Future<bool> requestRating(dynamic body) async{
+  Future<bool> requestRating(dynamic body) async {
     final response = await _repository.ratingPost(body);
     return response;
   }
@@ -207,22 +230,25 @@ class ItemsByCategoryBloc {
 //    _allItemController.sink.add(ApiResponse.completed(_filterResult));
 //  }
 
-  void clearSearch(){
+  void clearSearch() {
     _allItemController.sink.add(ApiResponse.completed(_originalItems));
   }
 
-  void searchAction(String keyWord){
+  void searchAction(String keyWord) {
     List<LatestItem> _searchResult = List<LatestItem>();
     _originalItems.forEach((item) {
-      if(_search(item, keyWord)){
+      if (_search(item, keyWord)) {
         print(item.title);
         _searchResult.add(item);
       }
     });
     _allItemController.sink.add(ApiResponse.completed(_searchResult));
   }
-  bool _search(LatestItem item, String txtSearch){
-    if (TiengViet.parse(item.title).toLowerCase().contains(txtSearch.toLowerCase())) {
+
+  bool _search(LatestItem item, String txtSearch) {
+    if (TiengViet.parse(item.title)
+        .toLowerCase()
+        .contains(txtSearch.toLowerCase())) {
       return true;
     }
     return false;
@@ -248,6 +274,7 @@ class ItemsByCategoryBloc {
     _allItemController?.close();
     _itemDetailController?.close();
     _parentCommentController?.close();
+    _avatarController?.close();
     //_childCommentController?.close();
   }
 }

@@ -39,6 +39,7 @@ class _CommentWidgetState extends State<CommentWidget> {
 
   String _token;
   bool _isTokenExpired = true;
+  String _avatar;
 
   void getToken() async{
     String token = await Helper.getToken();
@@ -54,6 +55,18 @@ class _CommentWidgetState extends State<CommentWidget> {
     _addDataToList = true;
     super.initState();
     getToken();
+    _itemsByCategoryBloc.requestGetAvatar();
+    _itemsByCategoryBloc.avatarStream.listen((event) {
+      switch(event.status){
+        case Status.LOADING: break;
+        case Status.COMPLETED:
+          setState(() {
+            _avatar = event.data;
+          });
+          break;
+        case Status.ERROR: break;
+      }
+    });
   }
 
   @override
@@ -280,10 +293,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                     !_isLoading
                         ? CircleAvatar(
                             radius: 25,
-                      backgroundImage: widget.itemDetail.ownerAvatar !=
+                      backgroundImage: _avatar !=
                           null
                           ? NetworkImage(
-                          widget.itemDetail.ownerAvatar)
+                          _avatar)
                           : AssetImage(
                           "assets/images/avatar.png"),
                           )

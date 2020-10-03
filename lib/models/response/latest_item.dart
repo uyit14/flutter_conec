@@ -5,6 +5,7 @@ class LatestItem {
   String title;
   String description;
   int joiningFee;
+  String joiningFeePeriod;
   String approvedDate;
   String owner;
   String thumbnail;
@@ -21,6 +22,7 @@ class LatestItem {
       this.title,
       this.description,
       this.joiningFee,
+        this.joiningFeePeriod,
       this.approvedDate,
       this.owner,
       this.thumbnail,
@@ -38,6 +40,7 @@ class LatestItem {
     title = json['title'];
     description = json['description'];
     joiningFee = json['joiningFee'];
+    joiningFeePeriod = json['joiningFeePeriod'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
     thumbnail = json['thumbnail'] !=null && !json['thumbnail'].contains("http") ? "http://149.28.140.240:8088" + json['thumbnail'] : json['thumbnail'];

@@ -43,6 +43,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   final picker = ImagePicker();
   bool _isCallApi;
   String postId;
+  int _selectedType;
+  String _type;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
   PostActionBloc _postActionBloc = PostActionBloc();
   ItemDetail _itemDetail = ItemDetail();
@@ -135,12 +137,14 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
 
   initValue() {
     setState(() {
+      getSelectedType(_itemDetail.joiningFeePeriod);
       _titleController = TextEditingController(text: _itemDetail.title);
       _joiningFreeController =
           TextEditingController(text: _itemDetail.joiningFee.toString());
       _phoneController = TextEditingController(text: _itemDetail.phoneNumber);
       _addressController = TextEditingController(text: _itemDetail.address);
       selectedCity = _itemDetail.province;
+      _type = _itemDetail.joiningFeePeriod;
       selectedDistrict = _itemDetail.district;
       selectedWard = _itemDetail.ward;
       _urlImages = _itemDetail.images;
@@ -148,6 +152,23 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       _conditionController =
           TextEditingController(text: _itemDetail.generalCondition);
     });
+  }
+
+  getSelectedType(String type){
+    switch(type){
+      case "Giờ":
+        _selectedType = 0;
+        break;
+      case "Ngày":
+        _selectedType = 1;
+        break;
+      case "Tháng":
+        _selectedType = 2;
+        break;
+      case "Năm":
+        _selectedType = 3;
+        break;
+    }
   }
 
   @override
@@ -384,7 +405,114 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                 ),
                                 border: const OutlineInputBorder()),
                           ),
-                          SizedBox(height: 12),
+                          _currentSelectedIndex == 7 ? Container() : Row(
+                            children: [
+                              Expanded(
+                                child: FlatButton(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: _selectedType == 0
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius:
+                                        BorderRadius.circular(50)),
+                                    textColor: _selectedType == 0
+                                        ? Colors.red
+                                        : Colors.grey,
+                                    onPressed: () {
+                                      setState(() {
+                                        _type = "Giờ";
+                                        _selectedType = 0;
+                                      });
+                                    },
+                                    child: Text("Giờ",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold))),
+                              ),
+                              SizedBox(width: 4),
+                              Expanded(
+                                child: FlatButton(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: _selectedType == 1
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius:
+                                        BorderRadius.circular(50)),
+                                    textColor: _selectedType == 1
+                                        ? Colors.red
+                                        : Colors.grey,
+                                    onPressed: () {
+                                      setState(() {
+                                        _type = "Ngày";
+                                        _selectedType = 1;
+                                      });
+                                    },
+                                    child: Text("Ngày",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold))),
+                              ),
+                              SizedBox(width: 4),
+                              Expanded(
+                                child: FlatButton(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: _selectedType == 2
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius:
+                                        BorderRadius.circular(50)),
+                                    textColor: _selectedType == 2
+                                        ? Colors.red
+                                        : Colors.grey,
+                                    onPressed: () {
+                                      setState(() {
+                                        _type = "Tháng";
+                                        _selectedType = 2;
+                                      });
+                                    },
+                                    child: Text("Tháng",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold))),
+                              ),
+                              SizedBox(width: 4),
+                              Expanded(
+                                child: FlatButton(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: _selectedType == 3
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius:
+                                        BorderRadius.circular(50)),
+                                    textColor: _selectedType == 3
+                                        ? Colors.red
+                                        : Colors.grey,
+                                    onPressed: () {
+                                      setState(() {
+                                        _type = "Năm";
+                                        _selectedType = 3;
+                                      });
+                                    },
+                                    child: Text("Năm",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold))),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: _currentSelectedIndex == 7 ? 1 : 12,)
                         ],
                       ),
                 //STEP 5
@@ -699,6 +827,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
           joiningFee: _joiningFreeController.text.length > 0
               ? int.parse(_joiningFreeController.text)
               : null,
+          joiningFeePeriod: _type,
           phoneNumber: _phoneController.text,
           lat: result.lat ?? 0.0,
           lng: result.long ?? 0.0,

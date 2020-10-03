@@ -22,6 +22,7 @@ import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/edit_info_page.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/change_password_page.dart';
+import 'package:conecapp/ui/profile/pages/guide_page.dart';
 import 'package:conecapp/ui/profile/pages/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -102,6 +103,7 @@ class ConecApp extends StatelessWidget {
         InfoPage.ROUTE_NAME: (context) => InfoPage(),
         EditInfoPage.ROUTE_NAME: (context) => EditInfoPage(),
         VideoPlayerPage.ROUTE_NAME: (context) => VideoPlayerPage(),
+        GuidePage.ROUTE_NAME: (context) => GuidePage(),
       },
     );
   }

@@ -42,6 +42,7 @@ class ItemDetail {
   double lat;
   double long;
   int joiningFee;
+  String joiningFeePeriod;
   String uses;
   String price;
   String generalCondition;
@@ -78,6 +79,7 @@ class ItemDetail {
         this.lat,
         this.long,
         this.joiningFee,
+        this.joiningFeePeriod,
         this.uses,
         this.price,
         this.generalCondition,
@@ -120,6 +122,7 @@ class ItemDetail {
     lat = double.parse(json['lat']);
     long = double.parse(json['lng']);
     joiningFee = json['joiningFee'];
+    joiningFeePeriod = json['joiningFeePeriod'];
     uses = json['uses'];
     price = json['price'];
     generalCondition = json['generalCondition'];

@@ -12,6 +12,7 @@ import 'package:conecapp/ui/others/terms_condition_page.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/change_password_page.dart';
+import 'package:conecapp/ui/profile/pages/guide_page.dart';
 import 'package:conecapp/ui/profile/pages/info_page.dart';
 import 'package:conecapp/ui/profile/widgets/custom_profile_clipper.dart';
 import 'package:flutter/cupertino.dart';
@@ -213,6 +214,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 SizedBox(height: 8),
                 InkWell(
+                  onTap: (){
+                    Navigator.of(context).pushNamed(GuidePage.ROUTE_NAME);
+                  },
                   child: Row(
                     children: <Widget>[
                       RawMaterialButton(

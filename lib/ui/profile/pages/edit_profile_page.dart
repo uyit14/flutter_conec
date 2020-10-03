@@ -16,6 +16,7 @@ import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -31,7 +32,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   File _image;
   final picker = ImagePicker();
   String _name;
-  String _dob;
   String _gender = "Nam";
   String _address;
   String _email;
@@ -76,27 +76,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final routeArgs = ModalRoute.of(context).settings.arguments;
     profile = routeArgs;
     //init value
-   if(_isApiCall){
-     _name = profile.name;
-     _dob = profile.dob;
-     _gender = profile.gender ?? "Nam";
-     _address = profile.address;
-     _email = profile.email;
-     _phone = profile.phoneNumber;
-     _type = profile.type;
-     if (profile.type != null && profile.type == "Club") {
-       _selectedType = 0;
-       _type = "Club";
-     } else if (profile.type == "Personal") {
-       _type = "Personal";
-       _selectedType = 1;
-     }else{
-       _type = "Trainer";
-       _selectedType = 2;
-     }
-     _isApiCall = false;
-   }
+    if (_isApiCall) {
+      _name = profile.name;
+      _gender = profile.gender ?? "Nam";
+      _birthDay = DateTime(
+          int.parse(profile.dob.substring(6)),
+          int.parse(profile.dob.substring(3, 5)),
+          int.parse(profile.dob.substring(0, 2)));
+      _address = profile.address;
+      _email = profile.email;
+      _phone = profile.phoneNumber;
+      _type = profile.type;
+      selectedCity = profile.province;
+      selectedDistrict = profile.district;
+      selectedWard = profile.ward;
+      if (profile.type != null && profile.type == "Club") {
+        _selectedType = 0;
+        _type = "Club";
+      } else if (profile.type == "Personal") {
+        _type = "Personal";
+        _selectedType = 1;
+      } else {
+        _type = "Trainer";
+        _selectedType = 2;
+      }
+      _isApiCall = false;
+    }
   }
+
+  String restrictFractionalSeconds(String dateTime) =>
+      dateTime.replaceFirstMapped(RegExp(r"(\.\d{6})\d+"), (m) => m[1]);
 
   @override
   Widget build(BuildContext context) {
@@ -193,18 +202,22 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 FlatButton(
                                     shape: RoundedRectangleBorder(
                                         side: BorderSide(
-                                            color:
-                                            _selectedType == 0 ? Colors.red : Colors.grey,
+                                            color: _selectedType == 0
+                                                ? Colors.red
+                                                : Colors.grey,
                                             width: 1,
                                             style: BorderStyle.solid),
-                                        borderRadius: BorderRadius.circular(50)),
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
                                     onPressed: () {
                                       setState(() {
                                         _type = "Club";
                                         _selectedType = 0;
                                       });
                                     },
-                                    textColor: _selectedType == 0 ? Colors.red : Colors.grey,
+                                    textColor: _selectedType == 0
+                                        ? Colors.red
+                                        : Colors.grey,
                                     child: Text("Câu lạc bộ",
                                         style: TextStyle(
                                             fontSize: 15,
@@ -217,8 +230,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                 : Colors.grey,
                                             width: 1,
                                             style: BorderStyle.solid),
-                                        borderRadius: BorderRadius.circular(50)),
-                                    textColor: _selectedType == 1 ? Colors.red : Colors.grey,
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    textColor: _selectedType == 1
+                                        ? Colors.red
+                                        : Colors.grey,
                                     onPressed: () {
                                       setState(() {
                                         _type = "Personal";
@@ -237,12 +253,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                 : Colors.grey,
                                             width: 1,
                                             style: BorderStyle.solid),
-                                        borderRadius: BorderRadius.circular(50)),
-                                    textColor: _selectedType == 2 ? Colors.red : Colors.grey,
+                                        borderRadius:
+                                            BorderRadius.circular(50)),
+                                    textColor: _selectedType == 2
+                                        ? Colors.red
+                                        : Colors.grey,
                                     onPressed: () {
                                       setState(() {
                                         _type = "Trainer";
-                                       _selectedType = 2;
+                                        _selectedType = 2;
                                       });
                                     },
                                     child: Text("Huấn luyện viên",
@@ -266,7 +285,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               print(_name);
                             },
                             decoration: InputDecoration(
-                                hintText: _selectedType == 0 ? "Tên CLB" : 'Họ và tên',
+                                hintText: _selectedType == 0
+                                    ? "Tên CLB"
+                                    : 'Họ và tên',
                                 //errorText: _nameValidate ? "Vui lòng nhập họ tên" : null,
                                 focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
@@ -285,7 +306,39 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     InkWell(
-                                      onTap: () => _showDatePicker(),
+                                      onTap: () {
+                                        DatePicker.showDatePicker(context,
+                                            showTitleActions: true,
+                                            minTime: DateTime(1945, 1, 1),
+                                            maxTime: DateTime(2030, 31, 12),
+                                            theme: DatePickerTheme(
+                                                headerColor: Colors.orange,
+                                                backgroundColor: Colors.blue,
+                                                itemStyle: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18),
+                                                doneStyle: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 16)),
+                                            onChanged: (date) {
+                                          setState(() {
+                                            _birthDay =
+                                                date != null ? date : null;
+                                          });
+                                        }, onConfirm: (date) {
+                                          setState(() {
+                                            _birthDay =
+                                                date != null ? date : null;
+                                          });
+                                        },
+                                            currentTime: _birthDay
+                                                    .toString()
+                                                    .contains("0001")
+                                                ? DateTime(2000, 6, 16)
+                                                : _birthDay,
+                                            locale: LocaleType.vi);
+                                      },
                                       child: Card(
                                         margin:
                                             EdgeInsets.symmetric(horizontal: 0),
@@ -299,7 +352,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               Icon(Icons.date_range),
                                               SizedBox(width: 16),
                                               Text(
-                                                _birthDay != null ? DateFormat('dd-MM-yyyy').format(_birthDay) : profile.dob,
+                                                DateFormat('dd-MM-yyyy')
+                                                    .format(_birthDay),
                                                 textAlign: TextAlign.left,
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -455,9 +509,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             textInputAction: TextInputAction.done,
                             initialValue: profile.address ?? "",
                             onChanged: (value) {
-                             setState(() {
-                               _address = value;
-                             });
+                              setState(() {
+                                _address = value;
+                              });
                             },
                             decoration: InputDecoration(
                                 hintText: 'Số nhà, tên đường',
@@ -542,17 +596,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   dynamic myEncode(dynamic item) {
-    if(item is DateTime) {
+    if (item is DateTime) {
       return item.toIso8601String();
     }
     return item;
   }
 
   void doUpdateProfile() async {
-    final result = selectedCity != null && selectedDistrict!=null && selectedWard!=null
-        ? await Helper.getLatLng(
-            '$_address, $selectedWard, $selectedDistrict, $selectedCity')
-        : LatLong(lat: 0.0, long: 0.0);
+    final result =
+        selectedCity != null && selectedDistrict != null && selectedWard != null
+            ? await Helper.getLatLng(
+                '$_address, $selectedWard, $selectedDistrict, $selectedCity')
+            : LatLong(lat: 0.0, long: 0.0);
     print(result.lat.toString() + "----" + result.long.toString());
     //
     ProfileRequest _request = ProfileRequest(
@@ -643,7 +698,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               initialDateTime: DateTime.now(),
               onDateTimeChanged: (date) {
                 setState(() {
-                  _birthDay = date!=null ? date : null;
+                  _birthDay = date != null ? date : null;
                 });
               },
               mode: CupertinoDatePickerMode.date,

@@ -10,6 +10,7 @@ class PostActionRequest {
   String ward;
   String address;
   int joiningFee;
+  String joiningFeePeriod;
   int price;
   String generalCondition;
   String uses;
@@ -32,6 +33,7 @@ class PostActionRequest {
     this.ward,
     this.address,
     this.joiningFee,
+    this.joiningFeePeriod,
     this.price,
     this.generalCondition,
     this.uses,
@@ -55,6 +57,7 @@ class PostActionRequest {
     if(price!=null) 'price': price,
     if(uses!=null) 'uses': uses,
     if(joiningFee!=null) 'joiningFee': joiningFee,
+    if(joiningFeePeriod!=null) 'joiningFeePeriod': joiningFeePeriod,
     if(generalCondition!=null) 'generalCondition': generalCondition,
     if(phoneNumber!=null) 'phoneNumber': phoneNumber,
     if(lat!=null) 'lat': lat,
