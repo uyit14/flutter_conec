@@ -14,12 +14,19 @@ enum MyPostStatus { Pending, Reject, Approve, Hidden, Archive }
 
 class ItemMyPost extends StatefulWidget {
   final Key key;
+  final int index;
   final MyPost myPost;
   final MyPostStatus status;
   final Function(String postId) callback;
   final Function(bool doRefresh) refresh;
 
-  ItemMyPost({this.myPost, this.key, this.status, this.callback, this.refresh});
+  ItemMyPost(
+      {this.myPost,
+      this.key,
+      this.status,
+      this.callback,
+      this.refresh,
+      this.index});
 
   @override
   _ItemMyPostState createState() => _ItemMyPostState();
@@ -62,24 +69,50 @@ class _ItemMyPostState extends State<ItemMyPost> {
           icon: Icons.delete,
           onTap: () {
             Helper.showDeleteDialog(context, () {
-              _postActionBloc.requestDeleteMyPost(widget.myPost.postId);
+              _postActionBloc.requestDeleteMyPost(
+                  widget.myPost.postId, "Delete");
+              widget.callback(widget.myPost.postId);
+              Navigator.pop(context);
               _postActionBloc.deleteMyPostStream.listen((event) {
                 switch (event.status) {
                   case Status.LOADING:
                     break;
                   case Status.COMPLETED:
-                    Fluttertoast.showToast(
-                        msg: event.data, textColor: Colors.black87, gravity: ToastGravity.CENTER);
-                    widget.callback(widget.myPost.postId);
-                    Navigator.pop(context);
                     break;
                   case Status.ERROR:
                     Fluttertoast.showToast(
-                        msg: event.data, textColor: Colors.black87);
+                        msg: event.message, textColor: Colors.black87);
                     Navigator.pop(context);
                     break;
                 }
               });
+            });
+          },
+        ),
+        IconSlideAction(
+          caption: widget.key.toString().contains("hidden") ? "Hiện" : 'Ẩn',
+          color: widget.key.toString().contains("hidden")
+              ? Colors.green
+              : Colors.orange,
+          icon: widget.key.toString().contains("hidden")
+              ? Icons.open_in_browser
+              : Icons.close,
+          onTap: () {
+            _postActionBloc.requestDeleteMyPost(
+                widget.myPost.postId, "HidePost");
+            widget.callback(widget.myPost.postId);
+            _postActionBloc.deleteMyPostStream.listen((event) {
+              switch (event.status) {
+                case Status.LOADING:
+                  break;
+                case Status.COMPLETED:
+                  break;
+                case Status.ERROR:
+                  Fluttertoast.showToast(
+                      msg: event.message, textColor: Colors.black87);
+                  Navigator.pop(context);
+                  break;
+              }
             });
           },
         ),
@@ -118,64 +151,93 @@ class _ItemMyPostState extends State<ItemMyPost> {
             decoration: BoxDecoration(
                 color: Colors.black12, borderRadius: BorderRadius.circular(12)),
             child: IntrinsicHeight(
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: Text(
-                          widget.myPost.title ?? "",
-                          maxLines: 2,
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Text(
+                                widget.myPost.title ?? "",
+                                maxLines: 2,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 2,
+                              child: Text(
+                                widget.myPost.description ?? "",
+                                maxLines: 3,
+                                style: TextStyle(fontSize: 15),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            Spacer(),
+                            Text(
+                              widget.myPost.approvedDate,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                  fontStyle: FontStyle.italic),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: Text(
-                          widget.myPost.description ?? "",
-                          maxLines: 3,
-                          style: TextStyle(fontSize: 15),
-                          overflow: TextOverflow.ellipsis,
+                        Spacer(),
+                        Container(
+                          width: 100,
+                          height: 100,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.myPost.thumbnail ?? "",
+                              progressIndicatorBuilder:
+                                  (context, url, downloadProgress) =>
+                                      CircularProgressIndicator(
+                                          value: downloadProgress.progress),
+                              errorWidget: (context, url, error) =>
+                                  Image.asset("assets/images/error.png"),
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
+                            ),
+                          ),
                         ),
-                      ),
-                      Spacer(),
-                      Text(
-                        widget.myPost.approvedDate,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  Container(
-                    width: 100,
-                    height: 100,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: CachedNetworkImage(
-                        imageUrl: widget.myPost.thumbnail ?? "",
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) =>
-                                CircularProgressIndicator(
-                                    value: downloadProgress.progress),
-                        errorWidget: (context, url, error) =>
-                            Image.asset("assets/images/error.png"),
-                        fit: BoxFit.cover,
-                        width: 100,
-                        height: 100,
-                      ),
+                      ],
                     ),
                   ),
+                  widget.index == 0 ? SizedBox(height: 4) : Container(),
+                  widget.index == 0
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(
+                              Icons.keyboard_backspace,
+                              size: 18,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              "Vuốt ngang để chỉnh sửa",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ],
+                        )
+                      : Container()
                 ],
               ),
             ),

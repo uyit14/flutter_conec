@@ -105,12 +105,12 @@ class PostActionBloc {
     }
   }
 
-  void requestDeleteMyPost(String postId) async {
+  void requestDeleteMyPost(String postId, String type) async {
     _deleteMyPostController.sink.add(ApiResponse.loading());
-    final result = await _repository.deleteMyPost(postId);
+    final result = await _repository.deleteMyPost(postId, type);
     if (result.status) {
       _deleteMyPostController.sink
-          .add(ApiResponse.completed("Xóa thành công"));
+          .add(ApiResponse.completed(type == "Delete" ? "Xóa thành công" : ""));
     } else {
       _deleteMyPostController.sink.add(ApiResponse.completed(result.message));
     }

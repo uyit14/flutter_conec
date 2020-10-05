@@ -41,6 +41,7 @@ class _RejectedMyPostState extends State<RejectedMyPost> {
                         return ItemMyPost(
                           myPost: myPosts[index],
                           key: ValueKey("reject"),
+                          index: index,
                           status: MyPostStatus.Reject,
                           callback: (id) {
                             myPosts

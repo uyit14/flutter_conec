@@ -748,6 +748,9 @@ class _PostActionPageState extends State<PostActionPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
                             onPressed: () async{
+                              setState(() {
+                                _isLoading = true;
+                              });
                               //debugPrint(_selectedCategory + "_title: " + _title + "_des: " +_controller.document.toPlainText() + "_term: " + _term.toString());
                               if (!_isPostButtonEnable()) {
                                 showFailDialog();

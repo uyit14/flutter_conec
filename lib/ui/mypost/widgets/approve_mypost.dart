@@ -42,6 +42,7 @@ class _ApproveMyPostState extends State<ApproveMyPost> {
                           return ItemMyPost(
                             myPost: myPosts[index],
                             key: ValueKey("approve"),
+                            index: index,
                             status: MyPostStatus.Approve, callback: (id){
                             myPosts.removeWhere((element) => element.postId == id);
                             setState(() {

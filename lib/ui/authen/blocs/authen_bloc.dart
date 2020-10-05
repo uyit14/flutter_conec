@@ -43,6 +43,16 @@ class AuthenBloc{
 
   }
 
+  void requestSocialLogin(String tokenId) async{
+    _loginController.sink.add(ApiResponse.loading());
+    final result = await _repository.doLoginWithSocial(tokenId);
+    if(result.status){
+      _loginController.sink.add(ApiResponse.completed(result));
+    }else{
+      _loginController.sink.add(ApiResponse.error(result.error ?? ""));
+    }
+  }
+
     void requestSignUp(String userName, String email, String passWord, String confirmPassWord) async{
     _signUpController.sink.add(ApiResponse.loading());
     try{

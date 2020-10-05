@@ -41,6 +41,7 @@ class _HiddenMyPostState extends State<HiddenMyPost> {
                         return ItemMyPost(
                             myPost: myPosts[index],
                             key: ValueKey("hidden"),
+                            index: index,
                             status: MyPostStatus.Hidden, callback: (id){
                           myPosts.removeWhere((element) => element.postId == id);
                           setState(() {

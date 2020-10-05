@@ -57,6 +57,7 @@ dependencies:
   video_player: ^0.10.12+3
   html_editor: ^1.0.1
   flutter_datetime_picker: ^1.4.0
+  google_sign_in: ^4.5.4
 
 dev_dependencies:
   flutter_test:

@@ -3,12 +3,11 @@ import 'package:conecapp/models/response/login_response.dart';
 import 'package:conecapp/ui/authen/blocs/authen_bloc.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/authen/pages/register_page.dart';
-import 'package:conecapp/ui/authen/pages/signup_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,11 +29,51 @@ class _LoginPageState extends State<LoginPage> {
   bool _loginFail = false;
   String _loginFailMessage;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    //_authenBloc = Provider.of<AuthenBloc>(context);
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Future<void> _handleSignIn() async {
+    try {
+      print(_googleSignIn.clientId);
+      GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
+      GoogleSignInAuthentication googleAuth =
+      await googleSignInAccount.authentication;
+      print("idToken: " + googleAuth.idToken);
+      _authenBloc.requestSocialLogin(googleAuth.idToken);
+      _authenBloc.loginStream.listen((event) {
+        switch (event.status) {
+          case Status.LOADING:
+            setState(() {
+              _loginFail = false;
+              _loadingStatus = true;
+            });
+            return;
+          case Status.COMPLETED:
+            LoginResponse loginResponse = event.data;
+            gotoHome(loginResponse.token, loginResponse.expires);
+            break;
+          case Status.ERROR:
+            setState(() {
+              _loginFailMessage = event.message;
+              _loadingStatus = false;
+              _loginFail = true;
+            });
+            _authenBloc = AuthenBloc();
+            return;
+        }
+      });
+//      final AuthCredential credential = GoogleAuthProvider.getCredential(
+//        accessToken: googleAuth.accessToken,
+//        idToken: googleAuth.idToken,
+//      );
+
+      //final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+      //print("signed in " + user.email);
+    } catch (error) {
+      print(error);
+    }
   }
+
+  Future<void> _handleSignOut() => _googleSignIn.disconnect();
 
   void doSignIn() async {
     setState(() {
@@ -118,7 +157,12 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Expanded(
-                        child: Image.asset("assets/images/conec_logo.png", width: 200, height: 100, fit: BoxFit.cover,),
+                        child: Image.asset(
+                          "assets/images/conec_logo.png",
+                          width: 200,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Container(
                         width: double.infinity,
@@ -162,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
                       keyboardType: TextInputType.emailAddress,
                       style: TextStyle(fontSize: 18),
                       decoration: InputDecoration(
-                          hintText: 'Nhập tài khoản của bạn',
+                          hintText: 'Nhập tài khoản / số điện thoại của bạn',
                           errorText:
                               _emailValidate ? "Tài khoản không hợp lệ" : null,
                           enabledBorder: const OutlineInputBorder(
@@ -224,8 +268,7 @@ class _LoginPageState extends State<LoginPage> {
                     _loginFail
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 8),
-                            child: Text(
-                                _loginFailMessage ?? "",
+                            child: Text(_loginFailMessage ?? "",
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic,
                                     color: Colors.red,
@@ -281,6 +324,42 @@ class _LoginPageState extends State<LoginPage> {
                             ]),
                       ),
                     ),
+                    SizedBox(
+                      height: 48,
+                    ),
+                    InkWell(
+                      onTap: () async{
+                        if(await _googleSignIn.isSignedIn()){
+                          _handleSignOut();
+                        }
+                        _handleSignIn();
+                      },
+                      child: Card(
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 6, horizontal: 32),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "assets/images/google.png",
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 16),
+                              Text(
+                                "Đăng nhập với Google",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),

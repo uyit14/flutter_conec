@@ -41,6 +41,7 @@ class _PendingMyPostState extends State<PendingMyPost> {
                         return ItemMyPost(
                             myPost: myPosts[index],
                             key: ValueKey("pending"),
+                            index: index,
                             status: MyPostStatus.Pending, callback: (id){
                           myPosts.removeWhere((element) => element.postId == id);
                           setState(() {

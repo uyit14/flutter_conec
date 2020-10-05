@@ -45,13 +45,15 @@ class MyPostRepository {
     return ItemDetailResponse.fromJson(response).itemDetail;
   }
 
-  Future<DeleteResponse> deleteMyPost(String postId) async {
-    final response = await _helper.post('/api/MyPost/Delete?id=$postId', body: jsonEncode({"id": postId}), headers: await Helper.header());
+  Future<DeleteResponse> deleteMyPost(String postId, String type) async {
+    final response = await _helper.post('/api/MyPost/$type?id=$postId', headers: await Helper.header());
+    print(response);
     return DeleteResponse.fromJson(response);
   }
 
   Future<DeleteResponse> deleteImage(String id) async {
     final response = await _helper.post('/api/MyPost/DeleteImage', body: jsonEncode({"id":id}), headers: await Helper.header());
+    print(response);
     return DeleteResponse.fromJson(response);
   }
 }
