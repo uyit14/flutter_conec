@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
@@ -26,19 +28,25 @@ class _SellDetailPageState extends State<SellDetailPage> {
   String postId;
   NewsBloc _newsBloc = NewsBloc();
   String phoneNumber;
-  String _currentImageUrl;
   int _currentIndex = 0;
   double lat = 10.8483258;
   double lng = 106.7686185;
   bool _firstCalculate = true;
+  String linkShare;
+  bool _setBanners = true;
+  bool _isCallApi = true;
+  PageController _pageController = PageController(initialPage: 0);
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final routeArgs =
-        ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    postId = routeArgs['postId'];
-    _newsBloc.requestAdsDetail(postId);
+    if(_isCallApi){
+      final routeArgs =
+      ModalRoute.of(context).settings.arguments as Map<String, Object>;
+      postId = routeArgs['postId'];
+      _newsBloc.requestAdsDetail(postId);
+      _isCallApi = false;
+    }
   }
 
   void getLatLng(String address) async {
@@ -61,6 +69,25 @@ class _SellDetailPageState extends State<SellDetailPage> {
     return img[0].fileName;
   }
 
+  void autoPlayBanners(List<myImage.Image> images) {
+    if (images.length > 1) {
+      Timer.periodic(Duration(seconds: 2), (Timer timer) {
+        if (_currentIndex == images.length) {
+          _currentIndex = 0;
+        } else {
+          _currentIndex++;
+        }
+        if (_pageController.hasClients) {
+          _pageController.animateToPage(
+            _currentIndex,
+            duration: Duration(milliseconds: 350),
+            curve: Curves.easeIn,
+          );
+        }
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +105,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
           actions: <Widget>[
             IconButton(
               onPressed: () {
-                Share.share('check out my website https://example.com');
+                Share.share(linkShare ?? Helper.applicationUrl());
               },
               icon: Icon(
                 Icons.share,
@@ -105,6 +132,11 @@ class _SellDetailPageState extends State<SellDetailPage> {
                     return UILoading(loadingMessage: snapshot.data.message);
                   case Status.COMPLETED:
                     AdsDetail adsDetail = snapshot.data.data;
+                    linkShare = adsDetail.shareLink;
+                    if (adsDetail.images.length > 0 && _setBanners) {
+                      autoPlayBanners(adsDetail.images);
+                      _setBanners = false;
+                    }
                     if (_firstCalculate) {
                       getLatLng(adsDetail.getAddress);
                       _firstCalculate = false;
@@ -115,15 +147,38 @@ class _SellDetailPageState extends State<SellDetailPage> {
                         children: <Widget>[
                           Hero(
                             tag: postId,
-                            child: CachedNetworkImage(
-                              imageUrl: _currentImageUrl ??
-                                  getImageUrl(
-                                      adsDetail.thumbnail, adsDetail.images),
-                              key: new ValueKey<String>(_currentImageUrl ?? ""),
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                          value: downloadProgress.progress),
+                            child: adsDetail.images.length > 0
+                                ? Container(
+                              height: 225,
+                              child: PageView.builder(
+                                  itemCount: adsDetail.images.length,
+                                  controller: _pageController,
+                                  onPageChanged: (currentPage) {
+                                    setState(() {
+                                      _currentIndex = currentPage;
+                                    });
+                                  },
+                                  itemBuilder: (context, index) {
+                                    return CachedNetworkImage(
+                                      imageUrl: adsDetail
+                                          .images[index].fileName,
+                                      placeholder: (context, url) =>
+                                          Image.asset(
+                                              "assets/images/placeholder.png"),
+                                      errorWidget: (context, url,
+                                          error) =>
+                                          Image.asset(
+                                              "assets/images/error.png"),
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 225,
+                                    );
+                                  }),
+                            )
+                                : CachedNetworkImage(
+                              imageUrl: adsDetail.thumbnail,
+                              placeholder: (context, url) => Image.asset(
+                                  "assets/images/placeholder.png"),
                               errorWidget: (context, url, error) =>
                                   Image.asset("assets/images/error.png"),
                               fit: BoxFit.cover,
@@ -144,10 +199,16 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                       return InkWell(
                                         onTap: () {
                                           setState(() {
-                                            _currentImageUrl = adsDetail
-                                                .images[index].fileName;
                                             _currentIndex = index;
                                           });
+                                          if (_pageController.hasClients) {
+                                            _pageController.animateToPage(
+                                              index,
+                                              duration:
+                                              Duration(milliseconds: 350),
+                                              curve: Curves.easeIn,
+                                            );
+                                          }
                                         },
                                         child: Container(
                                           decoration: _currentIndex == index

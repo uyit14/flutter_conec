@@ -57,6 +57,7 @@ class AdsDetail {
   int price;
   String generalCondition;
   String phoneNumber;
+  String shareLink;
 
   AdsDetail(
       {this.postId,
@@ -94,6 +95,7 @@ class AdsDetail {
       this.uses,
       this.price,
       this.generalCondition,
+        this.shareLink,
       this.phoneNumber});
 
   AdsDetail.fromJson(Map<String, dynamic> json) {
@@ -138,6 +140,7 @@ class AdsDetail {
     price = json['price'];
     generalCondition = json['generalCondition'];
     phoneNumber = json['phoneNumber'];
+    shareLink = json['shareLink'];
   }
 
   Map<String, dynamic> toJson() {

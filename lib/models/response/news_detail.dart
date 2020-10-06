@@ -40,6 +40,7 @@ class NewsDetail {
   String ward;
   String address;
   String phoneNumber;
+  String shareLink;
 
   NewsDetail(
       {this.postId,
@@ -69,6 +70,7 @@ class NewsDetail {
         this.district,
         this.ward,
         this.address,
+        this.shareLink,
         this.phoneNumber});
 
   NewsDetail.fromJson(Map<String, dynamic> json) {
@@ -105,6 +107,7 @@ class NewsDetail {
     ward = json['ward'];
     address = json['address'];
     phoneNumber = json['phoneNumber'];
+    shareLink = json['shareLink'];
   }
 
   Map<String, dynamic> toJson() {

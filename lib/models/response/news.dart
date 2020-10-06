@@ -28,7 +28,7 @@ class News {
     description = json['description'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
-    thumbnail = json['thumbnail'];
+    thumbnail = json['thumbnail'] !=null ? "http://149.28.140.240:8088" + json['thumbnail'] : null;
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];

@@ -26,6 +26,7 @@ class IntroducePage extends StatefulWidget {
 class _IntroducePageState extends State<IntroducePage> {
   HomeBloc _homeBloc = HomeBloc();
 
+  String clubId;
   String _token;
   bool _isTokenExpired = true;
 
@@ -49,6 +50,7 @@ class _IntroducePageState extends State<IntroducePage> {
     super.didChangeDependencies();
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
+    clubId = routeArgs['clubId'];
     _homeBloc.requestPageIntroduce(
         routeArgs['clubId'] ?? "40fcdb4a-6c82-4150-be23-4509a7d64ec6");
   }
@@ -105,7 +107,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                        profile.ratingAvg.toString() ??
+                                        profile.ratingAvg.toStringAsFixed(1) ??
                                             "0", style: TextStyle(fontSize: 18),),
                                     Icon(Icons.star, color: Colors.amber),
                                    Text(
@@ -180,9 +182,13 @@ class _IntroducePageState extends State<IntroducePage> {
                                                                     "rating":
                                                                     rating
                                                                   }));
-                                                              Navigator.of(
-                                                                  context)
-                                                                  .pop();
+                                                              _homeBloc.ratingIntroStream.listen((event) {
+                                                                if(event.data){
+                                                                  Navigator.of(
+                                                                      context)
+                                                                      .pop(true);
+                                                                }
+                                                              });
                                                             },
                                                             child:
                                                             Container(
@@ -216,7 +222,11 @@ class _IntroducePageState extends State<IntroducePage> {
                                                         ],
                                                       ),
                                                     );
-                                                  });
+                                                  }).then((value) {
+                                                    if(value){
+                                                      _homeBloc.requestPageIntroduce(clubId);
+                                                    }
+                                              });
                                             }
                                           }
                                         },

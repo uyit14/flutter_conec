@@ -49,6 +49,10 @@ class HomeBloc {
   StreamController<ApiResponse<Profile>> _pageIntroController =
   StreamController();
   Stream<ApiResponse<Profile>> get pageIntroStream => _pageIntroController.stream;
+  //page response
+  StreamController<ApiResponse<bool>> _ratingIntroController =
+  StreamController.broadcast();
+  Stream<ApiResponse<bool>> get ratingIntroStream => _ratingIntroController.stream;
 
   HomeBloc() {
     _repository = HomeRemoteRepository();
@@ -130,9 +134,13 @@ class HomeBloc {
     }
   }
 
-  Future<bool> requestRatingClub(dynamic body) async{
+  void requestRatingClub(dynamic body) async{
     final response = await _repository.ratingClub(body);
-    return response;
+    if(response!=null && response){
+      _ratingIntroController.sink.add(ApiResponse.completed(true));
+    }else{
+      _ratingIntroController.sink.add(ApiResponse.completed(false));
+    }
   }
 
   void dispose() {
@@ -149,5 +157,9 @@ class HomeBloc {
 
   void disposePage(){
     _pageIntroController.close();
+  }
+
+  void disposeRating(){
+    _ratingIntroController.close();
   }
 }

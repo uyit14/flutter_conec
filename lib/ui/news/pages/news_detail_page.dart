@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/news_detail.dart';
@@ -8,6 +11,7 @@ import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
+import 'package:conecapp/models/response/image.dart' as myImage;
 
 class NewsDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/news-detail';
@@ -18,7 +22,11 @@ class NewsDetailPage extends StatefulWidget {
 
 class _NewsDetailPageState extends State<NewsDetailPage> {
   String postId;
+  String linkShare;
+  int _currentIndex = 0;
   NewsBloc _newsBloc = NewsBloc();
+  bool _setBanners = true;
+  PageController _pageController = PageController(initialPage: 0);
 
   @override
   void didChangeDependencies() {
@@ -27,6 +35,25 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
     postId = routeArgs['postId'];
     _newsBloc.requestNewsDetail(postId);
+  }
+
+  void autoPlayBanners(List<myImage.Image> images) {
+    if (images.length > 1) {
+      Timer.periodic(Duration(seconds: 2), (Timer timer) {
+        if (_currentIndex == images.length) {
+          _currentIndex = 0;
+        } else {
+          _currentIndex++;
+        }
+        if (_pageController.hasClients) {
+          _pageController.animateToPage(
+            _currentIndex,
+            duration: Duration(milliseconds: 350),
+            curve: Curves.easeIn,
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -45,7 +72,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           actions: <Widget>[
             IconButton(
               onPressed: () {
-                Share.share('check out my website https://example.com');
+                Share.share(linkShare ?? Helper.applicationUrl());
               },
               icon: Icon(
                 Icons.share,
@@ -72,6 +99,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                     return UILoading(loadingMessage: snapshot.data.message);
                   case Status.COMPLETED:
                     NewsDetail newsDetail = snapshot.data.data;
+                    linkShare = newsDetail.shareLink;
+                    if (newsDetail.images.length > 0 && _setBanners) {
+                      autoPlayBanners(newsDetail.images);
+                      _setBanners = false;
+                    }
                     return SingleChildScrollView(
                         child: Card(
                       margin: EdgeInsets.all(0),
@@ -79,7 +111,33 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                         children: <Widget>[
                           Hero(
                             tag: postId,
-                            child: CachedNetworkImage(
+                            child: newsDetail.images.length > 0 ? Container(
+                              height: 225,
+                              child: PageView.builder(
+                                  itemCount: newsDetail.images.length,
+                                  controller: _pageController,
+                                  onPageChanged: (currentPage) {
+                                    setState(() {
+                                      _currentIndex = currentPage;
+                                    });
+                                  },
+                                  itemBuilder: (context, index) {
+                                    return CachedNetworkImage(
+                                      imageUrl: newsDetail
+                                          .images[index].fileName,
+                                      placeholder: (context, url) =>
+                                          Image.asset(
+                                              "assets/images/placeholder.png"),
+                                      errorWidget: (context, url,
+                                          error) =>
+                                          Image.asset(
+                                              "assets/images/error.png"),
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 225,
+                                    );
+                                  }),
+                            ) : CachedNetworkImage(
                               imageUrl: newsDetail.thumbnail,
                               progressIndicatorBuilder:
                                   (context, url, downloadProgress) =>
@@ -92,6 +150,67 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                               height: 250,
                             ),
                           ),
+                          if (newsDetail.images.length > 0)
+                            Container(
+                              height: 55,
+                              margin: EdgeInsets.only(top: 4),
+                              child: Center(
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: newsDetail.images.length,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            _currentIndex = index;
+                                          });
+                                          if (_pageController.hasClients) {
+                                            _pageController.animateToPage(
+                                              index,
+                                              duration:
+                                              Duration(milliseconds: 350),
+                                              curve: Curves.easeIn,
+                                            );
+                                          }
+                                        },
+                                        child: Container(
+                                          decoration: _currentIndex == index
+                                              ? BoxDecoration(
+                                            border: Border.all(
+                                                width: 2,
+                                                color: Colors.green),
+                                            borderRadius:
+                                            BorderRadius.all(
+                                                Radius.circular(8)),
+                                          )
+                                              : null,
+                                          margin: EdgeInsets.only(right: 2),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(6)),
+                                            child: CachedNetworkImage(
+                                              imageUrl: newsDetail
+                                                  .images[index].fileName,
+                                              placeholder: (context, url) =>
+                                                  Image.asset(
+                                                      "assets/images/placeholder.png"),
+                                              errorWidget: (context, url,
+                                                  error) =>
+                                                  Image.asset(
+                                                      "assets/images/error.png"),
+                                              fit: BoxFit.cover,
+                                              width: 55,
+                                              height: 55,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              ),
+                            )
+                          else
+                            Container(),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(

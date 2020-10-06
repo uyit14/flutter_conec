@@ -24,8 +24,8 @@ class AuthenRepository {
     return LoginResponse.fromJson(response);
   }
 
-  Future<LoginResponse> doLoginWithSocial(String tokenId) async {
-    final response = await _helper.post("/api/account/GoogleLogin",
+  Future<LoginResponse> doLoginWithSocial(String tokenId, socialType) async {
+    final response = await _helper.post("/api/account/$socialType",
         body: jsonEncode({'idToken': tokenId}),
         headers: header);
     print(response.toString());

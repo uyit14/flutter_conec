@@ -35,11 +35,25 @@ PODS:
   - DKPhotoGallery/Resource (0.0.14):
     - SDWebImage
     - SDWebImageFLPlugin
+  - FBSDKCoreKit (5.15.1):
+    - FBSDKCoreKit/Basics (= 5.15.1)
+    - FBSDKCoreKit/Core (= 5.15.1)
+  - FBSDKCoreKit/Basics (5.15.1)
+  - FBSDKCoreKit/Core (5.15.1):
+    - FBSDKCoreKit/Basics
+  - FBSDKLoginKit (5.15.1):
+    - FBSDKLoginKit/Login (= 5.15.1)
+  - FBSDKLoginKit/Login (5.15.1):
+    - FBSDKCoreKit (~> 5.0)
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
   - FLAnimatedImage (1.0.12)
   - Flutter (1.0.0)
+  - flutter_facebook_login (0.0.1):
+    - FBSDKCoreKit (~> 5.5)
+    - FBSDKLoginKit (~> 5.5)
+    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
   - FMDB (2.7.5):
@@ -103,6 +117,7 @@ PODS:
 DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoder (from `.symlinks/plugins/geocoder/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
@@ -124,6 +139,8 @@ SPEC REPOS:
     - AppAuth
     - DKImagePickerController
     - DKPhotoGallery
+    - FBSDKCoreKit
+    - FBSDKLoginKit
     - FLAnimatedImage
     - FMDB
     - GoogleMaps
@@ -138,6 +155,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  flutter_facebook_login:
+    :path: ".symlinks/plugins/flutter_facebook_login/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geocoder:
@@ -173,9 +192,12 @@ SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   DKImagePickerController: 4a3e7948a848c4348e600b3fe5ce41478835fa10
   DKPhotoGallery: 0290d32343574f06eaa4c26f8f2f8a1035e916be
+  FBSDKCoreKit: 1d5acf7c9d7a2f92bb1a242dc60cae5b7adb91df
+  FBSDKLoginKit: f1ea8026a58b52d30c9f2e6a58ca7d813619fb83
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_facebook_login: cfb5659f686b1c575ef205c6b6fd20db9679d3c4
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a

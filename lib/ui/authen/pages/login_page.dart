@@ -33,58 +33,57 @@ class _LoginPageState extends State<LoginPage> {
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<void> _handleSignIn() async {;
+  Future<void> _handleSignIn() async {
     try {
       print(_googleSignIn.clientId);
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
       GoogleSignInAuthentication googleAuth =
           await googleSignInAccount.authentication;
       print("idToken: " + googleAuth.idToken);
-      _authenBloc.requestSocialLogin(googleAuth.idToken);
-      _authenBloc.loginStream.listen((event) {
-        switch (event.status) {
-          case Status.LOADING:
-            setState(() {
-              _loginFail = false;
-              _loadingStatus = true;
-            });
-            return;
-          case Status.COMPLETED:
-            LoginResponse loginResponse = event.data;
-            gotoHome(loginResponse.token, loginResponse.expires, true);
-            break;
-          case Status.ERROR:
-            setState(() {
-              _loginFailMessage = event.message;
-              _loadingStatus = false;
-              _loginFail = true;
-            });
-            _authenBloc = AuthenBloc();
-            return;
-        }
-      });
-//      final AuthCredential credential = GoogleAuthProvider.getCredential(
-//        accessToken: googleAuth.accessToken,
-//        idToken: googleAuth.idToken,
-//      );
-
-      //final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
-      //print("signed in " + user.email);
+      _authenBloc.requestSocialLogin(googleAuth.idToken, "GoogleLogin");
+      listenLogin();
     } catch (error) {
       print(error);
     }
   }
 
+  listenLogin() {
+    _authenBloc.loginStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+          setState(() {
+            _loginFail = false;
+            _loadingStatus = true;
+          });
+          return;
+        case Status.COMPLETED:
+          LoginResponse loginResponse = event.data;
+          gotoHome(loginResponse.token, loginResponse.expires, true);
+          break;
+        case Status.ERROR:
+          setState(() {
+            _loginFailMessage = event.message;
+            _loadingStatus = false;
+            _loginFail = true;
+          });
+          _authenBloc = AuthenBloc();
+          return;
+      }
+    });
+  }
+
   Future<void> _handleSignOut() => _googleSignIn.disconnect();
 
-  Future<void> _handleFbSignIn() async{
+  Future<void> _handleFbSignIn() async {
     final facebookLogin = FacebookLogin();
-    if(await facebookLogin.isLoggedIn){
+    if (await facebookLogin.isLoggedIn) {
       facebookLogin.logOut();
     }
     final result = await facebookLogin.logIn(['email']);
     final token = result.accessToken.token;
-    //TODO - send this token to server
+    print(token ?? "NULL");
+    _authenBloc.requestSocialLogin(token, "FacebookLogin");
+    listenLogin();
   }
 
   void doSignIn() async {
@@ -348,103 +347,132 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     SizedBox(
-                      height: 48,
+                      height: 32,
                     ),
-                    InkWell(
-                      onTap: () async {
-                        if (await _googleSignIn.isSignedIn()) {
-                          _handleSignOut();
-                        }
-                        _handleSignIn();
-                      },
-                      child: Card(
-                        elevation: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 32),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "assets/images/google.png",
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.fill,
-                              ),
-                              SizedBox(width: 16),
-                              Text(
-                                "Đăng nhập với Google",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                            onTap: () async {
+                              if (await _googleSignIn.isSignedIn()) {
+                                _handleSignOut();
+                              }
+                              _handleSignIn();
+                            },
+                            child: CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.transparent,
+                              backgroundImage:
+                                  AssetImage("assets/images/google.png"),
+                            )),
+                        SizedBox(width: 16),
+                        InkWell(
+                            onTap: () async {
+                              _handleFbSignIn();
+                            },
+                            child: CircleAvatar(
+                          radius: 25,
+                              backgroundColor: Colors.transparent,
+                          backgroundImage:
+                              AssetImage("assets/images/facebook.png"),
+                        )),
+                      ],
                     ),
-                    SizedBox(height: 8),
-                    InkWell(
-                      onTap: () async {
-                        _handleFbSignIn();
-                      },
-                      child: Card(
-                        elevation: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 32),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "assets/images/facebook.png",
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.fill,
-                              ),
-                              SizedBox(width: 16),
-                              Text(
-                                "Đăng nhập với Facebook",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    InkWell(
-                      onTap: () async {
-                        _handleFbSignIn();
-                      },
-                      child: Card(
-                        elevation: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 32),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "assets/images/zalo.png",
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.fill,
-                              ),
-                              SizedBox(width: 16),
-                              Text(
-                                "Đăng nhập với Zalo",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
+//                    InkWell(
+//                      onTap: () async {
+//                        if (await _googleSignIn.isSignedIn()) {
+//                          _handleSignOut();
+//                        }
+//                        _handleSignIn();
+//                      },
+//                      child: Card(
+//                        elevation: 5,
+//                        child: Padding(
+//                          padding: const EdgeInsets.symmetric(
+//                              vertical: 6, horizontal: 32),
+//                          child: Row(
+//                            children: [
+//                              Image.asset(
+//                                "assets/images/google.png",
+//                                width: 40,
+//                                height: 40,
+//                                fit: BoxFit.fill,
+//                              ),
+//                              SizedBox(width: 16),
+//                              Text(
+//                                "Đăng nhập với Google",
+//                                style: TextStyle(
+//                                    fontSize: 18,
+//                                    color: Colors.black,
+//                                    fontWeight: FontWeight.w500),
+//                              )
+//                            ],
+//                          ),
+//                        ),
+//                      ),
+//                    ),
+//                    SizedBox(height: 8),
+//                    InkWell(
+//                      onTap: () async {
+//                        _handleFbSignIn();
+//                      },
+//                      child: Card(
+//                        elevation: 5,
+//                        child: Padding(
+//                          padding: const EdgeInsets.symmetric(
+//                              vertical: 6, horizontal: 32),
+//                          child: Row(
+//                            children: [
+//                              Image.asset(
+//                                "assets/images/facebook.png",
+//                                width: 40,
+//                                height: 40,
+//                                fit: BoxFit.fill,
+//                              ),
+//                              SizedBox(width: 16),
+//                              Text(
+//                                "Đăng nhập với Facebook",
+//                                style: TextStyle(
+//                                    fontSize: 18,
+//                                    color: Colors.black,
+//                                    fontWeight: FontWeight.w500),
+//                              )
+//                            ],
+//                          ),
+//                        ),
+//                      ),
+//                    ),
+//                    SizedBox(height: 8),
+//                    InkWell(
+//                      onTap: () async {
+//                        _handleFbSignIn();
+//                      },
+//                      child: Card(
+//                        elevation: 5,
+//                        child: Padding(
+//                          padding: const EdgeInsets.symmetric(
+//                              vertical: 6, horizontal: 32),
+//                          child: Row(
+//                            children: [
+//                              Image.asset(
+//                                "assets/images/zalo.png",
+//                                width: 40,
+//                                height: 40,
+//                                fit: BoxFit.fill,
+//                              ),
+//                              SizedBox(width: 16),
+//                              Text(
+//                                "Đăng nhập với Zalo",
+//                                style: TextStyle(
+//                                    fontSize: 18,
+//                                    color: Colors.black,
+//                                    fontWeight: FontWeight.w500),
+//                              )
+//                            ],
+//                          ),
+//                        ),
+//                      ),
+//                    )
                   ],
                 ),
               ),
