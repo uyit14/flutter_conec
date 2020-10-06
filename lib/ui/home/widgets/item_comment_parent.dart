@@ -64,6 +64,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
               children: <Widget>[
                 CircleAvatar(
                   radius: 16,
+                  backgroundColor: Colors.grey,
                   backgroundImage: widget.comment.profilePictureUrl !=
                       null
                       ? NetworkImage(

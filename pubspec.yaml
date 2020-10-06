@@ -58,6 +58,7 @@ dependencies:
   html_editor: ^1.0.1
   flutter_datetime_picker: ^1.4.0
   google_sign_in: ^4.5.4
+  flutter_facebook_login: ^3.0.0
 
 dev_dependencies:
   flutter_test:

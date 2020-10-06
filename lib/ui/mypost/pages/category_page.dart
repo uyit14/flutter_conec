@@ -98,7 +98,7 @@ class _CategoryPageState extends State<CategoryPage> {
                               return UILoading();
                             case Status.COMPLETED:
                               List<Topic> topic = snapshot.data.data;
-                              if(topic.length > 0){
+                              if(topic.length > 0 && _category!=null){
                                 int index = topic.indexWhere((element) => element.title == _category.title);
                                 _category = topic[index];
                               }

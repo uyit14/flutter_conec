@@ -7,6 +7,7 @@ import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<void> _handleSignIn() async {
+  Future<void> _handleSignIn() async {;
     try {
       print(_googleSignIn.clientId);
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
@@ -75,6 +76,16 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _handleSignOut() => _googleSignIn.disconnect();
+
+  Future<void> _handleFbSignIn() async{
+    final facebookLogin = FacebookLogin();
+    if(await facebookLogin.isLoggedIn){
+      facebookLogin.logOut();
+    }
+    final result = await facebookLogin.logIn(['email']);
+    final token = result.accessToken.token;
+    //TODO - send this token to server
+  }
 
   void doSignIn() async {
     setState(() {
@@ -362,6 +373,68 @@ class _LoginPageState extends State<LoginPage> {
                               SizedBox(width: 16),
                               Text(
                                 "Đăng nhập với Google",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    InkWell(
+                      onTap: () async {
+                        _handleFbSignIn();
+                      },
+                      child: Card(
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 6, horizontal: 32),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "assets/images/facebook.png",
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 16),
+                              Text(
+                                "Đăng nhập với Facebook",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    InkWell(
+                      onTap: () async {
+                        _handleFbSignIn();
+                      },
+                      child: Card(
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 6, horizontal: 32),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "assets/images/zalo.png",
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 16),
+                              Text(
+                                "Đăng nhập với Zalo",
                                 style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.black,

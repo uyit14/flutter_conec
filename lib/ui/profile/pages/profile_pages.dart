@@ -181,6 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       top: 18,
                       child: CircleAvatar(
                         radius: 50,
+                        backgroundColor: Colors.grey,
                         backgroundImage: _avatar != null
                             ? CachedNetworkImageProvider(_avatar)
                             : AssetImage("assets/images/avatar.png"),

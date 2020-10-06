@@ -64,8 +64,20 @@
     		<key>CFBundleURLSchemes</key>
     		<array>
     			<string>com.googleusercontent.apps.1023098809593-bihtl1luue11o6vi7v4sc392ihmt998n</string>
+    			<string>fb000000000000</string>
     		</array>
     	</dict>
+    </array>
+    <key>FacebookAppID</key>
+    <string>000000000000</string>
+    <key>FacebookDisplayName</key>
+    <string>Conec</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>fbapi</string>
+        <string>fb-messenger-share-api</string>
+        <string>fbauth2</string>
+        <string>fbshareextension</string>
     </array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

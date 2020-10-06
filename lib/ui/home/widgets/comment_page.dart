@@ -207,6 +207,7 @@ class _CommentPageState extends State<CommentPage> {
                     !_isLoading
                         ? CircleAvatar(
                             radius: 25,
+                      backgroundColor: Colors.grey,
                             backgroundImage: widget.itemDetail.ownerAvatar !=
                                     null
                                 ? NetworkImage(widget.itemDetail.ownerAvatar)

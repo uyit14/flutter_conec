@@ -86,6 +86,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                 top: 0,
                                 child: CircleAvatar(
                                   radius: 50,
+                                  backgroundColor: Colors.grey,
                                   backgroundImage: profile.avatar == null
                                       ? AssetImage("assets/images/avatar.png")
                                       : CachedNetworkImageProvider(

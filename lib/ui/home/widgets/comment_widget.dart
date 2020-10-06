@@ -293,6 +293,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                     !_isLoading
                         ? CircleAvatar(
                             radius: 25,
+                      backgroundColor: Colors.grey,
                       backgroundImage: _avatar !=
                           null
                           ? NetworkImage(

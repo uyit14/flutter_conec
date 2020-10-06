@@ -314,6 +314,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               children: [
                                                 CircleAvatar(
                                                   radius: 25,
+                                                  backgroundColor: Colors.grey,
                                                   backgroundImage: itemDetail
                                                               .ownerAvatar !=
                                                           null

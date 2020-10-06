@@ -60,6 +60,7 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
 //                ),
                 CircleAvatar(
                   radius: 16,
+                  backgroundColor: Colors.grey,
                   backgroundImage: widget.comment.profilePictureUrl !=
                       null
                       ? NetworkImage(

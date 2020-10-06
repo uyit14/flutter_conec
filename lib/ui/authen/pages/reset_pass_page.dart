@@ -195,6 +195,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 style: TextStyle(fontSize: 18),
                 decoration: InputDecoration(
                     hintText: "Nhập mã code 5 ký tự được gửi đến email của bạn",
+                    hintStyle: TextStyle(fontSize: 13),
                     errorText: _codeError ? "Vui lòng nhập mã" : null,
                     enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.red, width: 1)),
