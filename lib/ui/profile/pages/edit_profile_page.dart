@@ -603,6 +603,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   void doUpdateProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
     final result =
         selectedCity != null && selectedDistrict != null && selectedWard != null && _address!=null
             ? await Helper.getLatLng(
@@ -632,11 +635,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
     _profileBloc.requestUpdateProfile(jsonEncode(_request.toJson()));
     _profileBloc.updateProfileStream.listen((event) {
-      if (event.status == Status.LOADING) {
-        setState(() {
-          _isLoading = true;
-        });
-      }
       if (event.status == Status.COMPLETED) {
         setState(() {
           _isLoading = false;

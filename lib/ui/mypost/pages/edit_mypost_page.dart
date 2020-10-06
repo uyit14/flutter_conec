@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
-import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/models/request/post_action_request.dart';
@@ -12,7 +11,6 @@ import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/topic.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
-import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:file_picker/file_picker.dart';
@@ -22,8 +20,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zefyr/zefyr.dart';
 import 'package:quill_delta/quill_delta.dart';
-
-import '../../conec_home_page.dart';
+import 'category_page.dart';
 
 class EditMyPostPage extends StatefulWidget {
   static const ROUTE_NAME = 'edit-mypost';
@@ -34,8 +31,7 @@ class EditMyPostPage extends StatefulWidget {
 
 class _EditMyPostPageState extends State<EditMyPostPage> {
   int _currentSelectedIndex = -1;
-  String _selectedCategoryId;
-  String _selectedTopicName;
+  Topic topic;
   ZefyrController _controller;
   FocusNode _focusNode = FocusNode();
   List<File> _images = List<File>();
@@ -55,7 +51,6 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   TextEditingController _usesController;
   TextEditingController _conditionController;
   bool _isLoading = false;
-  bool _isFirstTime = true;
 
   @override
   void initState() {
@@ -192,19 +187,31 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
         switch (event.status) {
           case Status.COMPLETED:
             _itemDetail = event.data;
-            _selectedTopicName = _itemDetail.topic;
+            topic = Topic(title: _itemDetail.topic);
             if (_itemDetail.content != null) {
               final document = _itemDetail.content != null
                   ? _loadDocument('${_itemDetail.content}\n')
                   : NotusDocument();
               _controller = ZefyrController(document);
             }
-            _postActionBloc.requestGetTopicWithHeader();
             initValue();
             break;
         }
       });
       _isCallApi = false;
+    }
+  }
+
+  setSelectedIndex(Topic topic){
+    if(topic.title == "Bản tin"){
+      setState(() {
+        _currentSelectedIndex = 6;
+      });
+    }
+    if(topic.title == "Rao vặt"){
+      setState(() {
+        _currentSelectedIndex = 7;
+      });
     }
   }
 
@@ -221,66 +228,44 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               children: [
                 //STEP 1
                 Text("Danh mục"),
-                Container(
-                  height: 35,
-                  child: StreamBuilder<ApiResponse<List<Topic>>>(
-                      stream: _postActionBloc.topicStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          switch (snapshot.data.status) {
-                            case Status.LOADING:
-                              break;
-                            case Status.COMPLETED:
-                              List<Topic> topics = snapshot.data.data;
-                              if (_isFirstTime) {
-                                _currentSelectedIndex = topics.indexWhere(
-                                    (element) =>
-                                        element.title == _selectedTopicName);
-                                _selectedCategoryId =
-                                    topics[_currentSelectedIndex].id;
-                                _isFirstTime = false;
-                              }
-                              return ListView.builder(
-                                  itemCount: topics.length,
-                                  scrollDirection: Axis.horizontal,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      margin: EdgeInsets.only(right: 4),
-                                      child: FlatButton(
-                                          shape: RoundedRectangleBorder(
-                                              side: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1,
-                                                  style: BorderStyle.solid),
-                                              borderRadius:
-                                                  BorderRadius.circular(50)),
-                                          color: _currentSelectedIndex == index
-                                              ? Colors.green
-                                              : Colors.white,
-                                          textColor:
-                                              _currentSelectedIndex == index
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                          onPressed: () {
-                                            setState(() {
-                                              _selectedCategoryId =
-                                                  topics[index].id;
-                                              _currentSelectedIndex = index;
-                                            });
-                                            print(topics[index].title);
-                                          },
-                                          child: Text(topics[index].title)),
-                                    );
-                                  });
-                            case Status.ERROR:
-                              return UIError(
-                                  errorMessage: snapshot.data.message,
-                                  onRetryPressed: () => _postActionBloc
-                                      .requestGetTopicWithHeader());
-                          }
-                        }
-                        return Container(child: Text("Vui lòng chờ..."));
-                      }),
+                SizedBox(height: 4,),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(CategoryPage.ROUTE_NAME,
+                        arguments: {'category': topic}).then((value) {
+                      if (value != null) {
+                        setSelectedIndex(value);
+                        setState(() {
+                          topic = value;
+                        });
+                      }
+                    });
+                  },
+                  child: Card(
+                    margin: EdgeInsets.symmetric(horizontal: 0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 8),
+                      child: Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Icon(Icons.category),
+                          Text(
+                            topic != null
+                                ? topic.title
+                                : "Chọn danh mục",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          Text("Thay đổi",
+                              style: AppTheme.changeTextStyle(true))
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 12),
                 //STEP 2
@@ -771,7 +756,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                   "base64": base64Encode(_images[0].readAsBytesSync())
                 }
               : null,
-          topicId: _selectedCategoryId,
+          topicId: topic.id,
           images: _images.length > 0 ? base64ListImage(_images) : null,
           province: selectedCity,
           district: selectedDistrict,
@@ -797,7 +782,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                   "base64": base64Encode(_images[0].readAsBytesSync())
                 }
               : null,
-          topicId: _selectedCategoryId,
+          topicId: topic.id,
           images: _images.length > 0 ? base64ListImage(_images) : null,
           province: selectedCity,
           district: selectedDistrict,
@@ -818,7 +803,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                   "base64": base64Encode(_images[0].readAsBytesSync())
                 }
               : null,
-          topicId: _selectedCategoryId,
+          topicId: topic.id,
           images: _images.length > 0 ? base64ListImage(_images) : null,
           province: selectedCity,
           district: selectedDistrict,

@@ -96,7 +96,7 @@ class _ItemMyPostState extends State<ItemMyPost> {
               : Colors.orange,
           icon: widget.key.toString().contains("hidden")
               ? Icons.open_in_browser
-              : Icons.close,
+              : Icons.cancel,
           onTap: () {
             _postActionBloc.requestDeleteMyPost(
                 widget.myPost.postId, "HidePost");

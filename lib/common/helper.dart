@@ -162,6 +162,15 @@ class Helper {
     return token;
   }
 
+  static Future<bool> getIsSocial() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if(prefs.getBool('isSocial') == null){
+      return false;
+    }
+    var isSocial = prefs.getBool('isSocial');
+    return isSocial;
+  }
+
   static Future<bool> isTokenExpired() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var expiredDay = prefs.getString('expired');

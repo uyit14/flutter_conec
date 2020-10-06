@@ -34,6 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _token;
   bool _isTokenExpired = true;
   bool _isLoading = false;
+  bool _isSocial = false;
 
   @override
   void initState() {
@@ -44,9 +45,11 @@ class _ProfilePageState extends State<ProfilePage> {
   void getToken() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
+    bool isSocial = await Helper.getIsSocial();
     setState(() {
       _token = token;
       _isTokenExpired = expired;
+      _isSocial = isSocial;
     });
     if (token != null && !expired) {
       _profileBloc.requestGetProfile();
@@ -297,7 +300,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 )
                     : Container(),
                 _token != null && !_isTokenExpired ? SizedBox(height: 8) : Container(),
-                _token != null && !_isTokenExpired
+                _token != null && !_isTokenExpired && !_isSocial
                     ? InkWell(
                         onTap: () {
                           Navigator.of(context)

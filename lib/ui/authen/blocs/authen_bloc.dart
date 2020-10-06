@@ -16,17 +16,17 @@ class AuthenBloc{
   StreamController<ApiResponse<SignUpResponse>> _signUpController = StreamController();
   Stream<ApiResponse<SignUpResponse>> get signUpStream => _signUpController.stream;
 
-  StreamController _verifyUserController = StreamController();
-  Stream<ApiResponse<dynamic>> get verifyUserStream => _verifyUserController.stream;
+  StreamController<ApiResponse<String>> _verifyUserController = StreamController();
+  Stream<ApiResponse<String>> get verifyUserStream => _verifyUserController.stream;
 
-  StreamController _verifyEmailController = StreamController();
-  Stream<ApiResponse<dynamic>> get verifyEmailStream => _verifyEmailController.stream;
+  StreamController<ApiResponse<String>> _verifyEmailController = StreamController();
+  Stream<ApiResponse<String>> get verifyEmailStream => _verifyEmailController.stream;
 
-  StreamController _resetPassController = StreamController();
-  Stream<ApiResponse<dynamic>> get resetPassStream => _resetPassController.stream;
+  StreamController<ApiResponse<bool>> _resetPassController = StreamController();
+  Stream<ApiResponse<bool>> get resetPassStream => _resetPassController.stream;
 
-  StreamController _confirmEmailController = StreamController();
-  Stream<ApiResponse<dynamic>> get confirmEmailStream => _confirmEmailController.stream;
+  StreamController<ApiResponse<String>> _confirmEmailController = StreamController();
+  Stream<ApiResponse<String>> get confirmEmailStream => _confirmEmailController.stream;
 
   AuthenBloc(){
     _repository = AuthenRepository();

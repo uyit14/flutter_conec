@@ -12,12 +12,14 @@ class ResetPasswordPage extends StatefulWidget {
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   TextEditingController _userNameController;
   TextEditingController _newPassController = TextEditingController();
+  TextEditingController _confirmPassController = TextEditingController();
   TextEditingController _codeController = TextEditingController();
   AuthenBloc _authenBloc = AuthenBloc();
 
   //
   bool _newPassError = false;
   bool _codeError = false;
+  bool _confirmPassError = false;
   var username;
   String _apiErrorMess;
   bool _isLoading = false;
@@ -47,6 +49,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       setState(() {
         _newPassError = true;
         _codeError = false;
+        _confirmPassError = false;
+      });
+      return;
+    }
+    if(_confirmPassController.text != _newPassController.text){
+      setState(() {
+        _newPassError = false;
+        _codeError = false;
+        _confirmPassError = true;
       });
       return;
     }
@@ -54,6 +65,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       setState(() {
         _codeError = true;
         _newPassError = false;
+        _confirmPassError = false;
       });
       return;
     }
@@ -61,6 +73,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     setState(() {
       _codeError = false;
       _newPassError = false;
+      _confirmPassError = false;
     });
     _authenBloc.requestResetPass(
         username, _newPassController.text.trim(), _codeController.text.trim());
@@ -80,9 +93,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
             _isLoading = false;
           });
           if (event.data) {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
-            //print("success");
+            Navigator.of(context).pop(true);
+            Navigator.of(context).pop(true);
+            print("reset success");
           }
           break;
         case Status.ERROR:
@@ -153,12 +166,35 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               SizedBox(height: 16),
               TextFormField(
                 maxLines: 1,
+                controller: _confirmPassController,
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+                style: TextStyle(fontSize: 18),
+                decoration: InputDecoration(
+                    hintText: "Xác nhận mật khẩu",
+                    errorText:
+                    _confirmPassError ? "Xác nhận mật khẩu không đúng" : null,
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 1)),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 1)),
+                    contentPadding: EdgeInsets.only(left: 8),
+                    suffixIcon: Icon(
+                      Icons.vpn_key,
+                      color: Colors.black,
+                    ),
+                    border: const OutlineInputBorder()),
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                maxLines: 1,
                 controller: _codeController,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.text,
                 style: TextStyle(fontSize: 18),
                 decoration: InputDecoration(
-                    hintText: "Nhập mã code 5 ký tự",
+                    hintText: "Nhập mã code 5 ký tự được gửi đến email của bạn",
                     errorText: _codeError ? "Vui lòng nhập mã" : null,
                     enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.red, width: 1)),

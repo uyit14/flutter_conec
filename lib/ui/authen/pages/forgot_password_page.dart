@@ -24,13 +24,13 @@ class _ForGotPasswordPageState extends State<ForGotPasswordPage> {
     _authenBloc.dispose();
   }
 
-  void verifyUserName(){
-    if(_userNameController.text.length == 0){
+  void verifyUserName() {
+    if (_userNameController.text.length == 0) {
       setState(() {
         _isError = true;
       });
       return;
-    }else{
+    } else {
 //      Navigator.of(context).pushNamed(ResetPasswordPage.ROUTE_NAME, arguments: {
 //        'userName' : _userNameController.text.trim()
 //      });
@@ -39,7 +39,7 @@ class _ForGotPasswordPageState extends State<ForGotPasswordPage> {
       });
       _authenBloc.requestVerifyUsername(_userNameController.text.trim());
       _authenBloc.verifyUserStream.listen((event) {
-        switch(event.status){
+        switch (event.status) {
           case Status.LOADING:
             setState(() {
               _apiLoading = true;
@@ -50,8 +50,13 @@ class _ForGotPasswordPageState extends State<ForGotPasswordPage> {
               _apiError = false;
               _apiLoading = false;
             });
-            Navigator.of(context).pushNamed(ResetPasswordPage.ROUTE_NAME, arguments: {
-              'userName' : _userNameController.text.trim()
+            Navigator.of(context).pushNamed(ResetPasswordPage.ROUTE_NAME,
+                arguments: {
+                  'userName': _userNameController.text.trim()
+                }).then((value) {
+              if (value != null) {
+                print("forgot: $value");
+              }
             });
             break;
           case Status.ERROR:
@@ -102,14 +107,13 @@ class _ForGotPasswordPageState extends State<ForGotPasswordPage> {
                   : Container(),
               _apiError
                   ? Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                    _loginFailMessage ?? "",
-                    style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        color: Colors.red,
-                        fontSize: 16)),
-              )
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Text(_loginFailMessage ?? "",
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              color: Colors.red,
+                              fontSize: 16)),
+                    )
                   : Container(),
               SizedBox(height: 32),
               InkWell(

@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
-import 'package:conecapp/common/ui/ui_error.dart';
-import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
 import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/models/request/post_action_request.dart';
@@ -15,6 +13,7 @@ import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/address/ward_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
+import 'package:conecapp/ui/mypost/pages/category_page.dart';
 import 'package:conecapp/ui/others/terms_condition_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,7 +35,6 @@ class PostActionPage extends StatefulWidget {
 class _PostActionPageState extends State<PostActionPage> {
   bool _term = true;
   int _currentSelectedIndex = -1;
-  String _selectedCategoryId;
   String _title;
   bool _isLoading = false;
   bool _isCallApi = false;
@@ -48,6 +46,7 @@ class _PostActionPageState extends State<PostActionPage> {
   TextEditingController _usesController = TextEditingController();
   List<Province> _listProvinces = List<Province>();
   Province provinceData;
+  Topic topic;
   Province districtData;
   Province wardData;
   int _selectedType;
@@ -85,7 +84,7 @@ class _PostActionPageState extends State<PostActionPage> {
   }
 
   bool _isPostButtonEnable() {
-    if (_selectedCategoryId == null ||
+    if ( topic == null ||
         _title == null ||
         _controller.document.toPlainText().length <= 0 && !_term) {
       return false;
@@ -146,6 +145,19 @@ class _PostActionPageState extends State<PostActionPage> {
     }
   }
 
+  setSelectedIndex(Topic topic){
+    if(topic.title == "Bản tin"){
+      setState(() {
+        _currentSelectedIndex = 6;
+      });
+    }
+    if(topic.title == "Rao vặt"){
+      setState(() {
+        _currentSelectedIndex = 7;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -162,66 +174,45 @@ class _PostActionPageState extends State<PostActionPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       //STEP 1
-                      Text("Chọn danh mục *"),
+                      Text("Danh mục *"),
                       SizedBox(height: 4),
-                      Container(
-                        height: 35,
-                        child: StreamBuilder<ApiResponse<List<Topic>>>(
-                            stream: _postActionBloc.topicStream,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                switch (snapshot.data.status) {
-                                  case Status.LOADING:
-                                    return UILoading(
-                                        loadingMessage: snapshot.data.message);
-                                  case Status.COMPLETED:
-                                    List<Topic> topics = snapshot.data.data;
-                                    return ListView.builder(
-                                        itemCount: topics.length,
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context, index) {
-                                          return Container(
-                                            margin: EdgeInsets.only(right: 4),
-                                            child: FlatButton(
-                                                shape: RoundedRectangleBorder(
-                                                    side: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1,
-                                                        style:
-                                                            BorderStyle.solid),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            50)),
-                                                color: _currentSelectedIndex ==
-                                                        index
-                                                    ? Colors.green
-                                                    : Colors.white,
-                                                textColor:
-                                                    _currentSelectedIndex ==
-                                                            index
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _selectedCategoryId =
-                                                        topics[index].id;
-                                                    _currentSelectedIndex =
-                                                        index;
-                                                  });
-                                                },
-                                                child:
-                                                    Text(topics[index].title)),
-                                          );
-                                        });
-                                  case Status.ERROR:
-                                    return UIError(
-                                        errorMessage: snapshot.data.message,
-                                        onRetryPressed: () => _postActionBloc
-                                            .requestGetTopicWithHeader());
-                                }
-                              }
-                              return Container(child: Text("Không có dữ liệu"));
-                            }),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pushNamed(CategoryPage.ROUTE_NAME,
+                              arguments: {'category': topic}).then((value) {
+                            if (value != null) {
+                              setSelectedIndex(value);
+                              setState(() {
+                                topic = value;
+                              });
+                            }
+                          });
+                        },
+                        child: Card(
+                          margin: EdgeInsets.symmetric(horizontal: 0),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 8),
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Icon(Icons.category),
+                                Text(
+                                  topic != null
+                                      ? topic.title
+                                      : "Chọn danh mục",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                Text("Thay đổi",
+                                    style: AppTheme.changeTextStyle(true))
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(height: 12),
                       //STEP 2
@@ -821,7 +812,7 @@ class _PostActionPageState extends State<PostActionPage> {
                 "base64": base64Encode(_images[0].readAsBytesSync())
               }
             : null,
-        topicId: _selectedCategoryId,
+        topicId: topic.id,
         images: base64ListImage(_images),
         province: provinceData!=null ? provinceData.name : null,
         district: districtData!=null ? districtData.name : null,

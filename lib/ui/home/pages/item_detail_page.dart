@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -32,15 +33,15 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   bool _isCallApi;
   String phoneNumber;
   String linkShare;
-  String _currentImageUrl;
   int _currentIndex = 0;
+  bool _setBanners = true;
   String postId;
   String title;
   double lat = 10.8483258;
   double lng = 106.7686185;
   bool _firstCalculate = true;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
-
+  PageController _pageController = PageController(initialPage: 0);
   String _token;
 
   void getToken() async {
@@ -88,6 +89,25 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       lat = result.lat;
       lng = result.long;
     });
+  }
+
+  void autoPlayBanners(List<myImage.Image> images) {
+    if (images.length > 1) {
+      Timer.periodic(Duration(seconds: 2), (Timer timer) {
+        if (_currentIndex == images.length) {
+          _currentIndex = 0;
+        } else {
+          _currentIndex++;
+        }
+        if (_pageController.hasClients) {
+          _pageController.animateToPage(
+            _currentIndex,
+            duration: Duration(milliseconds: 350),
+            curve: Curves.easeIn,
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -144,6 +164,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     return UILoading(loadingMessage: snapshot.data.message);
                   case Status.COMPLETED:
                     ItemDetail itemDetail = snapshot.data.data;
+                    if (itemDetail.images.length > 0 && _setBanners) {
+                      autoPlayBanners(itemDetail.images);
+                      _setBanners = false;
+                    }
                     phoneNumber = itemDetail.phoneNumber;
                     linkShare = itemDetail.shareLink;
                     if (_firstCalculate) {
@@ -155,19 +179,44 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                         children: <Widget>[
                           Hero(
                             tag: postId,
-                            child: CachedNetworkImage(
-                              imageUrl: _currentImageUrl ??
-                                  getImageUrl(
-                                      itemDetail.thumbnail, itemDetail.images),
-                              key: new ValueKey<String>(_currentImageUrl ?? ""),
-                              placeholder: (context, url) =>
-                                  Image.asset("assets/images/placeholder.png"),
-                              errorWidget: (context, url, error) =>
-                                  Image.asset("assets/images/error.png"),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 225,
-                            ),
+                            child: itemDetail.images.length > 0
+                                ? Container(
+                                    height: 225,
+                                    child: PageView.builder(
+                                        itemCount: itemDetail.images.length,
+                                        controller: _pageController,
+                                        onPageChanged: (currentPage) {
+                                          setState(() {
+                                            _currentIndex = currentPage;
+                                          });
+                                        },
+                                        itemBuilder: (context, index) {
+                                          return CachedNetworkImage(
+                                            imageUrl: itemDetail
+                                                .images[index].fileName,
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                    "assets/images/placeholder.png"),
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                Image.asset(
+                                                    "assets/images/error.png"),
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                            height: 225,
+                                          );
+                                        }),
+                                  )
+                                : CachedNetworkImage(
+                                    imageUrl: itemDetail.thumbnail,
+                                    placeholder: (context, url) => Image.asset(
+                                        "assets/images/placeholder.png"),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset("assets/images/error.png"),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 225,
+                                  ),
                           ),
                           if (itemDetail.images.length > 0)
                             Container(
@@ -182,10 +231,16 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                       return InkWell(
                                         onTap: () {
                                           setState(() {
-                                            _currentImageUrl = itemDetail
-                                                .images[index].fileName;
                                             _currentIndex = index;
                                           });
+                                          if (_pageController.hasClients) {
+                                            _pageController.animateToPage(
+                                              index,
+                                              duration:
+                                                  Duration(milliseconds: 350),
+                                              curve: Curves.easeIn,
+                                            );
+                                          }
                                         },
                                         child: Container(
                                           decoration: _currentIndex == index

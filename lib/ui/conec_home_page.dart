@@ -13,7 +13,6 @@ import 'mypost/pages/mypost_page.dart';
 import 'news/pages/news_page.dart';
 import 'profile/pages/profile_pages.dart';
 import '../common/globals.dart' as globals;
-import 'package:geocoder/geocoder.dart';
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';

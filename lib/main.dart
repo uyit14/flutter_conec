@@ -12,6 +12,7 @@ import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/home/pages/nearby_page.dart';
 import 'package:conecapp/ui/home/widgets/scroll_behavior.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
+import 'package:conecapp/ui/mypost/pages/category_page.dart';
 import 'package:conecapp/ui/mypost/pages/edit_mypost_page.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
@@ -104,6 +105,7 @@ class ConecApp extends StatelessWidget {
         EditInfoPage.ROUTE_NAME: (context) => EditInfoPage(),
         VideoPlayerPage.ROUTE_NAME: (context) => VideoPlayerPage(),
         GuidePage.ROUTE_NAME: (context) => GuidePage(),
+        CategoryPage.ROUTE_NAME: (context) => CategoryPage(),
       },
     );
   }

@@ -7,6 +7,7 @@ import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
       print(_googleSignIn.clientId);
       GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
       GoogleSignInAuthentication googleAuth =
-      await googleSignInAccount.authentication;
+          await googleSignInAccount.authentication;
       print("idToken: " + googleAuth.idToken);
       _authenBloc.requestSocialLogin(googleAuth.idToken);
       _authenBloc.loginStream.listen((event) {
@@ -49,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
             return;
           case Status.COMPLETED:
             LoginResponse loginResponse = event.data;
-            gotoHome(loginResponse.token, loginResponse.expires);
+            gotoHome(loginResponse.token, loginResponse.expires, true);
             break;
           case Status.ERROR:
             setState(() {
@@ -106,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
           return;
         case Status.COMPLETED:
           LoginResponse loginResponse = event.data;
-          gotoHome(loginResponse.token, loginResponse.expires);
+          gotoHome(loginResponse.token, loginResponse.expires, false);
           break;
         case Status.ERROR:
           setState(() {
@@ -120,10 +121,11 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  void gotoHome(String token, String expiredDay) async {
+  void gotoHome(String token, String expiredDay, bool isSocial) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
     prefs.setString('expired', expiredDay);
+    prefs.setBool('isSocial', isSocial);
     Navigator.of(context).pushNamedAndRemoveUntil(
         ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
   }
@@ -253,7 +255,17 @@ class _LoginPageState extends State<LoginPage> {
                     FlatButton(
                       onPressed: () {
                         Navigator.of(context)
-                            .pushNamed(ForGotPasswordPage.ROUTE_NAME);
+                            .pushNamed(ForGotPasswordPage.ROUTE_NAME)
+                            .then((value) {
+                          if (value != null) {
+                            print("login: $value");
+                            Fluttertoast.showToast(
+                                msg: "Reset mật khẩu thành công",
+                                gravity: ToastGravity.CENTER,
+                                textColor: Colors.black87,
+                                toastLength: Toast.LENGTH_LONG);
+                          }
+                        });
                       },
                       child: Align(
                         alignment: Alignment.centerRight,
@@ -328,8 +340,8 @@ class _LoginPageState extends State<LoginPage> {
                       height: 48,
                     ),
                     InkWell(
-                      onTap: () async{
-                        if(await _googleSignIn.isSignedIn()){
+                      onTap: () async {
+                        if (await _googleSignIn.isSignedIn()) {
                           _handleSignOut();
                         }
                         _handleSignIn();
