@@ -403,7 +403,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                   Text(
                                                     totalItemList[index]
                                                                 .joiningFee !=
-                                                            null
+                                                            null && totalItemList[index]
+                                                        .joiningFee!=0
                                                         ? '${Helper.formatCurrency(totalItemList[index].joiningFee)} VND / ${totalItemList[index].joiningFeePeriod ?? ""}'
                                                         : "Liên hệ",
                                                     style: TextStyle(

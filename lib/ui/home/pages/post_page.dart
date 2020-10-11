@@ -119,7 +119,7 @@ class _PostPageState extends State<PostPage> {
                                               SizedBox(height: 4),
                                               Text(
                                                 postItem[index].joiningFee !=
-                                                    null
+                                                    null && postItem[index].joiningFee != 0
                                                     ? '${Helper.formatCurrency(postItem[index].joiningFee)} VND'
                                                     : "Liên hệ",
                                                 style: TextStyle(

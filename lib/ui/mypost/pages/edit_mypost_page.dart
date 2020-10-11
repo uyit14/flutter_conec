@@ -11,6 +11,9 @@ import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/topic.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
+import 'package:conecapp/ui/address/district_page.dart';
+import 'package:conecapp/ui/address/province_page.dart';
+import 'package:conecapp/ui/address/ward_page.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:file_picker/file_picker.dart';
@@ -51,6 +54,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   TextEditingController _usesController;
   TextEditingController _conditionController;
   bool _isLoading = false;
+  Province provinceData;
+  Province districtData;
+  Province wardData;
 
   @override
   void initState() {
@@ -138,10 +144,10 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
           TextEditingController(text: _itemDetail.joiningFee.toString());
       _phoneController = TextEditingController(text: _itemDetail.phoneNumber);
       _addressController = TextEditingController(text: _itemDetail.address);
-      selectedCity = _itemDetail.province;
+      provinceData = Province(name: _itemDetail.province);
       _type = _itemDetail.joiningFeePeriod;
-      selectedDistrict = _itemDetail.district;
-      selectedWard = _itemDetail.ward;
+      districtData = Province(name: _itemDetail.district);
+      wardData = Province(name: _itemDetail.ward);
       _urlImages = _itemDetail.images;
       _usesController = TextEditingController(text: _itemDetail.uses);
       _conditionController =
@@ -174,20 +180,12 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       final routeArgs =
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
       postId = routeArgs['postId'];
-      _postActionBloc.requestGetProvinces();
-      _postActionBloc.provincesStream.listen((event) {
-        switch (event.status) {
-          case Status.COMPLETED:
-            _listProvinces.addAll(event.data);
-            break;
-        }
-      });
       _itemsByCategoryBloc.requestItemDetail(postId);
       _itemsByCategoryBloc.itemDetailStream.listen((event) {
         switch (event.status) {
           case Status.COMPLETED:
             _itemDetail = event.data;
-            topic = Topic(title: _itemDetail.topic);
+            topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
             if (_itemDetail.content != null) {
               final document = _itemDetail.content != null
                   ? _loadDocument('${_itemDetail.content}\n')
@@ -198,6 +196,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
             break;
         }
       });
+
       _isCallApi = false;
     }
   }
@@ -523,8 +522,16 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                 //STEP 6
                 Text("Địa chỉ"),
                 InkWell(
-                  onTap: () =>
-                      showCityList(getIndex(_listProvinces, selectedCity)),
+                  onTap: () {
+                    Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
+                        arguments: {'province': provinceData}).then((value) {
+                      if (value != null) {
+                        setState(() {
+                          provinceData = value;
+                        });
+                      }
+                    });
+                  },
                   child: Card(
                     margin: EdgeInsets.symmetric(horizontal: 0),
                     child: Padding(
@@ -535,7 +542,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                         children: <Widget>[
                           Icon(Icons.location_city),
                           Text(
-                            selectedCity ?? "Tỉnh/Thành phố",
+                            provinceData != null
+                                ? provinceData.name
+                                : "Tỉnh/Thành phố",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
@@ -548,10 +557,24 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                 ),
                 SizedBox(height: 12),
                 InkWell(
-                  onTap: () => selectedCity != null
-                      ? showDistrictList(
-                          getIndex(_districtList, selectedDistrict))
-                      : null,
+                  onTap: () {
+                    if (provinceData != null) {
+                      Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
+                          arguments: {
+                            'district': districtData,
+                            'provinceId': provinceData.id
+                          }).then((value) {
+                        if (value != null) {
+                          setState(() {
+                            districtData = value;
+                          });
+                        }
+                      });
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "Vui lòng chọn tỉnh, thành");
+                    }
+                  },
                   child: Card(
                     margin: EdgeInsets.symmetric(horizontal: 0),
                     child: Padding(
@@ -562,14 +585,16 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                         children: <Widget>[
                           Icon(Icons.home),
                           Text(
-                            selectedDistrict ?? "Quận/Huyện",
+                            districtData != null
+                                ? districtData.name
+                                : "Quận/Huyện",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           Text("Thay đổi",
                               style:
-                                  AppTheme.changeTextStyle(selectedCity != null))
+                                  AppTheme.changeTextStyle(provinceData != null))
                         ],
                       ),
                     ),
@@ -577,9 +602,23 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                 ),
                 SizedBox(height: 12),
                 InkWell(
-                  onTap: () => selectedDistrict != null
-                      ? showWardList(getIndex(_wardList, selectedWard))
-                      : null,
+                  onTap: () {
+                    if (districtData != null) {
+                      Navigator.of(context).pushNamed(WardPage.ROUTE_NAME,
+                          arguments: {
+                            'districtId': districtData.id
+                          }).then((value) {
+                        if (value != null) {
+                          setState(() {
+                            wardData = value;
+                          });
+                        }
+                      });
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "Vui lòng chọn quận, huyện");
+                    }
+                  },
                   child: Card(
                     margin: EdgeInsets.symmetric(horizontal: 0),
                     child: Padding(
@@ -590,14 +629,14 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                         children: <Widget>[
                           Icon(Icons.wallpaper),
                           Text(
-                            selectedWard ?? "Phường/Xã",
+                            wardData!=null ? wardData.name : "Phường/Xã",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           Text("Thay đổi",
                               style: AppTheme.changeTextStyle(
-                                  selectedDistrict != null))
+                                  districtData != null))
                         ],
                       ),
                     ),
@@ -740,9 +779,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   PostActionRequest _postActionRequest;
 
   void doUpdateAction() async{
-    final result = selectedCity != null && selectedDistrict!=null && selectedWard!=null
+    final result = provinceData != null && districtData!=null && wardData!=null
         ? await Helper.getLatLng(
-        '${_addressController.text}, $selectedWard, $selectedDistrict, $selectedCity')
+        '${_addressController.text}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
         : LatLong(lat: 0.0, long: 0.0);
     print(result.lat.toString() + "----" + result.long.toString());
     if (_currentSelectedIndex == 7) {
@@ -758,9 +797,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               : null,
           topicId: topic.id,
           images: _images.length > 0 ? base64ListImage(_images) : null,
-          province: selectedCity,
-          district: selectedDistrict,
-          ward: selectedWard,
+          province: provinceData.name,
+          district: districtData.name,
+          ward: wardData.name,
           address: _addressController.text,
           price: _joiningFreeController.text.length > 0
               ? int.parse(_joiningFreeController.text)
@@ -784,9 +823,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               : null,
           topicId: topic.id,
           images: _images.length > 0 ? base64ListImage(_images) : null,
-          province: selectedCity,
-          district: selectedDistrict,
-          ward: selectedWard,
+          province: provinceData.name,
+          district: districtData.name,
+          ward: wardData.name,
           address: _addressController.text,
           phoneNumber: _phoneController.text,
           lat: result.lat ?? 0.0,
@@ -805,9 +844,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               : null,
           topicId: topic.id,
           images: _images.length > 0 ? base64ListImage(_images) : null,
-          province: selectedCity,
-          district: selectedDistrict,
-          ward: selectedWard,
+          province: provinceData.name,
+          district: districtData.name,
+          ward: wardData.name,
           address: _addressController.text,
           joiningFee: _joiningFreeController.text.length > 0
               ? int.parse(_joiningFreeController.text)
@@ -860,124 +899,4 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
             ));
   }
 
-  var selectedCity;
-  String _selectCityId;
-  var selectedDistrict;
-  String _selectDistrictId;
-  List<Province> _listProvinces = List<Province>();
-  List<Province> _districtList = List<Province>();
-  List<Province> _wardList = List<Province>();
-  var selectedWard;
-  String _selectWardId;
-
-  //
-  int getIndex(List<Province> list, String selectedItem) {
-    int index = list.indexOf(list.firstWhere(
-        (element) => element.name == selectedItem,
-        orElse: () => list != null ? list[0] : null));
-    if (index == -1) {
-      return 0;
-    }
-    return selectedItem != null ? index : 0;
-  }
-
-  void showCityList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedCity = _listProvinces[value].name;
-                  _selectCityId = _listProvinces[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _listProvinces.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) {
-      getDistrictByProvinceId(
-          _selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
-      print(_selectCityId ?? "8046b1ab-4479-4086-b986-3369fcb51f1a");
-    });
-  }
-
-  void getDistrictByProvinceId(String id) {
-    _postActionBloc.requestGetDistricts(id);
-    _postActionBloc.districtsStream.listen((event) {
-      switch (event.status) {
-        case Status.COMPLETED:
-          _districtList = event.data;
-          break;
-      }
-    });
-  }
-
-  void showDistrictList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedDistrict = _districtList[value].name;
-                  _selectDistrictId = _districtList[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _districtList.map((e) => Text(e.name ?? "")).toList(),
-            ),
-          );
-        }).then((value) {
-      getWardByDistrictId(
-          _selectDistrictId ?? "83e9ce08-92da-4208-b178-2beb51a405ad");
-      print(_selectDistrictId ?? "83e9ce08-92da-4208-b178-2beb51a405ad");
-    });
-  }
-
-  void getWardByDistrictId(String id) {
-    _postActionBloc.requestGetWards(id);
-    _postActionBloc.wardsStream.listen((event) {
-      switch (event.status) {
-        case Status.COMPLETED:
-          print("data: " + event.data.length.toString());
-          _wardList = event.data;
-          break;
-      }
-    });
-  }
-
-  void showWardList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedWard = _wardList[value].name;
-                  _selectWardId = _wardList[value].id;
-                });
-              },
-              itemExtent: 32,
-              children: _wardList.map((e) => Text(e.name)).toList(),
-            ),
-          );
-        }).then((value) => debugPrint(_selectWardId));
-  }
 }

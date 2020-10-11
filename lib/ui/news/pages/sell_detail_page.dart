@@ -14,6 +14,7 @@ import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -362,7 +363,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                         style: AppTheme.commonDetail),
                                     Spacer(),
                                     Text(
-                                        adsDetail.price != null ? '${Helper.formatCurrency(adsDetail.price)} VND' : "Liên hệ",
+                                        adsDetail.price != null && adsDetail.price != 0? '${Helper.formatCurrency(adsDetail.price)} VND' : "Liên hệ",
                                       style: TextStyle(
                                           color: Colors.red,
                                           fontSize: 18,
@@ -434,10 +435,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    adsDetail.description ?? "",
-                                    style: TextStyle(fontSize: 15),
-                                  ),
+                                  child: Html(data: adsDetail.content ?? ""),
                                 ),
                                 Container(
                                     width: double.infinity,

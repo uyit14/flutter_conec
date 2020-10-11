@@ -99,7 +99,7 @@ class _NewSportWidgetState extends State<NewSportWidget> {
                                       ),
                                       SizedBox(height: 4),
                                       Text(
-                                        sports[index].price != null
+                                        sports[index].price != null && sports[index].price !=0
                                             ? '${Helper.formatCurrency(sports[index].price)} VND'
                                             : "Liên hệ",
                                         style: TextStyle(

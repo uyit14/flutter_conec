@@ -110,3 +110,18 @@ class ConecApp extends StatelessWidget {
     );
   }
 }
+
+/*
+18. DONE
+19. LOGIN FB
+20. DONE
+21. CHECK API
+22. API
+23. API
+24. DONE
+25. DONE
+26. DONE
+27. DONE
+28. DONE
+29. DONE
+*/

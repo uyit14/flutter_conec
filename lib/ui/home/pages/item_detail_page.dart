@@ -14,6 +14,7 @@ import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/widgets/comment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -180,33 +181,69 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                           Hero(
                             tag: postId,
                             child: itemDetail.images.length > 0
-                                ? Container(
-                                    height: 225,
-                                    child: PageView.builder(
-                                        itemCount: itemDetail.images.length,
-                                        controller: _pageController,
-                                        onPageChanged: (currentPage) {
-                                          setState(() {
-                                            _currentIndex = currentPage;
-                                          });
-                                        },
-                                        itemBuilder: (context, index) {
-                                          return CachedNetworkImage(
-                                            imageUrl: itemDetail
-                                                .images[index].fileName,
-                                            placeholder: (context, url) =>
-                                                Image.asset(
-                                                    "assets/images/placeholder.png"),
-                                            errorWidget: (context, url,
-                                                    error) =>
-                                                Image.asset(
-                                                    "assets/images/error.png"),
-                                            fit: BoxFit.cover,
-                                            width: double.infinity,
-                                            height: 225,
-                                          );
-                                        }),
-                                  )
+                                ? Stack(
+                                  children: [
+                                    Container(
+                                        height: 225,
+                                        child: PageView.builder(
+                                            itemCount: itemDetail.images.length,
+                                            controller: _pageController,
+                                            onPageChanged: (currentPage) {
+                                              setState(() {
+                                                _currentIndex = currentPage;
+                                              });
+                                            },
+                                            itemBuilder: (context, index) {
+                                              return CachedNetworkImage(
+                                                imageUrl: itemDetail
+                                                    .images[index].fileName,
+                                                placeholder: (context, url) =>
+                                                    Image.asset(
+                                                        "assets/images/placeholder.png"),
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    Image.asset(
+                                                        "assets/images/error.png"),
+                                                fit: BoxFit.cover,
+                                                width: double.infinity,
+                                                height: 225,
+                                              );
+                                            }),
+                                      ),
+                                    Positioned(
+                                      bottom: 24,
+                                      child: Container(
+                                        height: 24,
+                                        width: MediaQuery.of(context).size.width,
+                                        child: Center(
+                                          child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              shrinkWrap: true,
+                                              itemCount:
+                                              itemDetail.images.length,
+                                              itemBuilder: (context, index) {
+                                                return Container(
+                                                  width: 16,
+                                                  height: 16,
+                                                  margin:
+                                                  EdgeInsets.only(right: 6),
+                                                  decoration: BoxDecoration(
+                                                    //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.white),
+                                                      color: _currentIndex ==
+                                                          index
+                                                          ? Colors.white
+                                                          : Colors.transparent),
+                                                );
+                                              }),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
                                 : CachedNetworkImage(
                                     imageUrl: itemDetail.thumbnail,
                                     placeholder: (context, url) => Image.asset(
@@ -218,67 +255,67 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     height: 225,
                                   ),
                           ),
-                          if (itemDetail.images.length > 0)
-                            Container(
-                              height: 55,
-                              margin: EdgeInsets.only(top: 4),
-                              child: Center(
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: itemDetail.images.length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            _currentIndex = index;
-                                          });
-                                          if (_pageController.hasClients) {
-                                            _pageController.animateToPage(
-                                              index,
-                                              duration:
-                                                  Duration(milliseconds: 350),
-                                              curve: Curves.easeIn,
-                                            );
-                                          }
-                                        },
-                                        child: Container(
-                                          decoration: _currentIndex == index
-                                              ? BoxDecoration(
-                                                  border: Border.all(
-                                                      width: 2,
-                                                      color: Colors.green),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(8)),
-                                                )
-                                              : null,
-                                          margin: EdgeInsets.only(right: 2),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(6)),
-                                            child: CachedNetworkImage(
-                                              imageUrl: itemDetail
-                                                  .images[index].fileName,
-                                              placeholder: (context, url) =>
-                                                  Image.asset(
-                                                      "assets/images/placeholder.png"),
-                                              errorWidget: (context, url,
-                                                      error) =>
-                                                  Image.asset(
-                                                      "assets/images/error.png"),
-                                              fit: BoxFit.cover,
-                                              width: 55,
-                                              height: 55,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            )
-                          else
-                            Container(),
+//                          if (itemDetail.images.length > 0)
+//                            Container(
+//                              height: 55,
+//                              margin: EdgeInsets.only(top: 4),
+//                              child: Center(
+//                                child: ListView.builder(
+//                                    shrinkWrap: true,
+//                                    scrollDirection: Axis.horizontal,
+//                                    itemCount: itemDetail.images.length,
+//                                    itemBuilder: (context, index) {
+//                                      return InkWell(
+//                                        onTap: () {
+//                                          setState(() {
+//                                            _currentIndex = index;
+//                                          });
+//                                          if (_pageController.hasClients) {
+//                                            _pageController.animateToPage(
+//                                              index,
+//                                              duration:
+//                                                  Duration(milliseconds: 350),
+//                                              curve: Curves.easeIn,
+//                                            );
+//                                          }
+//                                        },
+//                                        child: Container(
+//                                          decoration: _currentIndex == index
+//                                              ? BoxDecoration(
+//                                                  border: Border.all(
+//                                                      width: 2,
+//                                                      color: Colors.green),
+//                                                  borderRadius:
+//                                                      BorderRadius.all(
+//                                                          Radius.circular(8)),
+//                                                )
+//                                              : null,
+//                                          margin: EdgeInsets.only(right: 2),
+//                                          child: ClipRRect(
+//                                            borderRadius: BorderRadius.all(
+//                                                Radius.circular(6)),
+//                                            child: CachedNetworkImage(
+//                                              imageUrl: itemDetail
+//                                                  .images[index].fileName,
+//                                              placeholder: (context, url) =>
+//                                                  Image.asset(
+//                                                      "assets/images/placeholder.png"),
+//                                              errorWidget: (context, url,
+//                                                      error) =>
+//                                                  Image.asset(
+//                                                      "assets/images/error.png"),
+//                                              fit: BoxFit.cover,
+//                                              width: 55,
+//                                              height: 55,
+//                                            ),
+//                                          ),
+//                                        ),
+//                                      );
+//                                    }),
+//                              ),
+//                            )
+//                          else
+//                            Container(),
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
@@ -526,7 +563,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                         style: AppTheme.commonDetail),
                                     Spacer(),
                                     Text(
-                                      itemDetail.joiningFee != null
+                                      itemDetail.joiningFee != null && itemDetail.joiningFee!=0
                                           ? '${Helper.formatCurrency(itemDetail.joiningFee)} VND ${itemDetail.joiningFeePeriod != null ? "/" : ""} ${itemDetail.joiningFeePeriod ?? ""}'
                                           : "Liên hệ",
                                       style: TextStyle(
@@ -598,10 +635,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    itemDetail.description ?? "",
-                                    style: TextStyle(fontSize: 15),
-                                  ),
+                                  child: Html(
+                                    data: itemDetail.content ?? "",
+                                  )
                                 ),
                                 Container(
                                     width: double.infinity,

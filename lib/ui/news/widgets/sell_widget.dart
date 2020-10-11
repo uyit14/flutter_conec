@@ -25,9 +25,11 @@ class _SellWidgetState extends State<SellWidget> {
   TextEditingController _searchController = TextEditingController();
   List<Sport> totalItemList = List<Sport>();
   ScrollController _scrollController;
+
   //
   Province provinceData;
   Province districtData;
+
   //
   int _currentPage = 0;
   bool _shouldLoadMore = true;
@@ -46,8 +48,8 @@ class _SellWidgetState extends State<SellWidget> {
       if (_shouldLoadMore) {
         _shouldLoadMore = false;
         _newsBloc.requestGetAllAds(_currentPage,
-            province: provinceData!= null ? provinceData.name : "",
-            district: districtData!=null ? districtData.name : "",
+            province: provinceData != null ? provinceData.name : "",
+            district: districtData != null ? districtData.name : "",
             club: "");
         setState(() {
           _currentPage++;
@@ -196,9 +198,10 @@ class _SellWidgetState extends State<SellWidget> {
                           borderRadius: BorderRadius.circular(8)),
                       child: Row(
                         children: <Widget>[
-                          Text(districtData != null
-                      ? districtData.name
-                          : "Quận/Huyện",
+                          Text(
+                              districtData != null
+                                  ? districtData.name
+                                  : "Quận/Huyện",
                               style: TextStyle(
                                   color: provinceData != null
                                       ? Colors.black87
@@ -259,8 +262,8 @@ class _SellWidgetState extends State<SellWidget> {
                                             child: Hero(
                                               tag: totalItemList[index].postId,
                                               child: CachedNetworkImage(
-                                                imageUrl:
-                                                totalItemList[index].thumbnail,
+                                                imageUrl: totalItemList[index]
+                                                    .thumbnail,
                                                 progressIndicatorBuilder:
                                                     (context, url,
                                                             downloadProgress) =>
@@ -268,10 +271,13 @@ class _SellWidgetState extends State<SellWidget> {
                                                             value:
                                                                 downloadProgress
                                                                     .progress),
-                                                errorWidget: (context, url,
-                                                        error) =>
-                                                    Image.asset(
-                                                        "assets/images/error.png", height: 100, width: 100,),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Image.asset(
+                                                  "assets/images/error.png",
+                                                  height: 100,
+                                                  width: 100,
+                                                ),
                                                 fit: BoxFit.cover,
                                                 width: 100,
                                                 height: 100,
@@ -299,7 +305,11 @@ class _SellWidgetState extends State<SellWidget> {
                                                 ),
                                                 SizedBox(height: 6),
                                                 Text(
-                                                  totalItemList[index].price != null
+                                                  totalItemList[index].price !=
+                                                              null &&
+                                                          totalItemList[index]
+                                                                  .price !=
+                                                              0
                                                       ? '${Helper.formatCurrency(totalItemList[index].price)} VND'
                                                       : "Liên hệ",
                                                   style: TextStyle(
@@ -324,7 +334,8 @@ class _SellWidgetState extends State<SellWidget> {
                                                   child: Container(),
                                                 ),
                                                 Text(
-                                                  totalItemList[index].approvedDate,
+                                                  totalItemList[index]
+                                                      .approvedDate,
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     color: Colors.grey,
@@ -359,7 +370,8 @@ class _SellWidgetState extends State<SellWidget> {
                       case Status.ERROR:
                         return UIError(
                             errorMessage: snapshot.data.message,
-                            onRetryPressed: () => _newsBloc.requestGetAllAds(0));
+                            onRetryPressed: () =>
+                                _newsBloc.requestGetAllAds(0));
                     }
                   }
                   return Container(
@@ -377,5 +389,4 @@ class _SellWidgetState extends State<SellWidget> {
   var selectedCity;
   var selectedDistrict;
   var selectedSellType;
-
 }

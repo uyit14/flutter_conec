@@ -156,7 +156,6 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomPadding: false,
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[

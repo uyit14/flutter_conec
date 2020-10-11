@@ -54,6 +54,9 @@ PODS:
     - FBSDKCoreKit (~> 5.5)
     - FBSDKLoginKit (~> 5.5)
     - Flutter
+  - flutter_zalo_login (0.0.1):
+    - Flutter
+    - ZaloSDK
   - fluttertoast (0.0.2):
     - Flutter
   - FMDB (2.7.5):
@@ -113,11 +116,18 @@ PODS:
     - Flutter
   - webview_flutter (0.0.1):
     - Flutter
+  - ZaloSDK (2.5.1001):
+    - ZaloSDK/Core (= 2.5.1001)
+    - ZaloSDK/Main (= 2.5.1001)
+  - ZaloSDK/Core (2.5.1001)
+  - ZaloSDK/Main (2.5.1001):
+    - ZaloSDK/Core
 
 DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
+  - flutter_zalo_login (from `.symlinks/plugins/flutter_zalo_login/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoder (from `.symlinks/plugins/geocoder/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
@@ -149,6 +159,7 @@ SPEC REPOS:
     - GTMSessionFetcher
     - SDWebImage
     - SDWebImageFLPlugin
+    - ZaloSDK
 
 EXTERNAL SOURCES:
   file_picker:
@@ -157,6 +168,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_facebook_login:
     :path: ".symlinks/plugins/flutter_facebook_login/ios"
+  flutter_zalo_login:
+    :path: ".symlinks/plugins/flutter_zalo_login/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geocoder:
@@ -198,6 +211,7 @@ SPEC CHECKSUMS:
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_facebook_login: cfb5659f686b1c575ef205c6b6fd20db9679d3c4
+  flutter_zalo_login: aa7748742f5adcf1d9d14f4486824a7daf62b3ad
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
@@ -220,6 +234,7 @@ SPEC CHECKSUMS:
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: 0d4a70faf8950410735e3f61fb15d517c8a6efc4
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
+  ZaloSDK: 06b52bfac5c3226b517b234ab1e4c5dfaa6e2212
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 

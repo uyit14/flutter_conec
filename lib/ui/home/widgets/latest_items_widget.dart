@@ -48,7 +48,7 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                       itemCount: items.length,
                       padding: EdgeInsets.all(4),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2),
+                          crossAxisCount: 3),
                       itemBuilder: (_, index) {
                         return InkWell(
                           onTap: () {

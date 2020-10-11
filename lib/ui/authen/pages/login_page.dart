@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/models/response/login_response.dart';
 import 'package:conecapp/ui/authen/blocs/authen_bloc.dart';
@@ -8,9 +11,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_zalo_login/flutter_zalo_login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   static const ROUTE_NAME = '/login';
@@ -30,6 +35,12 @@ class _LoginPageState extends State<LoginPage> {
   bool _loadingStatus = false;
   bool _loginFail = false;
   String _loginFailMessage;
+  ZaloLoginResult zaloLoginResult = ZaloLoginResult(
+    errorCode: -1,
+    errorMessage: "",
+    oauthCode: "",
+    userId: "",
+  );
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -138,6 +149,24 @@ class _LoginPageState extends State<LoginPage> {
     prefs.setBool('isSocial', isSocial);
     Navigator.of(context).pushNamedAndRemoveUntil(
         ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    ZaloLogin().init();
+  }
+
+  void _loginZalo() async {
+    print(await ZaloLogin.channel.invokeMethod('getPlatformVersion'));
+    ZaloLoginResult res = await ZaloLogin().logIn();
+    print(res);
+    final response = await http.get(
+        "https://oauth.zaloapp.com/v3/access_token?app_id=3165417292251410919&app_secret=SBiQNJsEIyy4bH66KN6S&code=${res.oauthCode}");
+    var responseJson = json.decode(response.body.toString());
+    _authenBloc.requestSocialLogin(responseJson['access_token'], "ZaloLogin");
+    listenLogin();
+    print(response);
   }
 
   @override
@@ -371,11 +400,20 @@ class _LoginPageState extends State<LoginPage> {
                               _handleFbSignIn();
                             },
                             child: CircleAvatar(
-                          radius: 25,
+                              radius: 25,
                               backgroundColor: Colors.transparent,
-                          backgroundImage:
-                              AssetImage("assets/images/facebook.png"),
-                        )),
+                              backgroundImage:
+                                  AssetImage("assets/images/facebook.png"),
+                            )),
+                        SizedBox(width: 16),
+                        InkWell(
+                            onTap: _loginZalo,
+                            child: CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.transparent,
+                              backgroundImage:
+                              AssetImage("assets/images/zalo.png"),
+                            )),
                       ],
                     ),
 //                    InkWell(

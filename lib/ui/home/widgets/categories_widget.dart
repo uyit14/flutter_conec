@@ -34,7 +34,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 145,
+      height: 120,
       child: StreamBuilder<ApiResponse<List<Topic>>>(
           stream: _homeBloc.topicStream,
           builder: (context, snapshot) {
@@ -55,7 +55,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                   NearByPage.ROUTE_NAME);
                             },
                             child: Container(
-                                width: 145,
+                                width: 120,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(6),
@@ -83,7 +83,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                       "Gần tôi",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           color: Colors.blue,
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -102,7 +102,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                 });
                           },
                           child: Container(
-                              width: 145,
+                              width: 120,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(6),
@@ -140,7 +140,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                     topics[index-1].title,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 18,
+                                        fontSize: 16,
                                         color: Colors.blue,
                                         fontWeight: FontWeight.w500),
                                   ),

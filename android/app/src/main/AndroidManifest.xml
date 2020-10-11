@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="FlutterApplication"
         android:label="Conec"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/launcher_icon">
@@ -65,6 +65,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <meta-data
+            android:name="com.zing.zalo.zalosdk.appID"
+            android:value="@string/appID" />
+        <activity
+            android:name="com.zing.zalo.zalosdk.oauth.BrowserLoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="@string/zalosdk_login_protocol_schema"/>
             </intent-filter>
         </activity>
     </application>

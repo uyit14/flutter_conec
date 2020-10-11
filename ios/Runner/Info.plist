@@ -61,10 +61,13 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+            <string>zalo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.1023098809593-bihtl1luue11o6vi7v4sc392ihmt998n</string>
 				<string>fb682067142403416</string>
+				<string>zalo-3165417292251410919</string>
 			</array>
 		</dict>
 	</array>
@@ -72,6 +75,10 @@
 	<string>682067142403416</string>
 	<key>FacebookDisplayName</key>
 	<string>Conec</string>
+	<key>ZaloAppID</key>
+    <string>3165417292251410919</string>
+    <key>ZaloAppKey</key>
+    <string>SBiQNJsEIyy4bH66KN6S</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>

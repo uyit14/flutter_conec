@@ -42,14 +42,15 @@ class _PostActionPageState extends State<PostActionPage> {
   TextEditingController _addressController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _joiningFreeController = TextEditingController();
-  TextEditingController _conditionController = TextEditingController();
   TextEditingController _usesController = TextEditingController();
   List<Province> _listProvinces = List<Province>();
-  Province provinceData;
   Topic topic;
+  Province provinceData;
   Province districtData;
   Province wardData;
   int _selectedType;
+  int statusInt = 0;
+  String statusType = "Mới";
   String _type;
 
   ZefyrController _controller;
@@ -151,11 +152,16 @@ class _PostActionPageState extends State<PostActionPage> {
         _currentSelectedIndex = 6;
       });
     }
-    if(topic.title == "Rao vặt"){
+    else if(topic.title == "Rao vặt"){
       setState(() {
         _currentSelectedIndex = 7;
       });
+    }else{
+      setState(() {
+        _currentSelectedIndex = -1;
+      });
     }
+
   }
 
   @override
@@ -296,24 +302,61 @@ class _PostActionPageState extends State<PostActionPage> {
                               children: [
                                 Text("Tình trạng"),
                                 SizedBox(height: 4),
-                                TextFormField(
-                                  maxLines: 1,
-                                  style: TextStyle(fontSize: 18),
-                                  controller: _conditionController,
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                      hintText:
-                                          'Nhập tình trạng (Còn hàng, hết hàng, ...)',
-                                      focusedBorder: const OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Colors.green, width: 1)),
-                                      contentPadding: EdgeInsets.only(left: 8),
-                                      prefixIcon: Icon(
-                                        Icons.check,
-                                        color: Colors.black,
-                                      ),
-                                      border: const OutlineInputBorder()),
-                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: FlatButton(
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: statusInt == 0
+                                                      ? Colors.red
+                                                      : Colors.grey,
+                                                  width: 1,
+                                                  style: BorderStyle.solid),
+                                              borderRadius:
+                                              BorderRadius.circular(50)),
+                                          textColor: statusInt == 0
+                                              ? Colors.red
+                                              : Colors.grey,
+                                          onPressed: () {
+                                            setState(() {
+                                              statusType = "Mới";
+                                              statusInt = 0;
+                                            });
+                                          },
+                                          child: Text("Mới",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold))),
+                                    ),
+                                    SizedBox(width: 4),
+                                    Expanded(
+                                      child: FlatButton(
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide(
+                                                  color: statusInt == 1
+                                                      ? Colors.red
+                                                      : Colors.grey,
+                                                  width: 1,
+                                                  style: BorderStyle.solid),
+                                              borderRadius:
+                                              BorderRadius.circular(50)),
+                                          textColor: statusInt == 1
+                                              ? Colors.red
+                                              : Colors.grey,
+                                          onPressed: () {
+                                            setState(() {
+                                              statusType = "Đã sử dụng";
+                                              statusInt = 1;
+                                            });
+                                          },
+                                          child: Text("Đã sử dụng",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold))),
+                                    ),
+                                  ],
+                                )
                               ],
                             )
                           : Container(),
@@ -455,7 +498,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: _currentSelectedIndex == 7 ? 1 : 12,)
+                                SizedBox(height: 12,)
                               ],
                             ),
                       //STEP 5
@@ -775,7 +818,7 @@ class _PostActionPageState extends State<PostActionPage> {
 
   int getJoiningFree() {
     if (_currentSelectedIndex == 7 || _currentSelectedIndex == 6) {
-      return -1;
+      return null;
     } else {
       int i = _joiningFreeController.text.length > 0
           ? int.parse(_joiningFreeController.text)
@@ -786,7 +829,7 @@ class _PostActionPageState extends State<PostActionPage> {
 
   int getPrice() {
     if (_currentSelectedIndex == 6) {
-      return -1;
+      return null;
     }
     if (_currentSelectedIndex == 7) {
       int i = _joiningFreeController.text.length > 0
@@ -794,7 +837,7 @@ class _PostActionPageState extends State<PostActionPage> {
           : 0;
       return i;
     } else {
-      return -1;
+      return null;
     }
   }
   void doPostAction() async{
@@ -822,7 +865,7 @@ class _PostActionPageState extends State<PostActionPage> {
         joiningFeePeriod: _type,
         price: getPrice(),
         uses: _usesController.text ?? null,
-        generalCondition: _conditionController.text ?? null,
+        generalCondition: statusType ?? null,
         phoneNumber: _phoneController.text,
         lat: result.lat ?? 0.0,
         lng: result.long ?? 0.0,

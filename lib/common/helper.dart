@@ -139,6 +139,26 @@ class Helper {
             ));
   }
 
+  static void showMissingDataDialog(BuildContext context, Function onOKPress) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text("Thiếu thông tin"),
+          content:
+          Text("Vui lòng cập nhật đầy đủ thông tin cá nhân để đăng bài"),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("Hủy", style: TextStyle(color: Colors.red)),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            CupertinoDialogAction(
+              child: Text("OK"),
+              onPressed: onOKPress,
+            )
+          ],
+        ));
+  }
+
   static void showTokenExpiredDialog(BuildContext context) {
     showDialog(
         context: context,

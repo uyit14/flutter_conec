@@ -3,4 +3,7 @@
     <string name="app_name">Conec</string>
     <string name="facebook_app_id">682067142403416</string>
     <string name="fb_login_protocol_scheme">fb682067142403416</string>
+    <string name="appID">3165417292251410919</string>
+    <string name="zalosdk_app_id">3165417292251410919</string>
+    <string name="zalosdk_login_protocol_schema">zalo-3165417292251410919</string>
 </resources>

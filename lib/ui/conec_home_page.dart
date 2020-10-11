@@ -1,8 +1,11 @@
+import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/ui/home/pages/home_page.dart';
 import 'package:conecapp/ui/mypost/pages/post_action_page.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
+import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
+import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -25,6 +28,9 @@ class _ConecHomePageState extends State<ConecHomePage> {
   PageController _pageController = PageController(initialPage: 0);
   int _selectedPageIndex = 0;
   int _initIndex = 0;
+  bool _isMissingData = true;
+  var _profile;
+  ProfileBloc _profileBloc = ProfileBloc();
 
   String _token;
   bool _isTokenExpired = true;
@@ -35,6 +41,22 @@ class _ConecHomePageState extends State<ConecHomePage> {
       _token = token;
       _isTokenExpired = expired;
     });
+    if(!_isTokenExpired && _token!=null){
+      _profileBloc.requestGetProfile();
+      _profileBloc.profileStream.listen((event) {
+        if(event.status == Status.COMPLETED){
+          final profile = event.data;
+          if(profile.name!=null && profile.type!=null && profile.phoneNumber!=null){
+            setState(() {
+              _profile = profile;
+              _isMissingData = false;
+            });
+          }else{
+            return;
+          }
+        }
+      });
+    }
   }
 
   void _selectPage(int index) {
@@ -135,7 +157,20 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 if(_isTokenExpired){
                   Helper.showTokenExpiredDialog(context);
                 }else{
-                  Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
+                  if(_isMissingData){
+                    Helper.showMissingDataDialog(context, (){
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed(EditProfilePage.ROUTE_NAME, arguments: _profile).then((value) {
+                        if(value==0){
+                          setState(() {
+                            _isMissingData = false;
+                          });
+                        }
+                      });
+                    });
+                  }else{
+                    Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
+                  }
                 }
               }
             },
