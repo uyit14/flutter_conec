@@ -88,7 +88,7 @@ class _WardPageState extends State<WardPage> {
                       SizedBox(height: 8),
                       Row(
                         children: [
-                          Text("Phường Bến Nghé",
+                          Text(_wardName,
                               style: TextStyle(
                                   fontSize: 17,
                                   color: Colors.black,

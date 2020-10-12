@@ -94,7 +94,7 @@ class _ProvincePageState extends State<ProvincePage> {
                           SizedBox(height: 8),
                           Row(
                             children: [
-                              Text(_province.name,
+                              Text(_province.name ?? "",
                                   style: TextStyle(
                                       fontSize: 17,
                                       color: Colors.black,

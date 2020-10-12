@@ -50,8 +50,8 @@ class AdsDetail {
   String ward;
   String address;
   String getAddress;
-  double lat;
-  double long;
+  num lat;
+  num long;
   int joiningFee;
   String uses;
   int price;
@@ -133,8 +133,8 @@ class AdsDetail {
     ward = json['ward'];
     address = json['address'];
     getAddress = json['getAddress'];
-    lat = double.parse(json['lat']);
-    long = double.parse(json['lng']);
+    lat = json['lat'];
+    long = json['lng'];
     joiningFee = json['joiningFee'];
     uses = json['uses'];
     price = json['price'];

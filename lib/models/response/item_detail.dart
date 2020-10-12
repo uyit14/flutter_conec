@@ -39,8 +39,8 @@ class ItemDetail {
   String ward;
   String address;
   String getAddress;
-  double lat;
-  double long;
+  num lat;
+  num long;
   int joiningFee;
   String joiningFeePeriod;
   String uses;
@@ -119,12 +119,12 @@ class ItemDetail {
     ward = json['ward'];
     address = json['address'];
     getAddress = json['getAddress'];
-    lat = double.parse(json['lat']);
-    long = double.parse(json['lng']);
+    lat = json['lat'];
+    long = json['lng'];
     joiningFee = json['joiningFee'];
     joiningFeePeriod = json['joiningFeePeriod'];
     uses = json['uses'];
-    price = json['price'];
+    price = json['price'].toString();
     generalCondition = json['generalCondition'];
     phoneNumber = json['phoneNumber'];
     status = json['status'];

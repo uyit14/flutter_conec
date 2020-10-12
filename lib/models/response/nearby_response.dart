@@ -56,8 +56,8 @@ class Users {
   String name;
   String avatar;
   String getAddress;
-  double lat;
-  double lng;
+  num lat;
+  num lng;
   int ratingCount;
   int ratingAvg;
   String ratingHtml;

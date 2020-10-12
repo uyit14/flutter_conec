@@ -88,7 +88,7 @@ class _DistrictPageState extends State<DistrictPage> {
                       SizedBox(height: 8),
                       Row(
                         children: [
-                          Text("Quận 1",
+                          Text(_district.name ?? "",
                               style: TextStyle(
                                   fontSize: 17,
                                   color: Colors.black,

@@ -37,6 +37,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   bool _addDataToList = false;
   String _token;
   bool _isTokenExpired = true;
+  String _avatar;
 
   String _parentId;
   var _focusNode = FocusNode();
@@ -61,6 +62,20 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
       _token = token;
       _isTokenExpired = expired;
     });
+    if(!expired && token!=null){
+      _itemsByCategoryBloc.requestGetAvatar();
+      _itemsByCategoryBloc.avatarStream.listen((event) {
+        switch(event.status){
+          case Status.LOADING: break;
+          case Status.COMPLETED:
+            setState(() {
+              _avatar = event.data;
+            });
+            break;
+          case Status.ERROR: break;
+        }
+      });
+    }
   }
 
 
@@ -284,7 +299,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                       backgroundImage: widget.itemDetail.ownerAvatar !=
                           null
                           ? NetworkImage(
-                          widget.itemDetail.ownerAvatar)
+                          _avatar)
                           : AssetImage(
                           "assets/images/avatar.png"),
                           )

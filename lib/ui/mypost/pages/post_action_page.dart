@@ -843,7 +843,7 @@ class _PostActionPageState extends State<PostActionPage> {
   void doPostAction() async{
     final result = provinceData != null && districtData!=null && wardData!=null
         ? await Helper.getLatLng(
-        '${_addressController.text}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
+        '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
         : LatLong(lat: 0.0, long: 0.0);
     print(result.lat.toString() + "----" + result.long.toString());
     PostActionRequest _postActionRequest = PostActionRequest(

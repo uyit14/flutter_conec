@@ -57,6 +57,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   Province provinceData;
   Province districtData;
   Province wardData;
+  int statusInt = 0;
+  String statusType = "Mới";
 
   @override
   void initState() {
@@ -148,6 +150,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       _type = _itemDetail.joiningFeePeriod;
       districtData = Province(name: _itemDetail.district);
       wardData = Province(name: _itemDetail.ward);
+      topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
+      setSelectedIndex(topic);
       _urlImages = _itemDetail.images;
       _usesController = TextEditingController(text: _itemDetail.uses);
       _conditionController =
@@ -202,14 +206,17 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   }
 
   setSelectedIndex(Topic topic){
-    if(topic.title == "Bản tin"){
+    if(topic.id == "333f691d-6595-443d-bae3-9a2681025b53"){
       setState(() {
         _currentSelectedIndex = 6;
       });
-    }
-    if(topic.title == "Rao vặt"){
+    }else if(topic.id == "333f691d-6585-443a-bae3-9a2681025b53"){
       setState(() {
         _currentSelectedIndex = 7;
+      });
+    }else{
+      setState(() {
+        _currentSelectedIndex = -1;
       });
     }
   }
@@ -335,29 +342,67 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                       ),
                 _currentSelectedIndex == 7
                     ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Tình trạng"),
-                          SizedBox(height: 4),
-                          TextFormField(
-                            maxLines: 1,
-                            style: TextStyle(fontSize: 18),
-                            controller: _conditionController,
-                            decoration: InputDecoration(
-                                hintText:
-                                    'Nhập tình trạng (Còn hàng, hết hàng, ...)',
-                                focusedBorder: const OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.green, width: 1)),
-                                contentPadding: EdgeInsets.only(left: 8),
-                                prefixIcon: Icon(
-                                  Icons.check,
-                                  color: Colors.black,
-                                ),
-                                border: const OutlineInputBorder()),
-                          ),
-                        ],
-                      )
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Tình trạng"),
+                    SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: FlatButton(
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      color: statusInt == 0
+                                          ? Colors.red
+                                          : Colors.grey,
+                                      width: 1,
+                                      style: BorderStyle.solid),
+                                  borderRadius:
+                                  BorderRadius.circular(50)),
+                              textColor: statusInt == 0
+                                  ? Colors.red
+                                  : Colors.grey,
+                              onPressed: () {
+                                setState(() {
+                                  statusType = "Mới";
+                                  statusInt = 0;
+                                });
+                              },
+                              child: Text("Mới",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold))),
+                        ),
+                        SizedBox(width: 4),
+                        Expanded(
+                          child: FlatButton(
+                              shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      color: statusInt == 1
+                                          ? Colors.red
+                                          : Colors.grey,
+                                      width: 1,
+                                      style: BorderStyle.solid),
+                                  borderRadius:
+                                  BorderRadius.circular(50)),
+                              textColor: statusInt == 1
+                                  ? Colors.red
+                                  : Colors.grey,
+                              onPressed: () {
+                                setState(() {
+                                  statusType = "Đã sử dụng";
+                                  statusInt = 1;
+                                });
+                              },
+                              child: Text("Đã sử dụng",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold))),
+                        ),
+                      ],
+                    )
+                  ],
+                )
                     : Container(),
                 SizedBox(height: 12),
                 //STEP 4
@@ -496,7 +541,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: _currentSelectedIndex == 7 ? 1 : 12,)
+                          SizedBox(height: 12,)
                         ],
                       ),
                 //STEP 5
@@ -542,7 +587,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                         children: <Widget>[
                           Icon(Icons.location_city),
                           Text(
-                            provinceData != null
+                            provinceData != null && provinceData.name!=null
                                 ? provinceData.name
                                 : "Tỉnh/Thành phố",
                             textAlign: TextAlign.left,
@@ -585,7 +630,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                         children: <Widget>[
                           Icon(Icons.home),
                           Text(
-                            districtData != null
+                            districtData != null && districtData.name!=null
                                 ? districtData.name
                                 : "Quận/Huyện",
                             textAlign: TextAlign.left,
@@ -629,7 +674,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                         children: <Widget>[
                           Icon(Icons.wallpaper),
                           Text(
-                            wardData!=null ? wardData.name : "Phường/Xã",
+                            wardData!=null && wardData.name!=null ? wardData.name : "Phường/Xã",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
@@ -781,7 +826,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   void doUpdateAction() async{
     final result = provinceData != null && districtData!=null && wardData!=null
         ? await Helper.getLatLng(
-        '${_addressController.text}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
+        '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
         : LatLong(lat: 0.0, long: 0.0);
     print(result.lat.toString() + "----" + result.long.toString());
     if (_currentSelectedIndex == 7) {
@@ -805,7 +850,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               ? int.parse(_joiningFreeController.text)
               : null,
           uses: _usesController.text,
-          generalCondition: _conditionController.text,
+          generalCondition: statusType ?? null,
           phoneNumber: _phoneController.text,
           lat: result.lat ?? 0.0,
           lng: result.long ?? 0.0,

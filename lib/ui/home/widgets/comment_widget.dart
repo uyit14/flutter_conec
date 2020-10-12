@@ -48,6 +48,20 @@ class _CommentWidgetState extends State<CommentWidget> {
       _token = token;
       _isTokenExpired = expired;
     });
+    if(!expired && token!=null){
+      _itemsByCategoryBloc.requestGetAvatar();
+      _itemsByCategoryBloc.avatarStream.listen((event) {
+        switch(event.status){
+          case Status.LOADING: break;
+          case Status.COMPLETED:
+            setState(() {
+              _avatar = event.data;
+            });
+            break;
+          case Status.ERROR: break;
+        }
+      });
+    }
   }
 
   @override
@@ -55,18 +69,6 @@ class _CommentWidgetState extends State<CommentWidget> {
     _addDataToList = true;
     super.initState();
     getToken();
-    _itemsByCategoryBloc.requestGetAvatar();
-    _itemsByCategoryBloc.avatarStream.listen((event) {
-      switch(event.status){
-        case Status.LOADING: break;
-        case Status.COMPLETED:
-          setState(() {
-            _avatar = event.data;
-          });
-          break;
-        case Status.ERROR: break;
-      }
-    });
   }
 
   @override
