@@ -87,7 +87,7 @@ class Profile {
     ratingAvg = json['ratingAvg'];
     ratingCount = json['ratingCount'];
     about = json['about'];
-    videoLink = json['videoLink'] !=null ? "http://149.28.140.240:8088" + json['videoLink'] : null;
+    videoLink = json['videoLink'] !=null ? Helper.baseURL + json['videoLink'] : null;
     if (json['images'] != null) {
       images = new List<Images>();
       json['images'].forEach((v) {
@@ -138,7 +138,7 @@ class Images {
 
   Images.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    fileName = json['fileName'] !=null ? "http://149.28.140.240:8088" + json['fileName'] : null;
+    fileName = json['fileName'] !=null ? Helper.baseURL + json['fileName'] : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -203,7 +203,7 @@ class Posts {
     joiningFee = json['joiningFee'];
     approvedDate = json['approvedDate'];
     owner = json['owner'];
-    thumbnail = json['thumbnail'] !=null ? "http://149.28.140.240:8088" + json['thumbnail'] : null;
+    thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];

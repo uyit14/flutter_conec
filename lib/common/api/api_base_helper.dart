@@ -8,10 +8,10 @@ import 'dart:async';
 import 'app_exception.dart';
 
 class ApiBaseHelper {
-  final String _baseUrl = "http://149.28.140.240:8088";
+  final String _baseUrl = "http://103.77.167.225";
 
   Future<dynamic> get(String url, {dynamic headers}) async {
-    debugPrint('Api Get, url $url \n header $headers');
+    debugPrint('Api Get, url ${_baseUrl+url} \n header $headers');
     var responseJson;
     try {
       final response = await http.get(_baseUrl + url, headers: headers);
@@ -28,7 +28,7 @@ class ApiBaseHelper {
   }
 
   Future<dynamic> post(String url, {dynamic body, dynamic headers}) async {
-    debugPrint('Api Post, url $url');
+    debugPrint('Api Post, url ${_baseUrl+url}');
     Helper.log("Api Post, body", '$body');
     debugPrint('Api Post, header $headers');
     var responseJson;

@@ -1,3 +1,5 @@
+import 'package:conecapp/common/helper.dart';
+
 class Image {
   String id;
   String fileName;
@@ -7,7 +9,7 @@ class Image {
 
   Image.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    fileName = json['fileName'] !=null ? "http://149.28.140.240:8088" + json['fileName'] : null;
+    fileName = json['fileName'] !=null ? Helper.baseURL + json['fileName'] : null;
     created = json['created'];
   }
 

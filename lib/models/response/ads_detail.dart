@@ -105,7 +105,7 @@ class AdsDetail {
     content = json['content'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
-    ownerAvatar = json['ownerAvatar'] !=null ? "http://149.28.140.240:8088" + json['ownerAvatar'] : null;
+    ownerAvatar = json['ownerAvatar'] !=null ? Helper.baseURL + json['ownerAvatar'] : null;
     ownerId = json['ownerId'] ?? null;
     ratingCount = json['ratingCount'];
     ratingAvg = json['ratingAvg'];
@@ -115,7 +115,7 @@ class AdsDetail {
     likeCount = json['likeCount'];
     likeOwner = json['likeOwner'];
     isLikeOwner = json['isLikeOwner'];
-    thumbnail = json['thumbnail'] !=null ? "http://149.28.140.240:8088" + json['thumbnail'] : null;
+    thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];

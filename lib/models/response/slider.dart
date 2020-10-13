@@ -1,3 +1,5 @@
+import 'package:conecapp/common/helper.dart';
+
 class Slider {
   String id;
   String title;
@@ -11,6 +13,6 @@ class Slider {
     title = json['title'];
     description = json['description'];
     orderNo = json['orderNo'];
-    thumbnail = "http://149.28.140.240:8088" + json['thumbnail'];
+    thumbnail = Helper.baseURL + json['thumbnail'];
   }
 }

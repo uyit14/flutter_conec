@@ -873,6 +873,7 @@ class _PostActionPageState extends State<PostActionPage> {
 //    Map inputs = jsonDecode(_postActionRequest);
     //print("aa: " + inputs.toString());
     print("images: " + base64ListImage(_images).length.toString());
+    print("post_request: " + jsonEncode(_postActionRequest.toJson()));
     _postActionBloc.requestAddMyPost(
         jsonEncode(_postActionRequest.toJson()), "Add");
     _postActionBloc.addMyPostStream.listen((event) {

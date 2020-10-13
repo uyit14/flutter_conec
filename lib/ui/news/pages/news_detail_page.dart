@@ -111,106 +111,142 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                         children: <Widget>[
                           Hero(
                             tag: postId,
-                            child: newsDetail.images.length > 0 ? Container(
-                              height: 225,
-                              child: PageView.builder(
-                                  itemCount: newsDetail.images.length,
-                                  controller: _pageController,
-                                  onPageChanged: (currentPage) {
-                                    setState(() {
-                                      _currentIndex = currentPage;
-                                    });
-                                  },
-                                  itemBuilder: (context, index) {
-                                    return CachedNetworkImage(
-                                      imageUrl: newsDetail
-                                          .images[index].fileName,
-                                      placeholder: (context, url) =>
-                                          Image.asset(
-                                              "assets/images/placeholder.png"),
-                                      errorWidget: (context, url,
-                                          error) =>
-                                          Image.asset(
-                                              "assets/images/error.png"),
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: 225,
-                                    );
-                                  }),
-                            ) : CachedNetworkImage(
+                            child: newsDetail.images.length > 0
+                                ? Stack(
+                              children: [
+                                Container(
+                                  height: 225,
+                                  child: PageView.builder(
+                                      itemCount: newsDetail.images.length,
+                                      controller: _pageController,
+                                      onPageChanged: (currentPage) {
+                                        setState(() {
+                                          _currentIndex = currentPage;
+                                        });
+                                      },
+                                      itemBuilder: (context, index) {
+                                        return CachedNetworkImage(
+                                          imageUrl: newsDetail
+                                              .images[index].fileName,
+                                          placeholder: (context, url) =>
+                                              Image.asset(
+                                                  "assets/images/placeholder.png"),
+                                          errorWidget: (context, url,
+                                              error) =>
+                                              Image.asset(
+                                                  "assets/images/error.png"),
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: 225,
+                                        );
+                                      }),
+                                ),
+                                Positioned(
+                                  bottom: 24,
+                                  child: Container(
+                                    height: 24,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          shrinkWrap: true,
+                                          itemCount:
+                                          newsDetail.images.length,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              width: 16,
+                                              height: 16,
+                                              margin:
+                                              EdgeInsets.only(right: 6),
+                                              decoration: BoxDecoration(
+                                                //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.white),
+                                                  color: _currentIndex ==
+                                                      index
+                                                      ? Colors.white
+                                                      : Colors.transparent),
+                                            );
+                                          }),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                                : CachedNetworkImage(
                               imageUrl: newsDetail.thumbnail,
-                              progressIndicatorBuilder:
-                                  (context, url, downloadProgress) =>
-                                      CircularProgressIndicator(
-                                          value: downloadProgress.progress),
+                              placeholder: (context, url) => Image.asset(
+                                  "assets/images/placeholder.png"),
                               errorWidget: (context, url, error) =>
                                   Image.asset("assets/images/error.png"),
                               fit: BoxFit.cover,
                               width: double.infinity,
-                              height: 250,
+                              height: 225,
                             ),
                           ),
-                          if (newsDetail.images.length > 0)
-                            Container(
-                              height: 55,
-                              margin: EdgeInsets.only(top: 4),
-                              child: Center(
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: newsDetail.images.length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            _currentIndex = index;
-                                          });
-                                          if (_pageController.hasClients) {
-                                            _pageController.animateToPage(
-                                              index,
-                                              duration:
-                                              Duration(milliseconds: 350),
-                                              curve: Curves.easeIn,
-                                            );
-                                          }
-                                        },
-                                        child: Container(
-                                          decoration: _currentIndex == index
-                                              ? BoxDecoration(
-                                            border: Border.all(
-                                                width: 2,
-                                                color: Colors.green),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(8)),
-                                          )
-                                              : null,
-                                          margin: EdgeInsets.only(right: 2),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(6)),
-                                            child: CachedNetworkImage(
-                                              imageUrl: newsDetail
-                                                  .images[index].fileName,
-                                              placeholder: (context, url) =>
-                                                  Image.asset(
-                                                      "assets/images/placeholder.png"),
-                                              errorWidget: (context, url,
-                                                  error) =>
-                                                  Image.asset(
-                                                      "assets/images/error.png"),
-                                              fit: BoxFit.cover,
-                                              width: 55,
-                                              height: 55,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            )
-                          else
-                            Container(),
+                          // if (newsDetail.images.length > 0)
+                          //   Container(
+                          //     height: 55,
+                          //     margin: EdgeInsets.only(top: 4),
+                          //     child: Center(
+                          //       child: ListView.builder(
+                          //           shrinkWrap: true,
+                          //           scrollDirection: Axis.horizontal,
+                          //           itemCount: newsDetail.images.length,
+                          //           itemBuilder: (context, index) {
+                          //             return InkWell(
+                          //               onTap: () {
+                          //                 setState(() {
+                          //                   _currentIndex = index;
+                          //                 });
+                          //                 if (_pageController.hasClients) {
+                          //                   _pageController.animateToPage(
+                          //                     index,
+                          //                     duration:
+                          //                     Duration(milliseconds: 350),
+                          //                     curve: Curves.easeIn,
+                          //                   );
+                          //                 }
+                          //               },
+                          //               child: Container(
+                          //                 decoration: _currentIndex == index
+                          //                     ? BoxDecoration(
+                          //                   border: Border.all(
+                          //                       width: 2,
+                          //                       color: Colors.green),
+                          //                   borderRadius:
+                          //                   BorderRadius.all(
+                          //                       Radius.circular(8)),
+                          //                 )
+                          //                     : null,
+                          //                 margin: EdgeInsets.only(right: 2),
+                          //                 child: ClipRRect(
+                          //                   borderRadius: BorderRadius.all(
+                          //                       Radius.circular(6)),
+                          //                   child: CachedNetworkImage(
+                          //                     imageUrl: newsDetail
+                          //                         .images[index].fileName,
+                          //                     placeholder: (context, url) =>
+                          //                         Image.asset(
+                          //                             "assets/images/placeholder.png"),
+                          //                     errorWidget: (context, url,
+                          //                         error) =>
+                          //                         Image.asset(
+                          //                             "assets/images/error.png"),
+                          //                     fit: BoxFit.cover,
+                          //                     width: 55,
+                          //                     height: 55,
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             );
+                          //           }),
+                          //     ),
+                          //   )
+                          // else
+                          //   Container(),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(

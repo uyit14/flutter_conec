@@ -149,32 +149,68 @@ class _SellDetailPageState extends State<SellDetailPage> {
                           Hero(
                             tag: postId,
                             child: adsDetail.images.length > 0
-                                ? Container(
-                              height: 225,
-                              child: PageView.builder(
-                                  itemCount: adsDetail.images.length,
-                                  controller: _pageController,
-                                  onPageChanged: (currentPage) {
-                                    setState(() {
-                                      _currentIndex = currentPage;
-                                    });
-                                  },
-                                  itemBuilder: (context, index) {
-                                    return CachedNetworkImage(
-                                      imageUrl: adsDetail
-                                          .images[index].fileName,
-                                      placeholder: (context, url) =>
-                                          Image.asset(
-                                              "assets/images/placeholder.png"),
-                                      errorWidget: (context, url,
-                                          error) =>
-                                          Image.asset(
-                                              "assets/images/error.png"),
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: 225,
-                                    );
-                                  }),
+                                ? Stack(
+                              children: [
+                                Container(
+                                  height: 225,
+                                  child: PageView.builder(
+                                      itemCount: adsDetail.images.length,
+                                      controller: _pageController,
+                                      onPageChanged: (currentPage) {
+                                        setState(() {
+                                          _currentIndex = currentPage;
+                                        });
+                                      },
+                                      itemBuilder: (context, index) {
+                                        return CachedNetworkImage(
+                                          imageUrl: adsDetail
+                                              .images[index].fileName,
+                                          placeholder: (context, url) =>
+                                              Image.asset(
+                                                  "assets/images/placeholder.png"),
+                                          errorWidget: (context, url,
+                                              error) =>
+                                              Image.asset(
+                                                  "assets/images/error.png"),
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: 225,
+                                        );
+                                      }),
+                                ),
+                                Positioned(
+                                  bottom: 24,
+                                  child: Container(
+                                    height: 24,
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Center(
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          shrinkWrap: true,
+                                          itemCount:
+                                          adsDetail.images.length,
+                                          itemBuilder: (context, index) {
+                                            return Container(
+                                              width: 16,
+                                              height: 16,
+                                              margin:
+                                              EdgeInsets.only(right: 6),
+                                              decoration: BoxDecoration(
+                                                //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Colors.white),
+                                                  color: _currentIndex ==
+                                                      index
+                                                      ? Colors.white
+                                                      : Colors.transparent),
+                                            );
+                                          }),
+                                    ),
+                                  ),
+                                )
+                              ],
                             )
                                 : CachedNetworkImage(
                               imageUrl: adsDetail.thumbnail,
@@ -187,67 +223,67 @@ class _SellDetailPageState extends State<SellDetailPage> {
                               height: 225,
                             ),
                           ),
-                          if (adsDetail.images.length > 0)
-                            Container(
-                              height: 55,
-                              margin: EdgeInsets.only(top: 4),
-                              child: Center(
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: adsDetail.images.length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          setState(() {
-                                            _currentIndex = index;
-                                          });
-                                          if (_pageController.hasClients) {
-                                            _pageController.animateToPage(
-                                              index,
-                                              duration:
-                                              Duration(milliseconds: 350),
-                                              curve: Curves.easeIn,
-                                            );
-                                          }
-                                        },
-                                        child: Container(
-                                          decoration: _currentIndex == index
-                                              ? BoxDecoration(
-                                            border: Border.all(
-                                                width: 2,
-                                                color: Colors.green),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(8)),
-                                          )
-                                              : null,
-                                          margin: EdgeInsets.only(right: 2),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(6)),
-                                            child: CachedNetworkImage(
-                                              imageUrl: adsDetail
-                                                  .images[index].fileName,
-                                              placeholder: (context, url) =>
-                                                  Image.asset(
-                                                      "assets/images/placeholder.png"),
-                                              errorWidget: (context, url,
-                                                  error) =>
-                                                  Image.asset(
-                                                      "assets/images/error.png"),
-                                              fit: BoxFit.cover,
-                                              width: 55,
-                                              height: 55,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ),
-                            )
-                          else
-                            Container(),
+                          // if (adsDetail.images.length > 0)
+                          //   Container(
+                          //     height: 55,
+                          //     margin: EdgeInsets.only(top: 4),
+                          //     child: Center(
+                          //       child: ListView.builder(
+                          //           shrinkWrap: true,
+                          //           scrollDirection: Axis.horizontal,
+                          //           itemCount: adsDetail.images.length,
+                          //           itemBuilder: (context, index) {
+                          //             return InkWell(
+                          //               onTap: () {
+                          //                 setState(() {
+                          //                   _currentIndex = index;
+                          //                 });
+                          //                 if (_pageController.hasClients) {
+                          //                   _pageController.animateToPage(
+                          //                     index,
+                          //                     duration:
+                          //                     Duration(milliseconds: 350),
+                          //                     curve: Curves.easeIn,
+                          //                   );
+                          //                 }
+                          //               },
+                          //               child: Container(
+                          //                 decoration: _currentIndex == index
+                          //                     ? BoxDecoration(
+                          //                   border: Border.all(
+                          //                       width: 2,
+                          //                       color: Colors.green),
+                          //                   borderRadius:
+                          //                   BorderRadius.all(
+                          //                       Radius.circular(8)),
+                          //                 )
+                          //                     : null,
+                          //                 margin: EdgeInsets.only(right: 2),
+                          //                 child: ClipRRect(
+                          //                   borderRadius: BorderRadius.all(
+                          //                       Radius.circular(6)),
+                          //                   child: CachedNetworkImage(
+                          //                     imageUrl: adsDetail
+                          //                         .images[index].fileName,
+                          //                     placeholder: (context, url) =>
+                          //                         Image.asset(
+                          //                             "assets/images/placeholder.png"),
+                          //                     errorWidget: (context, url,
+                          //                         error) =>
+                          //                         Image.asset(
+                          //                             "assets/images/error.png"),
+                          //                     fit: BoxFit.cover,
+                          //                     width: 55,
+                          //                     height: 55,
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             );
+                          //           }),
+                          //     ),
+                          //   )
+                          // else
+                          //   Container(),
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),

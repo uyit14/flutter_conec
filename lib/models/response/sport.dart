@@ -43,7 +43,7 @@ class Sport {
     owner = json['owner'];
     price = json['price'];
     generalCondition = json['generalCondition'];
-    thumbnail = json['thumbnail'] !=null ? "http://149.28.140.240:8088" + json['thumbnail'] : null;
+    thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];

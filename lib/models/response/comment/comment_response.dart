@@ -1,3 +1,5 @@
+import 'package:conecapp/common/helper.dart';
+
 class CommentResponse {
   List<Comment> comments;
 
@@ -87,7 +89,7 @@ class Comment {
     }
     creator = json['creator'];
     fullname = json['fullname'];
-    profilePictureUrl = json['profile_picture_url'] !=null ? "http://149.28.140.240:8088" + json['profile_picture_url'] : null;
+    profilePictureUrl = json['profile_picture_url'] !=null ? Helper.baseURL + json['profile_picture_url'] : null;
 
     createdByAdmin = json['created_by_admin'];
     createdByCurrentUser = json['created_by_current_user'];

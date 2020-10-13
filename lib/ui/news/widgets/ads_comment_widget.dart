@@ -296,7 +296,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                     !_isLoading
                         ? CircleAvatar(
                             radius: 25,
-                      backgroundImage: widget.itemDetail.ownerAvatar !=
+                      backgroundImage: _avatar !=
                           null
                           ? NetworkImage(
                           _avatar)

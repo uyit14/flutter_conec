@@ -164,9 +164,9 @@ class _LoginPageState extends State<LoginPage> {
     final response = await http.get(
         "https://oauth.zaloapp.com/v3/access_token?app_id=3165417292251410919&app_secret=SBiQNJsEIyy4bH66KN6S&code=${res.oauthCode}");
     var responseJson = json.decode(response.body.toString());
+    print("Zalo token: " + responseJson['access_token']);
     _authenBloc.requestSocialLogin(responseJson['access_token'], "ZaloLogin");
     listenLogin();
-    print(response);
   }
 
   @override

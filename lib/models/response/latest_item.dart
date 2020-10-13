@@ -43,7 +43,7 @@ class LatestItem {
     joiningFeePeriod = json['joiningFeePeriod'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
-    thumbnail = json['thumbnail'] !=null && !json['thumbnail'].contains("http") ? "http://149.28.140.240:8088" + json['thumbnail'] : json['thumbnail'];
+    thumbnail = json['thumbnail'] !=null && !json['thumbnail'].contains("http") ? Helper.baseURL + json['thumbnail'] : json['thumbnail'];
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];
