@@ -58,7 +58,7 @@ class Users {
   String getAddress;
   num lat;
   num lng;
-  int ratingCount;
+  num ratingCount;
   int ratingAvg;
   String ratingHtml;
   String joinedDate;
@@ -145,7 +145,7 @@ class Posts {
   double lng;
   String type;
   int ratingAvg;
-  int ratingCount;
+  num ratingCount;
 
   Posts(
       {this.postId,

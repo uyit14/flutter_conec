@@ -405,14 +405,14 @@ class _LoginPageState extends State<LoginPage> {
                               backgroundImage:
                                   AssetImage("assets/images/facebook.png"),
                             )),
-                        SizedBox(width: 16),
+                        SizedBox(width: 13),
                         InkWell(
                             onTap: _loginZalo,
                             child: CircleAvatar(
-                              radius: 25,
+                              radius: 28,
                               backgroundColor: Colors.transparent,
                               backgroundImage:
-                              AssetImage("assets/images/zalo.png"),
+                              AssetImage("assets/images/zalo-logo.png"),
                             )),
                       ],
                     ),

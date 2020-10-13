@@ -38,10 +38,10 @@ class Profile {
   String district;
   String ward;
   String address;
-  String lat;
-  String lng;
+  num lat;
+  num lng;
   num ratingAvg;
-  int ratingCount;
+  num ratingCount;
   String about;
   String videoLink;
   List<Images> images;
@@ -166,11 +166,11 @@ class Posts {
   String ward;
   String address;
   String getAddress;
-  String lat;
-  String lng;
+  num lat;
+  num lng;
   String type;
-  int ratingAvg;
-  int ratingCount;
+  num ratingAvg;
+  num ratingCount;
 
   Posts(
       {this.postId,

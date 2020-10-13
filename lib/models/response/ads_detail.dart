@@ -29,7 +29,7 @@ class AdsDetail {
   String owner;
   String ownerAvatar;
   String ownerId;
-  int ratingCount;
+  num ratingCount;
   int ratingAvg;
   bool isRating;
   int viewCount;

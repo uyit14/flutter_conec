@@ -111,6 +111,7 @@ class _RegisterPageState extends State<RegisterPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
     prefs.setString('expired', expiredDay);
+    prefs.setBool('isSocial', false);
     Navigator.of(context).pushNamedAndRemoveUntil(
         ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
   }

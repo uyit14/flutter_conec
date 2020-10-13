@@ -608,10 +608,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   },
                                   child: Image.network(
                                     Helper.generateLocationPreviewImage(
-                                        lat: itemDetail.lat != 0.0
+                                        lat: itemDetail.lat != 0
                                             ? itemDetail.lat
                                             : lat,
-                                        lng: itemDetail.long != 0.0
+                                        lng: itemDetail.long != 0
                                             ? itemDetail.long
                                             : lng),
                                     fit: BoxFit.cover,

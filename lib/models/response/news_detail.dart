@@ -19,7 +19,7 @@ class NewsDetail {
   String approvedDate;
   String owner;
   String ownerAvatar;
-  int ratingCount;
+  num ratingCount;
   int ratingAvg;
   bool isRating;
   int viewCount;

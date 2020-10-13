@@ -118,16 +118,16 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 backgroundColor: Colors.redAccent[200],
                 actions: <Widget>[
                   IconButton(
-                    icon: Icon(Icons.search),
+                    icon: Icon(Icons.search, size: 32,),
                     onPressed: () => Navigator.of(context).pushNamed(
                         ItemByCategory.ROUTE_NAME,
                         arguments: {'id': null, 'title': null}),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.notifications),
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed(NotifyPage.ROUTE_NAME),
-                  ),
+//                  IconButton(
+//                    icon: Icon(Icons.notifications),
+//                    onPressed: () =>
+//                        Navigator.of(context).pushNamed(NotifyPage.ROUTE_NAME),
+//                  ),
                 ],
               )
             : null,
