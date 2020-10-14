@@ -30,6 +30,8 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _emailValidate = false;
   bool _passWordValidate = false;
   bool _confirmPassWordValidate = false;
+  bool _showPass = false;
+  bool _showConfirmPass = false;
 
   AuthenBloc _authenBloc = AuthenBloc();
 
@@ -264,7 +266,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _passWordController,
                       textInputAction: TextInputAction.next,
                       style: TextStyle(fontSize: 18),
-                      obscureText: true,
+                      obscureText: _showPass ? false : true,
                       focusNode: _passWordFocusNode,
                       onFieldSubmitted: (value){
                         _confirmPassWordFocusNode.requestFocus();
@@ -277,17 +279,25 @@ class _RegisterPageState extends State<RegisterPage> {
                           focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.green, width: 1)),
                           contentPadding: EdgeInsets.only(left: 8),
-                          prefixIcon: Icon(
-                            Icons.vpn_key,
-                            color: Colors.black,
+                          suffixIcon: InkWell(
+                            onTap: (){
+                              setState(() {
+                                _showPass=!_showPass;
+                              });
+                            },
+                            child: Icon(
+                              _showPass ? Icons.vpn_key : Icons.remove_red_eye,
+                              color: Colors.black,
+                            ),
                           ),
+                          prefixIcon: Icon(Icons.confirmation_number, color: Colors.black),
                           border: const OutlineInputBorder()),
                     ),
                     SizedBox(height: 16),
                     TextFormField(
                       maxLines: 1,
                       style: TextStyle(fontSize: 18),
-                      obscureText: true,
+                      obscureText: _showConfirmPass ? false : true,
                       controller: _confirmPassWordController,
                       focusNode: _confirmPassWordFocusNode,
                       textInputAction: TextInputAction.done,
@@ -302,6 +312,17 @@ class _RegisterPageState extends State<RegisterPage> {
                           prefixIcon: Icon(
                             Icons.confirmation_number,
                             color: Colors.black,
+                          ),
+                          suffixIcon: InkWell(
+                            onTap: (){
+                              setState(() {
+                                _showConfirmPass=!_showConfirmPass;
+                              });
+                            },
+                            child: Icon(
+                              _showConfirmPass ? Icons.vpn_key : Icons.remove_red_eye,
+                              color: Colors.black,
+                            ),
                           ),
                           border: const OutlineInputBorder()),
                     ),

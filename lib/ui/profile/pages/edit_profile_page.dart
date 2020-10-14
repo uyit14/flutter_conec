@@ -41,6 +41,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String _phone;
   int _selectedType;
   String _type;
+  String _avatar;
   bool _isLoading = false;
   List<Province> _listProvinces = List<Province>();
   PostActionBloc _postActionBloc;
@@ -82,7 +83,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final routeArgs = ModalRoute.of(context).settings.arguments;
     profile = routeArgs;
     //init value
-    if (_isApiCall) {
+    if (_isApiCall && profile!=null) {
       _name = profile.name;
       _gender = profile.gender ?? "Nam";
       _birthDay = DateTime(
@@ -93,9 +94,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _email = profile.email;
       _phone = profile.phoneNumber;
       _type = profile.type;
-      provinceData = Province(name: profile.province);
-      districtData = Province(name: profile.district);
-      wardData = Province(name: profile.ward);
+      provinceData = profile.province!=null ? Province(name: profile.province) : null;
+      districtData = profile.district!=null ? Province(name: profile.district) : null;
+      wardData = profile.ward!=null ? Province(name: profile.ward) : null;
+      _avatar = profile.avatar;
       if (profile.type != null && profile.type == "Club") {
         _selectedType = 0;
         _type = "Club";
@@ -165,10 +167,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           child: CircleAvatar(
                             radius: 50,
                             backgroundImage: _image == null
-                                ? (profile.avatar == null
+                                ? (_avatar==null
                                     ? AssetImage("assets/images/avatar.png")
                                     : CachedNetworkImageProvider(
-                                        profile.avatar))
+                                        _avatar))
                                 : FileImage(_image),
                           ),
                         ),
@@ -283,7 +285,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             maxLines: 1,
                             style: TextStyle(fontSize: 18),
                             textInputAction: TextInputAction.done,
-                            initialValue: profile.name ?? "",
+                            initialValue: _name ?? "",
                             onChanged: (value) {
                               setState(() {
                                 _name = value;
@@ -359,7 +361,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               SizedBox(width: 16),
                                               Text(
                                                 DateFormat('dd-MM-yyyy')
-                                                    .format(_birthDay),
+                                                    .format(_birthDay ?? DateTime(2000, 6, 16)),
                                                 textAlign: TextAlign.left,
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -548,7 +550,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             maxLines: 1,
                             style: TextStyle(fontSize: 18),
                             textInputAction: TextInputAction.done,
-                            initialValue: profile.address ?? "",
+                            initialValue: _address ?? "",
                             onChanged: (value) {
                               setState(() {
                                 _address = value;
@@ -572,7 +574,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             style: TextStyle(fontSize: 18),
                             keyboardType: TextInputType.phone,
                             textInputAction: TextInputAction.done,
-                            initialValue: profile.phoneNumber ?? "",
+                            initialValue: _phone ?? "",
                             onChanged: (value) {
                               setState(() {
                                 _phone = value;
@@ -596,7 +598,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             style: TextStyle(fontSize: 18),
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.done,
-                            initialValue: profile.email ?? "",
+                            initialValue: _email ?? "",
                             onChanged: (value) {
                               _email = value;
                             },
@@ -654,9 +656,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     print(result.lat.toString() + "----" + result.long.toString());
     //
     ProfileRequest _request = ProfileRequest(
-      province: provinceData.name,
-      district: districtData.name,
-      ward: wardData.name,
+      province: provinceData!=null ? provinceData.name : null,
+      district: districtData!=null ? districtData.name : null,
+      ward: wardData!=null ? wardData.name : null,
       gender: _gender,
       name: _name,
       email: _email,

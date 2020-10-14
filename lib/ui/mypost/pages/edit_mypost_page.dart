@@ -824,11 +824,16 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   PostActionRequest _postActionRequest;
 
   void doUpdateAction() async{
-    final result = provinceData != null && districtData!=null && wardData!=null
-        ? await Helper.getLatLng(
-        '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
-        : LatLong(lat: 0.0, long: 0.0);
-    print(result.lat.toString() + "----" + result.long.toString());
+    var result;
+    if(_addressController.text.length >0){
+       result = provinceData != null && districtData!=null && wardData!=null
+          ? await Helper.getLatLng(
+          '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
+          : LatLong(lat: 0.0, long: 0.0);
+      print(result.lat.toString() + "----" + result.long.toString());
+    }else{
+      result = LatLong(lat: 0.0, long: 0.0);
+    }
     if (_currentSelectedIndex == 7) {
       _postActionRequest = PostActionRequest(
           postId: _itemDetail.postId,

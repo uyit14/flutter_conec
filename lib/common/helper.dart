@@ -176,6 +176,22 @@ class Helper {
         ));
   }
 
+  static void showMissingAddressDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text("Nhập địa chỉ"),
+          content:
+          Text("Bạn vui lòng nhập địa chỉ khi đăng tin"),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        ));
+  }
+
   static Future<String> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString('token');

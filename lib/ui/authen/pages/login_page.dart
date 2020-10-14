@@ -34,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   AuthenBloc _authenBloc = AuthenBloc();
   bool _loadingStatus = false;
   bool _loginFail = false;
+  bool _showPass = false;
   String _loginFailMessage;
   ZaloLoginResult zaloLoginResult = ZaloLoginResult(
     errorCode: -1,
@@ -272,7 +273,7 @@ class _LoginPageState extends State<LoginPage> {
                       textInputAction: TextInputAction.done,
                       maxLines: 1,
                       style: TextStyle(fontSize: 18),
-                      obscureText: true,
+                      obscureText: _showPass ? false : true,
                       decoration: InputDecoration(
                           hintText: 'Nhập mật khẩu của bạn',
                           errorText: _passWordValidate
@@ -285,9 +286,16 @@ class _LoginPageState extends State<LoginPage> {
                               borderSide:
                                   BorderSide(color: Colors.green, width: 1)),
                           contentPadding: EdgeInsets.only(left: 8),
-                          suffixIcon: Icon(
-                            Icons.vpn_key,
-                            color: Colors.black,
+                          suffixIcon: InkWell(
+                            onTap: (){
+                              setState(() {
+                                _showPass=!_showPass;
+                              });
+                            },
+                            child: Icon(
+                              _showPass ? Icons.vpn_key : Icons.remove_red_eye,
+                              color: Colors.black,
+                            ),
                           ),
                           border: const OutlineInputBorder()),
                     ),

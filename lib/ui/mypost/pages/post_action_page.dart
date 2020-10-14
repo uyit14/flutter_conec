@@ -85,11 +85,23 @@ class _PostActionPageState extends State<PostActionPage> {
   }
 
   bool _isPostButtonEnable() {
-    if ( topic == null ||
-        _title == null ||
-        _controller.document.toPlainText().length <= 0 && !_term) {
-      return false;
+    if(_currentSelectedIndex==6){
+      if ( topic == null ||
+          _title == null ||
+          _controller.document.toPlainText().length <= 0 && !_term) {
+        return false;
+      }
+    }else{
+      if ( topic == null ||
+          _title == null ||
+          provinceData == null ||
+          districtData == null || wardData == null ||
+          _addressController.text.length ==0 ||
+          _controller.document.toPlainText().length <= 0 && !_term) {
+        return false;
+      }
     }
+
     return true;
   }
 
@@ -524,7 +536,7 @@ class _PostActionPageState extends State<PostActionPage> {
                       ),
                       SizedBox(height: 12),
                       //STEP 6
-                      Text("Địa chỉ"),
+                      Text("Địa chỉ *"),
                       SizedBox(height: 4),
                       Column(
                         children: <Widget>[
@@ -782,13 +794,13 @@ class _PostActionPageState extends State<PostActionPage> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
                             onPressed: () async{
-                              setState(() {
-                                _isLoading = true;
-                              });
                               //debugPrint(_selectedCategory + "_title: " + _title + "_des: " +_controller.document.toPlainText() + "_term: " + _term.toString());
                               if (!_isPostButtonEnable()) {
                                 showFailDialog();
                               } else {
+                                setState(() {
+                                  _isLoading = true;
+                                });
                                 doPostAction();
                               }
 //                              final result = await Helper.getLatLng('${_addressController.text}, $selectedWard, $selectedDistrict, $selectedCity');
@@ -841,11 +853,16 @@ class _PostActionPageState extends State<PostActionPage> {
     }
   }
   void doPostAction() async{
-    final result = provinceData != null && districtData!=null && wardData!=null
-        ? await Helper.getLatLng(
-        '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
-        : LatLong(lat: 0.0, long: 0.0);
-    print(result.lat.toString() + "----" + result.long.toString());
+    var result;
+    if(_currentSelectedIndex != 6){
+       result = provinceData != null && districtData!=null && wardData!=null
+          ? await Helper.getLatLng(
+          '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
+          : LatLong(lat: 0.0, long: 0.0);
+       print(result.lat.toString() + "----" + result.long.toString());
+    }else{
+      result = LatLong(lat: 0.0, long: 0.0);
+    }
     PostActionRequest _postActionRequest = PostActionRequest(
         title: _title,
         content: _controller.document.toPlainText(),
