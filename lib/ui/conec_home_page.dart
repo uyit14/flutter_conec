@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/ui/home/pages/home_page.dart';
@@ -30,30 +31,43 @@ class _ConecHomePageState extends State<ConecHomePage> {
   int _initIndex = 0;
   bool _isMissingData = true;
   var _profile;
+  int _number = 0;
   ProfileBloc _profileBloc = ProfileBloc();
+  HomeBloc _homeBloc = HomeBloc();
 
   String _token;
   bool _isTokenExpired = true;
-  void getToken() async{
+
+  void getToken() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
       _isTokenExpired = expired;
     });
-    if(!_isTokenExpired && _token!=null){
+    if (!_isTokenExpired && _token != null) {
       _profileBloc.requestGetProfile();
+      _homeBloc.requestGetNumberNotify();
       _profileBloc.profileStream.listen((event) {
-        if(event.status == Status.COMPLETED){
+        if (event.status == Status.COMPLETED) {
           final profile = event.data;
-          if(profile.name!=null && profile.type!=null && profile.phoneNumber!=null){
+          if (profile.name != null &&
+              profile.type != null &&
+              profile.phoneNumber != null) {
             setState(() {
               _profile = profile;
               _isMissingData = false;
             });
-          }else{
+          } else {
             return;
           }
+        }
+      });
+      _homeBloc.numberNotifyStream.listen((event) {
+        if (event.status == Status.COMPLETED) {
+          setState(() {
+            _number = event.data;
+          });
         }
       });
     }
@@ -89,13 +103,14 @@ class _ConecHomePageState extends State<ConecHomePage> {
     getToken();
   }
 
-    void getLocation() async {
-      Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      print(position.latitude ?? "---aaa---");
-      print(position.longitude ?? "---aaa---");
-      globals.latitude = position.latitude;
-      globals.longitude = position.longitude;
-    }
+  void getLocation() async {
+    Position position =
+        await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print(position.latitude ?? "---aaa---");
+    print(position.longitude ?? "---aaa---");
+    globals.latitude = position.latitude;
+    globals.longitude = position.longitude;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,16 +133,36 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 backgroundColor: Colors.redAccent[200],
                 actions: <Widget>[
                   IconButton(
-                    icon: Icon(Icons.search, size: 32,),
+                    icon: Icon(Icons.search, size: 32),
                     onPressed: () => Navigator.of(context).pushNamed(
                         ItemByCategory.ROUTE_NAME,
                         arguments: {'id': null, 'title': null}),
                   ),
-//                  IconButton(
-//                    icon: Icon(Icons.notifications),
-//                    onPressed: () =>
-//                        Navigator.of(context).pushNamed(NotifyPage.ROUTE_NAME),
-//                  ),
+                  _token != null && !_isTokenExpired
+                      ? Badge(
+                    padding: const EdgeInsets.all(3.0),
+                    position: BadgePosition.topEnd(top: 5, end: -7),
+                    badgeContent: Text(
+                      _number.toString(),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    badgeColor: Colors.yellowAccent,
+                    showBadge: _number > 0 ? true : false,
+                    child: InkWell(
+                      child: Icon(Icons.notifications, size: 32, color: Colors.black87.withOpacity(0.8),),
+                      onTap: () => Navigator.of(context)
+                          .pushNamed(NotifyPage.ROUTE_NAME).then((value) {
+                            if(value==1){
+                              _homeBloc.requestGetNumberNotify();
+                            }
+                      }),
+                    ),
+                  )
+                      : Container(),
+                  SizedBox(width: 16,)
                 ],
               )
             : null,
@@ -151,24 +186,27 @@ class _ConecHomePageState extends State<ConecHomePage> {
         floatingActionButton: Container(
           child: FloatingActionButton(
             onPressed: () {
-              if(_token == null || _token.length == 0){
+              if (_token == null || _token.length == 0) {
                 Helper.showAuthenticationDialog(context);
-              }else{
-                if(_isTokenExpired){
+              } else {
+                if (_isTokenExpired) {
                   Helper.showTokenExpiredDialog(context);
-                }else{
-                  if(_isMissingData){
-                    Helper.showMissingDataDialog(context, (){
+                } else {
+                  if (_isMissingData) {
+                    Helper.showMissingDataDialog(context, () {
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed(EditProfilePage.ROUTE_NAME, arguments: _profile).then((value) {
-                        if(value==0){
+                      Navigator.of(context)
+                          .pushNamed(EditProfilePage.ROUTE_NAME,
+                              arguments: _profile)
+                          .then((value) {
+                        if (value == 0) {
                           setState(() {
                             _isMissingData = false;
                           });
                         }
                       });
                     });
-                  }else{
+                  } else {
                     Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
                   }
                 }

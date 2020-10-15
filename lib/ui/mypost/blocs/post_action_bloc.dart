@@ -49,6 +49,13 @@ class PostActionBloc {
   Stream<ApiResponse<String>> get deleteMyPostStream =>
       _deleteMyPostController.stream;
 
+  //delete mypost
+  StreamController<ApiResponse<String>> _pushMyPostController =
+  StreamController();
+
+  Stream<ApiResponse<String>> get pushMyPostStream =>
+      _pushMyPostController.stream;
+
 //  //delete image
 //  StreamController<ApiResponse<String>> _deleteImageController =
 //      StreamController();
@@ -112,7 +119,18 @@ class PostActionBloc {
       _deleteMyPostController.sink
           .add(ApiResponse.completed(type == "Delete" ? "Xóa thành công" : ""));
     } else {
-      _deleteMyPostController.sink.add(ApiResponse.completed(result.message));
+      _deleteMyPostController.sink.add(ApiResponse.error(result.message));
+    }
+  }
+
+  void requestPushMyPost(String postId) async {
+    _pushMyPostController.sink.add(ApiResponse.loading());
+    final result = await _repository.deleteMyPost(postId, "Push");
+    if (result.status) {
+      _pushMyPostController.sink
+          .add(ApiResponse.completed(result.message));
+    } else {
+      _pushMyPostController.sink.add(ApiResponse.error(result.message));
     }
   }
 
@@ -155,5 +173,6 @@ class PostActionBloc {
     _wardsController.close();
     _districtsController.close();
     _topicController.close();
+    _pushMyPostController.close();
   }
 }

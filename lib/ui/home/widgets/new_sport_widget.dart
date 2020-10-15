@@ -25,7 +25,6 @@ class _NewSportWidgetState extends State<NewSportWidget> {
 
   @override
   void dispose() {
-    _homeBloc.dispose();
     super.dispose();
   }
 

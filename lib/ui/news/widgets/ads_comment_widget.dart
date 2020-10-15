@@ -100,7 +100,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                   .toString());
           print("with content ui: " + comments[0].content);
           int deleteAt = comments.indexWhere((element) => element.id == parentId);
-          Helper.showDeleteDialog(context, () {
+          Helper.showDeleteDialog(context, "Xóa bình luận", "Bạn có chắc chắn muốn xóa bình luận này?", () {
             _itemsByCategoryBloc
                 .requestDeleteComment(parentId)
                 .then((value) {

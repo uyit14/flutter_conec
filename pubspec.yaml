@@ -60,6 +60,7 @@ dependencies:
   google_sign_in: ^4.5.4
   flutter_facebook_login: ^3.0.0
   flutter_zalo_login: 0.1.3
+  badges: ^1.1.3
 
 dev_dependencies:
   flutter_test:

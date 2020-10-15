@@ -145,6 +145,13 @@ class _EditInfoPageState extends State<EditInfoPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _profileBloc.dispose();
+    _postActionBloc.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(

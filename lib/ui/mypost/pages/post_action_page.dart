@@ -63,6 +63,7 @@ class _PostActionPageState extends State<PostActionPage> {
     _isCallApi = true;
   }
 
+
   List<File> _images = List<File>();
   final picker = ImagePicker();
 
@@ -956,5 +957,11 @@ class _PostActionPageState extends State<PostActionPage> {
                     onPressed: () => Navigator.of(context).pop())
               ],
             ));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _postActionBloc.dispose();
   }
 }

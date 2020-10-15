@@ -30,6 +30,12 @@ class Helper {
         : "";
   }
 
+  static String formatNotifyDate(String date) {
+    return date != null
+        ? DateFormat("dd-MM-yyyy hh : mm").format(DateTime.parse(date))
+        : "";
+  }
+
   static log(var tag, var message) {
     dev.log('\n\n*****************\n$tag\n$message\n*****************\n\n');
   }
@@ -99,12 +105,12 @@ class Helper {
     return MediaQuery.of(context).size.width;
   }
 
-  static void showDeleteDialog(BuildContext context, VoidCallback onOK) {
+  static void showDeleteDialog(BuildContext context, String title, String content, VoidCallback onOK) {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-              title: Text("Xóa bình luận"),
-              content: Text("Bạn có chắc chắn muốn xóa bình luận này?"),
+              title: Text(title),
+              content: Text(content),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text("Hủy", style: TextStyle(color: Colors.red)),
@@ -176,13 +182,13 @@ class Helper {
         ));
   }
 
-  static void showMissingAddressDialog(BuildContext context) {
+  static void showMissingDialog(BuildContext context, String title, String content) {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text("Nhập địa chỉ"),
+          title: Text(title),
           content:
-          Text("Bạn vui lòng nhập địa chỉ khi đăng tin"),
+          Text(content),
           actions: <Widget>[
             CupertinoDialogAction(
               child: Text("OK"),

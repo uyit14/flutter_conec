@@ -4,12 +4,15 @@ import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/avatar_response.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
+import 'package:conecapp/models/response/delete_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/latest_response.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/news_reponse.dart';
+import 'package:conecapp/models/response/notify/notify_response.dart';
+import 'package:conecapp/models/response/notify/number_response.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/models/response/slider.dart';
 import 'package:conecapp/models/response/slider_response.dart';
@@ -106,8 +109,9 @@ class HomeRemoteRepository {
     return response['status'];
   }
 
-  Future<AvatarResponse> getUserAvatar() async{
-    final response = await _helper.post("/api/account/GetAvatar", headers: await Helper.header());
+  Future<AvatarResponse> getUserAvatar() async {
+    final response = await _helper.post("/api/account/GetAvatar",
+        headers: await Helper.header());
     print(response);
     return AvatarResponse.fromJson(response);
   }
@@ -118,16 +122,38 @@ class HomeRemoteRepository {
     return response['status'];
   }
 
-  Future<NearbyResponse> fetchNearBy(double lat, double lng, int distance)async{
-    final response = await _helper.get('/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance');
+  Future<NearbyResponse> fetchNearBy(
+      double lat, double lng, int distance) async {
+    final response = await _helper
+        .get('/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance');
     return NearbyResponse.fromJson(response);
   }
 
   Future<PageResponse> fetchPageIntroduce(String clubId) async {
-    final response =
-    await _helper.get("/api/Club/Details?id=$clubId");
+    final response = await _helper.get("/api/Club/Details?id=$clubId");
     print(response);
     return PageResponse.fromJson(response);
   }
 
+  Future<NotifyResponse> getAllNotify(int page) async {
+    final response = await _helper.get('/api/Notify/GetAll?page=$page',
+        headers: await Helper.header());
+    print(response);
+    return NotifyResponse.fromJson(response);
+  }
+
+  Future<NumberResponse> getNumberNotify() async {
+    final response = await _helper.get('/api/Notify/NotifyCounter',
+        headers: await Helper.header());
+    print(response);
+    return NumberResponse.fromJson(response);
+  }
+
+  Future<DeleteResponse> deleteOrReadNotify(
+      String notifyId, String type) async {
+    final response = await _helper.post('/api/Notify/$type?id=$notifyId',
+        body: jsonEncode({"id": notifyId}), headers: await Helper.header());
+    print(response);
+    return DeleteResponse.fromJson(response);
+  }
 }

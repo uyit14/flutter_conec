@@ -59,73 +59,144 @@ class _ItemMyPostState extends State<ItemMyPost> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _postActionBloc.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Slidable(
+      actionExtentRatio: 0.4,
       actionPane: SlidableDrawerActionPane(),
       secondaryActions: <Widget>[
-        IconSlideAction(
-          caption: 'Xóa',
-          color: Colors.red,
-          icon: Icons.delete,
-          onTap: () {
-            Helper.showDeleteDialog(context, () {
-              _postActionBloc.requestDeleteMyPost(
-                  widget.myPost.postId, "Delete");
-              widget.callback(widget.myPost.postId);
-              Navigator.pop(context);
-              _postActionBloc.deleteMyPostStream.listen((event) {
-                switch (event.status) {
-                  case Status.LOADING:
-                    break;
-                  case Status.COMPLETED:
-                    break;
-                  case Status.ERROR:
-                    Fluttertoast.showToast(
-                        msg: event.message, textColor: Colors.black87);
-                    Navigator.pop(context);
-                    break;
-                }
-              });
-            });
-          },
-        ),
-        IconSlideAction(
-          caption: widget.key.toString().contains("hidden") ? "Hiện" : 'Ẩn',
-          color: widget.key.toString().contains("hidden")
-              ? Colors.green
-              : Colors.orange,
-          icon: widget.key.toString().contains("hidden")
-              ? Icons.open_in_browser
-              : Icons.cancel,
-          onTap: () {
-            _postActionBloc.requestDeleteMyPost(
-                widget.myPost.postId, "HidePost");
-            widget.callback(widget.myPost.postId);
-            _postActionBloc.deleteMyPostStream.listen((event) {
-              switch (event.status) {
-                case Status.LOADING:
-                  break;
-                case Status.COMPLETED:
-                  break;
-                case Status.ERROR:
-                  Fluttertoast.showToast(
-                      msg: event.message, textColor: Colors.black87);
-                  Navigator.pop(context);
-                  break;
-              }
-            });
-          },
-        ),
-        IconSlideAction(
-          caption: 'Sửa',
-          color: Colors.blue,
-          icon: Icons.edit,
-          onTap: () {
-            Navigator.of(context).pushNamed(EditMyPostPage.ROUTE_NAME,
-                arguments: {
-                  'postId': widget.myPost.postId
-                }).then((value) => widget.refresh(value));
-          },
+        Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: IconSlideAction(
+                      caption: 'Xóa',
+                      color: Colors.red,
+                      icon: Icons.delete,
+                      onTap: () {
+                        Helper.showDeleteDialog(context, "Xoá tin",
+                            "Bạn có chắc chắn muốn xoá tin này?", () {
+                          _postActionBloc.requestDeleteMyPost(
+                              widget.myPost.postId, "Delete");
+                          widget.callback(widget.myPost.postId);
+                          Navigator.pop(context);
+                          _postActionBloc.deleteMyPostStream.listen((event) {
+                            switch (event.status) {
+                              case Status.LOADING:
+                                break;
+                              case Status.COMPLETED:
+                                break;
+                              case Status.ERROR:
+                                Fluttertoast.showToast(
+                                    msg: event.message,
+                                    textColor: Colors.black87);
+                                Navigator.pop(context);
+                                break;
+                            }
+                          });
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: IconSlideAction(
+                      caption: widget.key.toString().contains("hidden")
+                          ? "Hiện"
+                          : 'Ẩn',
+                      color: widget.key.toString().contains("hidden")
+                          ? Colors.green
+                          : Colors.orange,
+                      icon: widget.key.toString().contains("hidden")
+                          ? Icons.open_in_browser
+                          : Icons.cancel,
+                      onTap: () {
+                        _postActionBloc.requestDeleteMyPost(
+                            widget.myPost.postId, "HidePost");
+                        widget.callback(widget.myPost.postId);
+                        _postActionBloc.deleteMyPostStream.listen((event) {
+                          switch (event.status) {
+                            case Status.LOADING:
+                              break;
+                            case Status.COMPLETED:
+                              break;
+                            case Status.ERROR:
+                              Fluttertoast.showToast(
+                                  msg: event.message,
+                                  textColor: Colors.black87);
+                              Navigator.pop(context);
+                              break;
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: IconSlideAction(
+                      caption: 'Sửa',
+                      color: Colors.blue,
+                      icon: Icons.edit,
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(EditMyPostPage.ROUTE_NAME, arguments: {
+                          'postId': widget.myPost.postId
+                        }).then((value) => widget.refresh(value));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: IconSlideAction(
+                      caption: 'Làm mới',
+                      color: Colors.green,
+                      icon: Icons.refresh,
+                      onTap: () {
+                        if (widget.key.toString().contains("approve")) {
+                          Helper.showDeleteDialog(context, "Làm mới tin",
+                              "Bạn có chắc chắn muốn làm mới tin này?", () {
+                            _postActionBloc
+                                .requestPushMyPost(widget.myPost.postId);
+                            _postActionBloc.pushMyPostStream.listen((event) {
+                              switch (event.status) {
+                                case Status.LOADING:
+                                  break;
+                                case Status.COMPLETED:
+                                  Fluttertoast.showToast(
+                                      msg: event.data,
+                                      textColor: Colors.black87);
+                                  Navigator.pop(context);
+                                  break;
+                                case Status.ERROR:
+                                  Fluttertoast.showToast(
+                                      msg: event.message,
+                                      textColor: Colors.black87);
+                                  Navigator.pop(context);
+                                  break;
+                              }
+                            });
+                          });
+                        } else {
+                          Helper.showMissingDialog(context, "Không thể làm mới",
+                              "Tin của bạn cần phải được duyệt trước khi làm mới");
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ],
       child: Stack(

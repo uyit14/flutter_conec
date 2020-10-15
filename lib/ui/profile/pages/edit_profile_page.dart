@@ -786,4 +786,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           );
         });
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _profileBloc.dispose();
+    _postActionBloc.dispose();
+  }
 }

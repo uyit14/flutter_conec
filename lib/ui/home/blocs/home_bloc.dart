@@ -54,6 +54,11 @@ class HomeBloc {
   StreamController.broadcast();
   Stream<ApiResponse<bool>> get ratingIntroStream => _ratingIntroController.stream;
 
+  //page response
+  StreamController<ApiResponse<int>> _numberNotifyController =
+  StreamController.broadcast();
+  Stream<ApiResponse<int>> get numberNotifyStream => _numberNotifyController.stream;
+
   HomeBloc() {
     _repository = HomeRemoteRepository();
   }
@@ -143,12 +148,23 @@ class HomeBloc {
     }
   }
 
+  void requestGetNumberNotify() async{
+    final response = await _repository.getNumberNotify();
+    if(response.status){
+      _numberNotifyController.sink.add(ApiResponse.completed(response.notifyCounter));
+    }else{
+      print("Fail to get notify");
+      _numberNotifyController.sink.add(ApiResponse.completed(0));
+    }
+  }
+
   void dispose() {
     _topicController.close();
     _sliderController.close();
     _latestItemController.close();
     _sportController.close();
     _newsController.close();
+    _numberNotifyController.close();
   }
 
   void disposeNearBy(){
