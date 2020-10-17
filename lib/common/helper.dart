@@ -32,7 +32,7 @@ class Helper {
 
   static String formatNotifyDate(String date) {
     return date != null
-        ? DateFormat("dd-MM-yyyy hh : mm").format(DateTime.parse(date))
+        ? DateFormat("dd-MM-yyyy hh:mm").format(DateTime.parse(date))
         : "";
   }
 

@@ -8,6 +8,7 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/news_detail.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
+import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:share/share.dart';
@@ -56,6 +57,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     }
   }
 
+  void doReload() {
+    debugPrint("doReload");
+    _newsBloc.requestAdsDetail(postId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -70,15 +76,15 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           elevation: 0,
           centerTitle: true,
           actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                Share.share(linkShare ?? Helper.applicationUrl());
-              },
-              icon: Icon(
-                Icons.share,
-                color: Colors.red,
-              ),
-            ),
+//            IconButton(
+//              onPressed: () {
+//                Share.share(linkShare ?? Helper.applicationUrl());
+//              },
+//              icon: Icon(
+//                Icons.share,
+//                color: Colors.red,
+//              ),
+//            ),
             IconButton(
               onPressed: () {
                 //TODO - report
@@ -259,7 +265,8 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                                 SizedBox(height: 8),
                                 Html(
                                   data: newsDetail.content,
-                                )
+                                ),
+                                AdsCommentWidget(postId, newsDetail, doReload)
 //                                Text(
 //                                  newsDetail.content,
 //                                  style: TextStyle(fontSize: 16),

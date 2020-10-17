@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/models/response/latest_item.dart';
+import 'package:conecapp/models/response/nearby_club_response.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
@@ -45,6 +46,11 @@ class HomeBloc {
   StreamController();
   Stream<ApiResponse<NearbyResponse>> get nearByStream => _nearByController.stream;
 
+  //nearby
+  StreamController<ApiResponse<NearByClubResponse>> _nearByClubController =
+  StreamController();
+  Stream<ApiResponse<NearByClubResponse>> get nearByClubStream => _nearByClubController.stream;
+
   //page response
   StreamController<ApiResponse<Profile>> _pageIntroController =
   StreamController();
@@ -80,6 +86,17 @@ class HomeBloc {
       _nearByController.sink.add(ApiResponse.completed(nearby));
     } catch (e) {
       _nearByController.sink.addError(ApiResponse.error(e.toString()));
+      debugPrint(e.toString());
+    }
+  }
+
+  void requestGetNearByClub(double lat, double lng) async {
+    _nearByClubController.sink.add(ApiResponse.loading());
+    try {
+      final nearby = await _repository.fetchNearByClub(lat, lng);
+      _nearByClubController.sink.add(ApiResponse.completed(nearby));
+    } catch (e) {
+      _nearByClubController.sink.addError(ApiResponse.error(e.toString()));
       debugPrint(e.toString());
     }
   }
@@ -165,6 +182,7 @@ class HomeBloc {
     _sportController.close();
     _newsController.close();
     _numberNotifyController.close();
+    _nearByClubController.close();
   }
 
   void disposeNearBy(){

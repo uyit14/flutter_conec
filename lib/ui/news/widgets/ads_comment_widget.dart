@@ -17,7 +17,7 @@ import '../../../common/globals.dart' as globals;
 
 class AdsCommentWidget extends StatefulWidget {
   final String postId;
-  final AdsDetail itemDetail;
+  final dynamic itemDetail;
   final Function reloadPage;
 
   AdsCommentWidget(this.postId, this.itemDetail, this.reloadPage);
@@ -55,38 +55,40 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
     if (_addDataToList) _itemsByCategoryBloc.requestComment(widget.postId);
     _likeCount = widget.itemDetail.likeCount;
   }
-  void getToken() async{
+
+  void getToken() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
       _isTokenExpired = expired;
     });
-    if(!expired && token!=null){
+    if (!expired && token != null) {
       _itemsByCategoryBloc.requestGetAvatar();
       _itemsByCategoryBloc.avatarStream.listen((event) {
-        switch(event.status){
-          case Status.LOADING: break;
+        switch (event.status) {
+          case Status.LOADING:
+            break;
           case Status.COMPLETED:
             setState(() {
               _avatar = event.data;
             });
             break;
-          case Status.ERROR: break;
+          case Status.ERROR:
+            break;
         }
       });
     }
   }
-
 
   void requestFocus(String parentId, bool isDelete) {
     debugPrint(parentId ?? "NULL");
     if (_token == null || _token.length == 0) {
       Helper.showAuthenticationDialog(context);
     } else {
-      if(_isTokenExpired){
+      if (_isTokenExpired) {
         Helper.showTokenExpiredDialog(context);
-      }else{
+      } else {
         if (!isDelete) {
           _parentId = parentId;
           _focusNode.requestFocus();
@@ -99,11 +101,11 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                   .indexWhere((element) => element.id == parentId)
                   .toString());
           print("with content ui: " + comments[0].content);
-          int deleteAt = comments.indexWhere((element) => element.id == parentId);
-          Helper.showDeleteDialog(context, "Xóa bình luận", "Bạn có chắc chắn muốn xóa bình luận này?", () {
-            _itemsByCategoryBloc
-                .requestDeleteComment(parentId)
-                .then((value) {
+          int deleteAt =
+              comments.indexWhere((element) => element.id == parentId);
+          Helper.showDeleteDialog(context, "Xóa bình luận",
+              "Bạn có chắc chắn muốn xóa bình luận này?", () {
+            _itemsByCategoryBloc.requestDeleteComment(parentId).then((value) {
               if (deleteAt == -1) {
                 _itemsByCategoryBloc.allComments
                     .removeWhere((element) => element.id == parentId);
@@ -160,22 +162,23 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      if(_token == null || _token.length == 0){
+                      if (_token == null || _token.length == 0) {
                         Helper.showAuthenticationDialog(context);
-                      }else{
-                       if(_isTokenExpired){
-                         Helper.showTokenExpiredDialog(context);
-                       }else{
-                         _itemsByCategoryBloc.requestLikePost(widget.itemDetail.postId);
-                         if (!_isLikeOwner) {
-                           _likeCount++;
-                         } else {
-                           _likeCount--;
-                         }
-                         setState(() {
-                           _isLikeOwner = !_isLikeOwner;
-                         });
-                       }
+                      } else {
+                        if (_isTokenExpired) {
+                          Helper.showTokenExpiredDialog(context);
+                        } else {
+                          _itemsByCategoryBloc
+                              .requestLikePost(widget.itemDetail.postId);
+                          if (!_isLikeOwner) {
+                            _likeCount++;
+                          } else {
+                            _likeCount--;
+                          }
+                          setState(() {
+                            _isLikeOwner = !_isLikeOwner;
+                          });
+                        }
                       }
                     },
                     child: Row(
@@ -217,7 +220,8 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                   Spacer(),
                   InkWell(
                     onTap: () {
-                      Share.share(Helper.applicationUrl());
+                      Share.share(widget.itemDetail.shareLink ??
+                          Helper.applicationUrl());
                     },
                     child: Row(
                       children: [
@@ -254,13 +258,15 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                             _addDataToList = false;
                             debugPrint(comments.length.toString() +
                                 "---ui lenght list");
-                            comments.forEach((element) {print(element.content);});
+                            comments.forEach((element) {
+                              print(element.content);
+                            });
                           }
 
                           return Column(
                               children: List<Widget>.from(
                                   comments.map((parentComment) {
-                                    print("-------" + parentComment.content);
+                            print("-------" + parentComment.content);
                             return ItemCommentParent(
                                 parentComment, _itemsByCategoryBloc,
                                 (parentID, isDelete) {
@@ -296,12 +302,9 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                     !_isLoading
                         ? CircleAvatar(
                             radius: 25,
-                      backgroundImage: _avatar !=
-                          null
-                          ? NetworkImage(
-                          _avatar)
-                          : AssetImage(
-                          "assets/images/avatar.png"),
+                            backgroundImage: _avatar != null
+                                ? NetworkImage(_avatar)
+                                : AssetImage("assets/images/avatar.png"),
                           )
                         : CupertinoActivityIndicator(
                             radius: 16,
@@ -330,17 +333,16 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                             _isLoading = true;
                           });
                           _itemsByCategoryBloc
-                              .requestPostComment(
-                                  jsonEncode(_parentId == null
-                                      ? {
-                                          "content": _controller.text,
-                                          "postId": widget.postId
-                                        }
-                                      : {
-                                          "content": _controller.text,
-                                          "postId": widget.postId,
-                                          "parent": _parentId
-                                        }))
+                              .requestPostComment(jsonEncode(_parentId == null
+                                  ? {
+                                      "content": _controller.text,
+                                      "postId": widget.postId
+                                    }
+                                  : {
+                                      "content": _controller.text,
+                                      "postId": widget.postId,
+                                      "parent": _parentId
+                                    }))
                               .then((value) {
                             if (value.parent == null) {
                               comments.add(value);

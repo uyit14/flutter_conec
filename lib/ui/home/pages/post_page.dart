@@ -21,7 +21,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    _homeBloc.requestGetNearBy(globals.latitude, globals.latitude, 5);
+    _homeBloc.requestGetNearBy(globals.latitude, globals.longitude, 5);
   }
 
   @override

@@ -1,3 +1,4 @@
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/notify/notify_response.dart';
 import 'package:conecapp/ui/notify/pages/notify_bloc.dart';
 import 'package:flutter/material.dart';
@@ -42,11 +43,13 @@ class _NotifyDetailPageState extends State<NotifyDetailPage> {
           actions: [
             IconButton(
               icon: Icon(
-                Icons.restore_from_trash,
-                color: Colors.grey,
+                Icons.delete,
+                color: Colors.black,
+                size: 28,
               ),
               onPressed: () {
                 _notifyBloc.requestDeleteOrRead(_notify.id, "Remove");
+                Navigator.of(context).pop(1);
               },
             ),
             SizedBox(
@@ -54,9 +57,31 @@ class _NotifyDetailPageState extends State<NotifyDetailPage> {
             )
           ],
         ),
-        body: Container(
-          child: Column(
-            children: [],
+        body: Card(
+          elevation: 4,
+          margin: EdgeInsets.all(16),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment:
+              CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(_notify.title,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16)),
+                SizedBox(height: 4),
+                Text(_notify.content),
+                SizedBox(height: 4),
+                Text(_notify.createdDate,
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400)),
+              ],
+            ),
           ),
         ),
       ),

@@ -39,7 +39,7 @@ class _CommentPageState extends State<CommentPage> {
     super.didChangeDependencies();
   }
 
-  void getToken() async{
+  void getToken() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
     setState(() {
@@ -53,9 +53,9 @@ class _CommentPageState extends State<CommentPage> {
     if (_token == null) {
       Helper.showAuthenticationDialog(context);
     } else {
-      if(_isTokenExpired){
+      if (_isTokenExpired) {
         Helper.showTokenExpiredDialog(context);
-      }else{
+      } else {
         if (!isDelete) {
           _focusNode.requestFocus();
           setState(() {
@@ -63,7 +63,6 @@ class _CommentPageState extends State<CommentPage> {
           });
         } else {}
       }
-
     }
   }
 
@@ -106,9 +105,9 @@ class _CommentPageState extends State<CommentPage> {
                       if (_token == null) {
                         Helper.showAuthenticationDialog(context);
                       } else {
-                        if(_isTokenExpired){
+                        if (_isTokenExpired) {
                           Helper.showTokenExpiredDialog(context);
-                        }else{
+                        } else {
                           if (!_isLikeOwner) {
                             _likeCount++;
                           } else {
@@ -118,7 +117,6 @@ class _CommentPageState extends State<CommentPage> {
                             _isLikeOwner = !_isLikeOwner;
                           });
                         }
-
                       }
                     },
                     child: Row(
@@ -160,7 +158,8 @@ class _CommentPageState extends State<CommentPage> {
                   Spacer(),
                   InkWell(
                     onTap: () {
-                      Share.share(Helper.applicationUrl());
+                      Share.share(widget.itemDetail.shareLink ??
+                          Helper.applicationUrl());
                     },
                     child: Row(
                       children: [
@@ -207,7 +206,7 @@ class _CommentPageState extends State<CommentPage> {
                     !_isLoading
                         ? CircleAvatar(
                             radius: 25,
-                      backgroundColor: Colors.grey,
+                            backgroundColor: Colors.grey,
                             backgroundImage: widget.itemDetail.ownerAvatar !=
                                     null
                                 ? NetworkImage(widget.itemDetail.ownerAvatar)

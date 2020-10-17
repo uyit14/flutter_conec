@@ -216,7 +216,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   Spacer(),
                   InkWell(
                     onTap: () {
-                      Share.share(Helper.applicationUrl());
+                      Share.share(widget.itemDetail.shareLink ?? Helper.applicationUrl());
                     },
                     child: Row(
                       children: [

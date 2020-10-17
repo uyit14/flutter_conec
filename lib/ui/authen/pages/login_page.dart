@@ -109,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
       });
       return;
     }
-    if (_passWordController.text.length < 7) {
+    if (_passWordController.text.length < 6) {
       setState(() {
         _emailValidate = false;
         _passWordValidate = true;
@@ -277,7 +277,7 @@ class _LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                           hintText: 'Nhập mật khẩu của bạn',
                           errorText: _passWordValidate
-                              ? "Mật khẩu phải lớn hơn 6 kí tự"
+                              ? "Mật khẩu phải lớn hơn 5 kí tự"
                               : null,
                           enabledBorder: const OutlineInputBorder(
                               borderSide:

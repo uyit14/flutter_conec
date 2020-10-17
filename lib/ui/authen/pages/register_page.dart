@@ -60,7 +60,7 @@ class _RegisterPageState extends State<RegisterPage> {
       });
       return;
     }
-    if (_passWordController.text.length < 7) {
+    if (_passWordController.text.length < 6) {
       setState(() {
         _confirmPassWordValidate = false;
         _userNameValidate = false;
@@ -274,7 +274,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: InputDecoration(
                           hintText: 'Mật khẩu',
                           errorText: _passWordValidate
-                              ? "Mật khẩu phải lớn hơn 6 kí tự"
+                              ? "Mật khẩu phải lớn hơn 5 kí tự"
                               : null,
                           focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.green, width: 1)),

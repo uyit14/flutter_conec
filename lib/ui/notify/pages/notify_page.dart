@@ -15,11 +15,29 @@ class NotifyPage extends StatefulWidget {
 
 class _NotifyPageState extends State<NotifyPage> {
   NotifyBloc _notifyBloc = NotifyBloc();
+  ScrollController _scrollController;
+  bool _shouldLoadMore = true;
+  int _currentPage = 1;
+  List<Notify> notifyList = List<Notify>();
 
   @override
   void initState() {
     super.initState();
-    _notifyBloc.requestGetNotify(0);
+    _scrollController = new ScrollController()..addListener(_scrollListener);
+    _notifyBloc.requestGetNotify(_currentPage);
+    _currentPage = 2;
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.extentAfter < 500) {
+      if (_shouldLoadMore) {
+        _shouldLoadMore = false;
+        _notifyBloc.requestGetNotify(_currentPage);
+        setState(() {
+          _currentPage++;
+        });
+      }
+    }
   }
 
   @override
@@ -56,11 +74,19 @@ class _NotifyPageState extends State<NotifyPage> {
                   if (snapshot.hasData) {
                     switch (snapshot.data.status) {
                       case Status.LOADING:
-                        return UILoading();
+                        return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
-                        List<Notify> notifyList = snapshot.data.data;
+                        if (snapshot.data.data.length > 0) {
+                          print(
+                              "at UI: " + snapshot.data.data.length.toString());
+                          notifyList.addAll(snapshot.data.data);
+                          _shouldLoadMore = true;
+                        } else {
+                          _shouldLoadMore = false;
+                        }
                         if (notifyList.length > 0) {
                           return ListView.builder(
+                              controller: _scrollController,
                               itemCount: notifyList.length,
                               itemBuilder: (context, index) {
                                 return InkWell(
@@ -69,7 +95,7 @@ class _NotifyPageState extends State<NotifyPage> {
                                         NotifyDetailPage.ROUTE_NAME,
                                         arguments: notifyList[index]).then((value) {
                                           if(value==1){
-                                            _notifyBloc.requestGetNotify(0);
+                                            _notifyBloc.requestGetNotify(1);
                                           }
                                     });
                                   },
@@ -85,11 +111,14 @@ class _NotifyPageState extends State<NotifyPage> {
                                             CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Text(notifyList[index].title,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 16)),
                                           SizedBox(height: 4),
-                                          Text(notifyList[index].content),
+                                          Text(notifyList[index].content, maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,),
                                           SizedBox(height: 4),
                                           Text(notifyList[index].createdDate,
                                               style: TextStyle(

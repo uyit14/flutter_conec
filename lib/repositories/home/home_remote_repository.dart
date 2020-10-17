@@ -8,6 +8,7 @@ import 'package:conecapp/models/response/delete_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/latest_response.dart';
+import 'package:conecapp/models/response/nearby_club_response.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/news_reponse.dart';
@@ -127,6 +128,13 @@ class HomeRemoteRepository {
     final response = await _helper
         .get('/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance');
     return NearbyResponse.fromJson(response);
+  }
+
+  Future<NearByClubResponse> fetchNearByClub(
+      double lat, double lng) async {
+    final response = await _helper
+        .get('/api/Post/GetPriorities?lat=$lat&lng=$lng');
+    return NearByClubResponse.fromJson(response);
   }
 
   Future<PageResponse> fetchPageIntroduce(String clubId) async {

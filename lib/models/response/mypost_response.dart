@@ -31,6 +31,7 @@ class MyPost {
   String approvedDate;
   String owner;
   String thumbnail;
+  String topicId;
   String topic;
   String topicMetaLink;
   String metaLink;
@@ -43,6 +44,7 @@ class MyPost {
         this.approvedDate,
         this.owner,
         this.thumbnail,
+        this.topicId,
         this.topic,
         this.topicMetaLink,
         this.metaLink});
@@ -55,6 +57,7 @@ class MyPost {
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
     thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
+    topicId = json['topicId'];
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];

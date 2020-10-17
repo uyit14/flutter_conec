@@ -136,15 +136,15 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 //                color: Colors.red,
 //              ),
 //            ),
-            IconButton(
-              onPressed: () {
-                Share.share(linkShare ?? Helper.applicationUrl());
-              },
-              icon: Icon(
-                Icons.share,
-                color: Colors.red,
-              ),
-            ),
+//            IconButton(
+//              onPressed: () {
+//                Share.share(linkShare ?? Helper.applicationUrl());
+//              },
+//              icon: Icon(
+//                Icons.share,
+//                color: Colors.red,
+//              ),
+//            ),
             IconButton(
               onPressed: () {
                 //TODO - report
@@ -366,7 +366,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                           .size
                                                           .width -
                                                       250,
-                                                  child: Text(itemDetail.title,
+                                                  child: Text(itemDetail.owner,
                                                       style: TextStyle(
                                                           fontSize: 18)),
                                                 ),

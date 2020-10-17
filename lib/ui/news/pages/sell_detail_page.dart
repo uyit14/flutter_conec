@@ -104,15 +104,15 @@ class _SellDetailPageState extends State<SellDetailPage> {
           elevation: 0,
           centerTitle: true,
           actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                Share.share(linkShare ?? Helper.applicationUrl());
-              },
-              icon: Icon(
-                Icons.share,
-                color: Colors.red,
-              ),
-            ),
+//            IconButton(
+//              onPressed: () {
+//                Share.share(linkShare ?? Helper.applicationUrl());
+//              },
+//              icon: Icon(
+//                Icons.share,
+//                color: Colors.red,
+//              ),
+//            ),
             IconButton(
               onPressed: () {
                 //TODO - report
