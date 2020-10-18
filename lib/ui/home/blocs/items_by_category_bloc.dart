@@ -55,13 +55,14 @@ class ItemsByCategoryBloc {
 
   void requestGetAllItem(int page,
       {String province, String district, String topic, String club}) async {
+    _allItemController.sink.add(ApiResponse.completed([]));
     if (page != 0) {
       final items = await _repository.fetchAllItem(page,
           province: province, district: district, club: club, topic: topic);
       _originalItems.addAll(items);
       _allItemController.sink.add(ApiResponse.completed(items));
     } else {
-      _allItemController.sink.add(ApiResponse.loading());
+      //_allItemController.sink.add(ApiResponse.loading());
       try {
         final items = await _repository.fetchAllItem(page,
             province: province, district: district, club: club, topic: topic);

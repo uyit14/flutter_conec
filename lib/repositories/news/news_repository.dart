@@ -9,8 +9,8 @@ import 'package:conecapp/models/response/sport_response.dart';
 class NewsRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
 
-  Future<List<News>> fetchAllNews() async {
-    final response = await _helper.get("/api/news/getall");
+  Future<List<News>> fetchAllNews(int page) async {
+    final response = await _helper.get("/api/news/getall?page=$page");
     return NewsResponse.fromJson(response).news;
   }
 

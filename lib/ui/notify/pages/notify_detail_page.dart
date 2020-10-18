@@ -13,14 +13,16 @@ class NotifyDetailPage extends StatefulWidget {
 class _NotifyDetailPageState extends State<NotifyDetailPage> {
   Notify _notify;
   NotifyBloc _notifyBloc = NotifyBloc();
+  bool _apiCall = true;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final routeArgs = ModalRoute.of(context).settings.arguments;
     _notify = routeArgs;
-    if (_notify != null) {
+    if (_notify != null && !_notify.read && _apiCall) {
       _notifyBloc.requestDeleteOrRead(_notify.id, "MarkAsRead");
+      _apiCall = false;
     }
   }
 

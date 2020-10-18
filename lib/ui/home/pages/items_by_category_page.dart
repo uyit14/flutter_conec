@@ -144,6 +144,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                 InkWell(
                   child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   onTap: () {
+                    totalItemList.clear();
                     _itemsByCategoryBloc.clearSearch();
                     _controller.clear();
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -301,9 +302,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
                         //List<LatestItem> totalItemList = snapshot.data.data;
+                        print(
+                            "at UI: " + snapshot.data.data.length.toString() + 'with page $_currentPage');
                         if (snapshot.data.data.length > 0) {
-                          print(
-                              "at UI: " + snapshot.data.data.length.toString());
                           totalItemList.addAll(snapshot.data.data);
                           _shouldLoadMore = true;
                         } else {

@@ -45,10 +45,10 @@ class NewsBloc {
   List<News> _originalNews = List<News>();
   List<Sport> _originalSport = List<Sport>();
 
-  void requestGetAllNews() async {
-    _newsController.sink.add(ApiResponse.loading());
+  void requestGetAllNews(int page) async {
+    _newsController.sink.add(ApiResponse.completed([]));
     try {
-      final allNews = await _repository.fetchAllNews();
+      final allNews = await _repository.fetchAllNews(page);
       _originalNews.addAll(allNews);
       _newsController.sink.add(ApiResponse.completed(allNews));
     } catch (e) {
@@ -68,13 +68,14 @@ class NewsBloc {
 
   void requestGetAllAds(int page,
       {String province, String district, String topic, String club}) async {
+    _allAdsController.sink.add(ApiResponse.completed([]));
     if (page != 0) {
       final allAds = await _repository.fetchAllAds(page,
           province: province, district: district, club: club, topic: topic);
       _originalSport.addAll(allAds);
       _allAdsController.sink.add(ApiResponse.completed(allAds));
     } else {
-      _allAdsController.sink.add(ApiResponse.loading());
+      //_allAdsController.sink.add(ApiResponse.loading());
       try {
         final allAds = await _repository.fetchAllAds(page,
             province: province, district: district, club: club, topic: topic);
@@ -103,7 +104,6 @@ class NewsBloc {
 
   void searchAction(String keyWord) {
     List<News> _searchResult = List<News>();
-    _newsController.sink.add(ApiResponse.completed(_searchResult));
     _originalNews.forEach((news) {
       if (_search(news, keyWord)) {
         _searchResult.add(news);
@@ -136,7 +136,9 @@ class NewsBloc {
   }
 
   bool _searchSport(Sport sport, String txtSearch) {
-    if (sport.title.toLowerCase().contains(txtSearch.toLowerCase())) {
+    if (TiengViet.parse(sport.title)
+        .toLowerCase()
+        .contains(txtSearch.toLowerCase())) {
       return true;
     }
     return false;

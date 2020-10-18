@@ -20,20 +20,16 @@ class NotifyBloc {
       _notifyController.stream;
 
   void requestGetNotify(int page) async {
-    //
-    if (page != 0) {
-      final result = await _repository.getAllNotify(page);
-      _notifyController.sink.add(ApiResponse.completed(result.notifyList));
-    } else {
-      _notifyController.sink.add(ApiResponse.loading());
+    print('page $page');
+    _notifyController.sink.add(ApiResponse.completed([]));
       try {
         final result = await _repository.getAllNotify(page);
+        print("sink page $page ${result.notifyList.length}");
         _notifyController.sink.add(ApiResponse.completed(result.notifyList));
       } catch (e) {
         _notifyController.sink.addError(ApiResponse.error(e.toString()));
         debugPrint(e.toString());
       }
-    }
   }
 
   void requestDeleteOrRead(String notifyId, String type)async{

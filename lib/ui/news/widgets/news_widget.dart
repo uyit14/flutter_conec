@@ -16,12 +16,32 @@ class NewsWidget extends StatefulWidget {
 
 class _NewsWidgetState extends State<NewsWidget> {
   NewsBloc _newsBloc = NewsBloc();
-
   TextEditingController _searchController = TextEditingController();
+  ScrollController _scrollController;
+  List<News> news = [];
+  //
+  int _currentPage = 0;
+  bool _shouldLoadMore = true;
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _newsBloc.requestGetAllNews();
+  void initState() {
+    super.initState();
+    _scrollController = new ScrollController()..addListener(_scrollListener);
+    _newsBloc.requestGetAllNews(0);
+    _currentPage = 1;
+  }
+
+  void _scrollListener() {
+    print(_scrollController.position.extentAfter);
+    if (_scrollController.position.extentAfter < 300) {
+      if (_shouldLoadMore) {
+        _shouldLoadMore = false;
+        _newsBloc.requestGetAllNews(_currentPage);
+        setState(() {
+          _currentPage++;
+        });
+      }
+    }
   }
 
   @override
@@ -57,7 +77,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                     child: TextFormField(
                       maxLines: 1,
                       onChanged: (value){
-                        //totalItemList.clear();
+                        news.clear();
                         _newsBloc.searchAction(value);
                       },
                       controller: _searchController,
@@ -80,6 +100,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                 InkWell(
                   child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   onTap: () {
+                    news.clear();
                     _newsBloc.clearSearch();
                     _searchController.clear();
                   },
@@ -96,9 +117,17 @@ class _NewsWidgetState extends State<NewsWidget> {
                       case Status.LOADING:
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
-                        List<News> news = snapshot.data.data;
+                        if (snapshot.data.data.length > 0) {
+                          print(
+                              "at UI: " + snapshot.data.data.length.toString());
+                          news.addAll(snapshot.data.data);
+                          _shouldLoadMore = true;
+                        } else {
+                          _shouldLoadMore = false;
+                        }
                         return ListView.builder(
                             itemCount: news.length,
+                            controller: _scrollController,
                             itemBuilder: (context, index) {
                               return ConstrainedBox(
                                 constraints: BoxConstraints(
@@ -186,9 +215,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                             });
                       case Status.ERROR:
                         return UIError(
-                            errorMessage: snapshot.data.message,
-                            onRetryPressed: () =>
-                                _newsBloc.requestGetAllNews());
+                            errorMessage: snapshot.data.message);
                     }
                   }
                   return Container(

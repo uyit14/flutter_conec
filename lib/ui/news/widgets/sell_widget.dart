@@ -42,6 +42,12 @@ class _SellWidgetState extends State<SellWidget> {
     _currentPage = 1;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _newsBloc.dispose();
+  }
+
   void _scrollListener() {
     print(_scrollController.position.extentAfter);
     if (_scrollController.position.extentAfter < 300) {
@@ -108,6 +114,7 @@ class _SellWidgetState extends State<SellWidget> {
                 InkWell(
                   child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   onTap: () {
+                    totalItemList.clear();
                     _newsBloc.clearSportSearch();
                     _searchController.clear();
                   },

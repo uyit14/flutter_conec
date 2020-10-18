@@ -29,7 +29,7 @@ class _NotifyPageState extends State<NotifyPage> {
   }
 
   void _scrollListener() {
-    if (_scrollController.position.extentAfter < 500) {
+    if (_scrollController.position.extentAfter < 250) {
       if (_shouldLoadMore) {
         _shouldLoadMore = false;
         _notifyBloc.requestGetNotify(_currentPage);
@@ -44,6 +44,7 @@ class _NotifyPageState extends State<NotifyPage> {
   void dispose() {
     super.dispose();
     _notifyBloc.dispose();
+    notifyList.clear();
   }
 
   @override
@@ -91,11 +92,14 @@ class _NotifyPageState extends State<NotifyPage> {
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () {
+                                    print('at index $index :' + notifyList[index].read.toString());
+                                    notifyList[index].read = true;
                                     Navigator.of(context).pushNamed(
                                         NotifyDetailPage.ROUTE_NAME,
                                         arguments: notifyList[index]).then((value) {
                                           if(value==1){
                                             _notifyBloc.requestGetNotify(1);
+                                            notifyList.clear();
                                           }
                                     });
                                   },
