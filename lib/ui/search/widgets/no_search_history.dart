@@ -1,4 +1,3 @@
-import 'package:conecapp/dummy/dummy_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
@@ -79,20 +78,20 @@ class NoSearchHistory extends StatelessWidget {
 //          height: 0.5,
 //          width: double.infinity,
 //        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListView.builder(
-              itemCount: DummyData.searchHistory.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(DummyData.searchHistory[index], style: TextStyle(fontSize: 18)),
-                );
-              },
-            ),
-          ),
-        )
+//         Expanded(
+//           child: Padding(
+//             padding: const EdgeInsets.all(8.0),
+//             child: ListView.builder(
+//               itemCount: DummyData.searchHistory.length,
+//               itemBuilder: (context, index) {
+//                 return Container(
+//                   margin: EdgeInsets.symmetric(vertical: 5),
+//                   child: Text(DummyData.searchHistory[index], style: TextStyle(fontSize: 18)),
+//                 );
+//               },
+//             ),
+//           ),
+//         )
       ],
     );
   }

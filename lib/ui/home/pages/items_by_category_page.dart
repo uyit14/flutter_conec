@@ -30,6 +30,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   final _controller = TextEditingController();
   ItemsByCategoryBloc _itemsByCategoryBloc;
   var selectedCategory;
+  bool _needAddUI = true;
 
   //PostActionBloc _postActionBloc = PostActionBloc();
   HomeBloc _homeBloc = HomeBloc();
@@ -41,7 +42,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   String categoryTitle;
   var categoryId;
   bool _firstTime;
-  int _currentPage = 0;
+  int _currentPage = 1;
   bool _shouldLoadMore = true;
 
   //
@@ -76,13 +77,16 @@ class _ItemByCategoryState extends State<ItemByCategory> {
       categoryId = routeArgs['id'] as String;
       _itemsByCategoryBloc.requestGetAllItem(_currentPage,
           topic: categoryTitle ?? "");
-      _currentPage = 1;
+      _currentPage = 2;
     }
   }
 
   void _scrollListener() {
     print(_scrollController.position.extentAfter);
     if (_scrollController.position.extentAfter < 500) {
+      setState(() {
+        _needAddUI = true;
+      });
       if (_shouldLoadMore) {
         _shouldLoadMore = false;
         _itemsByCategoryBloc.requestGetAllItem(_currentPage,
@@ -123,8 +127,18 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   child: TextFormField(
                     maxLines: 1,
                     onChanged: (value) {
-                      totalItemList.clear();
-                      _itemsByCategoryBloc.searchAction(value);
+                      setState(() {
+                        _needAddUI = true;
+                      });
+                      if(value.length == 0){
+                        print("goto here");
+                        totalItemList.clear();
+                        _itemsByCategoryBloc.clearSearch();
+                        _controller.clear();
+                      }else{
+                        totalItemList.clear();
+                        _itemsByCategoryBloc.searchAction(value);
+                      }
                     },
                     controller: _controller,
                     style: TextStyle(fontSize: 18),
@@ -144,6 +158,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                 InkWell(
                   child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   onTap: () {
+                    setState(() {
+                      _needAddUI = true;
+                    });
                     totalItemList.clear();
                     _itemsByCategoryBloc.clearSearch();
                     _controller.clear();
@@ -172,13 +189,14 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         if (value != null) {
                           setState(() {
                             provinceData = value;
+                            _needAddUI = true;
                           });
-                          _currentPage = 0;
+                          _currentPage = 1;
                           totalItemList.clear();
                           _itemsByCategoryBloc.requestGetAllItem(_currentPage,
                               province: provinceData.name,
                               topic: selectedCategory ?? categoryTitle ?? "");
-                          _currentPage = 1;
+                          _currentPage = 2;
                         }
                       });
                     },
@@ -218,13 +236,14 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                           if (value != null) {
                             setState(() {
                               districtData = value;
+                              _needAddUI = true;
                             });
-                            _currentPage = 0;
+                            _currentPage = 1;
                             totalItemList.clear();
                             _itemsByCategoryBloc.requestGetAllItem(_currentPage,
                                 province: provinceData.name,
                                 district: districtData.name);
-                            _currentPage = 1;
+                            _currentPage = 2;
                           }
                         });
                       } else {
@@ -304,9 +323,10 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         //List<LatestItem> totalItemList = snapshot.data.data;
                         print(
                             "at UI: " + snapshot.data.data.length.toString() + 'with page $_currentPage');
-                        if (snapshot.data.data.length > 0) {
+                        if (snapshot.data.data.length > 0 && _needAddUI) {
                           totalItemList.addAll(snapshot.data.data);
                           _shouldLoadMore = true;
+                          _needAddUI = false;
                         } else {
                           _shouldLoadMore = false;
                         }
@@ -493,7 +513,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
       }
       totalItemList.clear();
       setState(() {
-        _currentPage = 0;
+        _currentPage = 1;
+        _needAddUI = true;
       });
       _itemsByCategoryBloc.requestGetAllItem(_currentPage,
           province: provinceData != null ? provinceData.name : "",

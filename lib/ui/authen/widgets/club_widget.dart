@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'common_info.dart';
-
 class Club extends StatefulWidget {
   @override
   _ClubState createState() => _ClubState();
@@ -48,7 +46,7 @@ class _ClubState extends State<Club> {
                         border: const OutlineInputBorder()),
                   ),
                   SizedBox(height: 8),
-                  CommonInfo.club(ValueKey("club"), _clubNameController.text, validationName)
+                  //CommonInfo.club(ValueKey("club"), _clubNameController.text, validationName)
                 ],
               ),
             ),

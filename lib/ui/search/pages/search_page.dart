@@ -1,6 +1,3 @@
-import 'package:conecapp/dummy/dummy_data.dart';
-import 'package:conecapp/ui/search/widgets/has_search_history.dart';
-import 'package:conecapp/ui/search/widgets/no_search_history.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
@@ -120,20 +117,20 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    itemCount: DummyData.searchHistory.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 5),
-                        child: Text(DummyData.searchHistory[index], style: TextStyle(fontSize: 18)),
-                      );
-                    },
-                  ),
-                ),
-              )
+              // Expanded(
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: ListView.builder(
+              //       itemCount: DummyData.searchHistory.length,
+              //       itemBuilder: (context, index) {
+              //         return Container(
+              //           margin: EdgeInsets.symmetric(vertical: 5),
+              //           child: Text(DummyData.searchHistory[index], style: TextStyle(fontSize: 18)),
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // )
             ],
           )
       ),

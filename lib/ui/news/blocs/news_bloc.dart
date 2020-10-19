@@ -68,13 +68,15 @@ class NewsBloc {
 
   void requestGetAllAds(int page,
       {String province, String district, String topic, String club}) async {
+    print("error here");
     _allAdsController.sink.add(ApiResponse.completed([]));
-    if (page != 0) {
+    if (page != 1) {
       final allAds = await _repository.fetchAllAds(page,
           province: province, district: district, club: club, topic: topic);
       _originalSport.addAll(allAds);
       _allAdsController.sink.add(ApiResponse.completed(allAds));
     } else {
+      _originalSport.clear();
       //_allAdsController.sink.add(ApiResponse.loading());
       try {
         final allAds = await _repository.fetchAllAds(page,
@@ -122,16 +124,19 @@ class NewsBloc {
   }
 
   void clearSportSearch() {
+    print("clean to ${_originalSport.length}");
     _allAdsController.sink.add(ApiResponse.completed(_originalSport));
   }
 
   void searchSportAction(String keyWord) {
-    List<Sport> _searchResult = List<Sport>();
+    print("keylength  ${keyWord.length}");
+    List<Sport> _searchResult = [];
     _originalSport.forEach((sport) {
       if (_searchSport(sport, keyWord)) {
         _searchResult.add(sport);
       }
     });
+    print("sink to ${_searchResult.length}");
     _allAdsController.sink.add(ApiResponse.completed(_searchResult));
   }
 

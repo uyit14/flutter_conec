@@ -1,4 +1,3 @@
-import 'package:conecapp/dummy/dummy_data.dart';
 import 'package:flutter/material.dart';
 
 class HasSearchHistory extends StatelessWidget {
@@ -16,17 +15,17 @@ class HasSearchHistory extends StatelessWidget {
             height: 1,
             width: double.infinity,
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: DummyData.searchHistory.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(DummyData.searchHistory[index], style: TextStyle(fontSize: 18)),
-                );
-              },
-            ),
-          )
+          // Expanded(
+          //   child: ListView.builder(
+          //     itemCount: DummyData.searchHistory.length,
+          //     itemBuilder: (context, index) {
+          //       return Container(
+          //         margin: EdgeInsets.symmetric(vertical: 5),
+          //         child: Text(DummyData.searchHistory[index], style: TextStyle(fontSize: 18)),
+          //       );
+          //     },
+          //   ),
+          // )
         ],
       ),
     );

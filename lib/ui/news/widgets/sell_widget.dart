@@ -8,7 +8,6 @@ import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/sport.dart';
 import 'package:conecapp/ui/address/district_page.dart';
 import 'package:conecapp/ui/address/province_page.dart';
-import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,15 +30,17 @@ class _SellWidgetState extends State<SellWidget> {
   Province districtData;
 
   //
-  int _currentPage = 0;
+  int _currentPage = 1;
   bool _shouldLoadMore = true;
+  bool _needAddUI = true;
 
   @override
   void initState() {
     super.initState();
+    print("goto initState");
     _scrollController = new ScrollController()..addListener(_scrollListener);
     _newsBloc.requestGetAllAds(_currentPage);
-    _currentPage = 1;
+    _currentPage = 2;
   }
 
   @override
@@ -51,7 +52,11 @@ class _SellWidgetState extends State<SellWidget> {
   void _scrollListener() {
     print(_scrollController.position.extentAfter);
     if (_scrollController.position.extentAfter < 300) {
+      setState(() {
+        _needAddUI = true;
+      });
       if (_shouldLoadMore) {
+        print("goto _scrollListener");
         _shouldLoadMore = false;
         _newsBloc.requestGetAllAds(_currentPage,
             province: provinceData != null ? provinceData.name : "",
@@ -91,8 +96,19 @@ class _SellWidgetState extends State<SellWidget> {
                     child: TextFormField(
                       maxLines: 1,
                       onChanged: (value) {
-                        totalItemList.clear();
-                        _newsBloc.searchSportAction(value);
+                        setState(() {
+                          _needAddUI = true;
+                        });
+                        if(value.length == 0){
+                          print("goto here");
+                          totalItemList.clear();
+                          _newsBloc.clearSportSearch();
+                          _searchController.clear();
+                        }else{
+                          print("goto herere");
+                          totalItemList.clear();
+                          _newsBloc.searchSportAction(value);
+                        }
                       },
                       style: TextStyle(fontSize: 18),
                       controller: _searchController,
@@ -114,6 +130,9 @@ class _SellWidgetState extends State<SellWidget> {
                 InkWell(
                   child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   onTap: () {
+                    setState(() {
+                      _needAddUI = true;
+                    });
                     totalItemList.clear();
                     _newsBloc.clearSportSearch();
                     _searchController.clear();
@@ -143,13 +162,14 @@ class _SellWidgetState extends State<SellWidget> {
                         if (value != null) {
                           setState(() {
                             provinceData = value;
+                            _needAddUI = true;
                           });
                           //TODO - call api with province here
-                          _currentPage = 0;
+                          _currentPage = 1;
                           totalItemList.clear();
                           _newsBloc.requestGetAllAds(_currentPage,
                               province: provinceData.name);
-                          _currentPage = 1;
+                          _currentPage = 2;
                         }
                       });
                     },
@@ -180,14 +200,15 @@ class _SellWidgetState extends State<SellWidget> {
                           if (value != null) {
                             setState(() {
                               districtData = value;
+                              _needAddUI = true;
                             });
                             //TODO - call api with district here
-                            _currentPage = 0;
+                            _currentPage = 1;
                             totalItemList.clear();
                             _newsBloc.requestGetAllAds(_currentPage,
                                 province: provinceData.name,
                                 district: districtData.name);
-                            _currentPage = 1;
+                            _currentPage = 2;
                           }
                         });
                       } else {
@@ -232,11 +253,12 @@ class _SellWidgetState extends State<SellWidget> {
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
                         //List<Sport> sports = snapshot.data.data;
-                        if (snapshot.data.data.length > 0) {
+                        if (snapshot.data.data.length > 0 && _needAddUI) {
                           print(
                               "at UI: " + snapshot.data.data.length.toString());
                           totalItemList.addAll(snapshot.data.data);
                           _shouldLoadMore = true;
+                          _needAddUI = false;
                         } else {
                           _shouldLoadMore = false;
                         }

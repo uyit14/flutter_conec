@@ -2,8 +2,6 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'common_info.dart';
 import '../../../common/custom_icons.dart';
 
 class Person extends StatefulWidget {
@@ -110,8 +108,8 @@ class _PersonState extends State<Person> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  CommonInfo.person(ValueKey("person"), _nameController.text,
-                      validationName, _birthDay, _gender)
+                  // CommonInfo.person(ValueKey("person"), _nameController.text,
+                  //     validationName, _birthDay, _gender)
                 ],
               ),
             ),

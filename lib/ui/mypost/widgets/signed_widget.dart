@@ -1,8 +1,6 @@
-import 'package:conecapp/dummy/dummy_data.dart';
 import 'package:conecapp/ui/mypost/widgets/archive_mypost.dart';
 import 'package:conecapp/ui/mypost/widgets/approve_mypost.dart';
 import 'package:conecapp/ui/mypost/widgets/hidden_mypost.dart';
-import 'package:conecapp/ui/mypost/widgets/item_mypost.dart';
 import 'package:conecapp/ui/mypost/widgets/pending_mypost.dart';
 import 'package:conecapp/ui/mypost/widgets/rejected_mypost.dart';
 import 'package:flutter/material.dart';

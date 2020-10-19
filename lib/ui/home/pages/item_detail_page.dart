@@ -594,30 +594,30 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   child: Text(itemDetail.getAddress ?? "",
                                       style: TextStyle(fontSize: 14)),
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        GoogleMapPage.ROUTE_NAME,
-                                        arguments: {
-                                          'lat': lat,
-                                          'lng': lng,
-                                          'postId': itemDetail.postId,
-                                          'title': itemDetail.title,
-                                          'address': '${itemDetail.getAddress}'
-                                        });
-                                  },
-                                  child: Image.network(
-                                    Helper.generateLocationPreviewImage(
-                                        lat: itemDetail.lat != 0
-                                            ? itemDetail.lat
-                                            : lat,
-                                        lng: itemDetail.long != 0
-                                            ? itemDetail.long
-                                            : lng),
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
-                                ),
+                                // InkWell(
+                                //   onTap: () {
+                                //     Navigator.of(context).pushNamed(
+                                //         GoogleMapPage.ROUTE_NAME,
+                                //         arguments: {
+                                //           'lat': lat,
+                                //           'lng': lng,
+                                //           'postId': itemDetail.postId,
+                                //           'title': itemDetail.title,
+                                //           'address': '${itemDetail.getAddress}'
+                                //         });
+                                //   },
+                                //   child: Image.network(
+                                //     Helper.generateLocationPreviewImage(
+                                //         lat: itemDetail.lat != 0
+                                //             ? itemDetail.lat
+                                //             : lat,
+                                //         lng: itemDetail.long != 0
+                                //             ? itemDetail.long
+                                //             : lng),
+                                //     fit: BoxFit.cover,
+                                //     width: double.infinity,
+                                //   ),
+                                // ),
                                 Container(
                                     width: double.infinity,
                                     height: 1,

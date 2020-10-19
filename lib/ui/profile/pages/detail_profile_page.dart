@@ -3,7 +3,6 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
-import 'package:conecapp/dummy/dummy_data.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';

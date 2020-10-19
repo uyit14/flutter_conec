@@ -20,15 +20,15 @@ class _NewsWidgetState extends State<NewsWidget> {
   ScrollController _scrollController;
   List<News> news = [];
   //
-  int _currentPage = 0;
+  int _currentPage = 1;
   bool _shouldLoadMore = true;
 
   @override
   void initState() {
     super.initState();
     _scrollController = new ScrollController()..addListener(_scrollListener);
-    _newsBloc.requestGetAllNews(0);
-    _currentPage = 1;
+    _newsBloc.requestGetAllNews(1);
+    _currentPage = 2;
   }
 
   void _scrollListener() {

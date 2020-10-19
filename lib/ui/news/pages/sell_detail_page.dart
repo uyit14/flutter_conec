@@ -429,31 +429,31 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                       adsDetail.getAddress ?? "",
                                       style: TextStyle(fontSize: 14)),
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        GoogleMapPage.ROUTE_NAME,
-                                        arguments: {
-                                          'lat': lat,
-                                          'lng': lng,
-                                          'postId': adsDetail.postId,
-                                          'title': adsDetail.title,
-                                          'address':
-                                          '${adsDetail.getAddress}'
-                                        });
-                                  },
-                                  child: Image.network(
-                                    Helper.generateLocationPreviewImage(
-                                        lat: adsDetail.lat != 0.0
-                                            ? adsDetail.lat
-                                            : lat,
-                                        lng: adsDetail.long != 0.0
-                                            ? adsDetail.long
-                                            : lng),
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
-                                ),
+                                // InkWell(
+                                //   onTap: () {
+                                //     Navigator.of(context).pushNamed(
+                                //         GoogleMapPage.ROUTE_NAME,
+                                //         arguments: {
+                                //           'lat': lat,
+                                //           'lng': lng,
+                                //           'postId': adsDetail.postId,
+                                //           'title': adsDetail.title,
+                                //           'address':
+                                //           '${adsDetail.getAddress}'
+                                //         });
+                                //   },
+                                //   child: Image.network(
+                                //     Helper.generateLocationPreviewImage(
+                                //         lat: adsDetail.lat != 0.0
+                                //             ? adsDetail.lat
+                                //             : lat,
+                                //         lng: adsDetail.long != 0.0
+                                //             ? adsDetail.long
+                                //             : lng),
+                                //     fit: BoxFit.cover,
+                                //     width: double.infinity,
+                                //   ),
+                                // ),
                                 Container(
                                     width: double.infinity,
                                     height: 1,
