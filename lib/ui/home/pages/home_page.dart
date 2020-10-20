@@ -32,8 +32,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedPageIndex = 0;
   HomeBloc _homeBloc = HomeBloc();
-  int _currentIndex = 0;
-  PageController _pageController = PageController(initialPage: 0);
+  ScrollController _scrollController = ScrollController();
   List<Clubs> clubs = List<Clubs>();
 
   void _selectPage(int index) {
@@ -55,38 +54,65 @@ class _HomePageState extends State<HomePage> {
 
   void getLocation() async {
     Position position =
-    await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     _homeBloc.requestGetNearByClub(position.latitude, position.longitude);
     _homeBloc.nearByClubStream.listen((event) {
-      if(event.status == Status.COMPLETED){
-        if(event.data.clubs.length > 0){
+      if (event.status == Status.COMPLETED) {
+        if (event.data.clubs.length > 0) {
           setState(() {
             clubs = event.data.clubs;
           });
-          autoPlayBanners(event.data.clubs);
+          _scrollToBottom();
         }
       }
     });
   }
 
-  void autoPlayBanners(List<Clubs> images) {
-    if (images.length > 1) {
-      Timer.periodic(Duration(seconds: 2), (Timer timer) {
-        if (_currentIndex == images.length) {
-          _currentIndex = 0;
-        } else {
-          _currentIndex++;
+  double _currentPosition = 0.0;
+
+  _scrollToBottom() {
+    Timer.periodic(Duration(seconds: 2), (Timer timer) {
+        if(_currentPosition == 0.0){
+          _currentPosition = _scrollController.position.maxScrollExtent / 3;
+        } else if(_currentPosition == _scrollController.position.maxScrollExtent / 3){
+          _currentPosition = _scrollController.position.maxScrollExtent * 2 / 3;
+        }else if(_currentPosition == _scrollController.position.maxScrollExtent * 2 / 3){
+          _currentPosition = _scrollController.position.maxScrollExtent;
+        }else{
+          _currentPosition = 0.0;
         }
-        if (_pageController.hasClients) {
-          _pageController.animateToPage(
-            _currentIndex,
-            duration: Duration(milliseconds: 350),
-            curve: Curves.easeIn,
-          );
+
+
+      if(_scrollController.hasClients){
+        if(_currentPosition == 0.0){
+          _scrollController.animateTo(_scrollController.position.maxScrollExtent - _currentPosition,
+              duration: Duration(milliseconds: 1), curve: Curves.easeOut);
+        }else{
+          _scrollController.animateTo(_scrollController.position.maxScrollExtent - _currentPosition,
+              duration: Duration(milliseconds: 200), curve: Curves.easeOut);
         }
-      });
-    }
+      }
+    });
   }
+
+  // void autoPlayBanners(List<Clubs> images) {
+  //   if (images.length > 1) {
+  //     Timer.periodic(Duration(seconds: 2), (Timer timer) {
+  //       if (_currentIndex == images.length) {
+  //         _currentIndex = 0;
+  //       } else {
+  //         _currentIndex++;
+  //       }
+  //       if (_pageController.hasClients) {
+  //         _pageController.animateToPage(
+  //           _currentIndex,
+  //           duration: Duration(milliseconds: 350),
+  //           curve: Curves.easeIn,
+  //         );
+  //       }
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
@@ -205,132 +231,109 @@ class _HomePageState extends State<HomePage> {
             ),
             CategoriesWidget(),
             SizedBox(height: 8),
-            clubs.length > 0 ? Padding(
-              padding: const EdgeInsets.only(left: 6),
-              child: Text(
-                "Tin ưu tiên",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ) : Container(),
-            clubs.length > 0 ? Card(
-              child: Stack(
-                children: [
-                  Container(
-                    height: 225,
-                    child: PageView.builder(
-                        itemCount: clubs.length,
-                        controller: _pageController,
-                        onPageChanged: (currentPage) {
-                          setState(() {
-                            _currentIndex = currentPage;
-                          });
-                        },
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: (){
-                              Navigator.of(context).pushNamed(
-                                  IntroducePage.ROUTE_NAME,
-                                  arguments: {
-                                    'clubId': clubs[index].id
-                                  });
-                            },
-                            child: Stack(
-                              children: [
-                                CachedNetworkImage(
-                                  imageUrl: clubs[index].avatar ?? "",
-                                  placeholder: (context, url) =>
-                                      Image.asset(
-                                          "assets/images/placeholder.png"),
-                                  errorWidget: (context, url,
-                                      error) =>
-                                      Image.asset(
-                                          "assets/images/error.png"),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 225,
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Container(
-                                    padding:
-                                    EdgeInsets.symmetric(horizontal: 16),
-                                    margin:
-                                    EdgeInsets.only(bottom: 8),
-                                    decoration: BoxDecoration(
-                                        color:
-                                        Color(0xFF0E3311).withOpacity(0.5),
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(15),
-                                            bottomRight: Radius.circular(15))),
-                                    height: 70,
-                                    width: double.infinity,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          clubs[index].name ?? "",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(
-                                          clubs[index].getAddress ?? "",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.white),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    child: Container(
-                      height: 20,
-                      width: MediaQuery.of(context).size.width,
-                      child: Center(
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            itemCount:
-                            clubs.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                width: 16,
-                                height: 16,
-                                margin:
-                                EdgeInsets.only(right: 6),
-                                decoration: BoxDecoration(
-                                  //borderRadius: BorderRadius.all(Radius.circular(16)),
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        width: 1,
-                                        color: Colors.white),
-                                    color: _currentIndex ==
-                                        index
-                                        ? Colors.white
-                                        : Colors.transparent),
-                              );
-                            }),
-                      ),
+            clubs.length > 0
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 6),
+                    child: Text(
+                      "Tin ưu tiên",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   )
-                ],
-              ),
-            ) : Container(),
+                : Container(),
+            clubs.length > 0
+                ? Card(
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: 200,
+                          child: ListView.builder(
+                              itemCount: clubs.length,
+                              controller: _scrollController,
+                              shrinkWrap: true,
+                              reverse: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                        IntroducePage.ROUTE_NAME,
+                                        arguments: {'clubId': clubs[index].id});
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.all(4),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          child: CachedNetworkImage(
+                                            imageUrl: clubs[index].avatar ?? "",
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                    "assets/images/placeholder.png"),
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                Image.asset(
+                                                    "assets/images/error.png"),
+                                            fit: BoxFit.cover,
+                                            width: 200,
+                                            height: 200,
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          margin: EdgeInsets.only(bottom: 8),
+                                          decoration: BoxDecoration(
+                                              color: Color(0xFF0E3311)
+                                                  .withOpacity(0.5),
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(15),
+                                                  bottomRight:
+                                                      Radius.circular(15))),
+                                          height: 55,
+                                          width: 200,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                clubs[index].name ?? "",
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              Text(
+                                                clubs[index].getAddress ?? "",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(),
             clubs.length > 0 ? SizedBox(height: 8) : Container(),
             Card(
               child: Column(

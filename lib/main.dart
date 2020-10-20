@@ -104,7 +104,7 @@ class ConecApp extends StatelessWidget {
         IntroducePage.ROUTE_NAME: (context) => IntroducePage(),
         InfoPage.ROUTE_NAME: (context) => InfoPage(),
         EditInfoPage.ROUTE_NAME: (context) => EditInfoPage(),
-        VideoPlayerPage.ROUTE_NAME: (context) => VideoPlayerPage(),
+        //VideoPlayerPage.ROUTE_NAME: (context) => VideoPlayerPage(),
         GuidePage.ROUTE_NAME: (context) => GuidePage(),
         CategoryPage.ROUTE_NAME: (context) => CategoryPage(),
         NotifyDetailPage.ROUTE_NAME: (context) => NotifyDetailPage(),

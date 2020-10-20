@@ -107,114 +107,118 @@ class _IntroducePageState extends State<IntroducePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(
-                                        profile.ratingAvg.toStringAsFixed(1) ??
-                                            "0", style: TextStyle(fontSize: 18),),
+                                      profile.ratingAvg.toStringAsFixed(1) ??
+                                          "0",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
                                     Icon(Icons.star, color: Colors.amber),
-                                   Text(
-                                       "(${profile.ratingCount ?? "0"} đánh giá)"),
-                                    SizedBox(width: 32,),
+                                    Text(
+                                        "(${profile.ratingCount ?? "0"} đánh giá)"),
+                                    SizedBox(
+                                      width: 32,
+                                    ),
                                     FlatButton.icon(
                                         padding: EdgeInsets.all(0),
                                         onPressed: () {
-                                          if (_token == null || _token.length == 0) {
-                                            Helper
-                                                .showAuthenticationDialog(
+                                          if (_token == null ||
+                                              _token.length == 0) {
+                                            Helper.showAuthenticationDialog(
                                                 context);
                                           } else {
-                                            if(_isTokenExpired){
-                                              Helper.showTokenExpiredDialog(context);
-                                            }else{
+                                            if (_isTokenExpired) {
+                                              Helper.showTokenExpiredDialog(
+                                                  context);
+                                            } else {
                                               showModalBottomSheet(
                                                   context: context,
-                                                  builder: (BuildContext
-                                                  context) {
+                                                  builder:
+                                                      (BuildContext context) {
                                                     int rating = 5;
                                                     return Container(
                                                       height: 150,
                                                       alignment:
-                                                      Alignment
-                                                          .center,
+                                                          Alignment.center,
                                                       child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                        children: <
-                                                            Widget>[
+                                                            MainAxisAlignment
+                                                                .spaceAround,
+                                                        children: <Widget>[
                                                           RatingBar(
-                                                            initialRating:
-                                                            5,
-                                                            minRating:
-                                                            1,
-                                                            direction: Axis
-                                                                .horizontal,
+                                                            initialRating: 5,
+                                                            minRating: 1,
+                                                            direction:
+                                                                Axis.horizontal,
                                                             allowHalfRating:
-                                                            true,
-                                                            itemCount:
-                                                            5,
-                                                            itemPadding:
-                                                            EdgeInsets.symmetric(
-                                                                horizontal:
-                                                                4.0),
+                                                                true,
+                                                            itemCount: 5,
+                                                            itemPadding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        4.0),
                                                             itemBuilder:
-                                                                (context,
-                                                                _) =>
-                                                                Icon(
-                                                                  Icons
-                                                                      .star,
-                                                                  color: Colors
-                                                                      .amber,
-                                                                ),
+                                                                (context, _) =>
+                                                                    Icon(
+                                                              Icons.star,
+                                                              color:
+                                                                  Colors.amber,
+                                                            ),
                                                             onRatingUpdate:
                                                                 (value) {
-                                                              rating = value
-                                                                  .toInt();
+                                                              rating =
+                                                                  value.toInt();
                                                             },
                                                           ),
                                                           InkWell(
                                                             onTap: () {
-                                                              print(
-                                                                  "uprating");
+                                                              print("uprating");
                                                               _homeBloc
                                                                   .requestRatingClub(
-                                                                  jsonEncode({
-                                                                    "userId":
+                                                                      jsonEncode({
+                                                                "userId":
                                                                     profile.id,
-                                                                    "rating":
-                                                                    rating
-                                                                  }));
-                                                              _homeBloc.ratingIntroStream.listen((event) {
-                                                                if(event.data){
+                                                                "rating": rating
+                                                              }));
+                                                              _homeBloc
+                                                                  .ratingIntroStream
+                                                                  .listen(
+                                                                      (event) {
+                                                                if (event
+                                                                    .data) {
                                                                   Navigator.of(
-                                                                      context)
-                                                                      .pop(true);
+                                                                          context)
+                                                                      .pop(
+                                                                          true);
                                                                 }
                                                               });
                                                             },
-                                                            child:
-                                                            Container(
+                                                            child: Container(
                                                               decoration: BoxDecoration(
                                                                   color: Colors
                                                                       .white,
-                                                                  borderRadius: BorderRadius.circular(
-                                                                      8),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8),
                                                                   border: Border.all(
                                                                       width: 1,
-                                                                      color: Colors.grey)),
-                                                              height:
-                                                              45,
-                                                              width:
-                                                              250,
-                                                              child:
-                                                              Center(
-                                                                child:
-                                                                Text(
+                                                                      color: Colors
+                                                                          .grey)),
+                                                              height: 45,
+                                                              width: 250,
+                                                              child: Center(
+                                                                child: Text(
                                                                   'Gửi đánh giá',
                                                                   textAlign:
-                                                                  TextAlign.center,
+                                                                      TextAlign
+                                                                          .center,
                                                                   style: TextStyle(
-                                                                      fontSize: 18,
-                                                                      color: Colors.black87,
-                                                                      fontWeight: FontWeight.w500),
+                                                                      fontSize:
+                                                                          18,
+                                                                      color: Colors
+                                                                          .black87,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500),
                                                                 ),
                                                               ),
                                                             ),
@@ -223,9 +227,11 @@ class _IntroducePageState extends State<IntroducePage> {
                                                       ),
                                                     );
                                                   }).then((value) {
-                                                    if(value){
-                                                      _homeBloc.requestPageIntroduce(clubId);
-                                                    }
+                                                if (value) {
+                                                  _homeBloc
+                                                      .requestPageIntroduce(
+                                                          clubId);
+                                                }
                                               });
                                             }
                                           }
@@ -237,8 +243,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                         label: Text(
                                           "Đánh giá",
                                           style: TextStyle(
-                                              color: Colors.blue,
-                                              fontSize: 18),
+                                              color: Colors.blue, fontSize: 18),
                                         ))
                                   ],
                                 ),
@@ -283,10 +288,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                         ],
                                       ),
                                 Text("Địa chỉ", style: AppTheme.profileTitle),
-                                Text(
-                                    profile.province == null
-                                        ? ""
-                                        : '${profile.ward ?? ""}, ${profile.district ?? ""}, ${profile.province ?? ""}',
+                                Text(profile.getAddress ?? "",
                                     style: AppTheme.profileInfo),
                                 Container(
                                   height: 0.5,
@@ -378,36 +380,42 @@ class _IntroducePageState extends State<IntroducePage> {
                                 SizedBox(height: 8),
                                 profile.videoLink == null
                                     ? Container(
-                                  color: Colors.black12,
-                                  height: 200,
-                                  child: Stack(
-                                    children: <Widget>[
-                                      // Center(
-                                      //   child: Image.asset(
-                                      //       "assets/images/placeholder.png",
-                                      //      fit: BoxFit.cover,),
-                                      // ),
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: InkWell(
-                                          onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                                VideoPlayerPage.ROUTE_NAME,
-                                                arguments: {
-                                                  "videoLink":
-                                                  profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                                                });
-                                          },
-                                          child: Icon(
-                                            Icons.play_arrow,
-                                            color: Colors.black,
-                                            size: 58,
-                                          ),
+                                        color: Colors.black12,
+                                        height: 200,
+                                        child: Stack(
+                                          children: <Widget>[
+                                            // Center(
+                                            //   child: Image.asset(
+                                            //       "assets/images/placeholder.png",
+                                            //      fit: BoxFit.cover,),
+                                            // ),
+                                            Align(
+                                              alignment: Alignment.center,
+                                              child: InkWell(
+                                                onTap: () {
+                                                  // Navigator.of(context).pushNamed(
+                                                  //     VideoPlayerPage.ROUTE_NAME,
+                                                  //     arguments: {
+                                                  //       "videoLink":
+                                                  //       profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                                  //     });
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              VideoPlayerPage(profile
+                                                                      .videoLink ??
+                                                                  "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")));
+                                                },
+                                                child: Icon(
+                                                  Icons.play_arrow,
+                                                  color: Colors.black,
+                                                  size: 58,
+                                                ),
+                                              ),
+                                            )
+                                          ],
                                         ),
                                       )
-                                    ],
-                                  ),
-                                )
                                     : Container(),
                                 Container(
                                   height: 0.5,
@@ -418,92 +426,123 @@ class _IntroducePageState extends State<IntroducePage> {
                                     style: AppTheme.profileTitle),
                                 SizedBox(height: 8),
                                 Container(
+                                  color: Colors.black12,
                                   child: GridView.builder(
                                       physics: NeverScrollableScrollPhysics(),
                                       scrollDirection: Axis.vertical,
                                       shrinkWrap: true,
                                       itemCount: profile.posts.length,
                                       padding: EdgeInsets.all(4),
-                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2),
                                       itemBuilder: (_, index) {
                                         return InkWell(
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
                                                 ItemDetailPage.ROUTE_NAME,
                                                 arguments: {
-                                                  'postId': profile.posts[index].postId,
-                                                  'title': profile.posts[index].title
+                                                  'postId': profile
+                                                      .posts[index].postId,
+                                                  'title':
+                                                      profile.posts[index].title
                                                 });
                                           },
                                           child: Container(
                                             margin: EdgeInsets.all(4),
                                             child: Stack(
                                               children: <Widget>[
-                                                index < 4 ? Banner(
-                                                  message: "Mới",
-                                                  location: BannerLocation.topEnd,
-                                                  color: Colors.green,
-                                                  child: ClipRRect(
-                                                    borderRadius: BorderRadius.circular(15),
-                                                    child: Hero(
-                                                      tag: profile.posts[index].postId,
-                                                      child: CachedNetworkImage(
-                                                        imageUrl: profile.posts[index].thumbnail ?? "",
-                                                        progressIndicatorBuilder: (context, url,
-                                                            downloadProgress) =>
-                                                            CircularProgressIndicator(
-                                                                value:
-                                                                downloadProgress.progress),
-                                                        placeholder: (context,
-                                                            url) =>
-                                                            Image.asset(
-                                                                "assets/images/placeholder.png"),
-                                                        errorWidget: (context, url, error) =>
-                                                            Image.asset(
-                                                                "assets/images/error.png"),
-                                                        fit: BoxFit.cover,
-                                                        width: double.infinity,
-                                                        height: double.infinity,
-                                                      ),
+                                                ClipRRect(
+                                                  borderRadius:
+                                                  BorderRadius
+                                                      .circular(15),
+                                                  child: Hero(
+                                                    tag: profile
+                                                        .posts[index]
+                                                        .postId,
+                                                    child:
+                                                    CachedNetworkImage(
+                                                      imageUrl: profile
+                                                          .posts[
+                                                      index]
+                                                          .thumbnail ??
+                                                          "",
+                                                      progressIndicatorBuilder: (context,
+                                                          url,
+                                                          downloadProgress) =>
+                                                          CircularProgressIndicator(
+                                                              value: downloadProgress
+                                                                  .progress),
+                                                      placeholder: (context,
+                                                          url) =>
+                                                          Image.asset(
+                                                              "assets/images/placeholder.png"),
+                                                      errorWidget: (context,
+                                                          url,
+                                                          error) =>
+                                                          Image.asset(
+                                                              "assets/images/error.png"),
+                                                      fit: BoxFit.cover,
+                                                      width: double
+                                                          .infinity,
+                                                      height: double
+                                                          .infinity,
                                                     ),
                                                   ),
-                                                ) : Container(),
+                                                ),
                                                 Align(
-                                                  alignment: Alignment.bottomCenter,
+                                                  alignment:
+                                                      Alignment.bottomCenter,
                                                   child: Container(
                                                     padding:
-                                                    EdgeInsets.symmetric(horizontal: 16),
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 16),
                                                     decoration: BoxDecoration(
-                                                        color:
-                                                        Color(0xFF0E3311).withOpacity(0.5),
-                                                        borderRadius: BorderRadius.only(
-                                                            bottomLeft: Radius.circular(15),
-                                                            bottomRight: Radius.circular(15))),
+                                                        color: Color(0xFF0E3311)
+                                                            .withOpacity(0.5),
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                bottomLeft: Radius
+                                                                    .circular(
+                                                                        15),
+                                                                bottomRight: Radius
+                                                                    .circular(
+                                                                        15))),
                                                     height: 70,
                                                     width: double.infinity,
                                                     child: Column(
                                                       mainAxisAlignment:
-                                                      MainAxisAlignment.center,
+                                                          MainAxisAlignment
+                                                              .center,
                                                       crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: <Widget>[
                                                         Text(
-                                                          profile.posts[index].title,
+                                                          profile.posts[index]
+                                                              .title,
                                                           style: TextStyle(
                                                               fontSize: 18,
-                                                              fontWeight: FontWeight.w600,
-                                                              color: Colors.white),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color:
+                                                                  Colors.white),
                                                           maxLines: 1,
-                                                          overflow: TextOverflow.ellipsis,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         ),
                                                         Text(
-                                                          profile.posts[index].description ?? "",
+                                                          profile.posts[index]
+                                                                  .description ??
+                                                              "",
                                                           style: TextStyle(
                                                               fontSize: 14,
-                                                              color: Colors.white),
+                                                              color:
+                                                                  Colors.white),
                                                           maxLines: 2,
-                                                          overflow: TextOverflow.ellipsis,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                         )
                                                       ],
                                                     ),

@@ -38,6 +38,7 @@ class Profile {
   String district;
   String ward;
   String address;
+  String getAddress;
   num lat;
   num lng;
   num ratingAvg;
@@ -60,6 +61,7 @@ class Profile {
         this.district,
         this.ward,
         this.address,
+        this.getAddress,
         this.lat,
         this.lng,
         this.ratingAvg,
@@ -82,6 +84,7 @@ class Profile {
     district = json['district'];
     ward = json['ward'];
     address = json['address'];
+    getAddress = json['getAddress'];
     lat = json['lat'];
     lng = json['lng'];
     ratingAvg = json['ratingAvg'];

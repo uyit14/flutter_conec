@@ -124,12 +124,13 @@ class _InfoPageState extends State<InfoPage> {
                                         alignment: Alignment.center,
                                         child: InkWell(
                                           onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                                VideoPlayerPage.ROUTE_NAME,
-                                                arguments: {
-                                                  "videoLink":
-                                                      _profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                                                });
+                                            // Navigator.of(context).pushNamed(
+                                            //     VideoPlayerPage.ROUTE_NAME,
+                                            //     arguments: {
+                                            //       "videoLink":
+                                            //           _profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                            //     });
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => VideoPlayerPage(_profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")));
                                           },
                                           child: Icon(
                                             Icons.play_arrow,

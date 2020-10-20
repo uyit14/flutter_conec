@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html_editor/html_editor.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zefyr/zefyr.dart';
+import 'package:quill_delta/quill_delta.dart';
 
 class EditInfoPage extends StatefulWidget {
   static const ROUTE_NAME = "/edit-info-page";
@@ -25,12 +27,20 @@ class EditInfoPage extends StatefulWidget {
 class _EditInfoPageState extends State<EditInfoPage> {
   ProfileBloc _profileBloc = ProfileBloc();
   Profile profile = Profile();
-  GlobalKey<HtmlEditorState> keyEditor = GlobalKey();
+  //GlobalKey<HtmlEditorState> keyEditor = GlobalKey();
   PostActionBloc _postActionBloc = PostActionBloc();
   List<File> _images = List<File>();
   final picker = ImagePicker();
   List<Images> _urlImages = List();
+  ZefyrController _controller;
+  FocusNode _focusNode = FocusNode();
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = ZefyrController(NotusDocument());
+  }
 
   @override
   void didChangeDependencies() {
@@ -38,7 +48,21 @@ class _EditInfoPageState extends State<EditInfoPage> {
     final routeArgs = ModalRoute.of(context).settings.arguments;
     profile = routeArgs;
     _urlImages = profile.images;
+    if (profile != null) {
+      final document = profile.about != null
+          ? _loadDocument('${profile.about}\n')
+          : NotusDocument();
+      _controller = ZefyrController(document);
+    }
     print(profile.name ?? "U");
+  }
+
+  NotusDocument _loadDocument(String data) {
+    // For simplicity we hardcode a simple document with one line of text
+    // saying "Zefyr Quick Start".
+    // (Note that delta must always end with newline.)
+    final Delta delta = Delta()..insert(data);
+    return NotusDocument.fromDelta(delta);
   }
 
   Future getImageList() async {
@@ -104,9 +128,9 @@ class _EditInfoPageState extends State<EditInfoPage> {
   }
 
   void doUpdatePage() async{
-    final txt = await keyEditor.currentState.getText();
+    //final txt = await keyEditor.currentState.getText();
     PageInfoRequest _request = PageInfoRequest(
-      about: txt,
+      about: _controller.document.toPlainText(),
       images: _images.length > 0 ? base64ListImage(_images) : null,
     );
     _profileBloc.requestUpdatePage(jsonEncode(_request.toJson()));
@@ -159,17 +183,32 @@ class _EditInfoPageState extends State<EditInfoPage> {
         body: Stack(
           children: [
             SingleChildScrollView(
-              padding: EdgeInsets.only(bottom: AppTheme.appBarSize, top: 8),
+              padding: EdgeInsets.only(bottom: AppTheme.appBarSize, top: 8, left: 16, right: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Giới thiệu", style: AppTheme.profileTitle),
                   SizedBox(height: 8,),
-                  HtmlEditor(
-                      hint: profile.about == null ? "Nhập thông tin giới thiệu" : "",
-                      value: profile.about ?? "",
-                      key: keyEditor,
-                      showBottomToolbar: false),
+                  // HtmlEditor(
+                  //     hint: profile.about == null ? "Nhập thông tin giới thiệu" : "",
+                  //     value: profile.about ?? "",
+                  //     key: keyEditor,
+                  //     showBottomToolbar: false),
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.grey),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            topRight: Radius.circular(8))),
+                    height: 200,
+                    child: ZefyrScaffold(
+                      child: ZefyrEditor(
+                        autofocus: false,
+                        controller: _controller,
+                        focusNode: _focusNode,
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 8,),
                   Text("Thư viện ảnh", style: AppTheme.profileTitle),
                   _images.length == 0 && _urlImages.length == 0
