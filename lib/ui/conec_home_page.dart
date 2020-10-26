@@ -240,7 +240,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                   onPressed: () => _selectPage(1),
                   iconSize: 30,
                   icon: Icon(Icons.explore),
-                  tooltip: "Rao vặt",
+                  tooltip: "Dụng cụ",
                 ),
                 IconButton(
                   color: _selectedPageIndex == 2 ? Colors.red : Colors.grey,

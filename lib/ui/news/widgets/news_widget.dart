@@ -8,6 +8,7 @@ import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:html/parser.dart';
 
 class NewsWidget extends StatefulWidget {
   @override
@@ -129,6 +130,8 @@ class _NewsWidgetState extends State<NewsWidget> {
                             itemCount: news.length,
                             controller: _scrollController,
                             itemBuilder: (context, index) {
+                              final document = parse(news[index].description ?? "");
+                              final String parsedString = parse(document.body.text).documentElement.text;
                               return ConstrainedBox(
                                 constraints: BoxConstraints(
                                     minHeight: 180, maxHeight: 180),
@@ -189,7 +192,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                                               Flexible(
                                                 flex: 6,
                                                 child: Text(
-                                                  news[index].description ?? "",
+                                                  parsedString ?? "",
                                                   maxLines: 3,
                                                   style:
                                                       TextStyle(fontSize: 16),

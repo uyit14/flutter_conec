@@ -69,13 +69,14 @@ class _CommentWidgetState extends State<CommentWidget> {
     _addDataToList = true;
     super.initState();
     getToken();
+    _likeCount = widget.itemDetail.likeCount;
+    _isLikeOwner = widget.itemDetail.likeOwner;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_addDataToList) _itemsByCategoryBloc.requestComment(widget.postId);
-    _likeCount = widget.itemDetail.likeCount;
   }
 
   void requestFocus(String parentId, bool isDelete) {

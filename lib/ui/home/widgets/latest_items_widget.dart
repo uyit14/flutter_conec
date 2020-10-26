@@ -6,7 +6,10 @@ import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 import 'package:provider/provider.dart';
+import 'package:html/parser.dart';
 
 class LatestItemsWidget extends StatefulWidget {
   @override
@@ -50,6 +53,8 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3),
                       itemBuilder: (_, index) {
+                        final document = parse(items[index].description ?? "");
+                        final String parsedString = parse(document.body.text).documentElement.text;
                         return InkWell(
                           onTap: () {
                             Navigator.of(context).pushNamed(
@@ -116,8 +121,15 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
+                                        // Html(
+                                        //   data: items[index].description ?? "",
+                                        //   style: {
+                                        //     "p": Style(fontSize: FontSize.medium,
+                                        //         color: Colors.white),
+                                        //   },
+                                        // )
                                         Text(
-                                          items[index].description ?? "",
+                                          parsedString ?? "",
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: Colors.white),

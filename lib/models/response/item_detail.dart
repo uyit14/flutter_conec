@@ -29,7 +29,6 @@ class ItemDetail {
   int commentCount;
   int likeCount;
   bool likeOwner;
-  bool isLikeOwner;
   String thumbnail;
   String topicId;
   String topic;
@@ -66,7 +65,6 @@ class ItemDetail {
         this.likeCount,
         this.title,
         this.likeOwner,
-        this.isLikeOwner,
         this.thumbnail,
         this.topicId,
         this.topic,
@@ -104,7 +102,6 @@ class ItemDetail {
     commentCount = json['commentCount'];
     likeCount = json['likeCount'];
     likeOwner = json['likeOwner'];
-    isLikeOwner = json['isLikeOwner'];
     thumbnail = json['thumbnail'];
     topicId = json['topicId'];
     topic = json['topic'];

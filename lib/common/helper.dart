@@ -227,6 +227,59 @@ class Helper {
     return false;
   }
 
+  static const List<String> reportList = ["Thông tin không đúng thực tế", "Nội dung vi phạm", "Lừa đảo", "Trùng tin đăng"];
+
+  // //report dialog
+  // static void showReportDialog(BuildContext context, Function(int index) onReport){
+  //   int selectedIndex = 0;
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext ctx) => CupertinoAlertDialog(
+  //         title: Text("Báo cáo vi phạm"),
+  //         content:
+  //         Container(
+  //           height: MediaQuery.of(context).size.height / 2,
+  //           width: MediaQuery.of(context).size.width - 50,
+  //         child: Column(
+  //             children: [
+  //               Expanded(
+  //                 child: ListView.builder(
+  //                   itemCount: reportList.length,
+  //                     itemBuilder: (context, index){
+  //                     return Row(
+  //                       children: [
+  //                         Radio(
+  //                           value: reportList[index],
+  //                           groupValue: selectedIndex,
+  //                           activeColor:
+  //                           Color.fromRGBO(220, 65, 50, 1),
+  //                           onChanged: (value) {
+  //                             selectedIndex = value;
+  //                           },
+  //                         ),
+  //                         SizedBox(width: 8),
+  //                         Text(reportList[index])
+  //                       ],
+  //                     );
+  //                     }
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           CupertinoDialogAction(
+  //             child: Text("Hủy", style: TextStyle(color: Colors.red)),
+  //             onPressed: () => Navigator.of(context).pop(),
+  //           ),
+  //           CupertinoDialogAction(
+  //             child: Text("Gửi báo cáo"),
+  //             onPressed: () => onReport(selectedIndex),
+  //           )
+  //         ],
+  //       ));
+  // }
+
 
 
   static const String loadingMessage = "Đang tải...";

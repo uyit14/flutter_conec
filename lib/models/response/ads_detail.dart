@@ -10,14 +10,6 @@ class AdsDetailsResponse {
     adsDetail =
         json['ads'] != null ? new AdsDetail.fromJson(json['ads']) : null;
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.adsDetail != null) {
-      data['ads'] = this.adsDetail.toJson();
-    }
-    return data;
-  }
 }
 
 class AdsDetail {
@@ -36,7 +28,6 @@ class AdsDetail {
   int commentCount;
   int likeCount;
   bool likeOwner;
-  bool isLikeOwner;
   String thumbnail;
   String topic;
   String topicMetaLink;
@@ -75,7 +66,6 @@ class AdsDetail {
       this.commentCount,
       this.likeCount,
       this.likeOwner,
-      this.isLikeOwner,
       this.thumbnail,
       this.topic,
       this.topicMetaLink,
@@ -114,7 +104,6 @@ class AdsDetail {
     commentCount = json['commentCount'];
     likeCount = json['likeCount'];
     likeOwner = json['likeOwner'];
-    isLikeOwner = json['isLikeOwner'];
     thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
@@ -141,44 +130,5 @@ class AdsDetail {
     generalCondition = json['generalCondition'];
     phoneNumber = json['phoneNumber'];
     shareLink = json['shareLink'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['postId'] = this.postId;
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['content'] = this.content;
-    data['approvedDate'] = this.approvedDate;
-    data['owner'] = this.owner;
-    data['ownerAvatar'] = this.ownerAvatar;
-    data['ratingCount'] = this.ratingCount;
-    data['ratingAvg'] = this.ratingAvg;
-    data['isRating'] = this.isRating;
-    data['viewCount'] = this.viewCount;
-    data['commentCount'] = this.commentCount;
-    data['likeCount'] = this.likeCount;
-    data['likeOwner'] = this.likeOwner;
-    data['isLikeOwner'] = this.isLikeOwner;
-    data['thumbnail'] = this.thumbnail;
-    data['topic'] = this.topic;
-    data['topicMetaLink'] = this.topicMetaLink;
-    data['metaLink'] = this.metaLink;
-    data['metaTitle'] = this.metaTitle;
-    data['metaDescription'] = this.metaDescription;
-    data['metaKeywords'] = this.metaKeywords;
-    if (this.images != null) {
-      data['images'] = this.images.map((v) => v.toJson()).toList();
-    }
-    data['province'] = this.province;
-    data['district'] = this.district;
-    data['ward'] = this.ward;
-    data['address'] = this.address;
-    data['joiningFee'] = this.joiningFee;
-    data['uses'] = this.uses;
-    data['price'] = this.price;
-    data['generalCondition'] = this.generalCondition;
-    data['phoneNumber'] = this.phoneNumber;
-    return data;
   }
 }

@@ -10,6 +10,7 @@ import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/home/pages/nearby_page.dart';
+import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/home/widgets/scroll_behavior.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/mypost/pages/category_page.dart';
@@ -108,22 +109,18 @@ class ConecApp extends StatelessWidget {
         GuidePage.ROUTE_NAME: (context) => GuidePage(),
         CategoryPage.ROUTE_NAME: (context) => CategoryPage(),
         NotifyDetailPage.ROUTE_NAME: (context) => NotifyDetailPage(),
+        ReportPage.ROUTE_NAME: (context) => ReportPage()
       },
     );
   }
 }
 
 /*
-18. DONE
-19. LOGIN FB
-20. DONE
-21. CHECK API
-22. API
-23. API
-24. DONE
-25. DONE
-26. DONE
-27. DONE
-28. DONE
-29. DONE
+1. Image in detail rotation - DONE
+2. Lost after edit in approved tab - DONE
+3. Report - DONE
+4. Delete image edit info page
+5. load html for description - DONE
+6. api priorities - IN-PROGRESS (can't auto-play)
+7. swift refresh
 */

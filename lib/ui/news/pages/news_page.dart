@@ -55,7 +55,7 @@ class _NewsPageState extends State<NewsPage> {
                     textColor:
                         _selectedPageIndex == 0 ? Colors.red : Colors.grey,
                     icon: Icon(Icons.shopping_cart),
-                    label: Text("Rao vặt",
+                    label: Text("Dụng cụ",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold))),
               ),

@@ -1,16 +1,19 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/news_detail.dart';
+import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
 import 'package:share/share.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 
@@ -28,6 +31,24 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   NewsBloc _newsBloc = NewsBloc();
   bool _setBanners = true;
   PageController _pageController = PageController(initialPage: 0);
+  String _token;
+  bool _isTokenExpired = true;
+
+  void getToken() async {
+    String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
+    setState(() {
+      _token = token;
+      _isTokenExpired = expired;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getToken();
+  }
+
 
   @override
   void didChangeDependencies() {
@@ -87,7 +108,16 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
 //            ),
             IconButton(
               onPressed: () {
-                //TODO - report
+                if (_token == null || _token.length == 0) {
+                  Helper.showAuthenticationDialog(context);
+                } else {
+                  if (_isTokenExpired) {
+                    Helper.showTokenExpiredDialog(context);
+                  } else {
+                    Navigator.of(context).pushNamed(ReportPage.ROUTE_NAME,
+                        arguments: {'postId': postId});
+                  }
+                }
               },
               icon: Icon(
                 Icons.report,
@@ -106,10 +136,10 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                   case Status.COMPLETED:
                     NewsDetail newsDetail = snapshot.data.data;
                     linkShare = newsDetail.shareLink;
-                    if (newsDetail.images.length > 0 && _setBanners) {
-                      autoPlayBanners(newsDetail.images);
-                      _setBanners = false;
-                    }
+                    // if (newsDetail.images.length > 0 && _setBanners) {
+                    //   autoPlayBanners(newsDetail.images);
+                    //   _setBanners = false;
+                    // }
                     return SingleChildScrollView(
                         child: Card(
                       margin: EdgeInsets.all(0),
@@ -120,32 +150,119 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                             child: newsDetail.images.length > 0
                                 ? Stack(
                               children: [
-                                Container(
-                                  height: 225,
-                                  child: PageView.builder(
-                                      itemCount: newsDetail.images.length,
-                                      controller: _pageController,
-                                      onPageChanged: (currentPage) {
-                                        setState(() {
-                                          _currentIndex = currentPage;
-                                        });
-                                      },
-                                      itemBuilder: (context, index) {
-                                        return CachedNetworkImage(
-                                          imageUrl: newsDetail
-                                              .images[index].fileName,
-                                          placeholder: (context, url) =>
-                                              Image.asset(
-                                                  "assets/images/placeholder.png"),
-                                          errorWidget: (context, url,
-                                              error) =>
-                                              Image.asset(
-                                                  "assets/images/error.png"),
-                                          fit: BoxFit.cover,
-                                          width: double.infinity,
-                                          height: 225,
-                                        );
-                                      }),
+                                // Container(
+                                //   height: 225,
+                                //   child: PageView.builder(
+                                //       itemCount: newsDetail.images.length,
+                                //       controller: _pageController,
+                                //       onPageChanged: (currentPage) {
+                                //         setState(() {
+                                //           _currentIndex = currentPage;
+                                //         });
+                                //       },
+                                //       itemBuilder: (context, index) {
+                                //         return CachedNetworkImage(
+                                //           imageUrl: newsDetail
+                                //               .images[index].fileName,
+                                //           placeholder: (context, url) =>
+                                //               Image.asset(
+                                //                   "assets/images/placeholder.png"),
+                                //           errorWidget: (context, url,
+                                //               error) =>
+                                //               Image.asset(
+                                //                   "assets/images/error.png"),
+                                //           fit: BoxFit.cover,
+                                //           width: double.infinity,
+                                //           height: 225,
+                                //         );
+                                //       }),
+                                // ),
+                                CarouselSlider(
+                                  options: CarouselOptions(
+                                    onPageChanged: (currentPage, reason) {
+                                      setState(() {
+                                        _currentIndex = currentPage;
+                                      });
+                                    },
+                                    height: 225,
+                                    autoPlay: true,
+                                    enlargeCenterPage: false,
+                                    viewportFraction: 1.0,
+                                  ),
+                                  items: newsDetail.images
+                                      .map((item) => Container(
+                                    child: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.all(
+                                            Radius.circular(
+                                                8)),
+                                        child: Stack(
+                                          children: <Widget>[
+                                            CachedNetworkImage(
+                                              imageUrl:
+                                              item.fileName,
+                                              placeholder: (context,
+                                                  url) =>
+                                                  Image.asset(
+                                                      "assets/images/placeholder.png"),
+                                              errorWidget: (context,
+                                                  url,
+                                                  error) =>
+                                                  Image.asset(
+                                                      "assets/images/error.png"),
+                                              fit: BoxFit.cover,
+                                              width:
+                                              double.infinity,
+                                            ),
+                                            Positioned(
+                                              bottom: 0.0,
+                                              left: 0.0,
+                                              right: 0.0,
+                                              child: Container(
+                                                decoration:
+                                                BoxDecoration(
+                                                  gradient:
+                                                  LinearGradient(
+                                                    colors: [
+                                                      Color
+                                                          .fromARGB(
+                                                          200,
+                                                          0,
+                                                          0,
+                                                          0),
+                                                      Color
+                                                          .fromARGB(
+                                                          0,
+                                                          0,
+                                                          0,
+                                                          0)
+                                                    ],
+                                                    begin: Alignment
+                                                        .bottomCenter,
+                                                    end: Alignment
+                                                        .topCenter,
+                                                  ),
+                                                ),
+                                                padding: EdgeInsets
+                                                    .symmetric(
+                                                    vertical:
+                                                    10.0,
+                                                    horizontal:
+                                                    20.0),
+//                                                child: Text(
+//                                                  item.title,
+//                                                  style: TextStyle(
+//                                                    color: Colors.white,
+//                                                    fontSize: 20.0,
+//                                                    fontWeight: FontWeight.bold,
+//                                                  ),
+//                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )),
+                                  ))
+                                      .toList(),
                                 ),
                                 Positioned(
                                   bottom: 24,
@@ -263,8 +380,14 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                                     style: TextStyle(
                                         fontSize: 15, color: Colors.grey)),
                                 SizedBox(height: 8),
-                                Html(
-                                  data: newsDetail.content,
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 20.0),
+                                  child: Html(
+                                    data: newsDetail.content,
+                                    style: {
+                                      "p": Style(padding: EdgeInsets.only(right: 14)),
+                                    },
+                                  ),
                                 ),
                                 AdsCommentWidget(postId, newsDetail, doReload)
 //                                Text(

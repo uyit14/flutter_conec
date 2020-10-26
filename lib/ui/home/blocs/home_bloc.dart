@@ -47,9 +47,9 @@ class HomeBloc {
   Stream<ApiResponse<NearbyResponse>> get nearByStream => _nearByController.stream;
 
   //nearby
-  StreamController<ApiResponse<NearByClubResponse>> _nearByClubController =
+  StreamController<ApiResponse<List<LatestItem>>> _nearByClubController =
   StreamController();
-  Stream<ApiResponse<NearByClubResponse>> get nearByClubStream => _nearByClubController.stream;
+  Stream<ApiResponse<List<LatestItem>>> get nearByClubStream => _nearByClubController.stream;
 
   //page response
   StreamController<ApiResponse<Profile>> _pageIntroController =

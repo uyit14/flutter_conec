@@ -26,7 +26,6 @@ class NewsDetail {
   int commentCount;
   int likeCount;
   bool likeOwner;
-  bool isLikeOwner;
   String thumbnail;
   String topic;
   String topicMetaLink;
@@ -57,7 +56,6 @@ class NewsDetail {
         this.commentCount,
         this.likeCount,
         this.likeOwner,
-        this.isLikeOwner,
         this.thumbnail,
         this.topic,
         this.topicMetaLink,
@@ -88,7 +86,6 @@ class NewsDetail {
     commentCount = json['commentCount'];
     likeCount = json['likeCount'];
     likeOwner = json['likeOwner'];
-    isLikeOwner = json['isLikeOwner'];
     thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
@@ -126,7 +123,6 @@ class NewsDetail {
     data['commentCount'] = this.commentCount;
     data['likeCount'] = this.likeCount;
     data['likeOwner'] = this.likeOwner;
-    data['isLikeOwner'] = this.isLikeOwner;
     data['thumbnail'] = this.thumbnail;
     data['topic'] = this.topic;
     data['topicMetaLink'] = this.topicMetaLink;

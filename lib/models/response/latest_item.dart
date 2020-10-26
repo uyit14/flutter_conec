@@ -10,6 +10,7 @@ class LatestItem {
   String owner;
   String thumbnail;
   String topic;
+  String topicId;
   String topicMetaLink;
   String metaLink;
   String province;
@@ -27,6 +28,7 @@ class LatestItem {
       this.owner,
       this.thumbnail,
       this.topic,
+        this.topicId,
       this.topicMetaLink,
       this.metaLink,
         this.province,
@@ -45,6 +47,7 @@ class LatestItem {
     owner = json['owner'];
     thumbnail = json['thumbnail'] !=null && !json['thumbnail'].contains("http") ? Helper.baseURL + json['thumbnail'] : json['thumbnail'];
     topic = json['topic'];
+    topicId = json['topicId'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];
     province = json['province'];

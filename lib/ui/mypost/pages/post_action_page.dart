@@ -160,12 +160,11 @@ class _PostActionPageState extends State<PostActionPage> {
   }
 
   setSelectedIndex(Topic topic){
-    if(topic.title == "Bản tin"){
+    if(topic.id == "333f691d-6595-443d-bae3-9a2681025b53"){
       setState(() {
         _currentSelectedIndex = 6;
       });
-    }
-    else if(topic.title == "Rao vặt"){
+    }else if(topic.id == "333f691d-6585-443a-bae3-9a2681025b53"){
       setState(() {
         _currentSelectedIndex = 7;
       });

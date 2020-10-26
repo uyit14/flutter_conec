@@ -7,6 +7,7 @@ import 'package:conecapp/models/response/sport.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 
 //ads
 class NewSportWidget extends StatefulWidget {
@@ -47,6 +48,8 @@ class _NewSportWidgetState extends State<NewSportWidget> {
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: sports.length,
                       itemBuilder: (context, index) {
+                        final document = parse(sports[index].description ?? "");
+                        final String parsedString = parse(document.body.text).documentElement.text;
                         return InkWell(
                           onTap: () {
                             Navigator.of(context).pushNamed(
@@ -108,7 +111,7 @@ class _NewSportWidgetState extends State<NewSportWidget> {
                                       ),
                                       Spacer(),
                                       Text(
-                                        sports[index].description ?? "",
+                                        parsedString ?? "",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Colors.grey,

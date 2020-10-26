@@ -245,7 +245,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
                                 //TODO - call api
                                 _urlImages.removeWhere(
                                         (element) => element.id == e.id);
-                                _postActionBloc.requestDeleteImage(e.id);
+                                _postActionBloc.requestDeleteImage(e.id, "Account");
                                 setState(() {});
                               },
                               icon: Icon(

@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/nearby_club_response.dart';
 import 'package:conecapp/models/response/slider.dart' as model;
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
@@ -12,12 +13,15 @@ import 'package:conecapp/ui/home/widgets/categories_widget.dart';
 import 'package:conecapp/ui/home/widgets/latest_items_widget.dart';
 import 'package:conecapp/ui/home/widgets/new_product_widget.dart';
 import 'package:conecapp/ui/home/widgets/new_sport_widget.dart';
+import 'package:conecapp/ui/news/pages/news_detail_page.dart';
+import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import '../widgets/custom_clipper.dart';
 import 'package:flutter/material.dart';
 
 import 'introduce_page.dart';
+import 'item_detail_page.dart';
 import 'items_by_category_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,8 +36,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedPageIndex = 0;
   HomeBloc _homeBloc = HomeBloc();
-  ScrollController _scrollController = ScrollController();
-  List<Clubs> clubs = List<Clubs>();
+  //ScrollController _scrollController = ScrollController();
+  List<LatestItem> clubs = List<LatestItem>();
 
   void _selectPage(int index) {
     setState(() {
@@ -58,42 +62,42 @@ class _HomePageState extends State<HomePage> {
     _homeBloc.requestGetNearByClub(position.latitude, position.longitude);
     _homeBloc.nearByClubStream.listen((event) {
       if (event.status == Status.COMPLETED) {
-        if (event.data.clubs.length > 0) {
+        if (event.data.length > 0) {
           setState(() {
-            clubs = event.data.clubs;
+            clubs = event.data;
           });
-          _scrollToBottom();
+          //_scrollToBottom();
         }
       }
     });
   }
 
-  double _currentPosition = 0.0;
-
-  _scrollToBottom() {
-    Timer.periodic(Duration(seconds: 2), (Timer timer) {
-        if(_currentPosition == 0.0){
-          _currentPosition = _scrollController.position.maxScrollExtent / 3;
-        } else if(_currentPosition == _scrollController.position.maxScrollExtent / 3){
-          _currentPosition = _scrollController.position.maxScrollExtent * 2 / 3;
-        }else if(_currentPosition == _scrollController.position.maxScrollExtent * 2 / 3){
-          _currentPosition = _scrollController.position.maxScrollExtent;
-        }else{
-          _currentPosition = 0.0;
-        }
-
-
-      if(_scrollController.hasClients){
-        if(_currentPosition == 0.0){
-          _scrollController.animateTo(_scrollController.position.maxScrollExtent - _currentPosition,
-              duration: Duration(milliseconds: 1), curve: Curves.easeOut);
-        }else{
-          _scrollController.animateTo(_scrollController.position.maxScrollExtent - _currentPosition,
-              duration: Duration(milliseconds: 200), curve: Curves.easeOut);
-        }
-      }
-    });
-  }
+  // double _currentPosition = 0.0;
+  //
+  // _scrollToBottom() {
+  //   Timer.periodic(Duration(seconds: 2), (Timer timer) {
+  //       if(_currentPosition == 0.0){
+  //         _currentPosition = _scrollController.position.maxScrollExtent / 3;
+  //       } else if(_currentPosition == _scrollController.position.maxScrollExtent / 3){
+  //         _currentPosition = _scrollController.position.maxScrollExtent * 2 / 3;
+  //       }else if(_currentPosition == _scrollController.position.maxScrollExtent * 2 / 3){
+  //         _currentPosition = _scrollController.position.maxScrollExtent;
+  //       }else{
+  //         _currentPosition = 0.0;
+  //       }
+  //
+  //
+  //     if(_scrollController.hasClients){
+  //       if(_currentPosition == 0.0){
+  //         _scrollController.animateTo(_scrollController.position.maxScrollExtent - _currentPosition,
+  //             duration: Duration(milliseconds: 1), curve: Curves.easeOut);
+  //       }else{
+  //         _scrollController.animateTo(_scrollController.position.maxScrollExtent - _currentPosition,
+  //             duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+  //       }
+  //     }
+  //   });
+  // }
 
   // void autoPlayBanners(List<Clubs> images) {
   //   if (images.length > 1) {
@@ -118,6 +122,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     super.dispose();
     _homeBloc.dispose();
+    //_scrollController.dispose();
   }
 
   @override
@@ -243,95 +248,165 @@ class _HomePageState extends State<HomePage> {
                 : Container(),
             clubs.length > 0
                 ? Card(
-                    child: Stack(
-                      children: [
-                        Container(
-                          height: 200,
-                          child: ListView.builder(
-                              itemCount: clubs.length,
-                              controller: _scrollController,
-                              shrinkWrap: true,
-                              reverse: true,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        IntroducePage.ROUTE_NAME,
-                                        arguments: {'clubId': clubs[index].id});
-                                  },
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.all(4),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          child: CachedNetworkImage(
-                                            imageUrl: clubs[index].avatar ?? "",
-                                            placeholder: (context, url) =>
-                                                Image.asset(
-                                                    "assets/images/placeholder.png"),
-                                            errorWidget: (context, url,
-                                                    error) =>
-                                                Image.asset(
-                                                    "assets/images/error.png"),
-                                            fit: BoxFit.cover,
-                                            width: 200,
-                                            height: 200,
-                                          ),
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          margin: EdgeInsets.only(bottom: 8),
-                                          decoration: BoxDecoration(
-                                              color: Color(0xFF0E3311)
-                                                  .withOpacity(0.5),
-                                              borderRadius: BorderRadius.only(
-                                                  bottomLeft:
-                                                      Radius.circular(15),
-                                                  bottomRight:
-                                                      Radius.circular(15))),
-                                          height: 55,
-                                          width: 200,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                clubs[index].name ?? "",
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.white),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                              Text(
-                                                clubs[index].getAddress ?? "",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.white),
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                        ),
-                      ],
-                    ),
+                    // child: Container(
+                    //   height: 160,
+                    //   child: ListView.builder(
+                    //       itemCount: clubs.length,
+                    //       //controller: _scrollController,
+                    //       shrinkWrap: true,
+                    //       //reverse: true,
+                    //       scrollDirection: Axis.horizontal,
+                    //       itemBuilder: (context, index) {
+                    //         return InkWell(
+                    //           onTap: () {
+                    //             if(clubs[index].topicId == "333f691d-6595-443d-bae3-9a2681025b53"){
+                    //               //news
+                    //               Navigator.of(context).pushNamed(
+                    //                   NewsDetailPage.ROUTE_NAME,
+                    //                   arguments: {
+                    //                     'postId': clubs[index].postId,
+                    //                     'title': clubs[index].title
+                    //                   });
+                    //             }else if(clubs[index].topicId == "333f691d-6585-443a-bae3-9a2681025b53"){
+                    //               //ads
+                    //               Navigator.of(context).pushNamed(
+                    //                   SellDetailPage.ROUTE_NAME,
+                    //                   arguments: {
+                    //                     'postId': clubs[index].postId,
+                    //                     'title': clubs[index].title
+                    //                   });
+                    //             }else{
+                    //               Navigator.of(context).pushNamed(
+                    //                   ItemDetailPage.ROUTE_NAME,
+                    //                   arguments: {
+                    //                     'postId': clubs[index].postId,
+                    //                     'title': clubs[index].title
+                    //                   });
+                    //             }
+                    //           },
+                    //           child: Stack(
+                    //             children: [
+                    //               Container(
+                    //                 margin: EdgeInsets.all(4),
+                    //                 child: ClipRRect(
+                    //                   borderRadius:
+                    //                       BorderRadius.circular(15),
+                    //                   child: CachedNetworkImage(
+                    //                     imageUrl: clubs[index].thumbnail ?? "",
+                    //                     placeholder: (context, url) =>
+                    //                         Image.asset(
+                    //                             "assets/images/placeholder.png"),
+                    //                     errorWidget: (context, url,
+                    //                             error) =>
+                    //                         Image.asset(
+                    //                             "assets/images/error.png"),
+                    //                     fit: BoxFit.cover,
+                    //                     width: 160,
+                    //                     height: 160,
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //               Align(
+                    //                 alignment: Alignment.bottomCenter,
+                    //                 child: Container(
+                    //                   padding: EdgeInsets.symmetric(
+                    //                       horizontal: 16),
+                    //                   margin: EdgeInsets.only(bottom: 8),
+                    //                   decoration: BoxDecoration(
+                    //                       color: Color(0xFF0E3311)
+                    //                           .withOpacity(0.5),
+                    //                       borderRadius: BorderRadius.only(
+                    //                           bottomLeft:
+                    //                               Radius.circular(15),
+                    //                           bottomRight:
+                    //                               Radius.circular(15))),
+                    //                   height: 45,
+                    //                   width: 160,
+                    //                   child: Column(
+                    //                     mainAxisAlignment:
+                    //                         MainAxisAlignment.center,
+                    //                     crossAxisAlignment:
+                    //                         CrossAxisAlignment.start,
+                    //                     children: <Widget>[
+                    //                       Text(
+                    //                         clubs[index].title ?? "",
+                    //                         style: TextStyle(
+                    //                             fontSize: 16,
+                    //                             fontWeight: FontWeight.w600,
+                    //                             color: Colors.white),
+                    //                         maxLines: 2,
+                    //                         overflow: TextOverflow.ellipsis,
+                    //                       ),
+                    //                     ],
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         );
+                    //       }),
+                    // ),
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: 150,
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.3
+                ),
+                items: clubs
+                    .map((item) => Container(
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(8)),
+                      child: Stack(
+                        children: <Widget>[
+                          CachedNetworkImage(
+                            imageUrl: item.thumbnail,
+                            placeholder: (context, url) =>
+                                Image.asset(
+                                    "assets/images/placeholder.png"),
+                            errorWidget: (context, url,
+                                error) =>
+                                Image.asset(
+                                    "assets/images/error.png"),
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
+                          Positioned(
+                            bottom: 0.0,
+                            left: 0.0,
+                            right: 0.0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(
+                                        200, 0, 0, 0),
+                                    Color.fromARGB(0, 0, 0, 0)
+                                  ],
+                                  begin:
+                                  Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                ),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10.0,
+                                  horizontal: 20.0),
+//                                                child: Text(
+//                                                  item.title,
+//                                                  style: TextStyle(
+//                                                    color: Colors.white,
+//                                                    fontSize: 20.0,
+//                                                    fontWeight: FontWeight.bold,
+//                                                  ),
+//                                                ),
+                            ),
+                          ),
+                        ],
+                      )),
+                ))
+                    .toList(),
+              ),
                   )
                 : Container(),
             clubs.length > 0 ? SizedBox(height: 8) : Container(),
@@ -415,7 +490,7 @@ class _HomePageState extends State<HomePage> {
                               ? Colors.red
                               : Colors.grey,
                           icon: Icon(Icons.shopping_cart),
-                          label: Text("Rao vặt",
+                          label: Text("Dụng cụ",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold))),
                       FlatButton.icon(

@@ -134,8 +134,8 @@ class PostActionBloc {
     }
   }
 
-  void requestDeleteImage(String id) async {
-    final result = await _repository.deleteImage(id);
+  void requestDeleteImage(String id, String type) async {
+    final result = await _repository.deleteImage(id, type);
     if (result.status) {
       print("Success");
     } else {

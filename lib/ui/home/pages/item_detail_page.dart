@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
@@ -11,6 +12,7 @@ import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
+import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/home/widgets/comment_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,11 +46,14 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
   PageController _pageController = PageController(initialPage: 0);
   String _token;
+  bool _isTokenExpired = true;
 
   void getToken() async {
     String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
+      _isTokenExpired = expired;
     });
   }
 
@@ -147,7 +152,16 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 //            ),
             IconButton(
               onPressed: () {
-                //TODO - report
+                if (_token == null || _token.length == 0) {
+                  Helper.showAuthenticationDialog(context);
+                } else {
+                  if (_isTokenExpired) {
+                    Helper.showTokenExpiredDialog(context);
+                  } else {
+                    Navigator.of(context).pushNamed(ReportPage.ROUTE_NAME,
+                        arguments: {'postId': postId});
+                  }
+                }
               },
               icon: Icon(
                 Icons.report,
@@ -165,10 +179,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     return UILoading(loadingMessage: snapshot.data.message);
                   case Status.COMPLETED:
                     ItemDetail itemDetail = snapshot.data.data;
-                    if (itemDetail.images.length > 0 && _setBanners) {
-                      autoPlayBanners(itemDetail.images);
-                      _setBanners = false;
-                    }
+                    // if (itemDetail.images.length > 0 && _setBanners) {
+                    //   autoPlayBanners(itemDetail.images);
+                    //   _setBanners = false;
+                    // }
                     phoneNumber = itemDetail.phoneNumber;
                     linkShare = itemDetail.shareLink;
                     if (_firstCalculate) {
@@ -182,68 +196,159 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                             tag: postId,
                             child: itemDetail.images.length > 0
                                 ? Stack(
-                                  children: [
-                                    Container(
-                                        height: 225,
-                                        child: PageView.builder(
-                                            itemCount: itemDetail.images.length,
-                                            controller: _pageController,
-                                            onPageChanged: (currentPage) {
-                                              setState(() {
-                                                _currentIndex = currentPage;
-                                              });
-                                            },
-                                            itemBuilder: (context, index) {
-                                              return CachedNetworkImage(
-                                                imageUrl: itemDetail
-                                                    .images[index].fileName,
-                                                placeholder: (context, url) =>
-                                                    Image.asset(
-                                                        "assets/images/placeholder.png"),
-                                                errorWidget: (context, url,
-                                                        error) =>
-                                                    Image.asset(
-                                                        "assets/images/error.png"),
-                                                fit: BoxFit.cover,
-                                                width: double.infinity,
-                                                height: 225,
-                                              );
-                                            }),
-                                      ),
-                                    Positioned(
-                                      bottom: 24,
-                                      child: Container(
-                                        height: 24,
-                                        width: MediaQuery.of(context).size.width,
-                                        child: Center(
-                                          child: ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              shrinkWrap: true,
-                                              itemCount:
-                                              itemDetail.images.length,
-                                              itemBuilder: (context, index) {
-                                                return Container(
-                                                  width: 16,
-                                                  height: 16,
-                                                  margin:
-                                                  EdgeInsets.only(right: 6),
-                                                  decoration: BoxDecoration(
-                                                    //borderRadius: BorderRadius.all(Radius.circular(16)),
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                          width: 1,
-                                                          color: Colors.white),
-                                                      color: _currentIndex ==
-                                                          index
-                                                          ? Colors.white
-                                                          : Colors.transparent),
-                                                );
-                                              }),
+                                    children: [
+                                      // Container(
+                                      //   height: 225,
+                                      //   child: PageView.builder(
+                                      //       itemCount: itemDetail.images.length,
+                                      //       controller: _pageController,
+                                      //       onPageChanged: (currentPage) {
+                                      //         setState(() {
+                                      //           _currentIndex = currentPage;
+                                      //         });
+                                      //       },
+                                      //       itemBuilder: (context, index) {
+                                      //         return CachedNetworkImage(
+                                      //           imageUrl: itemDetail
+                                      //               .images[index].fileName,
+                                      //           placeholder: (context, url) =>
+                                      //               Image.asset(
+                                      //                   "assets/images/placeholder.png"),
+                                      //           errorWidget: (context, url,
+                                      //                   error) =>
+                                      //               Image.asset(
+                                      //                   "assets/images/error.png"),
+                                      //           fit: BoxFit.cover,
+                                      //           width: double.infinity,
+                                      //           height: 225,
+                                      //         );
+                                      //       }),
+                                      // ),
+                                      CarouselSlider(
+                                        options: CarouselOptions(
+                                          onPageChanged: (currentPage, reason) {
+                                            setState(() {
+                                              _currentIndex = currentPage;
+                                            });
+                                          },
+                                          height: 225,
+                                          autoPlay: true,
+                                          enlargeCenterPage: false,
+                                          viewportFraction: 1.0,
                                         ),
+                                        items: itemDetail.images
+                                            .map((item) => Container(
+                                                  child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8)),
+                                                      child: Stack(
+                                                        children: <Widget>[
+                                                          CachedNetworkImage(
+                                                            imageUrl:
+                                                                item.fileName,
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                Image.asset(
+                                                                    "assets/images/placeholder.png"),
+                                                            errorWidget: (context,
+                                                                    url,
+                                                                    error) =>
+                                                                Image.asset(
+                                                                    "assets/images/error.png"),
+                                                            fit: BoxFit.cover,
+                                                            width:
+                                                                double.infinity,
+                                                          ),
+                                                          Positioned(
+                                                            bottom: 0.0,
+                                                            left: 0.0,
+                                                            right: 0.0,
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    Color
+                                                                        .fromARGB(
+                                                                            200,
+                                                                            0,
+                                                                            0,
+                                                                            0),
+                                                                    Color
+                                                                        .fromARGB(
+                                                                            0,
+                                                                            0,
+                                                                            0,
+                                                                            0)
+                                                                  ],
+                                                                  begin: Alignment
+                                                                      .bottomCenter,
+                                                                  end: Alignment
+                                                                      .topCenter,
+                                                                ),
+                                                              ),
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          10.0,
+                                                                      horizontal:
+                                                                          20.0),
+//                                                child: Text(
+//                                                  item.title,
+//                                                  style: TextStyle(
+//                                                    color: Colors.white,
+//                                                    fontSize: 20.0,
+//                                                    fontWeight: FontWeight.bold,
+//                                                  ),
+//                                                ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                ))
+                                            .toList(),
                                       ),
-                                    )
-                                  ],
-                                )
+                                      Positioned(
+                                        bottom: 24,
+                                        child: Container(
+                                          height: 24,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Center(
+                                            child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                shrinkWrap: true,
+                                                itemCount:
+                                                    itemDetail.images.length,
+                                                itemBuilder: (context, index) {
+                                                  return Container(
+                                                    width: 16,
+                                                    height: 16,
+                                                    margin: EdgeInsets.only(
+                                                        right: 6),
+                                                    decoration: BoxDecoration(
+                                                        //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                            width: 1,
+                                                            color:
+                                                                Colors.white),
+                                                        color: _currentIndex ==
+                                                                index
+                                                            ? Colors.white
+                                                            : Colors
+                                                                .transparent),
+                                                  );
+                                                }),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
                                 : CachedNetworkImage(
                                     imageUrl: itemDetail.thumbnail,
                                     placeholder: (context, url) => Image.asset(
@@ -563,7 +668,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                         style: AppTheme.commonDetail),
                                     Spacer(),
                                     Text(
-                                      itemDetail.joiningFee != null && itemDetail.joiningFee!=0
+                                      itemDetail.joiningFee != null &&
+                                              itemDetail.joiningFee != 0
                                           ? '${Helper.formatCurrency(itemDetail.joiningFee)} VND ${itemDetail.joiningFeePeriod != null ? "/" : ""} ${itemDetail.joiningFeePeriod ?? ""}'
                                           : "Liên hệ",
                                       style: TextStyle(
@@ -634,11 +740,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   ],
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Html(
-                                    data: itemDetail.content ?? "",
-                                  )
-                                ),
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Html(
+                                      data: itemDetail.content ?? "",
+                                    )),
                                 Container(
                                     width: double.infinity,
                                     height: 1,

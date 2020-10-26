@@ -7,6 +7,7 @@ import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:html/parser.dart';
 
 //news
 class NewProductWidget extends StatefulWidget {
@@ -48,6 +49,8 @@ class _NewProductWidgetState extends State<NewProductWidget> {
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: news.length,
                       itemBuilder: (context, index) {
+                        final document = parse(news[index].description ?? "");
+                        final String parsedString = parse(document.body.text).documentElement.text;
                         return ConstrainedBox(
                           constraints:
                               BoxConstraints(minHeight: 180, maxHeight: 180),
@@ -107,7 +110,7 @@ class _NewProductWidgetState extends State<NewProductWidget> {
                                         Flexible(
                                           flex: 6,
                                           child: Text(
-                                            news[index].description ?? "",
+                                            parsedString ?? "",
                                             maxLines: 3,
                                             style: TextStyle(fontSize: 16),
                                             overflow: TextOverflow.ellipsis,

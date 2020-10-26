@@ -32,6 +32,7 @@ class _CommentPageState extends State<CommentPage> {
     super.initState();
     getToken();
     _likeCount = widget.itemDetail.likeCount;
+    _isLikeOwner = widget.itemDetail.likeOwner;
   }
 
   @override

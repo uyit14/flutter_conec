@@ -130,11 +130,10 @@ class HomeRemoteRepository {
     return NearbyResponse.fromJson(response);
   }
 
-  Future<NearByClubResponse> fetchNearByClub(
-      double lat, double lng) async {
-    final response = await _helper
-        .get('/api/Post/GetPriorities?lat=$lat&lng=$lng');
-    return NearByClubResponse.fromJson(response);
+  Future<List<LatestItem>> fetchNearByClub(double lat, double lng) async {
+    final response =
+        await _helper.get('/api/Post/GetPriorities');
+    return LatestResponse.fromJson(response).items;
   }
 
   Future<PageResponse> fetchPageIntroduce(String clubId) async {
@@ -163,5 +162,14 @@ class HomeRemoteRepository {
         body: jsonEncode({"id": notifyId}), headers: await Helper.header());
     print(response);
     return DeleteResponse.fromJson(response);
+  }
+
+  Future<bool> reportPost(String postId, String content, String reason) async {
+    final response = await _helper.post('/api/Post/reportPost',
+        headers: await Helper.header(),
+        body: jsonEncode(
+            {'postId': postId, 'content': content, 'reason': reason}));
+    print(response);
+    return response['status'];
   }
 }

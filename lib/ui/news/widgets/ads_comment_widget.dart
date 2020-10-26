@@ -46,6 +46,8 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   void initState() {
     _addDataToList = true;
     super.initState();
+    _likeCount = widget.itemDetail.likeCount;
+    _isLikeOwner = widget.itemDetail.likeOwner;
     getToken();
   }
 
@@ -53,7 +55,6 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_addDataToList) _itemsByCategoryBloc.requestComment(widget.postId);
-    _likeCount = widget.itemDetail.likeCount;
   }
 
   void getToken() async {
