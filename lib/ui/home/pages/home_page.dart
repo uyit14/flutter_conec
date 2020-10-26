@@ -36,6 +36,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedPageIndex = 0;
   HomeBloc _homeBloc = HomeBloc();
+
   //ScrollController _scrollController = ScrollController();
   List<LatestItem> clubs = List<LatestItem>();
 
@@ -346,67 +347,101 @@ class _HomePageState extends State<HomePage> {
                     //         );
                     //       }),
                     // ),
-              child: CarouselSlider(
-                options: CarouselOptions(
-                  height: 150,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  viewportFraction: 0.3
-                ),
-                items: clubs
-                    .map((item) => Container(
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(8)),
-                      child: Stack(
-                        children: <Widget>[
-                          CachedNetworkImage(
-                            imageUrl: item.thumbnail,
-                            placeholder: (context, url) =>
-                                Image.asset(
-                                    "assets/images/placeholder.png"),
-                            errorWidget: (context, url,
-                                error) =>
-                                Image.asset(
-                                    "assets/images/error.png"),
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                          Positioned(
-                            bottom: 0.0,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(
-                                        200, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0)
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                          height: 150,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          viewportFraction: 0.4),
+                      items: clubs
+                          .map((item) => InkWell(
+                                onTap: () {
+                                  if (item.topicId ==
+                                      "333f691d-6595-443d-bae3-9a2681025b53") {
+                                    //news
+                                    Navigator.of(context).pushNamed(
+                                        NewsDetailPage.ROUTE_NAME,
+                                        arguments: {
+                                          'postId': item.postId,
+                                          'title': item.title
+                                        });
+                                  } else if (item.topicId ==
+                                      "333f691d-6585-443a-bae3-9a2681025b53") {
+                                    //ads
+                                    Navigator.of(context).pushNamed(
+                                        SellDetailPage.ROUTE_NAME,
+                                        arguments: {
+                                          'postId': item.postId,
+                                          'title': item.title
+                                        });
+                                  } else {
+                                    Navigator.of(context).pushNamed(
+                                        ItemDetailPage.ROUTE_NAME,
+                                        arguments: {
+                                          'postId': item.postId,
+                                          'title': item.title
+                                        });
+                                  }
+                                },
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.all(4),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: CachedNetworkImage(
+                                          imageUrl: item.thumbnail ?? "",
+                                          placeholder: (context, url) =>
+                                              Image.asset(
+                                                  "assets/images/placeholder.png"),
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                                  "assets/images/error.png"),
+                                          fit: BoxFit.cover,
+                                          width: 160,
+                                          height: 160,
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16),
+                                        margin: EdgeInsets.only(bottom: 8),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xFF0E3311)
+                                                .withOpacity(0.5),
+                                            borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(15),
+                                                bottomRight:
+                                                    Radius.circular(15))),
+                                        height: 45,
+                                        width: 160,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              item.title ?? "",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                   ],
-                                  begin:
-                                  Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
                                 ),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10.0,
-                                  horizontal: 20.0),
-//                                                child: Text(
-//                                                  item.title,
-//                                                  style: TextStyle(
-//                                                    color: Colors.white,
-//                                                    fontSize: 20.0,
-//                                                    fontWeight: FontWeight.bold,
-//                                                  ),
-//                                                ),
-                            ),
-                          ),
-                        ],
-                      )),
-                ))
-                    .toList(),
-              ),
+                              ))
+                          .toList(),
+                    ),
                   )
                 : Container(),
             clubs.length > 0 ? SizedBox(height: 8) : Container(),

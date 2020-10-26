@@ -12,7 +12,7 @@ import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
-import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
+import 'package:html/parser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -31,11 +31,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   ItemsByCategoryBloc _itemsByCategoryBloc;
   var selectedCategory;
   bool _needAddUI = true;
-
-  //PostActionBloc _postActionBloc = PostActionBloc();
   HomeBloc _homeBloc = HomeBloc();
 
-  //List<Province> _listProvinces = List<Province>();
   List<Topic> _listTopic = List<Topic>();
   List<LatestItem> totalItemList = List<LatestItem>();
   var routeArgs;
@@ -340,6 +337,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                             controller: _scrollController,
                             itemCount: totalItemList.length,
                             itemBuilder: (context, index) {
+                              final document = parse(totalItemList[index].description ?? "");
+                              final String parsedString = parse(document.body.text).documentElement.text;
                               return InkWell(
                                 onTap: () {
                                   Navigator.of(context).pushNamed(
@@ -411,8 +410,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(
-                                                    totalItemList[index]
-                                                            .description ??
+                                                    parsedString ??
                                                         "",
                                                     maxLines: 3,
                                                     style:

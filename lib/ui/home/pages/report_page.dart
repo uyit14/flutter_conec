@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class ReportPage extends StatefulWidget {
   static const ROUTE_NAME = '/report-page';
+
   @override
   _ReportPageState createState() => _ReportPageState();
 }
@@ -19,7 +20,7 @@ class _ReportPageState extends State<ReportPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final routeArgs =
-    ModalRoute.of(context).settings.arguments as Map<String, Object>;
+        ModalRoute.of(context).settings.arguments as Map<String, Object>;
     postId = routeArgs['postId'];
   }
 
@@ -37,7 +38,7 @@ class _ReportPageState extends State<ReportPage> {
                   child: ListView.builder(
                       itemCount: Helper.reportList.length,
                       shrinkWrap: true,
-                      itemBuilder: (context, index){
+                      itemBuilder: (context, index) {
                         // return Row(
                         //   children: [
                         //     Radio(
@@ -58,8 +59,7 @@ class _ReportPageState extends State<ReportPage> {
                           trailing: Radio(
                             value: Helper.reportList[index],
                             groupValue: selectedReason,
-                            activeColor:
-                            Color.fromRGBO(220, 65, 50, 1),
+                            activeColor: Color.fromRGBO(220, 65, 50, 1),
                             onChanged: (value) {
                               setState(() {
                                 selectedReason = value;
@@ -68,8 +68,7 @@ class _ReportPageState extends State<ReportPage> {
                           ),
                           contentPadding: EdgeInsets.all(0),
                         );
-                      }
-                  ),
+                      }),
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 16),
@@ -82,37 +81,57 @@ class _ReportPageState extends State<ReportPage> {
                     decoration: InputDecoration(
                         enabledBorder: const OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.red, width: 1)),
+                                BorderSide(color: Colors.red, width: 1)),
                         focusedBorder: const OutlineInputBorder(
                             borderSide:
-                            BorderSide(color: Colors.green, width: 1)),
+                                BorderSide(color: Colors.green, width: 1)),
                         contentPadding: EdgeInsets.all(8),
                         border: const OutlineInputBorder()),
                   ),
                 ),
                 Container(
                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: FlatButton.icon(
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: Colors.red,
-                                width: 1,
-                                style: BorderStyle.solid),
-                            borderRadius: BorderRadius.circular(8)),
-                        onPressed: () {
-                          _reportBloc.requestReport(postId, selectedReason, _controller.text ?? "");
-                          Fluttertoast.showToast(msg: "Gửi báo cáo thành công", textColor: Colors.black87, gravity: ToastGravity.CENTER);
-                          Navigator.of(context).pop();
-                        },
-                        textColor: Colors.red,
-                        icon: Icon(Icons.report),
-                        label: Text("Gửi báo cáo",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold))),
-                  )
-                )
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Builder(
+                          builder: (context) {
+                            return FlatButton.icon(
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: Colors.red,
+                                        width: 1,
+                                        style: BorderStyle.solid),
+                                    borderRadius: BorderRadius.circular(8)),
+                                onPressed: () {
+                                  _reportBloc.requestReport(postId,
+                                      selectedReason, _controller.text ?? "");
+//                            Fluttertoast.showToast(
+//                                msg: "Gửi báo cáo thành công",
+//                                textColor: Colors.black87);
+//                            Navigator.of(context).pop();
+                                  Scaffold.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                        'Gửi báo cáo thành công',
+                                        style: TextStyle(fontSize: 18),
+                                      ),
+                                      duration: Duration(seconds: 10),
+                                      action: SnackBarAction(
+                                          label: 'Quay lại',
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          }),
+                                    ),
+                                  );
+                                },
+                                textColor: Colors.red,
+                                icon: Icon(Icons.report),
+                                label: Text("Gửi báo cáo",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)));
+                          },
+                        )))
               ],
             ),
           ),

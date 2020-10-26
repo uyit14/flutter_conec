@@ -52,7 +52,7 @@ class MyPostRepository {
   }
 
   Future<DeleteResponse> deleteImage(String id, String type) async {
-    final response = await _helper.post('/api/$type/DeleteImage', body: jsonEncode({"id":id}), headers: await Helper.header());
+    final response = await _helper.post('/api/$type/DeleteImage?id=$id', headers: await Helper.header());
     print(response);
     return DeleteResponse.fromJson(response);
   }

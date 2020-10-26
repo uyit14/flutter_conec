@@ -13,6 +13,7 @@ import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:html/parser.dart';
 
 import 'item_detail_page.dart';
 
@@ -437,6 +438,9 @@ class _IntroducePageState extends State<IntroducePage> {
                                           SliverGridDelegateWithFixedCrossAxisCount(
                                               crossAxisCount: 2),
                                       itemBuilder: (_, index) {
+                                        final document = parse(profile
+                                            .posts[index].description ?? "");
+                                        final String parsedString = parse(document.body.text).documentElement.text;
                                         return InkWell(
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
@@ -533,8 +537,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                                               .ellipsis,
                                                         ),
                                                         Text(
-                                                          profile.posts[index]
-                                                                  .description ??
+                                                          parsedString ??
                                                               "",
                                                           style: TextStyle(
                                                               fontSize: 14,

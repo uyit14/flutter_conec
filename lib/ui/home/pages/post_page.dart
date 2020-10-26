@@ -6,6 +6,7 @@ import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import '../../../common/globals.dart' as globals;
 
 import 'item_detail_page.dart';
@@ -40,6 +41,8 @@ class _PostPageState extends State<PostPage> {
                     return ListView.builder(
                         itemCount: postItem.length,
                         itemBuilder: (context, index) {
+                          final document = parse(postItem[index].description ?? "");
+                          final String parsedString = parse(document.body.text).documentElement.text;
                           return InkWell(
                             onTap: () {
                               Navigator.of(context).pushNamed(
@@ -109,8 +112,7 @@ class _PostPageState extends State<PostPage> {
                                                     .trim()
                                                     .length >
                                                     0
-                                                    ? postItem[index]
-                                                    .description
+                                                    ? parsedString
                                                     : "Liên hệ để biết thêm chi tiết",
                                                 maxLines: 3,
                                                 style: TextStyle(fontSize: 16),
