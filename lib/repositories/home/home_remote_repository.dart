@@ -56,9 +56,9 @@ class HomeRemoteRepository {
   }
 
   Future<List<LatestItem>> fetchAllItem(int page,
-      {String province, String district, String topic, String club}) async {
+      {String province, String district, String topic, String club, String keyword}) async {
     final response = await _helper.get(
-        '/api/Post/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}');
+        '/api/Post/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}&keyword=${keyword ?? ""}');
     return LatestResponse.fromJson(response).items;
   }
 

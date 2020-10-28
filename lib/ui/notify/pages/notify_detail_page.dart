@@ -1,5 +1,8 @@
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/notify/notify_response.dart';
+import 'package:conecapp/ui/home/pages/item_detail_page.dart';
+import 'package:conecapp/ui/news/pages/news_detail_page.dart';
+import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:conecapp/ui/notify/pages/notify_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -66,22 +69,59 @@ class _NotifyDetailPageState extends State<NotifyDetailPage> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
             width: double.infinity,
             child: Column(
-              crossAxisAlignment:
-              CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(_notify.title,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16)),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 SizedBox(height: 4),
                 Text(_notify.content),
                 SizedBox(height: 4),
-                Text(_notify.createdDate,
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400)),
+                Row(
+                  children: [
+                    Text(_notify.createdDate,
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400)),
+                    Spacer(),
+                    _notify.topicId != null ? FlatButton(
+                        onPressed: () {
+                          if (_notify.topicId != null) {
+                            if (_notify.topicId ==
+                                "333f691d-6595-443d-bae3-9a2681025b53") {
+                              Navigator.of(context).pushNamed(
+                                  NewsDetailPage.ROUTE_NAME,
+                                  arguments: {
+                                    'postId': _notify.typeId,
+                                  });
+                            } else if (_notify.topicId ==
+                                "333f691d-6585-443a-bae3-9a2681025b53") {
+                              Navigator.of(context).pushNamed(
+                                  SellDetailPage.ROUTE_NAME,
+                                  arguments: {
+                                    'postId': _notify.typeId,
+                                  });
+                            } else {
+                              Navigator.of(context).pushNamed(
+                                  ItemDetailPage.ROUTE_NAME,
+                                  arguments: {
+                                    'postId': _notify.typeId,
+                                    'title': ""
+                                  });
+                            }
+                          }
+                        },
+                        child: Text(
+                          "Xem Tin",
+                          style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        )): Container()
+                  ],
+                ),
               ],
             ),
           ),

@@ -48,6 +48,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   //
   Province provinceData;
   Province districtData;
+  String _keyword;
 
   @override
   void initState() {
@@ -128,17 +129,30 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                     maxLines: 1,
                     onChanged: (value) {
                       setState(() {
+                        _keyword = value;
+                      });
+                      // setState(() {
+                      //   _needAddUI = true;
+                      // });
+                      // if(value.length == 0){
+                      //   print("goto here");
+                      //   totalItemList.clear();
+                      //   _itemsByCategoryBloc.clearSearch();
+                      //   _controller.clear();
+                      // }else{
+                      //   totalItemList.clear();
+                      //   _itemsByCategoryBloc.searchAction(value);
+                      // }
+                    },
+                    onFieldSubmitted: (value){
+                      setState(() {
                         _needAddUI = true;
                       });
-                      if(value.length == 0){
-                        print("goto here");
-                        totalItemList.clear();
-                        _itemsByCategoryBloc.clearSearch();
-                        _controller.clear();
-                      }else{
-                        totalItemList.clear();
-                        _itemsByCategoryBloc.searchAction(value);
-                      }
+                      _currentPage = 1;
+                      totalItemList.clear();
+                      _itemsByCategoryBloc.requestGetAllItem(_currentPage, keyword: value);
+                      _currentPage = 2;
+                      FocusScope.of(context).requestFocus(FocusNode());
                     },
                     controller: _controller,
                     style: TextStyle(fontSize: 18),
@@ -156,14 +170,22 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                   ),
                 ),
                 InkWell(
-                  child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
+                  //child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
+                  child: Icon(Icons.search),
                   onTap: () {
+                    // setState(() {
+                    //   _needAddUI = true;
+                    // });
+                    // totalItemList.clear();
+                    // _itemsByCategoryBloc.clearSearch();
+                    // _controller.clear();
                     setState(() {
                       _needAddUI = true;
                     });
+                    _currentPage = 1;
                     totalItemList.clear();
-                    _itemsByCategoryBloc.clearSearch();
-                    _controller.clear();
+                    _itemsByCategoryBloc.requestGetAllItem(_currentPage, keyword: _keyword);
+                    _currentPage = 2;
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
                 ),

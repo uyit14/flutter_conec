@@ -354,44 +354,48 @@ class _HomePageState extends State<HomePage> {
                   viewportFraction: 0.3
                 ),
                 items: clubs
-                    .map((item) => Container(
+                    .map((item) => Banner(
+                  message: "Ưu tiên",
+                  location: BannerLocation.topEnd,
+                  color: Colors.deepOrange,
+                      child: Container(
                   child: ClipRRect(
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(8)),
-                      child: Stack(
-                        children: <Widget>[
-                          CachedNetworkImage(
-                            imageUrl: item.thumbnail,
-                            placeholder: (context, url) =>
-                                Image.asset(
-                                    "assets/images/placeholder.png"),
-                            errorWidget: (context, url,
-                                error) =>
-                                Image.asset(
-                                    "assets/images/error.png"),
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                          ),
-                          Positioned(
-                            bottom: 0.0,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(
-                                        200, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0)
-                                  ],
-                                  begin:
-                                  Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(8)),
+                        child: Stack(
+                          children: <Widget>[
+                            CachedNetworkImage(
+                              imageUrl: item.thumbnail,
+                              placeholder: (context, url) =>
+                                  Image.asset(
+                                      "assets/images/placeholder.png"),
+                              errorWidget: (context, url,
+                                  error) =>
+                                  Image.asset(
+                                      "assets/images/error.png"),
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                            Positioned(
+                              bottom: 0.0,
+                              left: 0.0,
+                              right: 0.0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color.fromARGB(
+                                          200, 0, 0, 0),
+                                      Color.fromARGB(0, 0, 0, 0)
+                                    ],
+                                    begin:
+                                    Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                  ),
                                 ),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10.0,
-                                  horizontal: 20.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10.0,
+                                    horizontal: 20.0),
 //                                                child: Text(
 //                                                  item.title,
 //                                                  style: TextStyle(
@@ -400,11 +404,12 @@ class _HomePageState extends State<HomePage> {
 //                                                    fontWeight: FontWeight.bold,
 //                                                  ),
 //                                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      )),
-                ))
+                          ],
+                        )),
+                ),
+                    ))
                     .toList(),
               ),
                   )

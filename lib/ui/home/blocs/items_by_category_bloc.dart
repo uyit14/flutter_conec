@@ -54,11 +54,11 @@ class ItemsByCategoryBloc {
 //      _childCommentController.stream;
 
   void requestGetAllItem(int page,
-      {String province, String district, String topic, String club}) async {
+      {String province, String district, String topic, String club, String keyword}) async {
     _allItemController.sink.add(ApiResponse.completed([]));
     if (page != 1) {
       final items = await _repository.fetchAllItem(page,
-          province: province, district: district, club: club, topic: topic);
+          province: province, district: district, club: club, topic: topic, keyword: keyword);
       _originalItems.addAll(items);
       _allItemController.sink.add(ApiResponse.completed(items));
     } else {
@@ -66,7 +66,7 @@ class ItemsByCategoryBloc {
       _originalItems.clear();
       try {
         final items = await _repository.fetchAllItem(page,
-            province: province, district: district, club: club, topic: topic);
+            province: province, district: district, club: club, topic: topic, keyword: keyword);
         _originalItems.addAll(items);
         _allItemController.sink.add(ApiResponse.completed(items));
       } catch (e) {

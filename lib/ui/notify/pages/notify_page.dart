@@ -2,9 +2,13 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/notify/notify_response.dart';
+import 'package:conecapp/ui/home/pages/item_detail_page.dart';
+import 'package:conecapp/ui/news/pages/news_detail_page.dart';
+import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:conecapp/ui/notify/pages/notify_bloc.dart';
 import 'package:conecapp/ui/notify/pages/notify_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 
 class NotifyPage extends StatefulWidget {
   static const ROUTE_NAME = '/notify';
@@ -90,6 +94,8 @@ class _NotifyPageState extends State<NotifyPage> {
                               controller: _scrollController,
                               itemCount: notifyList.length,
                               itemBuilder: (context, index) {
+                                final document = parse(notifyList[index].content ?? "");
+                                final String parsedString = parse(document.body.text).documentElement.text;
                                 return InkWell(
                                   onTap: () {
                                     print('at index $index :' + notifyList[index].read.toString());
@@ -121,7 +127,7 @@ class _NotifyPageState extends State<NotifyPage> {
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 16)),
                                           SizedBox(height: 4),
-                                          Text(notifyList[index].content, maxLines: 2,
+                                          Text(parsedString ?? "", maxLines: 2,
                                             overflow: TextOverflow.ellipsis,),
                                           SizedBox(height: 4),
                                           Text(notifyList[index].createdDate,

@@ -18,6 +18,7 @@ class NotifyResponse {
 class Notify {
   String id;
   String type;
+  String openType;
   String title;
   String content;
   String createdDate;
@@ -25,21 +26,25 @@ class Notify {
   String link;
   bool read;
   String readText;
+  String typeId;
+  String topicId;
 
   Notify(
       {this.id,
         this.type,
+        this.openType,
         this.title,
         this.content,
         this.createdDate,
         this.createdBy,
         this.link,
         this.read,
-        this.readText});
+        this.readText, this.typeId, this.topicId});
 
   Notify.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     type = json['type'];
+    openType = json['openType'];
     title = json['title'];
     content = json['content'];
     createdDate = Helper.formatNotifyDate(json['createdDate']);
@@ -47,5 +52,7 @@ class Notify {
     link = json['link'];
     read = json['read'];
     readText = json['read_Text'];
+    typeId = json['typeId'];
+    topicId = json['topicId'];
   }
 }

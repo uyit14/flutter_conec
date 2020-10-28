@@ -23,6 +23,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:zefyr/zefyr.dart';
 import 'package:quill_delta/quill_delta.dart';
+import 'package:html/parser.dart';
 import 'category_page.dart';
 
 class EditMyPostPage extends StatefulWidget {
@@ -191,10 +192,12 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
             _itemDetail = event.data;
             topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
             if (_itemDetail.content != null) {
-              final document = _itemDetail.content != null
-                  ? _loadDocument('${_itemDetail.content}\n')
+              final document = parse(_itemDetail.content ?? "");
+              final String parsedString = parse(document.body.text).documentElement.text;
+              final notusDocument = _itemDetail.content != null
+                  ? _loadDocument('$parsedString\n')
                   : NotusDocument();
-              _controller = ZefyrController(document);
+              _controller = ZefyrController(notusDocument);
             }
             initValue();
             break;
