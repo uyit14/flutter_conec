@@ -28,6 +28,7 @@ class _SellWidgetState extends State<SellWidget> {
   //
   Province provinceData;
   Province districtData;
+  String _keyword;
 
   //
   int _currentPage = 1;
@@ -61,7 +62,7 @@ class _SellWidgetState extends State<SellWidget> {
         _newsBloc.requestGetAllAds(_currentPage,
             province: provinceData != null ? provinceData.name : "",
             district: districtData != null ? districtData.name : "",
-            club: "");
+            club: "", keyword: _keyword);
         setState(() {
           _currentPage++;
         });
@@ -97,18 +98,31 @@ class _SellWidgetState extends State<SellWidget> {
                       maxLines: 1,
                       onChanged: (value) {
                         setState(() {
+                          _keyword = value;
+                        });
+//                        setState(() {
+//                          _needAddUI = true;
+//                        });
+//                        if(value.length == 0){
+//                          print("goto here");
+//                          totalItemList.clear();
+//                          _newsBloc.clearSportSearch();
+//                          _searchController.clear();
+//                        }else{
+//                          print("goto herere");
+//                          totalItemList.clear();
+//                          _newsBloc.searchSportAction(value);
+//                        }
+                      },
+                      onFieldSubmitted: (value){
+                        setState(() {
                           _needAddUI = true;
                         });
-                        if(value.length == 0){
-                          print("goto here");
-                          totalItemList.clear();
-                          _newsBloc.clearSportSearch();
-                          _searchController.clear();
-                        }else{
-                          print("goto herere");
-                          totalItemList.clear();
-                          _newsBloc.searchSportAction(value);
-                        }
+                        _currentPage = 1;
+                        totalItemList.clear();
+                        _newsBloc.requestGetAllAds(_currentPage, keyword: value);
+                        _currentPage = 2;
+                        FocusScope.of(context).requestFocus(FocusNode());
                       },
                       style: TextStyle(fontSize: 18),
                       controller: _searchController,
@@ -128,14 +142,23 @@ class _SellWidgetState extends State<SellWidget> {
                 ),
                 SizedBox(width: 8),
                 InkWell(
-                  child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
+                  //child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
+                  child: Icon(Icons.search),
                   onTap: () {
+//                    setState(() {
+//                      _needAddUI = true;
+//                    });
+//                    totalItemList.clear();
+//                    _newsBloc.clearSportSearch();
+//                    _searchController.clear();
                     setState(() {
                       _needAddUI = true;
                     });
+                    _currentPage = 1;
                     totalItemList.clear();
-                    _newsBloc.clearSportSearch();
-                    _searchController.clear();
+                    _newsBloc.requestGetAllAds(_currentPage, keyword: _keyword);
+                    _currentPage = 2;
+                    FocusScope.of(context).requestFocus(FocusNode());
                   },
                 )
               ],

@@ -114,13 +114,3 @@ class ConecApp extends StatelessWidget {
     );
   }
 }
-
-/*
-1. Image in detail rotation - DONE
-2. Lost after edit in approved tab - DONE
-3. Report - DONE
-4. Delete image edit info page - API
-5. load html for description - DONE
-6. api priorities - DONE
-7. swift refresh
-*/

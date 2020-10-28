@@ -45,10 +45,10 @@ class NewsBloc {
   List<News> _originalNews = List<News>();
   List<Sport> _originalSport = List<Sport>();
 
-  void requestGetAllNews(int page) async {
+  void requestGetAllNews(int page, {String keyword}) async {
     _newsController.sink.add(ApiResponse.completed([]));
     try {
-      final allNews = await _repository.fetchAllNews(page);
+      final allNews = await _repository.fetchAllNews(page, keyword: keyword);
       _originalNews.addAll(allNews);
       _newsController.sink.add(ApiResponse.completed(allNews));
     } catch (e) {
@@ -67,12 +67,12 @@ class NewsBloc {
   }
 
   void requestGetAllAds(int page,
-      {String province, String district, String topic, String club}) async {
+      {String province, String district, String topic, String club, String keyword}) async {
     print("error here");
     _allAdsController.sink.add(ApiResponse.completed([]));
     if (page != 1) {
       final allAds = await _repository.fetchAllAds(page,
-          province: province, district: district, club: club, topic: topic);
+          province: province, district: district, club: club, topic: topic, keyword: keyword);
       _originalSport.addAll(allAds);
       _allAdsController.sink.add(ApiResponse.completed(allAds));
     } else {
@@ -80,7 +80,7 @@ class NewsBloc {
       //_allAdsController.sink.add(ApiResponse.loading());
       try {
         final allAds = await _repository.fetchAllAds(page,
-            province: province, district: district, club: club, topic: topic);
+            province: province, district: district, club: club, topic: topic, keyword: keyword);
         _originalSport.addAll(allAds);
         _allAdsController.sink.add(ApiResponse.completed(allAds));
       } catch (e) {

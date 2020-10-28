@@ -23,6 +23,7 @@ class _NewsWidgetState extends State<NewsWidget> {
   //
   int _currentPage = 1;
   bool _shouldLoadMore = true;
+  String _keyword;
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _NewsWidgetState extends State<NewsWidget> {
     if (_scrollController.position.extentAfter < 300) {
       if (_shouldLoadMore) {
         _shouldLoadMore = false;
-        _newsBloc.requestGetAllNews(_currentPage);
+        _newsBloc.requestGetAllNews(_currentPage, keyword: _keyword);
         setState(() {
           _currentPage++;
         });
@@ -78,8 +79,16 @@ class _NewsWidgetState extends State<NewsWidget> {
                     child: TextFormField(
                       maxLines: 1,
                       onChanged: (value){
+                        setState(() {
+                          _keyword = value;
+                        });
+                      },
+                      onFieldSubmitted: (value){
                         news.clear();
-                        _newsBloc.searchAction(value);
+                        _currentPage = 1;
+                        _newsBloc.requestGetAllNews(_currentPage, keyword: value);
+                        _currentPage = 2;
+                        //_newsBloc.searchAction(value);
                       },
                       controller: _searchController,
                       style: TextStyle(fontSize: 18),
@@ -99,11 +108,16 @@ class _NewsWidgetState extends State<NewsWidget> {
                 ),
                 SizedBox(width: 8),
                 InkWell(
-                  child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
+                  //child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
+                  child: Icon(Icons.search),
                   onTap: () {
                     news.clear();
-                    _newsBloc.clearSearch();
-                    _searchController.clear();
+                    _currentPage = 1;
+                    _newsBloc.requestGetAllNews(_currentPage, keyword: _keyword);
+                    _currentPage = 2;
+//                    news.clear();
+//                    _newsBloc.clearSearch();
+//                    _searchController.clear();
                   },
                 )
               ],

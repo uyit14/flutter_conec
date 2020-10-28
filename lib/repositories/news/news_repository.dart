@@ -9,8 +9,8 @@ import 'package:conecapp/models/response/sport_response.dart';
 class NewsRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
 
-  Future<List<News>> fetchAllNews(int page) async {
-    final response = await _helper.get("/api/news/getall?page=$page");
+  Future<List<News>> fetchAllNews(int page, {String keyword}) async {
+    final response = await _helper.get("/api/news/getall?page=$page&keyword=${keyword ?? ""}");
     return NewsResponse.fromJson(response).news;
   }
 
@@ -20,9 +20,9 @@ class NewsRepository {
   }
 
   Future<List<Sport>> fetchAllAds(int page,
-      {String province, String district, String topic, String club}) async {
+      {String province, String district, String topic, String club, String keyword}) async {
     final response = await _helper.get(
-        "/api/Ads/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}");
+        "/api/Ads/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}&keyword=${keyword ?? ""}");
     return SportResponse.fromJson(response).sports;
   }
 

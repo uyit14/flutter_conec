@@ -91,7 +91,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
             province: provinceData != null ? provinceData.name : "",
             district: districtData != null ? districtData.name : "",
             topic: selectedCategory ?? categoryTitle ?? "",
-            club: "");
+            club: "", keyword: _keyword);
         setState(() {
           _currentPage++;
         });
