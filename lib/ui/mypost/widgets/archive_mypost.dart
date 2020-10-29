@@ -14,11 +14,39 @@ class ArchiveMyPost extends StatefulWidget {
 
 class _ArchiveMyPostState extends State<ArchiveMyPost> {
   MyPostBloc _myPostBloc;
+  ScrollController _scrollController;
+
+  //
+  int _currentPage = 1;
+  bool _shouldLoadMore = true;
+  List<MyPost> archivedList = [];
+
   @override
   void initState() {
     super.initState();
     _myPostBloc = MyPostBloc();
-    _myPostBloc.requestGetArchive(0);
+    _myPostBloc.requestGetArchive(1);
+    _currentPage = 2;
+  }
+
+  void _scrollListener() {
+    print(_scrollController.position.extentAfter);
+    if (_scrollController.position.extentAfter < 300) {
+      if (_shouldLoadMore) {
+        _shouldLoadMore = false;
+        _myPostBloc.requestGetArchive(_currentPage);
+        setState(() {
+          _currentPage++;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _myPostBloc.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -33,34 +61,48 @@ class _ArchiveMyPostState extends State<ArchiveMyPost> {
                 case Status.LOADING:
                   return UILoading(loadingMessage: snapshot.data.message);
                 case Status.COMPLETED:
-                  List<MyPost> archivedList = snapshot.data.data;
-                  if(archivedList.length > 0){
+                  if (snapshot.data.data.length > 0) {
+                    print("at UI: " + snapshot.data.data.length.toString());
+                    archivedList.addAll(snapshot.data.data);
+                    _shouldLoadMore = true;
+                  } else {
+                    _shouldLoadMore = false;
+                  }
+                  if (archivedList.length > 0) {
                     return ListView.builder(
                         itemCount: archivedList.length,
+                        controller: _scrollController,
                         itemBuilder: (context, index) {
                           return ItemMyPost(
                             myPost: archivedList[index],
                             key: ValueKey("archive"),
                             index: index,
                             status: MyPostStatus.Archive,
-                            callback: (id){
-                              archivedList.removeWhere((element) => element.postId == id);
-                              setState(() {
-                              });
-                            }, refresh: (value){
-                            if(value!=null && value){
-                              archivedList.clear();
-                              _myPostBloc.requestGetArchive(0);
-                            }
-                          },);
+                            callback: (id) {
+                              archivedList.removeWhere(
+                                  (element) => element.postId == id);
+                              setState(() {});
+                            },
+                            refresh: (value) {
+                              if (value != null && value) {
+                                archivedList.clear();
+                                _myPostBloc.requestGetArchive(0);
+                              }
+                            },
+                          );
                         });
                   }
-                  return Container(child: Center(child: Text("Không có dữ liệu")));
+                  return Container(
+                      child: Center(child: Text("Không có dữ liệu")));
                 case Status.ERROR:
                   return UIError(errorMessage: snapshot.data.message);
               }
             }
-            return Container(child: Center(child: Text("Không có dữ liệu"),),);
+            return Container(
+              child: Center(
+                child: Text("Không có dữ liệu"),
+              ),
+            );
           }),
     );
   }
