@@ -17,16 +17,17 @@ class _ArchiveMyPostState extends State<ArchiveMyPost> {
   ScrollController _scrollController;
 
   //
-  int _currentPage = 1;
+  int _currentPage = 0;
   bool _shouldLoadMore = true;
   List<MyPost> archivedList = [];
 
   @override
   void initState() {
     super.initState();
+    _scrollController = new ScrollController()..addListener(_scrollListener);
     _myPostBloc = MyPostBloc();
-    _myPostBloc.requestGetArchive(1);
-    _currentPage = 2;
+    _myPostBloc.requestGetArchive(0);
+    _currentPage = 1;
   }
 
   void _scrollListener() {
@@ -87,6 +88,7 @@ class _ArchiveMyPostState extends State<ArchiveMyPost> {
                               if (value != null && value) {
                                 archivedList.clear();
                                 _myPostBloc.requestGetArchive(0);
+                                _currentPage = 1;
                               }
                             },
                           );

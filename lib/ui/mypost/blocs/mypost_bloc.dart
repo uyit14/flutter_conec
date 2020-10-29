@@ -52,6 +52,7 @@ class MyPostBloc{
   }
   //archive
   void requestGetArchive(int page) async{
+    _archiveController.sink.add(ApiResponse.completed([]));
     if(page != 0){
       final result = await _repository.getMyPostByType(page, "Archive");
       _archiveController.sink.add(ApiResponse.completed(result));
