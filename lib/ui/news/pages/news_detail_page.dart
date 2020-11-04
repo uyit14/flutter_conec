@@ -89,7 +89,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            "Tin Tức",
+            "Bản tin",
             style: TextStyle(color: Colors.black),
           ),
           backgroundColor: Colors.transparent,

@@ -74,7 +74,7 @@ class _NewsPageState extends State<NewsPage> {
                         _selectedPageIndex == 1 ? Colors.red : Colors.grey,
                     onPressed: () => _selectPage(1),
                     icon: Icon(Icons.speaker_notes),
-                    label: Text("Tin tức",
+                    label: Text("Bản tin",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold))),
               )

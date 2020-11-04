@@ -512,7 +512,7 @@ class _HomePageState extends State<HomePage> {
                               : Colors.grey,
                           onPressed: () => _selectPage(1),
                           icon: Icon(Icons.speaker_notes),
-                          label: Text("Tin tức",
+                          label: Text("Bản tin",
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)))
                     ],
