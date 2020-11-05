@@ -74,7 +74,7 @@ class _UserMapPageState extends State<UserMapPage> {
         markers,
       ),
       initialCameraPosition: CameraPosition(
-          target: LatLng(globals.latitude, globals.longitude), zoom: 14),
+          target: LatLng(globals.latitude ?? 0.0, globals.longitude ?? 0.0), zoom: 14),
       onMapCreated: (GoogleMapController controller) {},
     );
   }

@@ -8,7 +8,8 @@ import 'dart:async';
 import 'app_exception.dart';
 
 class ApiBaseHelper {
-  final String _baseUrl = "https://conec.vn";
+  //final String _baseUrl = "https://conec.vn";
+  final String _baseUrl = "http://103.77.167.225";
 
   Future<dynamic> get(String url, {dynamic headers}) async {
     debugPrint('Api Get, url ${_baseUrl+url} \n header $headers');
