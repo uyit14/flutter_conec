@@ -204,9 +204,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                               arguments: _profile)
                           .then((value) {
                         if (value == 0) {
-                          setState(() {
-                            _isMissingData = false;
-                          });
+                          _profileBloc.requestGetProfile();
                         }
                       });
                     });

@@ -516,15 +516,31 @@ class _ItemByCategoryState extends State<ItemByCategory> {
           return Container(
             color: Colors.white,
             height: 250,
-            child: CupertinoPicker(
-              scrollController: controller,
-              onSelectedItemChanged: (value) {
-                setState(() {
-                  selectedCategory = _listTopic[value].title;
-                });
-              },
-              itemExtent: 32,
-              children: _listTopic.map((e) => Text(e.title)).toList(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                FlatButton(
+                  child: Text("Xong", style: AppTheme.changeTextStyle(true)),
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                    if (selectedCategory == null) {
+                      selectedCategory = _listTopic[0].title;
+                    }
+                  },
+                ),
+                Expanded(
+                  child: CupertinoPicker(
+                    scrollController: controller,
+                    onSelectedItemChanged: (value) {
+                      setState(() {
+                        selectedCategory = _listTopic[value].title;
+                      });
+                    },
+                    itemExtent: 32,
+                    children: _listTopic.map((e) => Text(e.title)).toList(),
+                  ),
+                ),
+              ],
             ),
           );
         }).then((value) {
