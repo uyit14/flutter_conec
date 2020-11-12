@@ -16,6 +16,11 @@ class AuthenRepository {
     'Content-Type': 'application/json'
   };
 
+  final headerAppleSignIn = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded'
+  };
+
   Future<LoginResponse> doLogin(String phone, String passWord) async {
     final response = await _helper.post("/api/account/login",
         body: jsonEncode({'UserName': phone, 'Password': passWord}),
@@ -27,7 +32,7 @@ class AuthenRepository {
   Future<LoginResponse> doLoginWithSocial(String tokenId, socialType) async {
     final response = await _helper.post("/api/account/$socialType",
         body: jsonEncode({'idToken': tokenId}),
-        headers: header);
+        headers: socialType == "AppleLogin" ? headerAppleSignIn : header);
     print(response.toString());
     return LoginResponse.fromJson(response);
   }

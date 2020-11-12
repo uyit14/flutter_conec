@@ -368,6 +368,16 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         )
                       : Container(),
+                ),
+                SizedBox(height: 24),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Version 1.0.0",
+                    style: TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w300),
+                  ),
                 )
               ],
             ),

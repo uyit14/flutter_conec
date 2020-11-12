@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/api/api_response.dart';
@@ -16,6 +17,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginPage extends StatefulWidget {
   static const ROUTE_NAME = '/login';
@@ -167,6 +169,27 @@ class _LoginPageState extends State<LoginPage> {
     var responseJson = json.decode(response.body.toString());
     print("Zalo token: " + responseJson['access_token']);
     _authenBloc.requestSocialLogin(responseJson['access_token'], "ZaloLogin");
+    listenLogin();
+  }
+
+  void _loginApple() async{
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      webAuthenticationOptions: WebAuthenticationOptions(
+        clientId:
+        'com.conec.applesignin',
+        redirectUri: Uri.parse(
+          'https://conec.vn/api/account/AppleLogin',
+        ),
+      ),
+    );
+    print("identityToken: ${credential.identityToken}");
+    print("authorizationCode: ${credential.authorizationCode}");
+    print("userIdentifier: ${credential.userIdentifier}");
+    _authenBloc.requestSocialLogin(credential.userIdentifier, "AppleLogin");
     listenLogin();
   }
 
@@ -422,6 +445,10 @@ class _LoginPageState extends State<LoginPage> {
                               backgroundImage:
                               AssetImage("assets/images/zalo-logo.png"),
                             )),
+                        SizedBox(width: 6),
+                        Platform.isIOS ? InkWell(
+                            onTap: _loginApple,
+                            child: Image.asset("assets/images/apple.png", width: 55, height: 55, fit: BoxFit.fill,)) : Container(),
                       ],
                     ),
 //                    InkWell(

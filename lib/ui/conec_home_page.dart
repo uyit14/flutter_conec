@@ -54,7 +54,6 @@ class _ConecHomePageState extends State<ConecHomePage> {
           if (profile.name != null &&
               profile.type != null &&
               profile.phoneNumber != null) {
-            print("---home" + profile.name);
             setState(() {
               _profile = profile;
               _isMissingData = false;

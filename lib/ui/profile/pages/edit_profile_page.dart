@@ -84,7 +84,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     profile = routeArgs;
     //init value
     if (_isApiCall && profile!=null) {
-      print(profile.name + "----------------zz--------------------");
       _name = profile.name;
       _gender = profile.gender ?? "Nam";
       _birthDay = DateTime(
