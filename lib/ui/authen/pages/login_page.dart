@@ -188,8 +188,7 @@ class _LoginPageState extends State<LoginPage> {
     );
     print("identityToken: ${credential.identityToken}");
     print("authorizationCode: ${credential.authorizationCode}");
-    print("userIdentifier: ${credential.userIdentifier}");
-    _authenBloc.requestSocialLogin(credential.userIdentifier, "AppleLogin");
+    _authenBloc.requestSocialLogin(credential.authorizationCode, "AppleLogin");
     listenLogin();
   }
 
@@ -445,107 +444,18 @@ class _LoginPageState extends State<LoginPage> {
                               backgroundImage:
                               AssetImage("assets/images/zalo-logo.png"),
                             )),
-                        SizedBox(width: 6),
-                        Platform.isIOS ? InkWell(
-                            onTap: _loginApple,
-                            child: Image.asset("assets/images/apple.png", width: 55, height: 55, fit: BoxFit.fill,)) : Container(),
+//                        SizedBox(width: 6),
+//                        Platform.isIOS ? InkWell(
+//                            onTap: _loginApple,
+//                            child: Image.asset("assets/images/apple.png", width: 55, height: 55, fit: BoxFit.fill,)) : Container(),
                       ],
                     ),
-//                    InkWell(
-//                      onTap: () async {
-//                        if (await _googleSignIn.isSignedIn()) {
-//                          _handleSignOut();
-//                        }
-//                        _handleSignIn();
-//                      },
-//                      child: Card(
-//                        elevation: 5,
-//                        child: Padding(
-//                          padding: const EdgeInsets.symmetric(
-//                              vertical: 6, horizontal: 32),
-//                          child: Row(
-//                            children: [
-//                              Image.asset(
-//                                "assets/images/google.png",
-//                                width: 40,
-//                                height: 40,
-//                                fit: BoxFit.fill,
-//                              ),
-//                              SizedBox(width: 16),
-//                              Text(
-//                                "Đăng nhập với Google",
-//                                style: TextStyle(
-//                                    fontSize: 18,
-//                                    color: Colors.black,
-//                                    fontWeight: FontWeight.w500),
-//                              )
-//                            ],
-//                          ),
-//                        ),
-//                      ),
-//                    ),
-//                    SizedBox(height: 8),
-//                    InkWell(
-//                      onTap: () async {
-//                        _handleFbSignIn();
-//                      },
-//                      child: Card(
-//                        elevation: 5,
-//                        child: Padding(
-//                          padding: const EdgeInsets.symmetric(
-//                              vertical: 6, horizontal: 32),
-//                          child: Row(
-//                            children: [
-//                              Image.asset(
-//                                "assets/images/facebook.png",
-//                                width: 40,
-//                                height: 40,
-//                                fit: BoxFit.fill,
-//                              ),
-//                              SizedBox(width: 16),
-//                              Text(
-//                                "Đăng nhập với Facebook",
-//                                style: TextStyle(
-//                                    fontSize: 18,
-//                                    color: Colors.black,
-//                                    fontWeight: FontWeight.w500),
-//                              )
-//                            ],
-//                          ),
-//                        ),
-//                      ),
-//                    ),
-//                    SizedBox(height: 8),
-//                    InkWell(
-//                      onTap: () async {
-//                        _handleFbSignIn();
-//                      },
-//                      child: Card(
-//                        elevation: 5,
-//                        child: Padding(
-//                          padding: const EdgeInsets.symmetric(
-//                              vertical: 6, horizontal: 32),
-//                          child: Row(
-//                            children: [
-//                              Image.asset(
-//                                "assets/images/zalo.png",
-//                                width: 40,
-//                                height: 40,
-//                                fit: BoxFit.fill,
-//                              ),
-//                              SizedBox(width: 16),
-//                              Text(
-//                                "Đăng nhập với Zalo",
-//                                style: TextStyle(
-//                                    fontSize: 18,
-//                                    color: Colors.black,
-//                                    fontWeight: FontWeight.w500),
-//                              )
-//                            ],
-//                          ),
-//                        ),
-//                      ),
-//                    )
+                    Platform.isIOS ? SizedBox(
+                      height: 32,
+                    ) : Container(),
+                    Platform.isIOS ? SignInWithAppleButton(
+                      onPressed: _loginApple,
+                    ) : Container()
                   ],
                 ),
               ),

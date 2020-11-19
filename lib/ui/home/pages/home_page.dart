@@ -484,6 +484,23 @@ class _HomePageState extends State<HomePage> {
                       FlatButton.icon(
                           shape: RoundedRectangleBorder(
                               side: BorderSide(
+                                  color: _selectedPageIndex == 1
+                                      ? Colors.red
+                                      : Colors.grey,
+                                  width: 1,
+                                  style: BorderStyle.solid),
+                              borderRadius: BorderRadius.circular(50)),
+                          textColor: _selectedPageIndex == 1
+                              ? Colors.red
+                              : Colors.grey,
+                          onPressed: () => _selectPage(1),
+                          icon: Icon(Icons.speaker_notes),
+                          label: Text("Bản tin",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold))),
+                      FlatButton.icon(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(
                                   color: _selectedPageIndex == 0
                                       ? Colors.red
                                       : Colors.grey,
@@ -498,23 +515,6 @@ class _HomePageState extends State<HomePage> {
                           label: Text("Dụng cụ",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold))),
-                      FlatButton.icon(
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: _selectedPageIndex == 1
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  width: 1,
-                                  style: BorderStyle.solid),
-                              borderRadius: BorderRadius.circular(50)),
-                          textColor: _selectedPageIndex == 1
-                              ? Colors.red
-                              : Colors.grey,
-                          onPressed: () => _selectPage(1),
-                          icon: Icon(Icons.speaker_notes),
-                          label: Text("Bản tin",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)))
                     ],
                   ),
                   _selectedPageIndex == 0

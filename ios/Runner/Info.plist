@@ -29,7 +29,7 @@
 			<string>zalo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.1023098809593-bihtl1luue11o6vi7v4sc392ihmt998n</string>
+				<string>com.googleusercontent.apps.1023098809593-to8m5107al132famesukdhj2eqfeme3t</string>
 				<string>fb682067142403416</string>
 				<string>zalo-3165417292251410919</string>
 			</array>
@@ -56,7 +56,7 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>This app requires access to the camera.</string>
+	<string>This app needs access to camera to take a photo for posting your club info.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location when in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -64,7 +64,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app does not require access to the microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access to the photo library.</string>
+	<string>This app needs access to the photo library to get a photos for posting your club info.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
