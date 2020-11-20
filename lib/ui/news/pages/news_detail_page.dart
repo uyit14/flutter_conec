@@ -9,11 +9,13 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/news_detail.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
+import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 
@@ -26,9 +28,11 @@ class NewsDetailPage extends StatefulWidget {
 
 class _NewsDetailPageState extends State<NewsDetailPage> {
   String postId;
+  String owner;
   String linkShare;
   int _currentIndex = 0;
   NewsBloc _newsBloc = NewsBloc();
+  PostActionBloc _postActionBloc = PostActionBloc();
   bool _setBanners = true;
   PageController _pageController = PageController(initialPage: 0);
   String _token;
@@ -56,6 +60,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
     postId = routeArgs['postId'];
+    owner = routeArgs['owner'];
     _newsBloc.requestNewsDetail(postId);
   }
 
@@ -409,6 +414,31 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
               }
               return Container(child: Text("Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
+        floatingActionButton: owner!=null ? FloatingActionButton.extended(
+          onPressed: () {
+            _postActionBloc
+                .requestPushMyPost(postId);
+            _postActionBloc.pushMyPostStream.listen((event) {
+              switch (event.status) {
+                case Status.LOADING:
+                  break;
+                case Status.COMPLETED:
+                  Helper.showMissingDialog(context, "Đẩy tin thành công",
+                      "Tin của bạn đã được đẩy thành công");
+                  break;
+                case Status.ERROR:
+                  Fluttertoast.showToast(
+                      msg: event.message,
+                      textColor: Colors.black87);
+                  Navigator.pop(context);
+                  break;
+              }
+            });
+          },
+          backgroundColor: Colors.orange,
+          label: Text("Đẩy tin"),
+          icon: Icon(Icons.publish),
+        ) : Container(),
       ),
     );
   }

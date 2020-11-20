@@ -48,7 +48,7 @@ class _NearByPageState extends State<NearByPage> {
                       textColor:
                       _selectedPageIndex == 0 ? Colors.red : Colors.grey,
                       icon: Icon(Icons.list),
-                      label: Text("Tin đăng",
+                      label: Text("Câu lạc bộ",
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold))),
                 ),
@@ -67,7 +67,7 @@ class _NearByPageState extends State<NearByPage> {
                       _selectedPageIndex == 1 ? Colors.red : Colors.grey,
                       onPressed: () => _selectPage(1),
                       icon: Icon(Icons.person),
-                      label: Text("Cá nhân",
+                      label: Text("Huấn luyện viên",
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold))),
                 )

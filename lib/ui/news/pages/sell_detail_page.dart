@@ -11,6 +11,7 @@ import 'package:conecapp/models/response/ads_detail.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
+import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
@@ -18,6 +19,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -30,7 +32,9 @@ class SellDetailPage extends StatefulWidget {
 
 class _SellDetailPageState extends State<SellDetailPage> {
   String postId;
+  String owner;
   NewsBloc _newsBloc = NewsBloc();
+  PostActionBloc _postActionBloc = PostActionBloc();
   String phoneNumber;
   int _currentIndex = 0;
   double lat = 10.8483258;
@@ -66,6 +70,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
       final routeArgs =
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
       postId = routeArgs['postId'];
+      owner = routeArgs['owner'];
       _newsBloc.requestAdsDetail(postId);
       _isCallApi = false;
     }
@@ -663,28 +668,31 @@ class _SellDetailPageState extends State<SellDetailPage> {
                   child: Text(
                       "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
-//        floatingActionButton: Column(
-//          mainAxisSize: MainAxisSize.min,
-//          children: <Widget>[
-//            FloatingActionButton(
-//              heroTag: "call",
-//              onPressed: () async {
-//                await launch('tel:$phoneNumber');
-//              },
-//              backgroundColor: Colors.blue,
-//              child: Icon(Icons.call),
-//            ),
-//            SizedBox(height: 4),
-//            FloatingActionButton(
-//              heroTag: "mess",
-//              onPressed: () async {
-//                await launch('sms:$phoneNumber');
-//              },
-//              backgroundColor: Colors.green,
-//              child: Icon(Icons.message),
-//            )
-//          ],
-//        ),
+        floatingActionButton: owner!=null ? FloatingActionButton.extended(
+          onPressed: () {
+            _postActionBloc
+                .requestPushMyPost(postId);
+            _postActionBloc.pushMyPostStream.listen((event) {
+              switch (event.status) {
+                case Status.LOADING:
+                  break;
+                case Status.COMPLETED:
+                  Helper.showMissingDialog(context, "Đẩy tin thành công",
+                      "Tin của bạn đã được đẩy thành công");
+                  break;
+                case Status.ERROR:
+                  Fluttertoast.showToast(
+                      msg: event.message,
+                      textColor: Colors.black87);
+                  Navigator.pop(context);
+                  break;
+              }
+            });
+          },
+          backgroundColor: Colors.orange,
+          label: Text("Đẩy tin"),
+          icon: Icon(Icons.publish),
+        ) : Container(),
       ),
     );
   }

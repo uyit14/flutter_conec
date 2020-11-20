@@ -56,7 +56,11 @@ class HomeRemoteRepository {
   }
 
   Future<List<LatestItem>> fetchAllItem(int page,
-      {String province, String district, String topic, String club, String keyword}) async {
+      {String province,
+      String district,
+      String topic,
+      String club,
+      String keyword}) async {
     final response = await _helper.get(
         '/api/Post/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}&keyword=${keyword ?? ""}');
     return LatestResponse.fromJson(response).items;
@@ -118,8 +122,8 @@ class HomeRemoteRepository {
   }
 
   Future<bool> likePost(String postId) async {
-    final response = await _helper.post("/api/Comment/likePost",
-        body: jsonEncode(postId), headers: await Helper.header());
+    final response = await _helper.post("/api/Comment/likePost?id=$postId",
+        headers: await Helper.header());
     return response['status'];
   }
 
@@ -131,8 +135,7 @@ class HomeRemoteRepository {
   }
 
   Future<List<LatestItem>> fetchNearByClub(double lat, double lng) async {
-    final response =
-        await _helper.get('/api/Post/GetPriorities');
+    final response = await _helper.get('/api/Post/GetPriorities');
     return LatestResponse.fromJson(response).items;
   }
 

@@ -451,11 +451,14 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     Platform.isIOS ? SizedBox(
-                      height: 32,
+                      height: 16,
                     ) : Container(),
                     Platform.isIOS ? SignInWithAppleButton(
                       onPressed: _loginApple,
-                    ) : Container()
+                    ) : Container(),
+                    Platform.isIOS ? SizedBox(
+                      height: 32,
+                    ) : Container(),
                   ],
                 ),
               ),

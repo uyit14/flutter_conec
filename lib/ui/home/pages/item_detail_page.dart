@@ -14,10 +14,12 @@ import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/home/widgets/comment_widget.dart';
+import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
@@ -39,11 +41,13 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   int _currentIndex = 0;
   bool _setBanners = true;
   String postId;
+  String owner;
   String title;
   double lat = 10.8483258;
   double lng = 106.7686185;
   bool _firstCalculate = true;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
+  PostActionBloc _postActionBloc = PostActionBloc();
   PageController _pageController = PageController(initialPage: 0);
   String _token;
   bool _isTokenExpired = true;
@@ -72,6 +76,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
       postId = routeArgs['postId'];
       title = routeArgs['title'];
+      owner = routeArgs['owner'];
       _itemsByCategoryBloc.requestItemDetail(postId);
       _isCallApi = false;
     }
@@ -425,6 +430,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Row(
                                   children: <Widget>[
@@ -498,135 +504,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               ))
                                         ],
                                       ),
-                                      // Row(
-                                      //   children: <Widget>[
-                                      //     Text(
-                                      //         itemDetail.ratingAvg.toString() ??
-                                      //             "0"),
-                                      //     Icon(Icons.star, color: Colors.amber),
-                                      //     Text(
-                                      //         "(${itemDetail.ratingCount ?? "0"} đánh giá)"),
-                                      //     Spacer(),
-                                      //     FlatButton.icon(
-                                      //         padding: EdgeInsets.all(0),
-                                      //         onPressed: () {
-                                      //           if (_token == null) {
-                                      //             Helper
-                                      //                 .showAuthenticationDialog(
-                                      //                 context);
-                                      //           } else {
-                                      //             showModalBottomSheet(
-                                      //                 context: context,
-                                      //                 builder: (BuildContext
-                                      //                 context) {
-                                      //                   int rating = 5;
-                                      //                   return Container(
-                                      //                     height: 150,
-                                      //                     alignment:
-                                      //                     Alignment
-                                      //                         .center,
-                                      //                     child: Column(
-                                      //                       mainAxisAlignment:
-                                      //                       MainAxisAlignment
-                                      //                           .spaceAround,
-                                      //                       children: <
-                                      //                           Widget>[
-                                      //                         RatingBar(
-                                      //                           initialRating:
-                                      //                           5,
-                                      //                           minRating:
-                                      //                           1,
-                                      //                           direction: Axis
-                                      //                               .horizontal,
-                                      //                           allowHalfRating:
-                                      //                           true,
-                                      //                           itemCount:
-                                      //                           5,
-                                      //                           itemPadding:
-                                      //                           EdgeInsets.symmetric(
-                                      //                               horizontal:
-                                      //                               4.0),
-                                      //                           itemBuilder:
-                                      //                               (context,
-                                      //                               _) =>
-                                      //                               Icon(
-                                      //                                 Icons
-                                      //                                     .star,
-                                      //                                 color: Colors
-                                      //                                     .amber,
-                                      //                               ),
-                                      //                           onRatingUpdate:
-                                      //                               (value) {
-                                      //                             rating = value
-                                      //                                 .toInt();
-                                      //                           },
-                                      //                         ),
-                                      //                         InkWell(
-                                      //                           onTap: () {
-                                      //                             print(
-                                      //                                 "uprating");
-                                      //                             _itemsByCategoryBloc
-                                      //                                 .requestRating(
-                                      //                                 jsonEncode({
-                                      //                                   "postId":
-                                      //                                   itemDetail.postId,
-                                      //                                   "rating":
-                                      //                                   rating
-                                      //                                 }));
-                                      //                             Navigator.of(
-                                      //                                 context)
-                                      //                                 .pop();
-                                      //                           },
-                                      //                           child:
-                                      //                           Container(
-                                      //                             decoration: BoxDecoration(
-                                      //                                 color: Colors
-                                      //                                     .white,
-                                      //                                 borderRadius: BorderRadius.circular(
-                                      //                                     8),
-                                      //                                 border: Border.all(
-                                      //                                     width: 1,
-                                      //                                     color: Colors.grey)),
-                                      //                             height:
-                                      //                             45,
-                                      //                             width:
-                                      //                             250,
-                                      //                             child:
-                                      //                             Center(
-                                      //                               child:
-                                      //                               Text(
-                                      //                                 'Gửi đánh giá',
-                                      //                                 textAlign:
-                                      //                                 TextAlign.center,
-                                      //                                 style: TextStyle(
-                                      //                                     fontSize: 18,
-                                      //                                     color: Colors.black87,
-                                      //                                     fontWeight: FontWeight.w500),
-                                      //                               ),
-                                      //                             ),
-                                      //                           ),
-                                      //                         ),
-                                      //                       ],
-                                      //                     ),
-                                      //                   );
-                                      //                 })
-                                      //                 .then((value) =>
-                                      //                 debugPrint(
-                                      //                     "selectedCity"));
-                                      //           }
-                                      //         },
-                                      //         icon: Icon(
-                                      //           Icons.rate_review,
-                                      //           color: Colors.blue,
-                                      //         ),
-                                      //         label: Text(
-                                      //           "Đánh giá",
-                                      //           style: TextStyle(
-                                      //               color: Colors.blue,
-                                      //               fontSize: 18),
-                                      //         ))
-                                      //   ],
-                                      // )
                                     ],
                                   ),
                                 ),
@@ -741,9 +618,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                 ),
                                 Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Html(
+                                    child: itemDetail.content.contains("<") ? Html(
                                       data: itemDetail.content ?? "",
-                                    )),
+                                    ) : Text(itemDetail.content)),
                                 Container(
                                     width: double.infinity,
                                     height: 1,
@@ -801,28 +678,31 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   child: Text(
                       "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
-//        floatingActionButton: Column(
-//          mainAxisSize: MainAxisSize.min,
-//          children: <Widget>[
-//            FloatingActionButton(
-//              heroTag: "call",
-//              onPressed: () async {
-//                await launch('tel:$phoneNumber');
-//              },
-//              backgroundColor: Colors.blue,
-//              child: Icon(Icons.call),
-//            ),
-//            SizedBox(height: 4),
-//            FloatingActionButton(
-//              heroTag: "mess",
-//              onPressed: () async {
-//                await launch('sms:$phoneNumber');
-//              },
-//              backgroundColor: Colors.green,
-//              child: Icon(Icons.message),
-//            )
-//          ],
-//        ),
+        floatingActionButton: owner!=null ? FloatingActionButton.extended(
+          onPressed: () {
+            _postActionBloc
+                .requestPushMyPost(postId);
+            _postActionBloc.pushMyPostStream.listen((event) {
+              switch (event.status) {
+                case Status.LOADING:
+                  break;
+                case Status.COMPLETED:
+                  Helper.showMissingDialog(context, "Đẩy tin thành công",
+                      "Tin của bạn đã được đẩy thành công");
+                  break;
+                case Status.ERROR:
+                  Fluttertoast.showToast(
+                      msg: event.message,
+                      textColor: Colors.black87);
+                  Navigator.pop(context);
+                  break;
+              }
+            });
+          },
+          backgroundColor: Colors.orange,
+          label: Text("Đẩy tin"),
+          icon: Icon(Icons.publish),
+        ) : Container(),
       ),
     );
   }

@@ -45,8 +45,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void doCallback() {
-    this.widget.callback(1, _selectedPageIndex);
+  void doCallback({int page}) {
+    this.widget.callback(1, page == 0 ? 0 : _selectedPageIndex);
   }
 
   @override
@@ -239,113 +239,30 @@ class _HomePageState extends State<HomePage> {
             clubs.length > 0
                 ? Padding(
                     padding: const EdgeInsets.only(left: 6),
-                    child: Text(
-                      "Tin ưu tiên",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Tin ưu tiên",
+                          style:
+                              TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        InkWell(
+                          onTap: () => doCallback(page: 0),
+                          child: Text(
+                            "Xem thêm",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blue),
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 : Container(),
             clubs.length > 0
                 ? Card(
-                    // child: Container(
-                    //   height: 160,
-                    //   child: ListView.builder(
-                    //       itemCount: clubs.length,
-                    //       //controller: _scrollController,
-                    //       shrinkWrap: true,
-                    //       //reverse: true,
-                    //       scrollDirection: Axis.horizontal,
-                    //       itemBuilder: (context, index) {
-                    //         return InkWell(
-                    //           onTap: () {
-                    //             if(clubs[index].topicId == "333f691d-6595-443d-bae3-9a2681025b53"){
-                    //               //news
-                    //               Navigator.of(context).pushNamed(
-                    //                   NewsDetailPage.ROUTE_NAME,
-                    //                   arguments: {
-                    //                     'postId': clubs[index].postId,
-                    //                     'title': clubs[index].title
-                    //                   });
-                    //             }else if(clubs[index].topicId == "333f691d-6585-443a-bae3-9a2681025b53"){
-                    //               //ads
-                    //               Navigator.of(context).pushNamed(
-                    //                   SellDetailPage.ROUTE_NAME,
-                    //                   arguments: {
-                    //                     'postId': clubs[index].postId,
-                    //                     'title': clubs[index].title
-                    //                   });
-                    //             }else{
-                    //               Navigator.of(context).pushNamed(
-                    //                   ItemDetailPage.ROUTE_NAME,
-                    //                   arguments: {
-                    //                     'postId': clubs[index].postId,
-                    //                     'title': clubs[index].title
-                    //                   });
-                    //             }
-                    //           },
-                    //           child: Stack(
-                    //             children: [
-                    //               Container(
-                    //                 margin: EdgeInsets.all(4),
-                    //                 child: ClipRRect(
-                    //                   borderRadius:
-                    //                       BorderRadius.circular(15),
-                    //                   child: CachedNetworkImage(
-                    //                     imageUrl: clubs[index].thumbnail ?? "",
-                    //                     placeholder: (context, url) =>
-                    //                         Image.asset(
-                    //                             "assets/images/placeholder.png"),
-                    //                     errorWidget: (context, url,
-                    //                             error) =>
-                    //                         Image.asset(
-                    //                             "assets/images/error.png"),
-                    //                     fit: BoxFit.cover,
-                    //                     width: 160,
-                    //                     height: 160,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //               Align(
-                    //                 alignment: Alignment.bottomCenter,
-                    //                 child: Container(
-                    //                   padding: EdgeInsets.symmetric(
-                    //                       horizontal: 16),
-                    //                   margin: EdgeInsets.only(bottom: 8),
-                    //                   decoration: BoxDecoration(
-                    //                       color: Color(0xFF0E3311)
-                    //                           .withOpacity(0.5),
-                    //                       borderRadius: BorderRadius.only(
-                    //                           bottomLeft:
-                    //                               Radius.circular(15),
-                    //                           bottomRight:
-                    //                               Radius.circular(15))),
-                    //                   height: 45,
-                    //                   width: 160,
-                    //                   child: Column(
-                    //                     mainAxisAlignment:
-                    //                         MainAxisAlignment.center,
-                    //                     crossAxisAlignment:
-                    //                         CrossAxisAlignment.start,
-                    //                     children: <Widget>[
-                    //                       Text(
-                    //                         clubs[index].title ?? "",
-                    //                         style: TextStyle(
-                    //                             fontSize: 16,
-                    //                             fontWeight: FontWeight.w600,
-                    //                             color: Colors.white),
-                    //                         maxLines: 2,
-                    //                         overflow: TextOverflow.ellipsis,
-                    //                       ),
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ],
-                    //           ),
-                    //         );
-                    //       }),
-                    // ),
               child: CarouselSlider(
                 options: CarouselOptions(
                   height: 150,

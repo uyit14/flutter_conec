@@ -76,19 +76,22 @@ class _ItemMyPostState extends State<ItemMyPost> {
               NewsDetailPage.ROUTE_NAME,
               arguments: {
                 'postId': widget.myPost.postId,
+                'owner' : "00"
               });
         }else if(widget.myPost.topicId == "333f691d-6585-443a-bae3-9a2681025b53"){
           Navigator.of(context).pushNamed(
               SellDetailPage.ROUTE_NAME,
               arguments: {
                 'postId': widget.myPost.postId,
+                'owner' : "00"
               });
         }else{
             Navigator.of(context).pushNamed(
                 ItemDetailPage.ROUTE_NAME,
                 arguments: {
                   'postId': widget.myPost.postId,
-                  'title': widget.myPost.title
+                  'title': widget.myPost.title,
+                  'owner' : "00"
                 });
         }
       },
