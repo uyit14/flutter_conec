@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/latest_item.dart';
@@ -72,52 +74,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // double _currentPosition = 0.0;
-  //
-  // _scrollToBottom() {
-  //   Timer.periodic(Duration(seconds: 2), (Timer timer) {
-  //       if(_currentPosition == 0.0){
-  //         _currentPosition = _scrollController.position.maxScrollExtent / 3;
-  //       } else if(_currentPosition == _scrollController.position.maxScrollExtent / 3){
-  //         _currentPosition = _scrollController.position.maxScrollExtent * 2 / 3;
-  //       }else if(_currentPosition == _scrollController.position.maxScrollExtent * 2 / 3){
-  //         _currentPosition = _scrollController.position.maxScrollExtent;
-  //       }else{
-  //         _currentPosition = 0.0;
-  //       }
-  //
-  //
-  //     if(_scrollController.hasClients){
-  //       if(_currentPosition == 0.0){
-  //         _scrollController.animateTo(_scrollController.position.maxScrollExtent - _currentPosition,
-  //             duration: Duration(milliseconds: 1), curve: Curves.easeOut);
-  //       }else{
-  //         _scrollController.animateTo(_scrollController.position.maxScrollExtent - _currentPosition,
-  //             duration: Duration(milliseconds: 200), curve: Curves.easeOut);
-  //       }
-  //     }
-  //   });
-  // }
-
-  // void autoPlayBanners(List<Clubs> images) {
-  //   if (images.length > 1) {
-  //     Timer.periodic(Duration(seconds: 2), (Timer timer) {
-  //       if (_currentIndex == images.length) {
-  //         _currentIndex = 0;
-  //       } else {
-  //         _currentIndex++;
-  //       }
-  //       if (_pageController.hasClients) {
-  //         _pageController.animateToPage(
-  //           _currentIndex,
-  //           duration: Duration(milliseconds: 350),
-  //           curve: Curves.easeIn,
-  //         );
-  //       }
-  //     });
-  //   }
-  // }
-
   @override
   void dispose() {
     super.dispose();
@@ -157,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                         List<model.Slider> slider = snapshot.data.data;
                         return CarouselSlider(
                           options: CarouselOptions(
-                            height: 150,
+                            height: Helper.isTablet(context) ? 300 : 150,
                             autoPlay: true,
                             enlargeCenterPage: true,
                           ),
@@ -265,7 +221,7 @@ class _HomePageState extends State<HomePage> {
                 ? Card(
               child: CarouselSlider(
                 options: CarouselOptions(
-                  height: 150,
+                    height: Helper.isTablet(context) ? 300 : 150,
                   autoPlay: true,
                   enlargeCenterPage: true,
                   viewportFraction: 0.3

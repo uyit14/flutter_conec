@@ -49,6 +49,11 @@ class Helper {
     return NumberFormat("#,##0", "en_US").format(number);
   }
 
+  static bool isTablet(BuildContext context){
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+    return shortestSide > 600 ? true : false;
+  }
+
   static String calculatorTime(String time) {
     var different;
     String suffix = "";

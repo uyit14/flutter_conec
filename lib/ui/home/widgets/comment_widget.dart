@@ -112,9 +112,10 @@ class _CommentWidgetState extends State<CommentWidget> {
               setState(() {
                 _addDataToList = true;
               });
-              comments.clear();
-              Navigator.pop(context);
+
             });
+            comments.clear();
+            Navigator.pop(context);
           });
 //        setState(() {
 //          comments.removeWhere((element) => element.id == parentId);

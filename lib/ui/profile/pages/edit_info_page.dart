@@ -11,9 +11,10 @@ import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:html_editor/html_editor.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:zefyr/zefyr.dart';
 import 'package:quill_delta/quill_delta.dart';
 
@@ -74,6 +75,22 @@ class _EditInfoPageState extends State<EditInfoPage> {
     setState(() {});
   }
 
+  Future getImageListIOS() async {
+    List<Asset> assets = await MultiImagePicker.pickImages(maxImages: 10);
+    print("size ${assets.length}");
+    assets.forEach((element) async{
+      final filePath = await FlutterAbsolutePath.getAbsolutePath(element.identifier);
+      File tempFile = File(filePath);
+      if (tempFile.existsSync()) {
+        //files.add(tempFile);
+        setState(() {
+          _images.add(tempFile);
+        });
+      }
+    });
+    Navigator.pop(context);
+  }
+
   Future getImage() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
     _images.add(File(pickedFile.path));
@@ -106,7 +123,7 @@ class _EditInfoPageState extends State<EditInfoPage> {
               CupertinoActionSheetAction(
                 child: Text('Chọn từ thư viện',
                     style: TextStyle(color: Colors.blue)),
-                onPressed: () => getImageList(),
+                onPressed: () => Platform.isAndroid ? getImageList() : getImageListIOS(),
               )
             ],
             cancelButton: CupertinoActionSheetAction(

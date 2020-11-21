@@ -19,8 +19,10 @@ import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:zefyr/zefyr.dart';
 import 'package:quill_delta/quill_delta.dart';
 import 'package:html/parser.dart';
@@ -84,6 +86,23 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
     );
     _images.addAll(files);
     setState(() {});
+    Navigator.pop(context);
+  }
+
+  Future getImageListIOS() async {
+    List<Asset> assets = await MultiImagePicker.pickImages(maxImages: 10);
+    print("size ${assets.length}");
+    assets.forEach((element) async{
+      final filePath = await FlutterAbsolutePath.getAbsolutePath(element.identifier);
+      File tempFile = File(filePath);
+      if (tempFile.existsSync()) {
+        //files.add(tempFile);
+        setState(() {
+          _images.add(tempFile);
+        });
+      }
+    });
+    Navigator.pop(context);
   }
 
   Future getImage() async {
@@ -118,7 +137,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               CupertinoActionSheetAction(
                 child: Text('Chọn từ thư viện',
                     style: TextStyle(color: Colors.blue)),
-                onPressed: () => getImageList(),
+                onPressed: () => Platform.isAndroid ? getImageList() : getImageListIOS(),
               )
             ],
             cancelButton: CupertinoActionSheetAction(
@@ -827,13 +846,22 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   PostActionRequest _postActionRequest;
 
   void doUpdateAction() async{
+    File image01;
+    if(_images.length > 0){
+      image01 = _images[0];
+    }
     var result;
     if(_addressController.text.length >0){
-       result = provinceData != null && districtData!=null && wardData!=null
-          ? await Helper.getLatLng(
-          '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
-          : LatLong(lat: 0.0, long: 0.0);
-      print(result.lat.toString() + "----" + result.long.toString());
+      try{
+        result = provinceData != null && districtData!=null && wardData!=null
+            ? await Helper.getLatLng(
+            '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
+            : LatLong(lat: 0.0, long: 0.0);
+        print(result.lat.toString() + "----" + result.long.toString());
+      }catch(e){
+        Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
+      }
+
     }else{
       result = LatLong(lat: 0.0, long: 0.0);
     }
@@ -844,8 +872,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
           content: _controller.document.toPlainText(),
           thumbnail: _images.length > 0 && _urlImages.length == 0
               ? {
-                  "fileName": _images[0].path.split("/").last,
-                  "base64": base64Encode(_images[0].readAsBytesSync())
+                  "fileName": image01.path.split("/").last,
+                  "base64": base64Encode(image01.readAsBytesSync())
                 }
               : null,
           topicId: topic.id,
@@ -870,8 +898,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
           content: _controller.document.toPlainText(),
           thumbnail: _images.length > 0
               ? {
-                  "fileName": _images[0].path.split("/").last,
-                  "base64": base64Encode(_images[0].readAsBytesSync())
+                  "fileName": image01.path.split("/").last,
+                  "base64": base64Encode(image01.readAsBytesSync())
                 }
               : null,
           topicId: topic.id,
@@ -891,8 +919,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
           content: _controller.document.toPlainText(),
           thumbnail: _images.length > 0
               ? {
-                  "fileName": _images[0].path.split("/").last,
-                  "base64": base64Encode(_images[0].readAsBytesSync())
+                  "fileName": image01.path.split("/").last,
+                  "base64": base64Encode(image01.readAsBytesSync())
                 }
               : null,
           topicId: topic.id,

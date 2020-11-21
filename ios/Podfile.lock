@@ -4,6 +4,11 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
+  - BSGridCollectionViewLayout (1.2.5)
+  - BSImagePicker (2.10.3):
+    - BSGridCollectionViewLayout (= 1.2.5)
+    - BSImageView (= 1.0.3)
+  - BSImageView (1.0.3)
   - DKImagePickerController/Core (4.2.2):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -50,6 +55,8 @@ PODS:
     - Flutter
   - FLAnimatedImage (1.0.12)
   - Flutter (1.0.0)
+  - flutter_absolute_path (0.0.1):
+    - Flutter
   - flutter_facebook_login (0.0.1):
     - FBSDKCoreKit (~> 5.5)
     - FBSDKLoginKit (~> 5.5)
@@ -91,6 +98,9 @@ PODS:
     - GTMSessionFetcher/Core (= 1.4.0)
   - image_picker (0.0.1):
     - Flutter
+  - multi_image_picker (4.7.14):
+    - BSImagePicker (~> 2.10.3)
+    - Flutter
   - path_provider (0.0.1):
     - Flutter
   - screen (0.0.1):
@@ -128,6 +138,7 @@ PODS:
 DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
+  - flutter_absolute_path (from `.symlinks/plugins/flutter_absolute_path/ios`)
   - flutter_facebook_login (from `.symlinks/plugins/flutter_facebook_login/ios`)
   - flutter_zalo_login (from `.symlinks/plugins/flutter_zalo_login/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -136,6 +147,7 @@ DEPENDENCIES:
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - share (from `.symlinks/plugins/share/ios`)
@@ -150,6 +162,9 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AppAuth
+    - BSGridCollectionViewLayout
+    - BSImagePicker
+    - BSImageView
     - DKImagePickerController
     - DKPhotoGallery
     - FBSDKCoreKit
@@ -169,6 +184,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
+  flutter_absolute_path:
+    :path: ".symlinks/plugins/flutter_absolute_path/ios"
   flutter_facebook_login:
     :path: ".symlinks/plugins/flutter_facebook_login/ios"
   flutter_zalo_login:
@@ -185,6 +202,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  multi_image_picker:
+    :path: ".symlinks/plugins/multi_image_picker/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   screen:
@@ -208,6 +227,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
+  BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
+  BSImageView: a149459433a2687157d034c78e059d30ac7f2544
   DKImagePickerController: 4a3e7948a848c4348e600b3fe5ce41478835fa10
   DKPhotoGallery: 0290d32343574f06eaa4c26f8f2f8a1035e916be
   FBSDKCoreKit: 1d5acf7c9d7a2f92bb1a242dc60cae5b7adb91df
@@ -215,6 +237,7 @@ SPEC CHECKSUMS:
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_absolute_path: 5adb13678c88f0bdfba527f3851f9543d01dde66
   flutter_facebook_login: cfb5659f686b1c575ef205c6b6fd20db9679d3c4
   flutter_zalo_login: aa7748742f5adcf1d9d14f4486824a7daf62b3ad
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
@@ -228,6 +251,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
+  multi_image_picker: c068931d08240565e0615fb01437d16984909183
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9

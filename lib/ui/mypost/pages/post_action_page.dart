@@ -16,14 +16,15 @@ import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/mypost/pages/category_page.dart';
 import 'package:conecapp/ui/others/terms_condition_page.dart';
 import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:zefyr/zefyr.dart';
-
-import '../../../common/ui/ui_loading.dart';
 
 class PostActionPage extends StatefulWidget {
   static const ROUTE_NAME = '/post-action';
@@ -77,6 +78,23 @@ class _PostActionPageState extends State<PostActionPage> {
     Navigator.pop(context);
   }
 
+  Future getImageListIOS() async {
+    List<Asset> assets = await MultiImagePicker.pickImages(maxImages: 10);
+    print("size ${assets.length}");
+    assets.forEach((element) async{
+      final filePath = await FlutterAbsolutePath.getAbsolutePath(element.identifier);
+      File tempFile = File(filePath);
+      if (tempFile.existsSync()) {
+        //files.add(tempFile);
+        setState(() {
+          _images.add(tempFile);
+        });
+      }
+    });
+    Navigator.pop(context);
+  }
+
+
   Future getImage() async {
     final pickedFile =
         await picker.getImage(source: ImageSource.camera, imageQuality: 75);
@@ -118,7 +136,7 @@ class _PostActionPageState extends State<PostActionPage> {
               CupertinoActionSheetAction(
                 child: Text('Chọn từ thư viện',
                     style: TextStyle(color: Colors.blue)),
-                onPressed: () => getImageList(),
+                onPressed: () => Platform.isAndroid ? getImageList() : getImageListIOS(),
               )
             ],
             cancelButton: CupertinoActionSheetAction(
@@ -855,11 +873,16 @@ class _PostActionPageState extends State<PostActionPage> {
   void doPostAction() async{
     var result;
     if(_currentSelectedIndex != 6){
-       result = provinceData != null && districtData!=null && wardData!=null
-          ? await Helper.getLatLng(
-          '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
-          : LatLong(lat: 0.0, long: 0.0);
-       print(result.lat.toString() + "----" + result.long.toString());
+      try{
+        result = provinceData != null && districtData!=null && wardData!=null
+            ? await Helper.getLatLng(
+            '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
+            : LatLong(lat: 0.0, long: 0.0);
+        print(result.lat.toString() + "----" + result.long.toString());
+      }catch(e){
+        Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
+      }
+
     }else{
       result = LatLong(lat: 0.0, long: 0.0);
     }

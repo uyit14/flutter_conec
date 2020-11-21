@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/topic.dart';
@@ -33,8 +34,9 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double sizeImage = Helper.isTablet(context) ? 240 : 120;
     return Container(
-      height: 120,
+      height: sizeImage,
       child: StreamBuilder<ApiResponse<List<Topic>>>(
           stream: _homeBloc.topicStream,
           builder: (context, snapshot) {
@@ -55,7 +57,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                   NearByPage.ROUTE_NAME);
                             },
                             child: Container(
-                                width: 120,
+                                height: sizeImage,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(6),
@@ -102,7 +104,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                 });
                           },
                           child: Container(
-                              width: 120,
+                              height: sizeImage,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(6),
