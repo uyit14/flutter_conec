@@ -10,6 +10,7 @@ import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+
 import 'package:provider/provider.dart';
 import 'home/blocs/home_bloc.dart';
 import 'home/pages/items_by_category_page.dart';
