@@ -236,7 +236,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               _currentIndex = currentPage;
                                             });
                                           },
-                                          height: 225,
+                                          //height: 225,
+                                          height: Helper.isTablet(context) ? 320 : 225,
                                           autoPlay: true,
                                           enlargeCenterPage: false,
                                           viewportFraction: 1.0,

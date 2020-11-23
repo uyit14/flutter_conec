@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conecapp/common/api/api_response.dart';
@@ -8,22 +5,17 @@ import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/latest_item.dart';
-import 'package:conecapp/models/response/nearby_club_response.dart';
 import 'package:conecapp/models/response/slider.dart' as model;
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/widgets/categories_widget.dart';
 import 'package:conecapp/ui/home/widgets/latest_items_widget.dart';
 import 'package:conecapp/ui/home/widgets/new_product_widget.dart';
 import 'package:conecapp/ui/home/widgets/new_sport_widget.dart';
-import 'package:conecapp/ui/news/pages/news_detail_page.dart';
-import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
+import '../../../common/globals.dart' as globals;
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import '../widgets/custom_clipper.dart';
 import 'package:flutter/material.dart';
-
-import 'introduce_page.dart';
-import 'item_detail_page.dart';
 import 'items_by_category_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -61,6 +53,10 @@ class _HomePageState extends State<HomePage> {
   void getLocation() async {
     Position position =
         await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print("latttt: ${position.latitude}" ?? "---aaa---");
+    print("longgg: ${position.longitude}" ?? "---aaa---");
+    globals.latitude = position.latitude;
+    globals.longitude = position.longitude;
     _homeBloc.requestGetNearByClub(position.latitude, position.longitude);
     _homeBloc.nearByClubStream.listen((event) {
       if (event.status == Status.COMPLETED) {

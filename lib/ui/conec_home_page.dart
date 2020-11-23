@@ -103,15 +103,15 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     //detectToken();
-    getLocation();
+    //getLocation();
     getToken();
   }
 
   void getLocation() async {
     Position position =
         await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print(position.latitude ?? "---aaa---");
-    print(position.longitude ?? "---aaa---");
+    print("latttt: ${position.latitude}" ?? "---aaa---");
+    print("longgg: ${position.longitude}" ?? "---aaa---");
     globals.latitude = position.latitude;
     globals.longitude = position.longitude;
   }

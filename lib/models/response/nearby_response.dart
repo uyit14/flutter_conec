@@ -8,21 +8,13 @@ class NearbyResponse {
   NearbyResponse.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.data != null) {
-      data['data'] = this.data.toJson();
-    }
-    return data;
-  }
 }
 
 class Data {
   List<Users> users;
-  List<Posts> posts;
+  List<Trainer> trainers;
 
-  Data({this.users, this.posts});
+  Data({this.users, this.trainers});
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['users'] != null) {
@@ -31,23 +23,12 @@ class Data {
         users.add(new Users.fromJson(v));
       });
     }
-    if (json['posts'] != null) {
-      posts = new List<Posts>();
-      json['posts'].forEach((v) {
-        posts.add(new Posts.fromJson(v));
+    if (json['trainers'] != null) {
+      trainers = new List<Trainer>();
+      json['trainers'].forEach((v) {
+        trainers.add(new Trainer.fromJson(v));
       });
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.users != null) {
-      data['users'] = this.users.map((v) => v.toJson()).toList();
-    }
-    if (this.posts != null) {
-      data['posts'] = this.posts.map((v) => v.toJson()).toList();
-    }
-    return data;
   }
 }
 
@@ -88,7 +69,7 @@ class Users {
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    avatar = json['avatar'];
+    avatar = json['avatar']!=null ? Helper.baseURL + json['avatar'] : json['avatar'];
     getAddress = json['getAddress'];
     lat = json['lat'];
     lng = json['lng'];
@@ -102,121 +83,57 @@ class Users {
     phoneNumber = json['phoneNumber'];
     email = json['email'];
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['avatar'] = this.avatar;
-    data['getAddress'] = this.getAddress;
-    data['lat'] = this.lat;
-    data['lng'] = this.lng;
-    data['ratingCount'] = this.ratingCount;
-    data['ratingAvg'] = this.ratingAvg;
-    data['rating_Html'] = this.ratingHtml;
-    data['joinedDate'] = this.joinedDate;
-    data['type'] = this.type;
-    data['dob'] = this.dob;
-    data['gender'] = this.gender;
-    data['phoneNumber'] = this.phoneNumber;
-    data['email'] = this.email;
-    return data;
-  }
 }
 
-class Posts {
-  String postId;
-  String topicId;
-  String title;
-  String description;
-  int joiningFee;
-  String approvedDate;
-  String owner;
-  String thumbnail;
-  String topic;
-  String topicMetaLink;
-  String metaLink;
-  String province;
-  String district;
-  String ward;
-  String address;
+class Trainer {
+  String id;
+  String name;
+  String avatar;
   String getAddress;
-  double lat;
-  double lng;
-  String type;
-  int ratingAvg;
+  num lat;
+  num lng;
   num ratingCount;
+  int ratingAvg;
+  String ratingHtml;
+  String joinedDate;
+  String type;
+  String dob;
+  String gender;
+  String phoneNumber;
+  String email;
 
-  Posts(
-      {this.postId,
-        this.topicId,
-        this.title,
-        this.description,
-        this.joiningFee,
-        this.approvedDate,
-        this.owner,
-        this.thumbnail,
-        this.topic,
-        this.topicMetaLink,
-        this.metaLink,
-        this.province,
-        this.district,
-        this.ward,
-        this.address,
+  Trainer(
+      {this.id,
+        this.name,
+        this.avatar,
         this.getAddress,
         this.lat,
         this.lng,
-        this.type,
+        this.ratingCount,
         this.ratingAvg,
-        this.ratingCount});
+        this.ratingHtml,
+        this.joinedDate,
+        this.type,
+        this.dob,
+        this.gender,
+        this.phoneNumber,
+        this.email});
 
-  Posts.fromJson(Map<String, dynamic> json) {
-    postId = json['postId'];
-    topicId = json['topicId'];
-    title = json['title'];
-    description = json['description'];
-    joiningFee = json['joiningFee'];
-    approvedDate = approvedDate = Helper.formatData(json['approvedDate']);
-    owner = json['owner'];
-    thumbnail = json['thumbnail'] !=null && !json['thumbnail'].contains("http") ? Helper.baseURL + json['thumbnail'] : json['thumbnail'];
-    topic = json['topic'];
-    topicMetaLink = json['topicMetaLink'];
-    metaLink = json['metaLink'];
-    province = json['province'];
-    district = json['district'];
-    ward = json['ward'];
-    address = json['address'];
+  Trainer.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    avatar = json['avatar']!=null ? Helper.baseURL + json['avatar'] : json['avatar'];
     getAddress = json['getAddress'];
     lat = json['lat'];
     lng = json['lng'];
-    type = json['type'];
-    ratingAvg = json['ratingAvg'];
     ratingCount = json['ratingCount'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['postId'] = this.postId;
-    data['topicId'] = this.topicId;
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['joiningFee'] = this.joiningFee;
-    data['approvedDate'] = this.approvedDate;
-    data['owner'] = this.owner;
-    data['thumbnail'] = this.thumbnail;
-    data['topic'] = this.topic;
-    data['topicMetaLink'] = this.topicMetaLink;
-    data['metaLink'] = this.metaLink;
-    data['province'] = this.province;
-    data['district'] = this.district;
-    data['ward'] = this.ward;
-    data['address'] = this.address;
-    data['getAddress'] = this.getAddress;
-    data['lat'] = this.lat;
-    data['lng'] = this.lng;
-    data['type'] = this.type;
-    data['ratingAvg'] = this.ratingAvg;
-    data['ratingCount'] = this.ratingCount;
-    return data;
+    ratingAvg = json['ratingAvg'];
+    ratingHtml = json['rating_Html'];
+    joinedDate = json['joinedDate'];
+    type = json['type'];
+    dob = json['dob'];
+    gender = json['gender'];
+    phoneNumber = json['phoneNumber'];
+    email = json['email'];
   }
 }

@@ -58,6 +58,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                             },
                             child: Container(
                                 height: sizeImage,
+                                width: sizeImage,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(6),
@@ -77,7 +78,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                     Expanded(
                                       child: Image.asset(
                                         "assets/images/GoogleMap_Icon.png",
-                                        fit: BoxFit.cover,
+                                        fit: BoxFit.fill,
                                       ),
                                     ),
                                     SizedBox(height: 4),
