@@ -75,7 +75,7 @@ class Profile {
     id = json['id'];
     name = json['name'];
     email = json['email'];
-    avatar = json['avatar'] == null ? null : Helper.baseURL + json['avatar'];
+    avatar = json['avatar'] !=null && !json['avatar'].contains("http") ? Helper.baseURL + json['avatar'] : json['avatar'];
     gender = json['gender'];
     dob = json['dob'] == null ? null : Helper.formatDob(json['dob']);
     phoneNumber = json['phoneNumber'];

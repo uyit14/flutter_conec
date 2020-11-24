@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
@@ -8,6 +9,9 @@ import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+
+import 'video_player_page.dart';
 
 class DetailProfilePage extends StatefulWidget {
   static const ROUTE_NAME = '/detail-profile';
@@ -65,12 +69,13 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                   clipper: DetailClipper(),
                                   child: Container(
                                     height: 100,
-                                    decoration: BoxDecoration(color: Colors.red),
+                                    decoration:
+                                        BoxDecoration(color: Colors.red),
                                   ),
                                 ),
                                 Positioned(
-                                  right:
-                                      MediaQuery.of(context).size.width / 2 - 50,
+                                  right: MediaQuery.of(context).size.width / 2 -
+                                      50,
                                   top: 0,
                                   child: CircleAvatar(
                                     radius: 50,
@@ -78,7 +83,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                     backgroundImage: profile.avatar == null
                                         ? AssetImage("assets/images/avatar.png")
                                         : CachedNetworkImageProvider(
-                                        profile.avatar),
+                                            profile.avatar),
                                   ),
                                 )
                               ],
@@ -130,10 +135,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                           ],
                                         ),
                                   Text("Địa chỉ", style: AppTheme.profileTitle),
-                                  Text(
-                                      profile.province == null
-                                          ? ""
-                                          : '${profile.ward ?? ""} ${profile.district ?? ""} ${profile.province ?? ""}',
+                                  Text(profile.getAddress ?? "",
                                       style: AppTheme.profileInfo),
                                   Container(
                                     height: 0.5,
@@ -152,6 +154,116 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                   Text("Email", style: AppTheme.profileTitle),
                                   Text(profile.email ?? "",
                                       style: AppTheme.profileInfo),
+                                  Container(
+                                    height: 0.5,
+                                    color: Colors.black12,
+                                    margin: EdgeInsets.symmetric(vertical: 12),
+                                  ),
+                                  Text("Giới thiệu",
+                                      style: AppTheme.profileTitle),
+                                  profile.about != null
+                                      ? Html(
+                                          data: profile.about,
+                                        )
+                                      : Text("Chưa có thông tin giới thiệu",
+                                          style: AppTheme.profileInfo),
+                                  Container(
+                                    height: 0.5,
+                                    color: Colors.black12,
+                                    margin: EdgeInsets.symmetric(vertical: 12),
+                                  ),
+                                  Text("Thư viện ảnh",
+                                      style: AppTheme.profileTitle),
+                                  SizedBox(height: 8),
+                                  profile.images != null &&
+                                          profile.images.length > 0
+                                      ? Row(
+                                          children: profile.images
+                                              .map((image) => Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: 8),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              6),
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            image.fileName,
+                                                        progressIndicatorBuilder: (context,
+                                                                url,
+                                                                downloadProgress) =>
+                                                            CircularProgressIndicator(
+                                                                value: downloadProgress
+                                                                    .progress),
+                                                        placeholder: (context,
+                                                                url) =>
+                                                            Image.asset(
+                                                                "assets/images/placeholder.png",
+                                                                width: 100,
+                                                                height: 100),
+                                                        errorWidget: (context,
+                                                                url, error) =>
+                                                            Image.asset(
+                                                          "assets/images/error.png",
+                                                          width: 100,
+                                                          height: 100,
+                                                        ),
+                                                        fit: BoxFit.cover,
+                                                        width: 100,
+                                                        height: 100,
+                                                      ),
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                        )
+                                      : Text("Chưa có ảnh nào"),
+                                  Container(
+                                    height: 0.5,
+                                    color: Colors.black12,
+                                    margin: EdgeInsets.symmetric(vertical: 12),
+                                  ),
+                                  Text("Thư viện video",
+                                      style: AppTheme.profileTitle),
+                                  SizedBox(height: 8),
+                                  _profile.videoLink == null
+                                      ? Container(
+                                          color: Colors.black12,
+                                          height: Helper.isTablet(context) ? 300 : 200,
+                                          child: Stack(
+                                            children: <Widget>[
+                                              // Center(
+                                              //   child: Image.asset(
+                                              //       "assets/images/placeholder.png",
+                                              //      fit: BoxFit.cover,),
+                                              // ),
+                                              Align(
+                                                alignment: Alignment.center,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    // Navigator.of(context).pushNamed(
+                                                    //     VideoPlayerPage.ROUTE_NAME,
+                                                    //     arguments: {
+                                                    //       "videoLink":
+                                                    //           _profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                                    //     });
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                VideoPlayerPage(
+                                                                    _profile.videoLink ??
+                                                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")));
+                                                  },
+                                                  child: Icon(
+                                                    Icons.play_arrow,
+                                                    color: Colors.black,
+                                                    size: 58,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      : Container(),
                                 ],
                               ),
                             )
@@ -168,10 +280,11 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             Navigator.of(context)
-                .pushNamed(EditProfilePage.ROUTE_NAME, arguments: _profile).then((value) {
-                  if(value==0){
-                    _profileBloc.requestGetProfile();
-                  }
+                .pushNamed(EditProfilePage.ROUTE_NAME, arguments: _profile)
+                .then((value) {
+              if (value == 0) {
+                _profileBloc.requestGetProfile();
+              }
             });
           },
           backgroundColor: Colors.blue,

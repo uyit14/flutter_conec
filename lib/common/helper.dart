@@ -219,6 +219,10 @@ class Helper {
     return isSocial;
   }
 
+  static void appLog({@required String className, @required String functionName, @required String message}){
+    debugPrint('$className - $functionName : $message');
+  }
+
   static Future<bool> isTokenExpired() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var expiredDay = prefs.getString('expired');

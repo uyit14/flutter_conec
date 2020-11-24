@@ -12,21 +12,27 @@ class ProfileRequest {
   String address;
   double lat;
   double lng;
+  String about;
+  List<Map> images;
+  String videoLink;
 
   ProfileRequest(
       {this.name,
-        this.email,
-        this.avatar,
-        this.gender,
-        this.dob,
-        this.phoneNumber,
-        this.type,
-        this.province,
-        this.district,
-        this.ward,
-        this.address,
-        this.lat,
-        this.lng});
+      this.email,
+      this.avatar,
+      this.gender,
+      this.dob,
+      this.phoneNumber,
+      this.type,
+      this.province,
+      this.district,
+      this.ward,
+      this.address,
+      this.lat,
+      this.lng,
+      this.about,
+      this.images,
+      this.videoLink});
 
   Map<String, dynamic> toJson() => {
         if (name != null) 'name': name,
@@ -42,6 +48,9 @@ class ProfileRequest {
         if (address != null) 'address': address,
         if (lat != null) 'lat': lat,
         if (lng != null) 'lng': lng,
+        if (about != null) 'about': about,
+        if (videoLink != null) 'videoLink': videoLink,
+        if (images != null) 'images': images,
       };
 
 //  Map<String, dynamic> toJson() => {

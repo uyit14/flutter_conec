@@ -47,14 +47,14 @@ class AuthenRepository {
 
   Future<VerifyUserNameResponse> verifyUserName(String userName) async {
     final response = await _helper.post("/api/Account/ForgotPassword",
-        body: jsonEncode({'userName': userName}));
+        body: jsonEncode({'userName': userName}), headers: header);
     print(response.toString());
     return VerifyUserNameResponse.fromJson(response);
   }
 
   Future<ResetResponse> resetPassword(String userName, String newPassword, String code) async {
     final response = await _helper.post("/api/Account/ResetPassword",
-        body: jsonEncode({'userName': userName, 'password': newPassword, 'code': code}));
+        body: jsonEncode({'userName': userName, 'password': newPassword, 'code': code}), headers: header);
     print(response.toString());
     return ResetResponse.fromJson(response);
   }

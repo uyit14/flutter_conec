@@ -271,35 +271,35 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-                _token != null && !_isTokenExpired ? SizedBox(height: 8) : Container(),
-                _token != null && !_isTokenExpired
-                    ? InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(InfoPage.ROUTE_NAME);
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {},
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        child: Icon(
-                          Icons.insert_drive_file,
-                          color: Colors.cyan,
-                          size: 30,
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                        shape: CircleBorder(),
-                      ),
-                      Text(
-                        "Thông tin trang",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400),
-                      )
-                    ],
-                  ),
-                )
-                    : Container(),
+                // _token != null && !_isTokenExpired ? SizedBox(height: 8) : Container(),
+                // _token != null && !_isTokenExpired
+                //     ? InkWell(
+                //   onTap: () {
+                //     Navigator.of(context).pushNamed(InfoPage.ROUTE_NAME);
+                //   },
+                //   child: Row(
+                //     children: <Widget>[
+                //       RawMaterialButton(
+                //         onPressed: () {},
+                //         elevation: 2.0,
+                //         fillColor: Colors.white,
+                //         child: Icon(
+                //           Icons.insert_drive_file,
+                //           color: Colors.cyan,
+                //           size: 30,
+                //         ),
+                //         padding: EdgeInsets.all(15.0),
+                //         shape: CircleBorder(),
+                //       ),
+                //       Text(
+                //         "Thông tin trang",
+                //         style: TextStyle(
+                //             fontSize: 20, fontWeight: FontWeight.w400),
+                //       )
+                //     ],
+                //   ),
+                // )
+                //     : Container(),
                 _token != null && !_isTokenExpired ? SizedBox(height: 8) : Container(),
                 _token != null && !_isTokenExpired && !_isSocial
                     ? InkWell(

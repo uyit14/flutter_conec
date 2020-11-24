@@ -17,12 +17,17 @@ import 'package:conecapp/ui/address/ward_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:quill_delta/quill_delta.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:zefyr/zefyr.dart';
 
 class EditProfilePage extends StatefulWidget {
   static const ROUTE_NAME = '/edit-profile';
@@ -35,6 +40,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   File _image;
   final picker = ImagePicker();
   String _name;
+  List<File> _images = List<File>();
   String _gender = "Nam";
   String _address;
   String _email;
@@ -49,9 +55,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   bool _isApiCall = true;
   Province provinceData;
   Province districtData;
+  FocusNode _focusNode = FocusNode();
   Province wardData;
+  List<Images> _urlImages = List();
+  ZefyrController _controller;
 
-  Future getImage(bool isCamera) async {
+  Future getImageAvatar(bool isCamera) async {
     final pickedFile = await picker.getImage(
         source: isCamera ? ImageSource.camera : ImageSource.gallery);
     setState(() {
@@ -65,6 +74,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
+    _controller = ZefyrController(NotusDocument());
     _postActionBloc = PostActionBloc();
     _postActionBloc.requestGetTopicWithHeader();
     _postActionBloc.requestGetProvinces();
@@ -82,8 +92,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.didChangeDependencies();
     final routeArgs = ModalRoute.of(context).settings.arguments;
     profile = routeArgs;
+    _urlImages = profile.images;
     //init value
     if (_isApiCall && profile!=null) {
+      final document = profile.about != null
+          ? _loadDocument('${profile.about}\n')
+          : NotusDocument();
+      _controller = ZefyrController(document);
       _name = profile.name;
       _gender = profile.gender ?? "Nam";
       _birthDay = DateTime(
@@ -112,8 +127,82 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
+  NotusDocument _loadDocument(String data) {
+    // For simplicity we hardcode a simple document with one line of text
+    // saying "Zefyr Quick Start".
+    // (Note that delta must always end with newline.)
+    final Delta delta = Delta()..insert(data);
+    return NotusDocument.fromDelta(delta);
+  }
+
   String restrictFractionalSeconds(String dateTime) =>
       dateTime.replaceFirstMapped(RegExp(r"(\.\d{6})\d+"), (m) => m[1]);
+
+  //page
+  Widget _cameraHolder() {
+    return InkWell(
+      onTap: () {
+        final act = CupertinoActionSheet(
+            actions: <Widget>[
+              CupertinoActionSheetAction(
+                child: Text('Chụp ảnh', style: TextStyle(color: Colors.blue)),
+                onPressed: () => getImagePageIntro(),
+              ),
+              CupertinoActionSheetAction(
+                child: Text('Chọn từ thư viện',
+                    style: TextStyle(color: Colors.blue)),
+                onPressed: () => Platform.isAndroid ? getImageList() : getImageListIOS(),
+              )
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              child: Text('Hủy'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ));
+        showCupertinoModalPopup(
+            context: context, builder: (BuildContext context) => act);
+      },
+      child: Container(
+          decoration: BoxDecoration(
+              color: Colors.black12, borderRadius: BorderRadius.circular(12)),
+          width: 100,
+          height: 100,
+          child: Icon(Icons.camera_alt, size: 32)),
+    );
+  }
+
+  Future getImagePageIntro() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+    _images.add(File(pickedFile.path));
+    setState(() {});
+    Navigator.pop(context);
+  }
+
+  Future getImageList() async {
+    List<File> files = await FilePicker.getMultiFile(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'bmp'],
+    );
+    _images.addAll(files);
+    setState(() {});
+  }
+
+  Future getImageListIOS() async {
+    List<Asset> assets = await MultiImagePicker.pickImages(maxImages: 10);
+    print("size ${assets.length}");
+    assets.forEach((element) async{
+      final filePath = await FlutterAbsolutePath.getAbsolutePath(element.identifier);
+      File tempFile = File(filePath);
+      if (tempFile.existsSync()) {
+        //files.add(tempFile);
+        setState(() {
+          _images.add(tempFile);
+        });
+      }
+    });
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,12 +223,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             CupertinoActionSheetAction(
                               child: Text('Chụp ảnh',
                                   style: TextStyle(color: Colors.blue)),
-                              onPressed: () => getImage(true),
+                              onPressed: () => getImageAvatar(true),
                             ),
                             CupertinoActionSheetAction(
                               child: Text('Chọn từ thư viện',
                                   style: TextStyle(color: Colors.blue)),
-                              onPressed: () => getImage(false),
+                              onPressed: () => getImageAvatar(false),
                             )
                           ],
                           cancelButton: CupertinoActionSheetAction(
@@ -614,6 +703,116 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 ),
                                 border: const OutlineInputBorder()),
                           ),
+                          SizedBox(height: 8),
+                          Text("Giới thiệu", style: AppTheme.profileTitle),
+                          SizedBox(height: 8,),
+                          // HtmlEditor(
+                          //     hint: profile.about == null ? "Nhập thông tin giới thiệu" : "",
+                          //     value: profile.about ?? "",
+                          //     key: keyEditor,
+                          //     showBottomToolbar: false),
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 1, color: Colors.grey),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8))),
+                            height: 200,
+                            child: ZefyrScaffold(
+                              child: ZefyrEditor(
+                                autofocus: false,
+                                controller: _controller,
+                                focusNode: _focusNode,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 8,),
+                          Text("Thư viện ảnh", style: AppTheme.profileTitle),
+                          _images.length == 0 && _urlImages.length == 0
+                              ? Align(
+                            alignment: Alignment.centerLeft,
+                            child: _cameraHolder(),
+                          )
+                              : Container(
+                            height: 100,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: List.from(_urlImages
+                                  .map((e) => Stack(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(right: 4),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(6),
+                                      child: e != null
+                                          ? Image.network(
+                                        e.fileName,
+                                        fit: BoxFit.cover,
+                                        width: 100,
+                                        height: 100,
+                                      )
+                                          : Container(),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: -14,
+                                    right: -10,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        //TODO - call api
+                                        _urlImages.removeWhere(
+                                                (element) => element.id == e.id);
+                                        _postActionBloc.requestDeleteImage(e.id, "Account");
+                                        setState(() {});
+                                      },
+                                      icon: Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ))
+                                  .toList())
+                                ..addAll(List.from(_images
+                                    .map((e) => Stack(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(right: 4),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(6),
+                                        child: e != null
+                                            ? Image.file(
+                                          e,
+                                          fit: BoxFit.cover,
+                                          width: 100,
+                                          height: 100,
+                                        )
+                                            : Container(),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: -14,
+                                      right: -10,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          _images.removeWhere(
+                                                  (element) => element == e);
+                                          setState(() {});
+                                        },
+                                        icon: Icon(
+                                          Icons.remove_circle,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ))
+                                    .toList()))
+                                ..add(_cameraHolder()),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -645,15 +844,34 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return item;
   }
 
+  List<Map> base64ListImage(List<File> fileList) {
+    List<Map> s = new List<Map>();
+    if (fileList.length > 0)
+      fileList.forEach((element) {
+        Map a = {
+          'fileName': element.path.split("/").last,
+          'base64': base64Encode(element.readAsBytesSync())
+        };
+        s.add(a);
+      });
+    return s;
+  }
+
   void doUpdateProfile() async {
     setState(() {
       _isLoading = true;
     });
-    final result = provinceData != null && districtData!=null && wardData!=null
-        ? await Helper.getLatLng(
-        '$_address, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
-        : LatLong(lat: 0.0, long: 0.0);
-    print(result.lat.toString() + "----" + result.long.toString());
+    var result;
+    try{
+      result = provinceData != null && districtData!=null && wardData!=null
+          ? await Helper.getLatLng(
+          '$_address, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
+          : LatLong(lat: 0.0, long: 0.0);
+      print(result.lat.toString() + "----" + result.long.toString());
+    }catch(e){
+      Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
+    }
+
     //
     ProfileRequest _request = ProfileRequest(
       province: provinceData!=null ? provinceData.name : null,
@@ -674,6 +892,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
               "base64": base64Encode(_image.readAsBytesSync())
             }
           : null,
+      about: _controller.document.toPlainText(),
+      images: _images.length > 0 ? base64ListImage(_images) : null,
     );
     _profileBloc.requestUpdateProfile(jsonEncode(_request.toJson()));
     _profileBloc.updateProfileStream.listen((event) {

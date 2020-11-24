@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/login_response.dart';
 import 'package:conecapp/ui/authen/blocs/authen_bloc.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
@@ -223,8 +224,8 @@ class _LoginPageState extends State<LoginPage> {
                       Expanded(
                         child: Image.asset(
                           "assets/images/conec_logo.png",
-                          width: 200,
-                          height: 100,
+                          width: Helper.isTablet(context) ? 300 : 200,
+                          height: Helper.isTablet(context) ? 200 : 100,
                           fit: BoxFit.cover,
                         ),
                       ),

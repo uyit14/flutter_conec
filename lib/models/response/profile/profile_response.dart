@@ -9,9 +9,7 @@ class ProfileResponse {
 
   ProfileResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    if(json['error']!=null){
-      error = json['error'];
-    }
+    error = json['error'];
     profile =
     json['profile'] != null ? new Profile.fromJson(json['profile']) : null;
   }
@@ -28,6 +26,7 @@ class ProfileResponse {
 }
 
 class Profile {
+  String id;
   String name;
   String email;
   String avatar;
@@ -39,11 +38,19 @@ class Profile {
   String district;
   String ward;
   String address;
-  double lat;
-  double lng;
+  String getAddress;
+  num lat;
+  num lng;
+  num ratingAvg;
+  num ratingCount;
+  String about;
+  String videoLink;
+  List<Images> images;
+  List<Posts> posts;
 
   Profile(
-      {this.name,
+      {this.id,
+        this.name,
         this.email,
         this.avatar,
         this.gender,
@@ -54,24 +61,48 @@ class Profile {
         this.district,
         this.ward,
         this.address,
+        this.getAddress,
         this.lat,
-        this.lng});
+        this.lng,
+        this.ratingAvg,
+        this.ratingCount,
+        this.about,
+        this.videoLink,
+        this.images,
+        this.posts});
 
   Profile.fromJson(Map<String, dynamic> json) {
-    name = json['name'] == null ? null : json['name'];
-    email = json['email'] == null ? null : json['email'];
-    avatar = json['avatar'] == null ? null : Helper.baseURL + json['avatar'];
-    gender = json['gender'] == null ? null : json['gender'];
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+    avatar = json['avatar'] !=null && !json['avatar'].contains("http") ? Helper.baseURL + json['avatar'] : json['avatar'];
+    gender = json['gender'];
     dob = json['dob'] == null ? null : Helper.formatDob(json['dob']);
-    phoneNumber = json['phoneNumber'] == null ? null : json['phoneNumber'];
-    type = json['type'] == null ? null : json['type'];
-    //type = 'Club';
-    province = json['province'] == null ? null : json['province'];
-    district = json['district'] == null ? null : json['district'];
-    ward = json['ward'] == null ? null : json['ward'];
-    address = json['address'] == null ? null : json['address'];
-//    lat = json['lat'] == null ? null : json['lat'];
-//    lng = json['lng'] == null ? null : json['lng'];
+    phoneNumber = json['phoneNumber'];
+    type = json['type'];
+    province = json['province'];
+    district = json['district'];
+    ward = json['ward'];
+    address = json['address'];
+    getAddress = json['getAddress'];
+    lat = json['lat'];
+    lng = json['lng'];
+    ratingAvg = json['ratingAvg'];
+    ratingCount = json['ratingCount'];
+    about = json['about'];
+    videoLink = json['videoLink'] !=null ? Helper.baseURL + json['videoLink'] : null;
+    if (json['images'] != null) {
+      images = new List<Images>();
+      json['images'].forEach((v) {
+        images.add(new Images.fromJson(v));
+      });
+    }
+    if (json['posts'] != null) {
+      posts = new List<Posts>();
+      json['posts'].forEach((v) {
+        posts.add(new Posts.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -89,6 +120,131 @@ class Profile {
     data['address'] = this.address;
     data['lat'] = this.lat;
     data['lng'] = this.lng;
+    data['ratingAvg'] = this.ratingAvg;
+    data['about'] = this.about;
+    data['videoLink'] = this.videoLink;
+    if (this.images != null) {
+      data['images'] = this.images.map((v) => v.toJson()).toList();
+    }
+    if (this.posts != null) {
+      data['posts'] = this.posts.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Images {
+  String id;
+  String fileName;
+
+  Images({this.id, this.fileName});
+
+  Images.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    fileName = json['fileName'] !=null ? Helper.baseURL + json['fileName'] : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['fileName'] = this.fileName;
+    return data;
+  }
+}
+
+class Posts {
+  String postId;
+  String topicId;
+  String title;
+  String description;
+  int joiningFee;
+  String approvedDate;
+  String owner;
+  String thumbnail;
+  String topic;
+  String topicMetaLink;
+  String metaLink;
+  String province;
+  String district;
+  String ward;
+  String address;
+  String getAddress;
+  num lat;
+  num lng;
+  String type;
+  num ratingAvg;
+  num ratingCount;
+
+  Posts(
+      {this.postId,
+        this.topicId,
+        this.title,
+        this.description,
+        this.joiningFee,
+        this.approvedDate,
+        this.owner,
+        this.thumbnail,
+        this.topic,
+        this.topicMetaLink,
+        this.metaLink,
+        this.province,
+        this.district,
+        this.ward,
+        this.address,
+        this.getAddress,
+        this.lat,
+        this.lng,
+        this.type,
+        this.ratingAvg,
+        this.ratingCount});
+
+  Posts.fromJson(Map<String, dynamic> json) {
+    postId = json['postId'];
+    topicId = json['topicId'];
+    title = json['title'];
+    description = json['description'];
+    joiningFee = json['joiningFee'];
+    approvedDate = json['approvedDate'];
+    owner = json['owner'];
+    thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
+    topic = json['topic'];
+    topicMetaLink = json['topicMetaLink'];
+    metaLink = json['metaLink'];
+    province = json['province'];
+    district = json['district'];
+    ward = json['ward'];
+    address = json['address'];
+    getAddress = json['getAddress'];
+    lat = json['lat'];
+    lng = json['lng'];
+    type = json['type'];
+    ratingAvg = json['ratingAvg'];
+    ratingCount = json['ratingCount'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['postId'] = this.postId;
+    data['topicId'] = this.topicId;
+    data['title'] = this.title;
+    data['description'] = this.description;
+    data['joiningFee'] = this.joiningFee;
+    data['approvedDate'] = this.approvedDate;
+    data['owner'] = this.owner;
+    data['thumbnail'] = this.thumbnail;
+    data['topic'] = this.topic;
+    data['topicMetaLink'] = this.topicMetaLink;
+    data['metaLink'] = this.metaLink;
+    data['province'] = this.province;
+    data['district'] = this.district;
+    data['ward'] = this.ward;
+    data['address'] = this.address;
+    data['getAddress'] = this.getAddress;
+    data['lat'] = this.lat;
+    data['lng'] = this.lng;
+    data['type'] = this.type;
+    data['ratingAvg'] = this.ratingAvg;
+    data['ratingCount'] = this.ratingCount;
     return data;
   }
 }
