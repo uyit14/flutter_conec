@@ -49,7 +49,7 @@ class ProfileBloc {
         _profileController.sink.addError(ApiResponse.error(result.error));
       }
     } catch (e) {
-      _profileController.sink.addError(ApiResponse.error(e.toString()));
+      _profileController.sink.add(ApiResponse.error(e.toString()));
     }
   }
 
@@ -59,22 +59,18 @@ class ProfileBloc {
       if(result.status){
         _pageController.sink.add(ApiResponse.completed(result.profile));
       }else{
-        _pageController.sink.addError(ApiResponse.error(result.error));
+        _pageController.sink.add(ApiResponse.error(result.error));
       }
   }
 
   void requestUpdateProfile(dynamic body) async {
     _updateProfileController.sink.add(ApiResponse.loading());
-    try {
       final result = await _repository.updateProfile(body);
       if(result.status){
         _updateProfileController.sink.add(ApiResponse.completed(result.profile));
       }else{
-        _updateProfileController.sink.addError(ApiResponse.error(result.error));
+        _updateProfileController.sink.add(ApiResponse.error(result.error));
       }
-    } catch (e) {
-      _updateProfileController.sink.addError(ApiResponse.error(e.toString()));
-    }
   }
 
   void requestUpdatePage(dynamic body) async {
@@ -83,7 +79,7 @@ class ProfileBloc {
       if(result.status){
         _updatePageController.sink.add(ApiResponse.completed(result.profile));
       }else{
-        _updatePageController.sink.addError(ApiResponse.error(result.error));
+        _updatePageController.sink.add(ApiResponse.error(result.error));
       }
   }
 

@@ -870,6 +870,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       print(result.lat.toString() + "----" + result.long.toString());
     }catch(e){
       Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
+      setState(() {
+        _isLoading = false;
+      });
     }
 
     //
@@ -897,14 +900,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
     _profileBloc.requestUpdateProfile(jsonEncode(_request.toJson()));
     _profileBloc.updateProfileStream.listen((event) {
-      if (event.status == Status.COMPLETED) {
-        setState(() {
-          _isLoading = false;
-        });
-        showOKDialog(context);
-      }
-      if (event.status == Status.ERROR) {
-        Fluttertoast.showToast(msg: event.message, textColor: Colors.black87);
+      switch(event.status){
+        case Status.COMPLETED:
+          setState(() {
+            _isLoading = false;
+          });
+          showOKDialog(context);
+          break;
+        case Status.ERROR:
+          Helper.showMissingDialog(context, "Cập nhật lỗi", event.message);
+          setState(() {
+            _isLoading = false;
+          });
+          break;
       }
     });
   }

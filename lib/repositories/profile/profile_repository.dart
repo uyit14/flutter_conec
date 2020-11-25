@@ -19,7 +19,7 @@ class ProfileRepository {
   Future<ProfileResponse> updateProfile(dynamic body) async {
     final response = await _helper.post("/api/Account/SaveProfile",
         headers: await Helper.header(), body: body);
-    print(response);
+    Helper.appLog(className: "ProfileRepository", functionName: "updateProfile", message: response.toString());
     return ProfileResponse.fromJson(response);
   }
 
