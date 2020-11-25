@@ -404,13 +404,12 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                       imageUrl:
                                                           totalItemList[index]
                                                               .thumbnail,
-                                                      progressIndicatorBuilder: (context,
-                                                              url,
-                                                              downloadProgress) =>
-                                                          CircularProgressIndicator(
-                                                              value:
-                                                                  downloadProgress
-                                                                      .progress),
+                                                      placeholder: (context,
+                                                          url) =>
+                                                          Image.asset(
+                                                              "assets/images/placeholder.png",
+                                                              width: 100,
+                                                              height: 120),
                                                       errorWidget: (context,
                                                               url, error) =>
                                                           Image.asset(

@@ -94,13 +94,13 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     return img[0].fileName;
   }
 
-  void getLatLng(String address) async {
-    final result = await Helper.getLatLng(address);
-    setState(() {
-      lat = result.lat;
-      lng = result.long;
-    });
-  }
+//  void getLatLng(String address) async {
+//    final result = await Helper.getLatLng(address);
+//    setState(() {
+//      lat = result.lat;
+//      lng = result.long;
+//    });
+//  }
 
   void autoPlayBanners(List<myImage.Image> images) {
     if (images.length > 1) {
@@ -190,10 +190,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     // }
                     phoneNumber = itemDetail.phoneNumber;
                     linkShare = itemDetail.shareLink;
-                    if (_firstCalculate) {
-                      getLatLng(itemDetail.getAddress);
-                      _firstCalculate = false;
-                    }
+//                    if (_firstCalculate) {
+//                      getLatLng(itemDetail.getAddress);
+//                      _firstCalculate = false;
+//                    }
                     return SingleChildScrollView(
                       child: Column(
                         children: <Widget>[

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1023098809593-tl7ilcd37niru7dnv95kngsaqtgs96qs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.conec.flutter_conec",
+            "certificate_hash": "305cc58102f15c7d4fa0969fab34f9c9fea85747"
+          }
+        },
+        {
           "client_id": "1023098809593-4dln27bjsiqp116vrer3ce56e0ejpp2g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -48,10 +56,11 @@
               "client_type": 3
             },
             {
-              "client_id": "1023098809593-bihtl1luue11o6vi7v4sc392ihmt998n.apps.googleusercontent.com",
+              "client_id": "1023098809593-to8m5107al132famesukdhj2eqfeme3t.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.conecgroup.conecapp"
+                "bundle_id": "com.conec.conecSport",
+                "app_store_id": "1539002688"
               }
             }
           ]

@@ -316,20 +316,11 @@ class _SellWidgetState extends State<SellWidget> {
                                               child: CachedNetworkImage(
                                                 imageUrl: totalItemList[index]
                                                     .thumbnail,
-                                                progressIndicatorBuilder:
-                                                    (context, url,
-                                                            downloadProgress) =>
-                                                        CircularProgressIndicator(
-                                                            value:
-                                                                downloadProgress
-                                                                    .progress),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        Image.asset(
-                                                  "assets/images/error.png",
-                                                  height: 100,
-                                                  width: 100,
-                                                ),
+                                                placeholder: (context, url) =>
+                                                    Image.asset(
+                                                        "assets/images/placeholder.png",
+                                                        width: 100,
+                                                        height: 100),
                                                 fit: BoxFit.cover,
                                                 width: 100,
                                                 height: 100,

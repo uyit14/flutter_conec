@@ -89,7 +89,7 @@ class Comment {
     }
     creator = json['creator'];
     fullname = json['fullname'];
-    profilePictureUrl = json['profile_picture_url'] !=null ? Helper.baseURL + json['profile_picture_url'] : null;
+    profilePictureUrl = json['profile_picture_url'] !=null && json['profile_picture_url'].toString().length > 0 ? Helper.baseURL + json['profile_picture_url'] : null;
 
     createdByAdmin = json['created_by_admin'];
     createdByCurrentUser = json['created_by_current_user'];

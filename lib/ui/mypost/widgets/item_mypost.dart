@@ -301,10 +301,6 @@ class _ItemMyPostState extends State<ItemMyPost> {
                               borderRadius: BorderRadius.circular(6),
                               child: CachedNetworkImage(
                                 imageUrl: widget.myPost.thumbnail ?? "",
-                                progressIndicatorBuilder:
-                                    (context, url, downloadProgress) =>
-                                        CircularProgressIndicator(
-                                            value: downloadProgress.progress),
                                 errorWidget: (context, url, error) =>
                                     Image.asset("assets/images/error.png"),
                                 fit: BoxFit.cover,

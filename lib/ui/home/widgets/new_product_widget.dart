@@ -53,7 +53,7 @@ class _NewProductWidgetState extends State<NewProductWidget> {
                         final String parsedString = parse(document.body.text).documentElement.text;
                         return ConstrainedBox(
                           constraints:
-                              BoxConstraints(minHeight: 180, maxHeight: 180),
+                              BoxConstraints(minHeight: 180, maxHeight: 183),
                           child: InkWell(
                             onTap: () {
                               Navigator.of(context).pushNamed(
@@ -89,20 +89,11 @@ class _NewProductWidgetState extends State<NewProductWidget> {
                                             tag: news[index].postId,
                                             child: CachedNetworkImage(
                                               imageUrl: news[index].thumbnail,
-                                              progressIndicatorBuilder:
-                                                  (context, url,
-                                                          downloadProgress) =>
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress),
-                                              errorWidget: (context, url,
-                                                      error) =>
+                                              placeholder: (context, url) =>
                                                   Image.asset(
-                                                      "assets/images/error.png", height: 100, width: 120,),
-                                              fit: BoxFit.cover,
-                                              height: 100,
-                                              width: 120,
+                                                      "assets/images/placeholder.png",
+                                                      width: 100,
+                                                      height: 100),
                                             ),
                                           ),
                                         ),

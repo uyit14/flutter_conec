@@ -74,13 +74,6 @@ class _InfoPageState extends State<InfoPage> {
                                                   BorderRadius.circular(6),
                                               child: CachedNetworkImage(
                                                 imageUrl: image.fileName,
-                                                progressIndicatorBuilder:
-                                                    (context, url,
-                                                            downloadProgress) =>
-                                                        CircularProgressIndicator(
-                                                            value:
-                                                                downloadProgress
-                                                                    .progress),
                                                 placeholder: (context, url) =>
                                                     Image.asset(
                                                         "assets/images/placeholder.png",

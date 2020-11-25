@@ -78,17 +78,12 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                                       tag: items[index].postId,
                                       child: CachedNetworkImage(
                                         imageUrl: items[index].thumbnail ?? "",
-                                        progressIndicatorBuilder: (context, url,
-                                                downloadProgress) =>
-                                            CircularProgressIndicator(
-                                                value:
-                                                    downloadProgress.progress),
-                                        errorWidget: (context, url, error) =>
+                                        placeholder: (context, url) =>
                                             Image.asset(
-                                                "assets/images/error.png"),
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                        height: double.infinity,
+                                                "assets/images/placeholder.png",
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              height: double.infinity),
                                       ),
                                     ),
                                   ),

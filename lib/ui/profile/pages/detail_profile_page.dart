@@ -189,12 +189,6 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                                       child: CachedNetworkImage(
                                                         imageUrl:
                                                             image.fileName,
-                                                        progressIndicatorBuilder: (context,
-                                                                url,
-                                                                downloadProgress) =>
-                                                            CircularProgressIndicator(
-                                                                value: downloadProgress
-                                                                    .progress),
                                                         placeholder: (context,
                                                                 url) =>
                                                             Image.asset(

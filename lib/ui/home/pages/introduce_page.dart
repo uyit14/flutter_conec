@@ -144,7 +144,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                                             MainAxisAlignment
                                                                 .spaceAround,
                                                         children: <Widget>[
-                                                          RatingBar(
+                                                          RatingBar.builder(
                                                             initialRating: 5,
                                                             minRating: 1,
                                                             direction:
@@ -342,13 +342,6 @@ class _IntroducePageState extends State<IntroducePage> {
                                                             6),
                                                     child: CachedNetworkImage(
                                                       imageUrl: image.fileName,
-                                                      progressIndicatorBuilder: (context,
-                                                              url,
-                                                              downloadProgress) =>
-                                                          CircularProgressIndicator(
-                                                              value:
-                                                                  downloadProgress
-                                                                      .progress),
                                                       placeholder: (context,
                                                               url) =>
                                                           Image.asset(
@@ -471,12 +464,6 @@ class _IntroducePageState extends State<IntroducePage> {
                                                       index]
                                                           .thumbnail ??
                                                           "",
-                                                      progressIndicatorBuilder: (context,
-                                                          url,
-                                                          downloadProgress) =>
-                                                          CircularProgressIndicator(
-                                                              value: downloadProgress
-                                                                  .progress),
                                                       placeholder: (context,
                                                           url) =>
                                                           Image.asset(

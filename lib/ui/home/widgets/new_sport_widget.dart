@@ -68,10 +68,6 @@ class _NewSportWidgetState extends State<NewSportWidget> {
                                     tag: sports[index].postId,
                                     child: CachedNetworkImage(
                                       imageUrl: sports[index].thumbnail,
-                                      progressIndicatorBuilder: (context, url,
-                                              downloadProgress) =>
-                                          CircularProgressIndicator(
-                                              value: downloadProgress.progress),
                                       errorWidget: (context, url, error) =>
                                           Image.asset("assets/images/error.png",
                                               width: imageSize,

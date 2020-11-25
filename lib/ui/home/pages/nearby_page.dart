@@ -35,7 +35,7 @@ class _NearByPageState extends State<NearByPage> {
               children: <Widget>[
                 Container(
                   width: MediaQuery.of(context).size.width / 2 - 30,
-                  child: FlatButton.icon(
+                  child: FlatButton(
                       shape: RoundedRectangleBorder(
                           side: BorderSide(
                               color: _selectedPageIndex == 0
@@ -47,14 +47,13 @@ class _NearByPageState extends State<NearByPage> {
                       onPressed: () => _selectPage(0),
                       textColor:
                       _selectedPageIndex == 0 ? Colors.red : Colors.grey,
-                      icon: Icon(Icons.list),
-                      label: Text("Câu lạc bộ",
+                      child: Text("Câu lạc bộ",
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold))),
+                              fontSize: 16, fontWeight: FontWeight.bold))),
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width / 2 - 30,
-                  child: FlatButton.icon(
+                  child: FlatButton(
                       shape: RoundedRectangleBorder(
                           side: BorderSide(
                               color: _selectedPageIndex == 1
@@ -66,10 +65,11 @@ class _NearByPageState extends State<NearByPage> {
                       textColor:
                       _selectedPageIndex == 1 ? Colors.red : Colors.grey,
                       onPressed: () => _selectPage(1),
-                      icon: Icon(Icons.person),
-                      label: Text("Huấn luyện viên",
+                      child: Text("Huấn luyện viên",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold))),
+                              fontSize: 16, fontWeight: FontWeight.bold))),
                 )
               ],
             ),

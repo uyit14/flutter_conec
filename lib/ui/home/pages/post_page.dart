@@ -74,17 +74,11 @@ class _PostPageState extends State<PostPage> {
                                           borderRadius: BorderRadius.circular(6),
                                           child: CachedNetworkImage(
                                             imageUrl: listTrainers[index].avatar,
-                                            progressIndicatorBuilder: (context,
-                                                url, downloadProgress) =>
-                                                CircularProgressIndicator(
-                                                    value: downloadProgress
-                                                        .progress),
-                                            errorWidget: (context, url, error) =>
+                                            placeholder: (context, url) =>
                                                 Image.asset(
-                                                  "assets/images/error.png",
-                                                  height: 100,
-                                                  width: 120,
-                                                ),
+                                                    "assets/images/placeholder.png",
+                                                    width: 100,
+                                                    height: 120),
                                             fit: BoxFit.cover,
                                             height: 100,
                                             width: 120,
