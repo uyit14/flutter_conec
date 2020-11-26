@@ -21,6 +21,7 @@ import 'package:conecapp/models/response/sport.dart';
 import 'package:conecapp/models/response/sport_response.dart';
 import 'package:conecapp/models/response/topic.dart';
 import 'package:conecapp/models/response/topic_response.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeRemoteRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
@@ -67,13 +68,15 @@ class HomeRemoteRepository {
   }
 
   Future<ItemDetail> fetchItemDetail(String postId) async {
-    final response = await _helper.get('/api/Post/Get?id=$postId');
+    String _queryEnPoint = await Helper.token()!=null ? "GetWithLogin" : "Get";
+    final response = await _helper.get('/api/Post/$_queryEnPoint?id=$postId');
     return ItemDetailResponse.fromJson(response).itemDetail;
   }
 
   Future<List<Comment>> fetchComments(String postId) async {
+    String _queryEnPoint = await Helper.token()!=null ? "getCommentsWithLogin" : "getComments";
     final response =
-        await _helper.get('/api/Comment/getComments?postId=$postId');
+        await _helper.get('/api/Comment/$_queryEnPoint?postId=$postId');
     return CommentResponse.fromJson(response).comments;
   }
 

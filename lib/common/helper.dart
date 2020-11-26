@@ -91,6 +91,12 @@ class Helper {
     return header;
   }
 
+  static Future<String> token() async {
+    var prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    return token;
+  }
+
   static final headerNoToken = {
     'Accept': "application/json",
     'content-type': "application/json"
