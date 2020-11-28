@@ -69,14 +69,16 @@ class HomeRemoteRepository {
 
   Future<ItemDetail> fetchItemDetail(String postId) async {
     String _queryEnPoint = await Helper.token()!=null ? "GetWithLogin" : "Get";
-    final response = await _helper.get('/api/Post/$_queryEnPoint?id=$postId');
+    dynamic _header = await Helper.token()!=null ? await Helper.header() : null;
+    final response = await _helper.get('/api/Post/$_queryEnPoint?id=$postId', headers: _header);
     return ItemDetailResponse.fromJson(response).itemDetail;
   }
 
   Future<List<Comment>> fetchComments(String postId) async {
     String _queryEnPoint = await Helper.token()!=null ? "getCommentsWithLogin" : "getComments";
+    dynamic _header = await Helper.token()!=null ? await Helper.header() : null;
     final response =
-        await _helper.get('/api/Comment/$_queryEnPoint?postId=$postId');
+        await _helper.get('/api/Comment/$_queryEnPoint?postId=$postId', headers: _header);
     return CommentResponse.fromJson(response).comments;
   }
 

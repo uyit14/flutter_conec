@@ -135,17 +135,32 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
           elevation: 0,
           centerTitle: true,
           actions: <Widget>[
-//            IconButton(
-//              onPressed: () {
-//                setState(() {
-//                  _isFavorite = !_isFavorite;
-//                });
-//              },
-//              icon: Icon(
-//                _isFavorite ? Icons.favorite : Icons.favorite_border,
-//                color: Colors.red,
-//              ),
-//            ),
+            owner != null ? IconButton(
+              onPressed: () {
+                _postActionBloc
+                    .requestPushMyPost(postId);
+                _postActionBloc.pushMyPostStream.listen((event) {
+                  switch (event.status) {
+                    case Status.LOADING:
+                      break;
+                    case Status.COMPLETED:
+                      Helper.showMissingDialog(context, "Đẩy tin thành công",
+                          "Tin của bạn sẽ được hiện lên trang đầu");
+                      break;
+                    case Status.ERROR:
+                      Fluttertoast.showToast(
+                          msg: event.message,
+                          textColor: Colors.black87);
+                      Navigator.pop(context);
+                      break;
+                  }
+                });
+              },
+              icon: Icon(
+                Icons.publish,
+                color: Colors.orange,
+              ),
+            ) : Container(),
 //            IconButton(
 //              onPressed: () {
 //                Share.share(linkShare ?? Helper.applicationUrl());
@@ -679,31 +694,31 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   child: Text(
                       "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
-        floatingActionButton: owner!=null ? FloatingActionButton.extended(
-          onPressed: () {
-            _postActionBloc
-                .requestPushMyPost(postId);
-            _postActionBloc.pushMyPostStream.listen((event) {
-              switch (event.status) {
-                case Status.LOADING:
-                  break;
-                case Status.COMPLETED:
-                  Helper.showMissingDialog(context, "Đẩy tin thành công",
-                      "Tin của bạn đã được đẩy thành công");
-                  break;
-                case Status.ERROR:
-                  Fluttertoast.showToast(
-                      msg: event.message,
-                      textColor: Colors.black87);
-                  Navigator.pop(context);
-                  break;
-              }
-            });
-          },
-          backgroundColor: Colors.orange,
-          label: Text("Đẩy tin"),
-          icon: Icon(Icons.publish),
-        ) : Container(),
+//        floatingActionButton: owner!=null ? FloatingActionButton.extended(
+//          onPressed: () {
+//            _postActionBloc
+//                .requestPushMyPost(postId);
+//            _postActionBloc.pushMyPostStream.listen((event) {
+//              switch (event.status) {
+//                case Status.LOADING:
+//                  break;
+//                case Status.COMPLETED:
+//                  Helper.showMissingDialog(context, "Đẩy tin thành công",
+//                      "Tin của bạn sẽ được hiện lên trang đầu");
+//                  break;
+//                case Status.ERROR:
+//                  Fluttertoast.showToast(
+//                      msg: event.message,
+//                      textColor: Colors.black87);
+//                  Navigator.pop(context);
+//                  break;
+//              }
+//            });
+//          },
+//          backgroundColor: Colors.orange,
+//          label: Text("Đẩy tin"),
+//          icon: Icon(Icons.publish),
+//        ) : Container(),
       ),
     );
   }

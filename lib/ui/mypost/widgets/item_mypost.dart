@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
-import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/models/response/mypost_response.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';

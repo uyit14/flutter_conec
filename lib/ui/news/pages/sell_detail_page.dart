@@ -129,15 +129,32 @@ class _SellDetailPageState extends State<SellDetailPage> {
           elevation: 0,
           centerTitle: true,
           actions: <Widget>[
-//            IconButton(
-//              onPressed: () {
-//                Share.share(linkShare ?? Helper.applicationUrl());
-//              },
-//              icon: Icon(
-//                Icons.share,
-//                color: Colors.red,
-//              ),
-//            ),
+            owner!=null ? IconButton(
+              onPressed: () {
+                _postActionBloc
+                    .requestPushMyPost(postId);
+                _postActionBloc.pushMyPostStream.listen((event) {
+                  switch (event.status) {
+                    case Status.LOADING:
+                      break;
+                    case Status.COMPLETED:
+                      Helper.showMissingDialog(context, "Đẩy tin thành công",
+                          "Tin của bạn sẽ được hiện lên trang đầu");
+                      break;
+                    case Status.ERROR:
+                      Fluttertoast.showToast(
+                          msg: event.message,
+                          textColor: Colors.black87);
+                      Navigator.pop(context);
+                      break;
+                  }
+                });
+              },
+              icon: Icon(
+                Icons.publish,
+                color: Colors.orange,
+              ),
+            ) : Container(),
             IconButton(
               onPressed: () {
                 if (_token == null || _token.length == 0) {
@@ -600,12 +617,12 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(right: 20),
-                                  child: Html(
+                                  child: adsDetail.content.contains("<") ? Html(
                                     data: adsDetail.content ?? "",
                                     style: {
                                       "p": Style(padding: EdgeInsets.only(right: 14)),
                                     },
-                                  ),
+                                  ) : Text(adsDetail.content ?? ""),
                                 ),
                                 Container(
                                     width: double.infinity,
@@ -668,31 +685,31 @@ class _SellDetailPageState extends State<SellDetailPage> {
                   child: Text(
                       "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
-        floatingActionButton: owner!=null ? FloatingActionButton.extended(
-          onPressed: () {
-            _postActionBloc
-                .requestPushMyPost(postId);
-            _postActionBloc.pushMyPostStream.listen((event) {
-              switch (event.status) {
-                case Status.LOADING:
-                  break;
-                case Status.COMPLETED:
-                  Helper.showMissingDialog(context, "Đẩy tin thành công",
-                      "Tin của bạn đã được đẩy thành công");
-                  break;
-                case Status.ERROR:
-                  Fluttertoast.showToast(
-                      msg: event.message,
-                      textColor: Colors.black87);
-                  Navigator.pop(context);
-                  break;
-              }
-            });
-          },
-          backgroundColor: Colors.orange,
-          label: Text("Đẩy tin"),
-          icon: Icon(Icons.publish),
-        ) : Container(),
+//        floatingActionButton: owner!=null ? FloatingActionButton.extended(
+//          onPressed: () {
+//            _postActionBloc
+//                .requestPushMyPost(postId);
+//            _postActionBloc.pushMyPostStream.listen((event) {
+//              switch (event.status) {
+//                case Status.LOADING:
+//                  break;
+//                case Status.COMPLETED:
+//                  Helper.showMissingDialog(context, "Đẩy tin thành công",
+//                      "Tin của bạn đã được đẩy thành công");
+//                  break;
+//                case Status.ERROR:
+//                  Fluttertoast.showToast(
+//                      msg: event.message,
+//                      textColor: Colors.black87);
+//                  Navigator.pop(context);
+//                  break;
+//              }
+//            });
+//          },
+//          backgroundColor: Colors.orange,
+//          label: Text("Đẩy tin"),
+//          icon: Icon(Icons.publish),
+//        ) : Container(),
       ),
     );
   }

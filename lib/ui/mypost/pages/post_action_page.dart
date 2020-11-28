@@ -881,6 +881,9 @@ class _PostActionPageState extends State<PostActionPage> {
         print(result.lat.toString() + "----" + result.long.toString());
       }catch(e){
         Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
+        setState(() {
+          _isLoading = false;
+        });
       }
 
     }else{
@@ -956,7 +959,7 @@ class _PostActionPageState extends State<PostActionPage> {
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
               title: Text("Đăng bài thành công"),
-              content: Text("Bạn đã đăng bài thành công, quay lại trang chủ?"),
+              content: Text("Tin của bạn đang chờ phê duyệt, quay lại trang chủ?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                     child: Text("OK"),

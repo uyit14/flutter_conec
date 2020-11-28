@@ -860,6 +860,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
         print(result.lat.toString() + "----" + result.long.toString());
       }catch(e){
         Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
+        setState(() {
+          _isLoading = false;
+        });
       }
 
     }else{
