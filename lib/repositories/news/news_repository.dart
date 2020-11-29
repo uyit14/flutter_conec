@@ -1,4 +1,5 @@
 import 'package:conecapp/common/api/api_base_helper.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/ads_detail.dart';
 import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/news_detail.dart';
@@ -15,7 +16,9 @@ class NewsRepository {
   }
 
   Future<NewsDetail> fetchNewsDetail(String postId) async {
-    final response = await _helper.get('/api/News/Get?id=$postId');
+    String _queryEnPoint = await Helper.token()!=null ? "GetWithLogin" : "Get";
+    dynamic _header = await Helper.token()!=null ? await Helper.header() : null;
+    final response = await _helper.get('/api/News/$_queryEnPoint?id=$postId', headers: _header);
     return NewsDetailResponse.fromJson(response).news;
   }
 
@@ -27,7 +30,9 @@ class NewsRepository {
   }
 
   Future<AdsDetail> fetchAdsDetail(String postId) async {
-    final response = await _helper.get('/api/Ads/Get?id=$postId');
+    String _queryEnPoint = await Helper.token()!=null ? "GetWithLogin" : "Get";
+    dynamic _header = await Helper.token()!=null ? await Helper.header() : null;
+    final response = await _helper.get('/api/Ads/$_queryEnPoint?id=$postId', headers: _header);
     return AdsDetailsResponse.fromJson(response).adsDetail;
   }
 }

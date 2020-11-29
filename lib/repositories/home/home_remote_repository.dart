@@ -85,6 +85,7 @@ class HomeRemoteRepository {
   Future<Comment> postComment(dynamic body) async {
     final response = await _helper.post("/api/Comment/postComment",
         body: body, headers: await Helper.header());
+    print(response);
     return PostCommentResponse.fromJson(response).comments;
   }
 

@@ -344,6 +344,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                                           "parent": _parentId
                                         }))
                               .then((value) {
+                                print("value: $value");
                             if (value.parent == null) {
                               comments.add(value);
                             } else {
