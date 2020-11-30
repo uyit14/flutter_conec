@@ -168,6 +168,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
         _joiningFreeController =
             TextEditingController(text: _itemDetail.joiningFee.toString());
         _type = _itemDetail.joiningFeePeriod;
+        _conditionController =
+            TextEditingController(text: _itemDetail.generalCondition);
+        _usesController = TextEditingController(text: _itemDetail.uses);
       }else if(typePost=="sell"){
         _joiningFreeController =
             TextEditingController(text: _itemDetail.price.toString());
