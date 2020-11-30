@@ -168,9 +168,16 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
         _joiningFreeController =
             TextEditingController(text: _itemDetail.joiningFee.toString());
         _type = _itemDetail.joiningFeePeriod;
-      }else{
+      }else if(typePost=="sell"){
         _joiningFreeController =
             TextEditingController(text: _itemDetail.price.toString());
+        _usesController = TextEditingController(text: _itemDetail.uses);
+        _conditionController =
+            TextEditingController(text: _itemDetail.generalCondition);
+      }else{
+        _joiningFreeController = TextEditingController();
+        _conditionController = TextEditingController();
+        _usesController = TextEditingController();
       }
       _titleController = TextEditingController(text: _itemDetail.title);
       _phoneController = TextEditingController(text: _itemDetail.phoneNumber);
@@ -181,9 +188,6 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
       setSelectedIndex(topic);
       _urlImages = _itemDetail.images;
-      _usesController = TextEditingController(text: _itemDetail.uses);
-      _conditionController =
-          TextEditingController(text: _itemDetail.generalCondition);
     });
   }
 
