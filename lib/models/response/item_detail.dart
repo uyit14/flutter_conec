@@ -93,7 +93,7 @@ class ItemDetail {
     content = json['content'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
-    ownerAvatar = json['ownerAvatar'] !=null ? Helper.baseURL + json['ownerAvatar'] : null;
+    ownerAvatar = json['ownerAvatar'] !=null && !json['ownerAvatar'].contains("http") ? Helper.baseURL + json['ownerAvatar'] : json['ownerAvatar'];
     ownerId = json['ownerId'] ?? null;
     ratingCount = json['ratingCount'];
     ratingAvg = json['ratingAvg'];

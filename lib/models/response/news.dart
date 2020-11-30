@@ -28,7 +28,7 @@ class News {
     description = json['description'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
-    thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
+    thumbnail = json['thumbnail'] !=null && !json['thumbnail'].contains("http") ? Helper.baseURL + json['thumbnail'] : json['thumbnail'];
     topic = json['topic'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];

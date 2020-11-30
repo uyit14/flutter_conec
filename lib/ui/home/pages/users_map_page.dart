@@ -19,7 +19,7 @@ class _UserMapPageState extends State<UserMapPage> {
   @override
   void initState() {
     super.initState();
-    _homeBloc.requestGetNearBy(globals.latitude, globals.longitude, 5);
+    _homeBloc.requestGetNearBy(globals.latitude, globals.longitude, 50);
     _homeBloc.nearByStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:

@@ -9,7 +9,7 @@ class Image {
 
   Image.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    fileName = json['fileName'] !=null ? Helper.baseURL + json['fileName'] : null;
+    fileName = json['fileName'] !=null && !json['fileName'].contains("http") ? Helper.baseURL + json['fileName'] : json['fileName'];
     created = json['created'];
   }
 

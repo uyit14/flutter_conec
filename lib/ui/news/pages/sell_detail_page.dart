@@ -202,33 +202,6 @@ class _SellDetailPageState extends State<SellDetailPage> {
                             child: adsDetail.images.length > 0
                                 ? Stack(
                                     children: [
-                                      // Container(
-                                      //   height: 225,
-                                      //   child: PageView.builder(
-                                      //       itemCount: adsDetail.images.length,
-                                      //       controller: _pageController,
-                                      //       onPageChanged: (currentPage) {
-                                      //         setState(() {
-                                      //           _currentIndex = currentPage;
-                                      //         });
-                                      //       },
-                                      //       itemBuilder: (context, index) {
-                                      //         return CachedNetworkImage(
-                                      //           imageUrl: adsDetail
-                                      //               .images[index].fileName,
-                                      //           placeholder: (context, url) =>
-                                      //               Image.asset(
-                                      //                   "assets/images/placeholder.png"),
-                                      //           errorWidget: (context, url,
-                                      //                   error) =>
-                                      //               Image.asset(
-                                      //                   "assets/images/error.png"),
-                                      //           fit: BoxFit.cover,
-                                      //           width: double.infinity,
-                                      //           height: 225,
-                                      //         );
-                                      //       }),
-                                      // ),
                                       CarouselSlider(
                                         options: CarouselOptions(
                                           onPageChanged: (currentPage, reason) {

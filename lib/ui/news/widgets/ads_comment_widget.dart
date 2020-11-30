@@ -97,16 +97,16 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
             _isShowCommentInput = !_isShowCommentInput;
           });
         } else {
-          print("ui delete at: " +
-              comments
-                  .indexWhere((element) => element.id == parentId)
-                  .toString());
-          print("with content ui: " + comments[0].content);
-          int deleteAt =
-              comments.indexWhere((element) => element.id == parentId);
           Helper.showDeleteDialog(context, "Xóa bình luận",
               "Bạn có chắc chắn muốn xóa bình luận này?", () {
             _itemsByCategoryBloc.requestDeleteComment(parentId).then((value) {
+              print("ui delete at: " +
+                  comments
+                      .indexWhere((element) => element.id == parentId)
+                      .toString());
+              print("with content ui: " + comments[0].content);
+              int deleteAt =
+              comments.indexWhere((element) => element.id == parentId);
               if (deleteAt == -1) {
                 _itemsByCategoryBloc.allComments
                     .removeWhere((element) => element.id == parentId);
@@ -119,6 +119,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
             });
             comments.clear();
             Navigator.pop(context);
+            widget.reloadPage();
           });
 //        setState(() {
 //          comments.removeWhere((element) => element.id == parentId);

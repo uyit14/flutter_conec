@@ -23,7 +23,8 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
 
   String _token;
   bool _isTokenExpired = true;
-  void getToken() async{
+
+  void getToken() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
     setState(() {
@@ -43,8 +44,10 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onLongPress: (){
-        widget.callback(widget.comment.id, true);
+      onLongPress: () {
+        if (widget.comment.createdByCurrentUser) {
+          widget.callback(widget.comment.id, true);
+        }
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 12, left: 40, top: 8),
@@ -61,12 +64,9 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                 CircleAvatar(
                   radius: 16,
                   backgroundColor: Colors.grey,
-                  backgroundImage: widget.comment.profilePictureUrl !=
-                      null
-                      ? NetworkImage(
-                      widget.comment.profilePictureUrl)
-                      : AssetImage(
-                      "assets/images/avatar.png"),
+                  backgroundImage: widget.comment.profilePictureUrl != null
+                      ? NetworkImage(widget.comment.profilePictureUrl)
+                      : AssetImage("assets/images/avatar.png"),
                 ),
                 SizedBox(width: 4),
                 Container(
@@ -88,7 +88,7 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                                   fontWeight: FontWeight.bold,
                                   color: Colors.blue)),
                           Text(
-                              Helper.calculatorTime(widget.comment.created),
+                            Helper.calculatorTime(widget.comment.created),
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w400),
                           )
@@ -110,24 +110,25 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                   InkWell(
                     key: ValueKey(widget.comment.id),
                     onTap: () {
-                      if(_token == null || _token.length == 0){
+                      if (_token == null || _token.length == 0) {
                         Helper.showAuthenticationDialog(context);
-                      }else{
-                        if(_isTokenExpired){
+                      } else {
+                        if (_isTokenExpired) {
                           Helper.showTokenExpiredDialog(context);
-                        }else{
+                        } else {
                           if (!_isLikeComment) {
-                            _itemsByCategoryBloc.requestLikeComment(widget.comment.id);
+                            _itemsByCategoryBloc
+                                .requestLikeComment(widget.comment.id);
                             _commentLikeCount++;
                           } else {
-                            _itemsByCategoryBloc.requestUnLikeComment(widget.comment.id);
+                            _itemsByCategoryBloc
+                                .requestUnLikeComment(widget.comment.id);
                             _commentLikeCount--;
                           }
                           setState(() {
                             _isLikeComment = !_isLikeComment;
                           });
                         }
-
                       }
                     },
                     child: Text("Thích",
@@ -140,7 +141,7 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                   SizedBox(width: 32),
                   InkWell(
                     onTap: () {
-                     widget.callback(widget.comment.parent, false);
+                      widget.callback(widget.comment.parent, false);
                     },
                     child: Row(
                       children: <Widget>[

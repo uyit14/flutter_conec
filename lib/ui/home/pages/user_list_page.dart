@@ -6,19 +6,16 @@ import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:html/parser.dart';
 import '../../../common/globals.dart' as globals;
 
-import 'item_detail_page.dart';
-
-class PostPage extends StatefulWidget {
+class UserListPage extends StatefulWidget {
   @override
-  _PostPageState createState() => _PostPageState();
+  _UserListPageState createState() => _UserListPageState();
 }
 
-class _PostPageState extends State<PostPage> {
+class _UserListPageState extends State<UserListPage> {
   HomeBloc _homeBloc = HomeBloc();
-  //List<Trainer> listTrainers = [];
+  List<Users> listTrainers = [];
 
   @override
   void initState() {
@@ -27,20 +24,20 @@ class _PostPageState extends State<PostPage> {
     _homeBloc.requestGetNearBy(globals.latitude, globals.longitude, 50);
   }
 
-//  initDummy() {
-//    listTrainers = List.generate(
-//        10,
-//        (index) => Trainer(
-//            id: index.toString(),
-//            avatar: "https://conec.vn" +
-//                "/files/account/06-Oct-2020/image_picker126325627618262735.jpg",
-//            name: "An Yoga",
-//            gender: "Nam",
-//            dob: Helper.formatDob("1990-08-04T00:00:00"),
-//            phoneNumber: "0874589658",
-//            distance: 5,
-//            getAddress: "1 Vo Van Ngan, Quận Thủ Đức"));
-//  }
+  initDummy() {
+    listTrainers = List.generate(
+        10,
+        (index) => Users(
+            id: index.toString(),
+            avatar: "https://conec.vn" +
+                "/files/account/06-Oct-2020/image_picker126325627618262735.jpg",
+            name: "An Yoga",
+            gender: "Nam",
+            dob: Helper.formatDob("1990-08-04T00:00:00"),
+            phoneNumber: "0874589658",
+            distance: 5,
+            getAddress: "1 Vo Van Ngan, P. Binh Tho, Quận Thủ Đức, TP. Ho Chi Minh"));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +50,7 @@ class _PostPageState extends State<PostPage> {
                 case Status.LOADING:
                   return UILoading(loadingMessage: snapshot.data.message);
                 case Status.COMPLETED:
-                  List<Trainer> listTrainers = snapshot.data.data.data.trainers;
+                  //List<Users> listTrainers = snapshot.data.data.data.users;
                   if(listTrainers.length > 0){
                     return ListView.builder(
                         itemCount: listTrainers.length,

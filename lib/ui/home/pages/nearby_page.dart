@@ -2,6 +2,8 @@ import 'package:conecapp/ui/home/pages/post_page.dart';
 import 'package:conecapp/ui/home/pages/users_map_page.dart';
 import 'package:flutter/material.dart';
 
+import 'user_list_page.dart';
+
 class NearByPage extends StatefulWidget {
   static const ROUTE_NAME = '/nearby';
 
@@ -78,7 +80,7 @@ class _NearByPageState extends State<NearByPage> {
                 controller: _pageController,
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.horizontal,
-                children: <Widget>[PostPage(), UserMapPage()],
+                children: <Widget>[PostPage(), UserListPage()],
               ),
             )
           ],

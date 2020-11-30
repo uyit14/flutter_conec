@@ -16,6 +16,7 @@ import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/address/ward_page.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
+import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,11 +46,13 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   final picker = ImagePicker();
   bool _isCallApi;
   String postId;
+  String typePost;
   int _selectedType;
   String _type;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
+  NewsBloc _newsBloc = NewsBloc();
   PostActionBloc _postActionBloc = PostActionBloc();
-  ItemDetail _itemDetail = ItemDetail();
+  dynamic _itemDetail;
   TextEditingController _titleController;
   TextEditingController _joiningFreeController;
   TextEditingController _phoneController;
@@ -160,14 +163,19 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
 
   initValue() {
     setState(() {
-      getSelectedType(_itemDetail.joiningFeePeriod);
+      if(typePost=="post"){
+        getSelectedType(_itemDetail.joiningFeePeriod);
+        _joiningFreeController =
+            TextEditingController(text: _itemDetail.joiningFee.toString());
+        _type = _itemDetail.joiningFeePeriod;
+      }else{
+        _joiningFreeController =
+            TextEditingController(text: _itemDetail.price.toString());
+      }
       _titleController = TextEditingController(text: _itemDetail.title);
-      _joiningFreeController =
-          TextEditingController(text: _itemDetail.joiningFee.toString());
       _phoneController = TextEditingController(text: _itemDetail.phoneNumber);
       _addressController = TextEditingController(text: _itemDetail.address);
       provinceData = Province(name: _itemDetail.province);
-      _type = _itemDetail.joiningFeePeriod;
       districtData = Province(name: _itemDetail.district);
       wardData = Province(name: _itemDetail.ward);
       topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
@@ -204,25 +212,65 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       final routeArgs =
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
       postId = routeArgs['postId'];
-      _itemsByCategoryBloc.requestItemDetail(postId);
-      _itemsByCategoryBloc.itemDetailStream.listen((event) {
-        switch (event.status) {
-          case Status.COMPLETED:
-            _itemDetail = event.data;
-            topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
-            if (_itemDetail.content != null) {
-              final document = parse(_itemDetail.content ?? "");
-              final String parsedString = parse(document.body.text).documentElement.text;
-              final notusDocument = _itemDetail.content != null
-                  ? _loadDocument('$parsedString\n')
-                  : NotusDocument();
-              _controller = ZefyrController(notusDocument);
-            }
-            initValue();
-            break;
-        }
-      });
-
+      typePost = routeArgs['type'];
+      if(typePost=="news"){
+        _newsBloc.requestNewsDetail(postId);
+        _newsBloc.newsDetailStream.listen((event) {
+          switch (event.status) {
+            case Status.COMPLETED:
+              _itemDetail = event.data;
+              topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
+              if (_itemDetail.content != null) {
+                final document = parse(_itemDetail.content ?? "");
+                final String parsedString = parse(document.body.text).documentElement.text;
+                final notusDocument = _itemDetail.content != null
+                    ? _loadDocument('$parsedString\n')
+                    : NotusDocument();
+                _controller = ZefyrController(notusDocument);
+              }
+              initValue();
+              break;
+          }
+        });
+      }else if(typePost=="sell"){
+        _newsBloc.requestAdsDetail(postId);
+        _newsBloc.adsDetailStream.listen((event) {
+          switch (event.status) {
+            case Status.COMPLETED:
+              _itemDetail = event.data;
+              topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
+              if (_itemDetail.content != null) {
+                final document = parse(_itemDetail.content ?? "");
+                final String parsedString = parse(document.body.text).documentElement.text;
+                final notusDocument = _itemDetail.content != null
+                    ? _loadDocument('$parsedString\n')
+                    : NotusDocument();
+                _controller = ZefyrController(notusDocument);
+              }
+              initValue();
+              break;
+          }
+        });
+      }else{
+        _itemsByCategoryBloc.requestItemDetail(postId);
+        _itemsByCategoryBloc.itemDetailStream.listen((event) {
+          switch (event.status) {
+            case Status.COMPLETED:
+              _itemDetail = event.data;
+              topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
+              if (_itemDetail.content != null) {
+                final document = parse(_itemDetail.content ?? "");
+                final String parsedString = parse(document.body.text).documentElement.text;
+                final notusDocument = _itemDetail.content != null
+                    ? _loadDocument('$parsedString\n')
+                    : NotusDocument();
+                _controller = ZefyrController(notusDocument);
+              }
+              initValue();
+              break;
+          }
+        });
+      }
       _isCallApi = false;
     }
   }

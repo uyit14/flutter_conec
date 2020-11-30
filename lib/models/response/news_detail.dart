@@ -28,6 +28,7 @@ class NewsDetail {
   bool likeOwner;
   String thumbnail;
   String topic;
+  String topicId;
   String topicMetaLink;
   String metaLink;
   String metaTitle;
@@ -58,6 +59,7 @@ class NewsDetail {
         this.likeOwner,
         this.thumbnail,
         this.topic,
+        this.topicId,
         this.topicMetaLink,
         this.metaLink,
         this.metaTitle,
@@ -78,7 +80,7 @@ class NewsDetail {
     content = json['content'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
-    ownerAvatar = json['ownerAvatar'] !=null ? Helper.baseURL + json['ownerAvatar'] : null;
+    ownerAvatar = json['ownerAvatar'] !=null && !json['ownerAvatar'].contains("http") ? Helper.baseURL + json['ownerAvatar'] : json['ownerAvatar'];
     ratingCount = json['ratingCount'];
     ratingAvg = json['ratingAvg'];
     isRating = json['isRating'];
@@ -86,8 +88,9 @@ class NewsDetail {
     commentCount = json['commentCount'];
     likeCount = json['likeCount'];
     likeOwner = json['likeOwner'];
-    thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
+    thumbnail = json['thumbnail'] !=null && !json['thumbnail'].contains("http") ? Helper.baseURL + json['thumbnail'] : json['thumbnail'];
     topic = json['topic'];
+    topicId = json['topicId'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];
     metaTitle = json['metaTitle'];

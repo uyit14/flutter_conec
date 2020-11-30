@@ -48,6 +48,7 @@ class Users {
   String gender;
   String phoneNumber;
   String email;
+  num distance;
 
   Users(
       {this.id,
@@ -64,12 +65,12 @@ class Users {
         this.dob,
         this.gender,
         this.phoneNumber,
-        this.email});
+        this.email, this.distance});
 
   Users.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    avatar = json['avatar']!=null ? Helper.baseURL + json['avatar'] : json['avatar'];
+    avatar = json['avatar']!=null && !json['avatar'].contains("http") ? Helper.baseURL + json['avatar'] : json['avatar'];
     getAddress = json['getAddress'];
     lat = json['lat'];
     lng = json['lng'];
@@ -82,6 +83,7 @@ class Users {
     gender = json['gender'];
     phoneNumber = json['phoneNumber'];
     email = json['email'];
+    distance = json['distance'];
   }
 }
 
@@ -101,6 +103,7 @@ class Trainer {
   String gender;
   String phoneNumber;
   String email;
+  num distance;
 
   Trainer(
       {this.id,
@@ -117,7 +120,7 @@ class Trainer {
         this.dob,
         this.gender,
         this.phoneNumber,
-        this.email});
+        this.email, this.distance});
 
   Trainer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -135,5 +138,6 @@ class Trainer {
     gender = json['gender'];
     phoneNumber = json['phoneNumber'];
     email = json['email'];
+    distance = json['distance'];
   }
 }

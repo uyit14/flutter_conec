@@ -177,10 +177,26 @@ class _ItemMyPostState extends State<ItemMyPost> {
                         color: Colors.blue,
                         icon: Icons.edit,
                         onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(EditMyPostPage.ROUTE_NAME, arguments: {
-                            'postId': widget.myPost.postId
-                          }).then((value) => widget.refresh(value));
+                          if(widget.myPost.topicId == "333f691d-6595-443d-bae3-9a2681025b53"){
+                            Navigator.of(context)
+                                .pushNamed(EditMyPostPage.ROUTE_NAME, arguments: {
+                              'postId': widget.myPost.postId,
+                              'type' : "news"
+                            }).then((value) => widget.refresh(value));
+                          }else if(widget.myPost.topicId == "333f691d-6585-443a-bae3-9a2681025b53"){
+                            Navigator.of(context)
+                                .pushNamed(EditMyPostPage.ROUTE_NAME, arguments: {
+                              'postId': widget.myPost.postId,
+                              'type' : "sell"
+                            }).then((value) => widget.refresh(value));
+                          }else{
+                            Navigator.of(context)
+                                .pushNamed(EditMyPostPage.ROUTE_NAME, arguments: {
+                              'postId': widget.myPost.postId,
+                              'type' : "post"
+                            }).then((value) => widget.refresh(value));
+                          }
+
                         },
                       ),
                     ),

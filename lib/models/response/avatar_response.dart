@@ -10,7 +10,7 @@ class AvatarResponse {
   AvatarResponse.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     error = json['error'];
-    avatar = json['avatar'] !=null ? Helper.baseURL + json['avatar'] : null;
+    avatar = json['avatar'] !=null && !json['avatar'].contains("http") ? Helper.baseURL + json['avatar'] : json['avatar'];
   }
 
   Map<String, dynamic> toJson() {
