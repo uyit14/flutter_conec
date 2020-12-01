@@ -216,48 +216,48 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                     color: Colors.black12,
                                     margin: EdgeInsets.symmetric(vertical: 12),
                                   ),
-                                  Text("Thư viện video",
-                                      style: AppTheme.profileTitle),
-                                  SizedBox(height: 8),
-                                  _profile.videoLink == null
-                                      ? Container(
-                                          color: Colors.black12,
-                                          height: Helper.isTablet(context) ? 300 : 200,
-                                          child: Stack(
-                                            children: <Widget>[
-                                              // Center(
-                                              //   child: Image.asset(
-                                              //       "assets/images/placeholder.png",
-                                              //      fit: BoxFit.cover,),
-                                              // ),
-                                              Align(
-                                                alignment: Alignment.center,
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    // Navigator.of(context).pushNamed(
-                                                    //     VideoPlayerPage.ROUTE_NAME,
-                                                    //     arguments: {
-                                                    //       "videoLink":
-                                                    //           _profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                                                    //     });
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                VideoPlayerPage(
-                                                                    _profile.videoLink ??
-                                                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")));
-                                                  },
-                                                  child: Icon(
-                                                    Icons.play_arrow,
-                                                    color: Colors.black,
-                                                    size: 58,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      : Container(),
+//                                  Text("Thư viện video",
+//                                      style: AppTheme.profileTitle),
+//                                  SizedBox(height: 8),
+//                                  _profile.videoLink == null
+//                                      ? Container(
+//                                          color: Colors.black12,
+//                                          height: Helper.isTablet(context) ? 300 : 200,
+//                                          child: Stack(
+//                                            children: <Widget>[
+//                                              // Center(
+//                                              //   child: Image.asset(
+//                                              //       "assets/images/placeholder.png",
+//                                              //      fit: BoxFit.cover,),
+//                                              // ),
+//                                              Align(
+//                                                alignment: Alignment.center,
+//                                                child: InkWell(
+//                                                  onTap: () {
+//                                                    // Navigator.of(context).pushNamed(
+//                                                    //     VideoPlayerPage.ROUTE_NAME,
+//                                                    //     arguments: {
+//                                                    //       "videoLink":
+//                                                    //           _profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+//                                                    //     });
+//                                                    Navigator.of(context).push(
+//                                                        MaterialPageRoute(
+//                                                            builder: (context) =>
+//                                                                VideoPlayerPage(
+//                                                                    _profile.videoLink ??
+//                                                                        "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")));
+//                                                  },
+//                                                  child: Icon(
+//                                                    Icons.play_arrow,
+//                                                    color: Colors.black,
+//                                                    size: 58,
+//                                                  ),
+//                                                ),
+//                                              )
+//                                            ],
+//                                          ),
+//                                        )
+//                                      : Container(),
                                 ],
                               ),
                             )

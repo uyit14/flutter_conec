@@ -77,11 +77,19 @@ class _SellDetailPageState extends State<SellDetailPage> {
   }
 
   void getLatLng(String address) async {
-    final result = await Helper.getLatLng(address);
-    setState(() {
-      lat = result.lat;
-      lng = result.long;
-    });
+    try{
+      final result = await Helper.getLatLng(address);
+      setState(() {
+        lat = result.lat;
+        lng = result.long;
+      });
+    }catch(e){
+      setState(() {
+        lat = 0.0;
+        lng = 0.0;
+      });
+    }
+
   }
 
   void doReload() {

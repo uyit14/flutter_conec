@@ -621,166 +621,170 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                           SizedBox(height: 12,)
                         ],
                       ),
-                //STEP 5
-                Text("Số điện thoại"),
-                TextFormField(
-                  maxLines: 1,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.done,
-                  controller: _phoneController,
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                      hintText: 'Nhập số điện thoại',
-                      focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.green, width: 1)),
-                      contentPadding: EdgeInsets.only(left: 8),
-                      prefixIcon: Icon(
-                        Icons.phone,
-                        color: Colors.black,
-                      ),
-                      border: const OutlineInputBorder()),
-                ),
-                SizedBox(height: 12),
-                //STEP 6
-                Text("Địa chỉ"),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
-                        arguments: {'province': provinceData}).then((value) {
-                      if (value != null) {
-                        setState(() {
-                          provinceData = value;
+
+                _currentSelectedIndex != 6 ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Số điện thoại"),
+                    TextFormField(
+                      maxLines: 1,
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.done,
+                      controller: _phoneController,
+                      style: TextStyle(fontSize: 18),
+                      decoration: InputDecoration(
+                          hintText: 'Nhập số điện thoại',
+                          focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green, width: 1)),
+                          contentPadding: EdgeInsets.only(left: 8),
+                          prefixIcon: Icon(
+                            Icons.phone,
+                            color: Colors.black,
+                          ),
+                          border: const OutlineInputBorder()),
+                    ),
+                    SizedBox(height: 12),
+                    Text("Địa chỉ"),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
+                            arguments: {'province': provinceData}).then((value) {
+                          if (value != null) {
+                            setState(() {
+                              provinceData = value;
+                            });
+                          }
                         });
-                      }
-                    });
-                  },
-                  child: Card(
-                    margin: EdgeInsets.symmetric(horizontal: 0),
-                    child: Padding(
-                      padding:
+                      },
+                      child: Card(
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        child: Padding(
+                          padding:
                           const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Icon(Icons.location_city),
-                          Text(
-                            provinceData != null && provinceData.name!=null
-                                ? provinceData.name
-                                : "Tỉnh/Thành phố",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(Icons.location_city),
+                              Text(
+                                provinceData != null && provinceData.name!=null
+                                    ? provinceData.name
+                                    : "Tỉnh/Thành phố",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                              Text("Thay đổi", style: AppTheme.changeTextStyle(true))
+                            ],
                           ),
-                          Text("Thay đổi", style: AppTheme.changeTextStyle(true))
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(height: 12),
-                InkWell(
-                  onTap: () {
-                    if (provinceData != null) {
-                      Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
-                          arguments: {
-                            'district': districtData,
-                            'provinceId': provinceData.id
-                          }).then((value) {
-                        if (value != null) {
-                          setState(() {
-                            districtData = value;
+                    SizedBox(height: 12),
+                    InkWell(
+                      onTap: () {
+                        if (provinceData != null) {
+                          Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
+                              arguments: {
+                                'district': districtData,
+                                'provinceId': provinceData.id
+                              }).then((value) {
+                            if (value != null) {
+                              setState(() {
+                                districtData = value;
+                              });
+                            }
                           });
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: "Vui lòng chọn tỉnh, thành");
                         }
-                      });
-                    } else {
-                      Fluttertoast.showToast(
-                          msg: "Vui lòng chọn tỉnh, thành");
-                    }
-                  },
-                  child: Card(
-                    margin: EdgeInsets.symmetric(horizontal: 0),
-                    child: Padding(
-                      padding:
+                      },
+                      child: Card(
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        child: Padding(
+                          padding:
                           const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Icon(Icons.home),
-                          Text(
-                            districtData != null && districtData.name!=null
-                                ? districtData.name
-                                : "Quận/Huyện",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
-                          ),
-                          Text("Thay đổi",
-                              style:
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(Icons.home),
+                              Text(
+                                districtData != null && districtData.name!=null
+                                    ? districtData.name
+                                    : "Quận/Huyện",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                              Text("Thay đổi",
+                                  style:
                                   AppTheme.changeTextStyle(provinceData != null))
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 12),
-                InkWell(
-                  onTap: () {
-                    if (districtData != null) {
-                      Navigator.of(context).pushNamed(WardPage.ROUTE_NAME,
-                          arguments: {
-                            'districtId': districtData.id
-                          }).then((value) {
-                        if (value != null) {
-                          setState(() {
-                            wardData = value;
-                          });
-                        }
-                      });
-                    } else {
-                      Fluttertoast.showToast(
-                          msg: "Vui lòng chọn quận, huyện");
-                    }
-                  },
-                  child: Card(
-                    margin: EdgeInsets.symmetric(horizontal: 0),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Icon(Icons.wallpaper),
-                          Text(
-                            wardData!=null && wardData.name!=null ? wardData.name : "Phường/Xã",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w500),
+                            ],
                           ),
-                          Text("Thay đổi",
-                              style: AppTheme.changeTextStyle(
-                                  districtData != null))
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(height: 12),
-                TextFormField(
-                  maxLines: 1,
-                  style: TextStyle(fontSize: 18),
-                  textInputAction: TextInputAction.done,
-                  controller: _addressController,
-                  decoration: InputDecoration(
-                      hintText: 'Số nhà, tên đường',
-                      focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.green, width: 1)),
-                      contentPadding: EdgeInsets.only(left: 8),
-                      prefixIcon: Icon(
-                        Icons.location_on,
-                        color: Colors.black,
+                    SizedBox(height: 12),
+                    InkWell(
+                      onTap: () {
+                        if (districtData != null) {
+                          Navigator.of(context).pushNamed(WardPage.ROUTE_NAME,
+                              arguments: {
+                                'districtId': districtData.id
+                              }).then((value) {
+                            if (value != null) {
+                              setState(() {
+                                wardData = value;
+                              });
+                            }
+                          });
+                        } else {
+                          Fluttertoast.showToast(
+                              msg: "Vui lòng chọn quận, huyện");
+                        }
+                      },
+                      child: Card(
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(Icons.wallpaper),
+                              Text(
+                                wardData!=null && wardData.name!=null ? wardData.name : "Phường/Xã",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                              Text("Thay đổi",
+                                  style: AppTheme.changeTextStyle(
+                                      districtData != null))
+                            ],
+                          ),
+                        ),
                       ),
-                      border: const OutlineInputBorder()),
-                ),
+                    ),
+                    SizedBox(height: 12),
+                    TextFormField(
+                      maxLines: 1,
+                      style: TextStyle(fontSize: 18),
+                      textInputAction: TextInputAction.done,
+                      controller: _addressController,
+                      decoration: InputDecoration(
+                          hintText: 'Số nhà, tên đường',
+                          focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green, width: 1)),
+                          contentPadding: EdgeInsets.only(left: 8),
+                          prefixIcon: Icon(
+                            Icons.location_on,
+                            color: Colors.black,
+                          ),
+                          border: const OutlineInputBorder()),
+                    ),
+                  ],
+                ) : Container(),
                 SizedBox(height: 12),
                 //STEP 7
                 Text("Hình Ảnh"),

@@ -368,53 +368,53 @@ class _IntroducePageState extends State<IntroducePage> {
                                         ),
                                     )
                                     : Text("Chưa có ảnh nào"),
-                                Container(
-                                  height: 0.5,
-                                  color: Colors.black12,
-                                  margin: EdgeInsets.symmetric(vertical: 12),
-                                ),
-                                Text("Thư viện video",
-                                    style: AppTheme.profileTitle),
-                                SizedBox(height: 8),
-                                profile.videoLink == null
-                                    ? Container(
-                                        color: Colors.black12,
-                                        height: 200,
-                                        child: Stack(
-                                          children: <Widget>[
-                                            // Center(
-                                            //   child: Image.asset(
-                                            //       "assets/images/placeholder.png",
-                                            //      fit: BoxFit.cover,),
-                                            // ),
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child: InkWell(
-                                                onTap: () {
-                                                  // Navigator.of(context).pushNamed(
-                                                  //     VideoPlayerPage.ROUTE_NAME,
-                                                  //     arguments: {
-                                                  //       "videoLink":
-                                                  //       profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-                                                  //     });
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              VideoPlayerPage(profile
-                                                                      .videoLink ??
-                                                                  "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")));
-                                                },
-                                                child: Icon(
-                                                  Icons.play_arrow,
-                                                  color: Colors.black,
-                                                  size: 58,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    : Container(),
+//                                Container(
+//                                  height: 0.5,
+//                                  color: Colors.black12,
+//                                  margin: EdgeInsets.symmetric(vertical: 12),
+//                                ),
+//                                Text("Thư viện video",
+//                                    style: AppTheme.profileTitle),
+//                                SizedBox(height: 8),
+//                                profile.videoLink == null
+//                                    ? Container(
+//                                        color: Colors.black12,
+//                                        height: 200,
+//                                        child: Stack(
+//                                          children: <Widget>[
+//                                            // Center(
+//                                            //   child: Image.asset(
+//                                            //       "assets/images/placeholder.png",
+//                                            //      fit: BoxFit.cover,),
+//                                            // ),
+//                                            Align(
+//                                              alignment: Alignment.center,
+//                                              child: InkWell(
+//                                                onTap: () {
+//                                                  // Navigator.of(context).pushNamed(
+//                                                  //     VideoPlayerPage.ROUTE_NAME,
+//                                                  //     arguments: {
+//                                                  //       "videoLink":
+//                                                  //       profile.videoLink ?? "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+//                                                  //     });
+//                                                  Navigator.of(context).push(
+//                                                      MaterialPageRoute(
+//                                                          builder: (context) =>
+//                                                              VideoPlayerPage(profile
+//                                                                      .videoLink ??
+//                                                                  "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")));
+//                                                },
+//                                                child: Icon(
+//                                                  Icons.play_arrow,
+//                                                  color: Colors.black,
+//                                                  size: 58,
+//                                                ),
+//                                              ),
+//                                            )
+//                                          ],
+//                                        ),
+//                                      )
+//                                    : Container(),
                                 Container(
                                   height: 0.5,
                                   color: Colors.black12,
