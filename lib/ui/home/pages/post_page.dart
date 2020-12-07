@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 import '../../../common/globals.dart' as globals;
 
+import 'introduce_page.dart';
 import 'item_detail_page.dart';
 
 class PostPage extends StatefulWidget {
@@ -60,7 +61,11 @@ class _PostPageState extends State<PostPage> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              //
+                              Navigator.of(context).pushNamed(
+                                  IntroducePage.ROUTE_NAME,
+                                  arguments: {
+                                    'clubId': listTrainers[index].id
+                                  });
                             },
                             child: Card(
                               margin: EdgeInsets.all(8),
@@ -102,7 +107,7 @@ class _PostPageState extends State<PostPage> {
                                           ),
                                           SizedBox(height: 4),
                                           Text(
-                                            "SDT: ${listTrainers[index].phoneNumber}",
+                                            "SDT: ${listTrainers[index].phoneNumber ?? "Chưa cập nhật"}",
                                             style: TextStyle(
                                                 fontSize: 16),
                                             maxLines: 1,
@@ -110,7 +115,7 @@ class _PostPageState extends State<PostPage> {
                                           ),
                                           SizedBox(height: 4),
                                           Text(
-                                            "Cách đây: ${listTrainers[index].distance} km",
+                                            "Cách đây: ${listTrainers[index].distance.toInt()} km",
                                             style: TextStyle(
                                                 fontSize: 16),
                                             maxLines: 1,

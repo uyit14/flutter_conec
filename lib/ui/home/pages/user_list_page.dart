@@ -7,6 +7,7 @@ import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:flutter/material.dart';
 import '../../../common/globals.dart' as globals;
+import 'introduce_page.dart';
 
 class UserListPage extends StatefulWidget {
   @override
@@ -57,7 +58,11 @@ class _UserListPageState extends State<UserListPage> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
-                              //
+                              Navigator.of(context).pushNamed(
+                                  IntroducePage.ROUTE_NAME,
+                                  arguments: {
+                                    'clubId': listTrainers[index].id
+                                  });
                             },
                             child: Card(
                               margin: EdgeInsets.all(8),
@@ -99,7 +104,7 @@ class _UserListPageState extends State<UserListPage> {
                                           ),
                                           SizedBox(height: 4),
                                           Text(
-                                            "SDT: ${listTrainers[index].phoneNumber}",
+                                            "SDT: ${listTrainers[index].phoneNumber ?? ""}",
                                             style: TextStyle(
                                                 fontSize: 16),
                                             maxLines: 1,
@@ -107,7 +112,7 @@ class _UserListPageState extends State<UserListPage> {
                                           ),
                                           SizedBox(height: 4),
                                           Text(
-                                            "Cách đây: ${listTrainers[index].distance} km",
+                                            "Cách đây: ${listTrainers[index].distance.toInt()} km",
                                             style: TextStyle(
                                                 fontSize: 16),
                                             maxLines: 1,
@@ -133,13 +138,13 @@ class _UserListPageState extends State<UserListPage> {
                   }
                   return Container(
                       child: Center(
-                          child: Text("Không có câu lạc bộ nào gần đây!")));
+                          child: Text("Không có huấn luyện viên nào gần đây!")));
                 case Status.ERROR:
                   return UIError(errorMessage: snapshot.data.message);
               }
             }
             return Container(
-                child: Center(child: Text("Không có câu lạc bộ nào gần đây!")));
+                child: Center(child: Text("Không có huấn luyện viên nào gần đây!")));
           }),
     );
   }

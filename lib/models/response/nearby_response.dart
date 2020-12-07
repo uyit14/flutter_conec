@@ -40,7 +40,7 @@ class Users {
   num lat;
   num lng;
   num ratingCount;
-  int ratingAvg;
+  num ratingAvg;
   String ratingHtml;
   String joinedDate;
   String type;

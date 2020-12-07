@@ -136,7 +136,7 @@ class HomeRemoteRepository {
   Future<NearbyResponse> fetchNearBy(
       double lat, double lng, int distance) async {
     final response = await _helper
-        .get('/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance');
+        .get('/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance', headers: Helper.headerNoToken);
     return NearbyResponse.fromJson(response);
   }
 

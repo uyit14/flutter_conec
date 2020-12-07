@@ -5,6 +5,7 @@ class LatestItem {
   String title;
   String description;
   int joiningFee;
+  int price;
   String joiningFeePeriod;
   String approvedDate;
   String owner;
@@ -23,6 +24,7 @@ class LatestItem {
       this.title,
       this.description,
       this.joiningFee,
+        this.price,
         this.joiningFeePeriod,
       this.approvedDate,
       this.owner,
@@ -42,6 +44,7 @@ class LatestItem {
     title = json['title'];
     description = json['description'];
     joiningFee = json['joiningFee'];
+    price = json['price'];
     joiningFeePeriod = json['joiningFeePeriod'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];

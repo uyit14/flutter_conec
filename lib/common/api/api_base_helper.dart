@@ -24,7 +24,7 @@ class ApiBaseHelper {
       print("aaaa" + e.toString());
     }
     debugPrint('api get recieved!');
-    Helper.log("Api Get, body", '${responseJson.toString()}');
+    Helper.log("Api Get $url, body", '${responseJson.toString()}');
     return responseJson;
   }
 

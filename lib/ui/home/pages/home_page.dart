@@ -11,11 +11,14 @@ import 'package:conecapp/ui/home/widgets/categories_widget.dart';
 import 'package:conecapp/ui/home/widgets/latest_items_widget.dart';
 import 'package:conecapp/ui/home/widgets/new_product_widget.dart';
 import 'package:conecapp/ui/home/widgets/new_sport_widget.dart';
+import 'package:conecapp/ui/news/pages/news_detail_page.dart';
+import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import '../../../common/globals.dart' as globals;
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import '../widgets/custom_clipper.dart';
 import 'package:flutter/material.dart';
+import 'item_detail_page.dart';
 import 'items_by_category_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -227,57 +230,97 @@ class _HomePageState extends State<HomePage> {
                   message: "Ưu tiên",
                   location: BannerLocation.topEnd,
                   color: Colors.deepOrange,
-                      child: Container(
+                      child: InkWell(
+                        onTap: (){
+                          if(item.topicId == "333f691d-6595-443d-bae3-9a2681025b53"){
+                            Navigator.of(context).pushNamed(
+                                NewsDetailPage.ROUTE_NAME,
+                                arguments: {
+                                  'postId': item.postId,
+                                });
+                          }else if(item.topicId == "333f691d-6585-443a-bae3-9a2681025b53"){
+                            Navigator.of(context).pushNamed(
+                                SellDetailPage.ROUTE_NAME,
+                                arguments: {
+                                  'postId': item.postId,
+                                });
+                          }else{
+                            Navigator.of(context).pushNamed(
+                                ItemDetailPage.ROUTE_NAME,
+                                arguments: {
+                                  'postId': item.postId,
+                                  'title': item.title,
+                                });
+                          }
+                        },
+                        child: Container(
                   child: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(8)),
-                        child: Stack(
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl: item.thumbnail,
-                              placeholder: (context, url) =>
-                                  Image.asset(
-                                      "assets/images/placeholder.png"),
-                              errorWidget: (context, url,
-                                  error) =>
-                                  Image.asset(
-                                      "assets/images/error.png"),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                            Positioned(
-                              bottom: 0.0,
-                              left: 0.0,
-                              right: 0.0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(
-                                          200, 0, 0, 0),
-                                      Color.fromARGB(0, 0, 0, 0)
-                                    ],
-                                    begin:
-                                    Alignment.bottomCenter,
-                                    end: Alignment.topCenter,
-                                  ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0,
-                                    horizontal: 20.0),
-//                                                child: Text(
-//                                                  item.title,
-//                                                  style: TextStyle(
-//                                                    color: Colors.white,
-//                                                    fontSize: 20.0,
-//                                                    fontWeight: FontWeight.bold,
-//                                                  ),
-//                                                ),
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(8)),
+                          child: Stack(
+                            children: <Widget>[
+                              CachedNetworkImage(
+                                imageUrl: item.thumbnail,
+                                placeholder: (context, url) =>
+                                    Image.asset(
+                                        "assets/images/placeholder.png"),
+                                errorWidget: (context, url,
+                                    error) =>
+                                    Image.asset(
+                                        "assets/images/error.png"),
+                                fit: BoxFit.cover,
+                                width: double.infinity,
                               ),
-                            ),
-                          ],
-                        )),
+                              Positioned(
+                                bottom: 0.0,
+                                left: 0.0,
+                                right: 0.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color.fromARGB(
+                                            200, 0, 0, 0),
+                                        Color.fromARGB(0, 0, 0, 0)
+                                      ],
+                                      begin:
+                                      Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10.0,
+                                      horizontal: 20.0),
+                                                 child: Column(
+                                                   children: [
+                                                     Text(
+                                                       item.title,
+                                                       style: TextStyle(
+                                                         color: Colors.white,
+                                                         fontSize: 16,
+                                                         fontWeight: FontWeight.bold,
+                                                       ),
+                                                     ),
+                                                     SizedBox(height: 6),
+                                                     Text(
+                                                       item.price != null &&
+                                                           item.price != 0
+                                                           ? '${Helper.formatCurrency(item.price)} VND'
+                                                           : "Liên hệ",
+                                                       style: TextStyle(
+                                                         color: Colors.white,
+                                                         fontSize: 16,
+                                                         fontWeight: FontWeight.bold,
+                                                       ),
+                                                     ),
+                                                   ],
+                                                 ),
+                                ),
+                              ),
+                            ],
+                          )),
                 ),
+                      ),
                     ))
                     .toList(),
               ),
