@@ -17,6 +17,7 @@ class Helper {
   }
 
   static const baseURL = "https://conec.vn";
+
   //static String baseURL = "http://103.77.167.225:8081";
 
   static String formatData(String approvedDate) {
@@ -49,7 +50,7 @@ class Helper {
     return NumberFormat("#,##0", "en_US").format(number);
   }
 
-  static bool isTablet(BuildContext context){
+  static bool isTablet(BuildContext context) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
     return shortestSide > 600 ? true : false;
   }
@@ -83,8 +84,7 @@ class Helper {
   static Future<Map<String, String>> header() async {
     var prefs = await SharedPreferences.getInstance();
     Map<String, String> header = {
-      "Authorization":
-      "Bearer ${prefs.getString("token")} ",
+      "Authorization": "Bearer ${prefs.getString("token")} ",
       "Content-Type": "application/json"
     };
 
@@ -106,6 +106,17 @@ class Helper {
     return MediaQuery.of(context).size.height;
   }
 
+  static String handleDistance({num distanceResponse}) {
+    if (distanceResponse != null && distanceResponse >= 0) {
+      if (distanceResponse < 1) {
+        return "${(distanceResponse * 1000).toInt()} m";
+      } else {
+        return "${distanceResponse.toInt()} km";
+      }
+    }
+    return "Không xác định";
+  }
+
   static Future<LatLong> getLatLng(String address) async {
     var addresses = await Geocoder.local.findAddressesFromQuery(address);
     var first = addresses.first;
@@ -117,7 +128,8 @@ class Helper {
     return MediaQuery.of(context).size.width;
   }
 
-  static void showDeleteDialog(BuildContext context, String title, String content, VoidCallback onOK) {
+  static void showDeleteDialog(
+      BuildContext context, String title, String content, VoidCallback onOK) {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
@@ -161,53 +173,52 @@ class Helper {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text("Thiếu thông tin"),
-          content:
-          Text("Vui lòng cập nhật đầy đủ thông tin cá nhân để đăng bài"),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("Hủy", style: TextStyle(color: Colors.red)),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            CupertinoDialogAction(
-              child: Text("OK"),
-              onPressed: onOKPress,
-            )
-          ],
-        ));
+              title: Text("Thiếu thông tin"),
+              content: Text(
+                  "Vui lòng cập nhật đầy đủ thông tin cá nhân để đăng bài"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("Hủy", style: TextStyle(color: Colors.red)),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: onOKPress,
+                )
+              ],
+            ));
   }
 
   static void showTokenExpiredDialog(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text("Phiên đăng nhập đã hết hạn"),
-          content:
-          Text("Bạn vui lòng đăng nhập lại"),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("OK"),
-              onPressed: () => Navigator.of(context)
-                  .pushReplacementNamed(LoginPage.ROUTE_NAME),
-            )
-          ],
-        ));
+              title: Text("Phiên đăng nhập đã hết hạn"),
+              content: Text("Bạn vui lòng đăng nhập lại"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: () => Navigator.of(context)
+                      .pushReplacementNamed(LoginPage.ROUTE_NAME),
+                )
+              ],
+            ));
   }
 
-  static void showMissingDialog(BuildContext context, String title, String content) {
+  static void showMissingDialog(
+      BuildContext context, String title, String content) {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(title),
-          content:
-          Text(content),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("OK"),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ],
-        ));
+              title: Text(title),
+              content: Text(content),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            ));
   }
 
   static Future<String> getToken() async {
@@ -218,14 +229,17 @@ class Helper {
 
   static Future<bool> getIsSocial() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if(prefs.getBool('isSocial') == null){
+    if (prefs.getBool('isSocial') == null) {
       return false;
     }
     var isSocial = prefs.getBool('isSocial');
     return isSocial;
   }
 
-  static void appLog({@required String className, @required String functionName, @required String message}){
+  static void appLog(
+      {@required String className,
+      @required String functionName,
+      @required String message}) {
     debugPrint('$className - $functionName : $message');
   }
 
@@ -233,17 +247,22 @@ class Helper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var expiredDay = prefs.getString('expired');
     //var expiredDay = "2020-09-28T20:38:41.2397583+07:00";
-    if(expiredDay!=null){
-      if(DateTime.parse(expiredDay).isBefore(DateTime.now())){
+    if (expiredDay != null) {
+      if (DateTime.parse(expiredDay).isBefore(DateTime.now())) {
         return true;
-      }else{
+      } else {
         return false;
       }
     }
     return false;
   }
 
-  static const List<String> reportList = ["Thông tin không đúng thực tế", "Nội dung vi phạm", "Lừa đảo", "Trùng tin đăng"];
+  static const List<String> reportList = [
+    "Thông tin không đúng thực tế",
+    "Nội dung vi phạm",
+    "Lừa đảo",
+    "Trùng tin đăng"
+  ];
 
   // //report dialog
   // static void showReportDialog(BuildContext context, Function(int index) onReport){
@@ -295,8 +314,6 @@ class Helper {
   //         ],
   //       ));
   // }
-
-
 
   static const String loadingMessage = "Đang tải...";
   static const String verifyMessage =
