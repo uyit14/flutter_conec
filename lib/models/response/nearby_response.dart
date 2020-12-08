@@ -95,7 +95,7 @@ class Trainer {
   num lat;
   num lng;
   num ratingCount;
-  int ratingAvg;
+  num ratingAvg;
   String ratingHtml;
   String joinedDate;
   String type;
@@ -125,7 +125,7 @@ class Trainer {
   Trainer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    avatar = json['avatar']!=null ? Helper.baseURL + json['avatar'] : json['avatar'];
+    avatar = json['avatar']!=null && !json['avatar'].contains("http") ? Helper.baseURL + json['avatar'] : json['avatar'];
     getAddress = json['getAddress'];
     lat = json['lat'];
     lng = json['lng'];

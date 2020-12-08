@@ -117,13 +117,4 @@ class ConecApp extends StatelessWidget {
 
 //7C:01:2C:F5:F4:E5:E3:21:B0:9A:F2:12:F1:E8:6A:19:7F:4F:10:D7
 //C9:58:FE:8D:68:F9:A4:58:29:00:39:99:8C:AF:81:88:35:A2:AB:A3:6A:DF:F6:81:41:0F:30:59:FD:C2:EA:C2
-/*
- 1. Google login Android (https://medium.com/fabcoding/how-to-obtain-sha1-keys-for-debug-and-release-android-studio-mac-34ff3703470b#:~:text=If%20you%20have%20enabled%20App,ll%20see%20you%20release%20SHA1.)
- 2. Logo at login screen on iPad (DONE)
- 3. Forgot pass (need check api 0 already register but server response account not exists)
- 4. iOS fb login (DONE)
- 5. can't login (show message when timeout) (DONE)
- 6. Wrong address, can't parse lat lng, need show dialog (DONE)
- 7. Detail profile - wrong address (DONE)
- 8. Merge page info and profile (DONE)
-*/
+//TODO - convert rating avg int - num trong nearby response.

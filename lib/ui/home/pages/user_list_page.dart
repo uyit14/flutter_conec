@@ -16,7 +16,7 @@ class UserListPage extends StatefulWidget {
 
 class _UserListPageState extends State<UserListPage> {
   HomeBloc _homeBloc = HomeBloc();
-  List<Users> listTrainers = [];
+  //List<Users> listTrainers = [];
 
   @override
   void initState() {
@@ -25,20 +25,20 @@ class _UserListPageState extends State<UserListPage> {
     _homeBloc.requestGetNearBy(globals.latitude, globals.longitude, 50);
   }
 
-  initDummy() {
-    listTrainers = List.generate(
-        10,
-        (index) => Users(
-            id: index.toString(),
-            avatar: "https://conec.vn" +
-                "/files/account/06-Oct-2020/image_picker126325627618262735.jpg",
-            name: "An Yoga",
-            gender: "Nam",
-            dob: Helper.formatDob("1990-08-04T00:00:00"),
-            phoneNumber: "0874589658",
-            distance: 5,
-            getAddress: "1 Vo Van Ngan, P. Binh Tho, Quận Thủ Đức, TP. Ho Chi Minh"));
-  }
+  // initDummy() {
+  //   listTrainers = List.generate(
+  //       10,
+  //       (index) => Users(
+  //           id: index.toString(),
+  //           avatar: "https://conec.vn" +
+  //               "/files/account/06-Oct-2020/image_picker126325627618262735.jpg",
+  //           name: "An Yoga",
+  //           gender: "Nam",
+  //           dob: Helper.formatDob("1990-08-04T00:00:00"),
+  //           phoneNumber: "0874589658",
+  //           distance: 5,
+  //           getAddress: "1 Vo Van Ngan, P. Binh Tho, Quận Thủ Đức, TP. Ho Chi Minh"));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _UserListPageState extends State<UserListPage> {
                 case Status.LOADING:
                   return UILoading(loadingMessage: snapshot.data.message);
                 case Status.COMPLETED:
-                  //List<Users> listTrainers = snapshot.data.data.data.users;
+                  List<Users> listTrainers = snapshot.data.data.data.users;
                   if(listTrainers.length > 0){
                     return ListView.builder(
                         itemCount: listTrainers.length,
@@ -104,7 +104,7 @@ class _UserListPageState extends State<UserListPage> {
                                           ),
                                           SizedBox(height: 4),
                                           Text(
-                                            "SDT: ${listTrainers[index].phoneNumber ?? ""}",
+                                            "SDT: ${listTrainers[index].phoneNumber ?? "Chưa cập nhật"}",
                                             style: TextStyle(
                                                 fontSize: 16),
                                             maxLines: 1,
