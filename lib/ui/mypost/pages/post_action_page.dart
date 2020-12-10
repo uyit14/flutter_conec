@@ -885,7 +885,8 @@ class _PostActionPageState extends State<PostActionPage> {
             : LatLong(lat: 0.0, long: 0.0);
         print(result.lat.toString() + "----" + result.long.toString());
       }catch(e){
-        Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
+        //Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
+        result = LatLong(lat: 0.0, long: 0.0);
         setState(() {
           _isLoading = false;
         });
