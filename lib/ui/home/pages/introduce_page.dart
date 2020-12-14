@@ -423,8 +423,8 @@ class _IntroducePageState extends State<IntroducePage> {
                                 Text("Tin đăng gần đây",
                                     style: AppTheme.profileTitle),
                                 SizedBox(height: 8),
-                                Container(
-                                  color: Colors.black12,
+                                profile.posts.length > 0 ? Container(
+                                  color:  Colors.black12,
                                   child: GridView.builder(
                                       physics: NeverScrollableScrollPhysics(),
                                       scrollDirection: Axis.vertical,
@@ -547,7 +547,8 @@ class _IntroducePageState extends State<IntroducePage> {
                                           ),
                                         );
                                       }),
-                                )
+                                ) : Text("Chưa có")
+                                
                               ],
                             ),
                           )

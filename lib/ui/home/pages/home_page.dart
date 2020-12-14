@@ -295,6 +295,8 @@ class _HomePageState extends State<HomePage> {
                                                    children: [
                                                      Text(
                                                        item.title,
+                                                       maxLines: 3,
+                                                       overflow: TextOverflow.ellipsis,
                                                        style: TextStyle(
                                                          color: Colors.white,
                                                          fontSize: 16,

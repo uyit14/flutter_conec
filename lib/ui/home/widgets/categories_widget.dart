@@ -9,7 +9,6 @@ import 'package:conecapp/ui/home/pages/items_by_category_page.dart';
 import 'package:conecapp/ui/home/pages/nearby_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 
 class CategoriesWidget extends StatefulWidget {
   @override
@@ -17,12 +16,11 @@ class CategoriesWidget extends StatefulWidget {
 }
 
 class _CategoriesWidgetState extends State<CategoriesWidget> {
-  HomeBloc _homeBloc;
+  HomeBloc _homeBloc = HomeBloc();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _homeBloc = Provider.of<HomeBloc>(context);
     _homeBloc.requestGetTopic();
   }
 

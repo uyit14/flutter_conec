@@ -16,7 +16,6 @@ import 'package:html/parser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 
 class ItemByCategory extends StatefulWidget {
   static const ROUTE_NAME = '/items-category';
@@ -28,7 +27,7 @@ class ItemByCategory extends StatefulWidget {
 class _ItemByCategoryState extends State<ItemByCategory> {
   ScrollController _scrollController;
   final _controller = TextEditingController();
-  ItemsByCategoryBloc _itemsByCategoryBloc;
+  ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
   var selectedCategory;
   bool _needAddUI = true;
   HomeBloc _homeBloc = HomeBloc();
@@ -67,7 +66,6 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     debugPrint("didChangeDependencies");
-    _itemsByCategoryBloc = Provider.of<ItemsByCategoryBloc>(context);
     if (_firstTime) {
       routeArgs =
           ModalRoute.of(context).settings.arguments as Map<String, Object>;

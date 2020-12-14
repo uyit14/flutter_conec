@@ -7,7 +7,6 @@ import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:html/parser.dart';
 
 class NewsWidget extends StatefulWidget {

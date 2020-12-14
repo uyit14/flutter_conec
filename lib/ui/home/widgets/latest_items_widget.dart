@@ -6,9 +6,6 @@ import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
-import 'package:provider/provider.dart';
 import 'package:html/parser.dart';
 
 class LatestItemsWidget extends StatefulWidget {
@@ -17,12 +14,11 @@ class LatestItemsWidget extends StatefulWidget {
 }
 
 class _LatestItemsWidgetState extends State<LatestItemsWidget> {
-  HomeBloc _homeBloc;
+  HomeBloc _homeBloc = HomeBloc();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _homeBloc = Provider.of<HomeBloc>(context);
     _homeBloc.requestGetLatestItem();
   }
 

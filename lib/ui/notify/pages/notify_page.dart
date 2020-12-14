@@ -5,7 +5,7 @@ import 'package:conecapp/models/response/notify/notify_response.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
-import 'package:conecapp/ui/notify/pages/notify_bloc.dart';
+import 'package:conecapp/ui/notify/blocs/notify_bloc.dart';
 import 'package:conecapp/ui/notify/pages/notify_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';

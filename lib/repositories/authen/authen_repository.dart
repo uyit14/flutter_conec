@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
-import 'package:conecapp/models/request/signup_request.dart';
 import 'package:conecapp/models/response/authen/authen_response.dart';
 import 'package:conecapp/models/response/authen/confirm_email_response.dart';
 import 'package:conecapp/models/response/authen/reset_password_response.dart';
@@ -15,11 +14,6 @@ class AuthenRepository {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
   };
-
-//  final headerAppleSignIn = {
-//    'Accept': 'application/json',
-//    'Content-Type': 'application/x-www-form-urlencoded'
-//  };
 
   Future<LoginResponse> doLogin(String phone, String passWord) async {
     final response = await _helper.post("/api/account/login",

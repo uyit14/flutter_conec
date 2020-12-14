@@ -76,11 +76,6 @@ class Helper {
     return different.toString() + " " + suffix;
   }
 
-//  static final header = {
-//    'authorization': "Bearer $getToken",
-//    'Content-Type': "application/json"
-//  };
-
   static Future<Map<String, String>> header() async {
     var prefs = await SharedPreferences.getInstance();
     Map<String, String> header = {

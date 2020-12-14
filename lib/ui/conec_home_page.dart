@@ -3,15 +3,12 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/ui/home/pages/home_page.dart';
 import 'package:conecapp/ui/mypost/pages/post_action_page.dart';
-import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-
-import 'package:provider/provider.dart';
 import 'home/blocs/home_bloc.dart';
 import 'home/pages/items_by_category_page.dart';
 import 'mypost/pages/mypost_page.dart';
@@ -92,17 +89,9 @@ class _ConecHomePageState extends State<ConecHomePage> {
     });
   }
 
-//  detectToken() async {
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    var token = prefs.getString('token');
-//    globals.isSigned = token != null ? true : false;
-//    globals.token = token;
-//  }
-
   @override
   void initState() {
     super.initState();
-    //detectToken();
     //getLocation();
     getToken();
   }
@@ -174,15 +163,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
           controller: _pageController,
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            Provider<HomeBloc>(
-              create: (_) => HomeBloc(),
-              dispose: (_, HomeBloc homeBloc) => homeBloc.dispose(),
-              child: HomePage(callback: _initTab1Page),
-            ),
-            Provider<NewsBloc>(
-                create: (_) => NewsBloc(),
-                dispose: (_, NewsBloc newsBloc) => newsBloc.dispose(),
-                child: NewsPage(_initIndex)),
+            HomePage(callback: _initTab1Page),
+           NewsPage(_initIndex),
             MyPost(),
             ProfilePage()
           ],
