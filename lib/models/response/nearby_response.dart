@@ -1,5 +1,7 @@
 import 'package:conecapp/common/helper.dart';
 
+import 'latest_item.dart';
+
 class NearbyResponse {
   Data data;
 
@@ -13,6 +15,8 @@ class NearbyResponse {
 class Data {
   List<Users> users;
   List<Trainer> trainers;
+  List<LatestItem> userPosts;
+  List<LatestItem> trainerPosts;
 
   Data({this.users, this.trainers});
 
@@ -27,6 +31,18 @@ class Data {
       trainers = new List<Trainer>();
       json['trainers'].forEach((v) {
         trainers.add(new Trainer.fromJson(v));
+      });
+    }
+    if(json['userPosts'] != null){
+      userPosts = new List<LatestItem>();
+      json['userPosts'].forEach((v) {
+        userPosts.add(new LatestItem.fromJson(v));
+      });
+    }
+    if(json['trainerPosts'] != null){
+      trainerPosts = new List<LatestItem>();
+      json['trainerPosts'].forEach((v) {
+        trainerPosts.add(new LatestItem.fromJson(v));
       });
     }
   }

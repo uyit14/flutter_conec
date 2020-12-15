@@ -64,23 +64,38 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                             margin: EdgeInsets.all(4),
                             child: Stack(
                               children: <Widget>[
-                                Banner(
-                                  message: "Mới",
-                                  location: BannerLocation.topEnd,
-                                  color: Colors.green,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Hero(
-                                      tag: items[index].postId,
-                                      child: CachedNetworkImage(
-                                        imageUrl: items[index].thumbnail ?? "",
-                                        placeholder: (context, url) =>
-                                            Image.asset(
-                                                "assets/images/placeholder.png",
+                                // Banner(
+                                //   message: "Mới",
+                                //   location: BannerLocation.topEnd,
+                                //   color: Colors.green,
+                                //   child: ClipRRect(
+                                //     borderRadius: BorderRadius.circular(15),
+                                //     child: Hero(
+                                //       tag: items[index].postId,
+                                //       child: CachedNetworkImage(
+                                //         imageUrl: items[index].thumbnail ?? "",
+                                //         placeholder: (context, url) =>
+                                //             Image.asset(
+                                //                 "assets/images/placeholder.png",
+                                //               fit: BoxFit.cover,
+                                //               width: double.infinity,
+                                //               height: double.infinity),
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Hero(
+                                    tag: items[index].postId,
+                                    child: CachedNetworkImage(
+                                      imageUrl: items[index].thumbnail ?? "",
+                                      placeholder: (context, url) =>
+                                          Image.asset(
+                                              "assets/images/placeholder.png",
                                               fit: BoxFit.cover,
                                               width: double.infinity,
                                               height: double.infinity),
-                                      ),
                                     ),
                                   ),
                                 ),
