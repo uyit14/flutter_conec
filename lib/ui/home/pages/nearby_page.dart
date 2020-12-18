@@ -1,7 +1,9 @@
 import 'package:conecapp/ui/home/pages/post_page.dart';
+import 'package:conecapp/ui/home/pages/user_post_page.dart';
 import 'package:conecapp/ui/home/pages/users_map_page.dart';
 import 'package:flutter/material.dart';
 
+import 'trainer_post_page.dart';
 import 'user_list_page.dart';
 
 class NearByPage extends StatefulWidget {
@@ -80,7 +82,7 @@ class _NearByPageState extends State<NearByPage> {
                 controller: _pageController,
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.horizontal,
-                children: <Widget>[PostPage(), UserListPage()],
+                children: <Widget>[UserPostPage(), TrainerPostPage()],
               ),
             )
           ],

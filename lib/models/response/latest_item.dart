@@ -18,6 +18,7 @@ class LatestItem {
   String district;
   String ward;
   String address;
+  num distance;
 
   LatestItem(
       {this.postId,
@@ -37,6 +38,7 @@ class LatestItem {
         this.district,
         this.ward,
         this.address,
+        this.distance
       });
 
   LatestItem.fromJson(Map<String, dynamic> json) {
@@ -57,5 +59,6 @@ class LatestItem {
     district = json['district'];
     ward = json['ward'];
     address = json['address'];
+    distance = json['distance'];
   }
 }
