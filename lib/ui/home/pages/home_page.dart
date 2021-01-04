@@ -50,12 +50,17 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _homeBloc.requestGetSlider();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     getLocation();
   }
 
   void getLocation() async {
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    print("hereeeeeee");
+    Position position = await Geolocator.getCurrentPosition();
     print("latttt: ${position.latitude}" ?? "---aaa---");
     print("longgg: ${position.longitude}" ?? "---aaa---");
     globals.latitude = position.latitude;

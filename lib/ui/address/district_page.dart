@@ -26,7 +26,7 @@ class _DistrictPageState extends State<DistrictPage> {
     super.didChangeDependencies();
     final routeArgs =
     ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    _addressBloc.requestGetDistricts(routeArgs['provinceId']);
+    _addressBloc.requestGetDistricts(provinceId: routeArgs['provinceId'], provinceName: routeArgs['provinceName']);
   }
 
   @override

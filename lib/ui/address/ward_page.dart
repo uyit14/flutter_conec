@@ -26,7 +26,7 @@ class _WardPageState extends State<WardPage> {
     super.didChangeDependencies();
     final routeArgs =
     ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    _addressBloc.requestGetWards(routeArgs['districtId']);
+    _addressBloc.requestGetWards(districtId: routeArgs['districtId'], districtName: routeArgs['districtName']);
   }
 
   @override

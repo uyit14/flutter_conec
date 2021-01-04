@@ -16,9 +16,9 @@ class Helper {
     return 'https://maps.googleapis.com/maps/api/staticmap?center=&$lat,$lng&zoom=18&size=600x300&maptype=roadmap &markers=color:red%7Clabel:C%7C$lat,$lng&key=$GOOGLE_API_KEY';
   }
 
-  //static const baseURL = "https://conec.vn";
+  static const baseURL = "https://conec.vn";
 
-  static String baseURL = "http://103.77.167.225:8081";
+  //static String baseURL = "http://103.77.167.225:8081";
 
   static String formatData(String approvedDate) {
     return approvedDate != null

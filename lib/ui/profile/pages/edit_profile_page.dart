@@ -548,7 +548,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
                                     arguments: {
                                       'district': districtData,
-                                      'provinceId': provinceData.id
+                                      'provinceId': provinceData.id,
+                                      'provinceName': provinceData.name
                                     }).then((value) {
                                   if (value != null) {
                                     setState(() {
@@ -595,7 +596,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               if (districtData != null) {
                                 Navigator.of(context).pushNamed(WardPage.ROUTE_NAME,
                                     arguments: {
-                                      'districtId': districtData.id
+                                      'districtId': districtData.id,
+                                      'districtName': districtData.name,
                                     }).then((value) {
                                   if (value != null) {
                                     setState(() {

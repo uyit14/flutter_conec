@@ -63,10 +63,16 @@ class AddressBloc{
     return false;
   }
 
-  void requestGetDistricts(String provinceId) async{
+  void requestGetDistricts({String provinceId, String provinceName}) async{
     _districtsController.sink.add(ApiResponse.loading());
+    var result;
     try{
-      final result = await _repository.getListDistrict(provinceId);
+      if(provinceId!=null){
+         result = await _repository.getListDistrict(provinceId);
+      }else{
+         result = await _repository.getListDistrictByProvinceName(provinceName);
+      }
+
       _originalDistrict.addAll(result);
       _districtsController.sink.add(ApiResponse.completed(result));
     }catch(e){
@@ -89,10 +95,15 @@ class AddressBloc{
     _districtsController.sink.add(ApiResponse.completed(_originalDistrict));
   }
 
-  void requestGetWards(String districtId) async{
+  void requestGetWards({String districtId, String districtName}) async{
     _wardsController.sink.add(ApiResponse.loading());
+    var result;
     try{
-      final result = await _repository.getListWard(districtId);
+      if(districtId!=null){
+         result = await _repository.getListWard(districtId);
+      }else{
+         result = await _repository.getListWardByName(districtName);
+      }
       _originalWard.addAll(result);
       _wardsController.sink.add(ApiResponse.completed(result));
     }catch(e){

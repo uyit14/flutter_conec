@@ -20,12 +20,24 @@ class MyPostRepository {
     final response = await _helper.get('/api/Address/LoadProvinces');
     return CityResponse.fromJson(response).provinces;
   }
+
   Future<List<Province>> getListDistrict(String provinceId) async {
     final response = await _helper.get('/api/Address/LoadDistrictByProvinceIds?provinceId=$provinceId');
     return DistrictResponse.fromJson(response).districts;
   }
+
+  Future<List<Province>> getListDistrictByProvinceName(String provinceName) async {
+    final response = await _helper.get('/api/Address/LoadDistrictByProvinceNames?province=$provinceName');
+    return DistrictResponse.fromJson(response).districts;
+  }
+
   Future<List<Province>> getListWard(String districtId) async {
     final response = await _helper.get('/api/Address/LoadWardByDistrictIds?districtId=$districtId');
+    return WardResponse.fromJson(response).wards;
+  }
+
+  Future<List<Province>> getListWardByName(String districtName) async {
+    final response = await _helper.get('/api/Address/LoadWardByDistrictNames?district=$districtName');
     return WardResponse.fromJson(response).wards;
   }
 

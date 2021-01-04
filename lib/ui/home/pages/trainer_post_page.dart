@@ -185,13 +185,13 @@ class _TrainerPostPageState extends State<TrainerPostPage> {
                   }
                   return Container(
                       child: Center(
-                          child: Text("Không có câu lạc bộ nào gần đây!")));
+                          child: Text("Không có huấn luyện viên nào gần đây!")));
                 case Status.ERROR:
                   return UIError(errorMessage: snapshot.data.message);
               }
             }
             return Container(
-                child: Center(child: Text("Không có câu lạc bộ nào gần đây!")));
+                child: Center(child: Text("Không có huấn luyện viên nào gần đây!")));
           }),
     );
   }
