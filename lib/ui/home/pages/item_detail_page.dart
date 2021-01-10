@@ -278,7 +278,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                                     error) =>
                                                                 Image.asset(
                                                                     "assets/images/error.png"),
-                                                            fit: BoxFit.cover,
                                                             width:
                                                                 double.infinity,
                                                           ),

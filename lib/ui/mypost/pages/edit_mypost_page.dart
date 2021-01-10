@@ -300,6 +300,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool _showFab = MediaQuery.of(context).viewInsets.bottom != 0.0;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: Text("Sửa bài đăng")),
@@ -535,10 +536,10 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                     },
                                     child: Text("Giờ",
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.bold))),
                               ),
-                              SizedBox(width: 4),
+                              SizedBox(width: 3),
                               Expanded(
                                 child: FlatButton(
                                     shape: RoundedRectangleBorder(
@@ -561,10 +562,10 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                     },
                                     child: Text("Ngày",
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.bold))),
                               ),
-                              SizedBox(width: 4),
+                              SizedBox(width: 3),
                               Expanded(
                                 child: FlatButton(
                                     shape: RoundedRectangleBorder(
@@ -587,10 +588,10 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                     },
                                     child: Text("Tháng",
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.bold))),
                               ),
-                              SizedBox(width: 4),
+                              SizedBox(width: 3),
                               Expanded(
                                 child: FlatButton(
                                     shape: RoundedRectangleBorder(
@@ -613,7 +614,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                     },
                                     child: Text("Năm",
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.bold))),
                               ),
                             ],
@@ -899,7 +900,14 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
             ),
           ),
         ),
-      ),
+          floatingActionButton: _showFab
+              ? FloatingActionButton.extended(
+            onPressed: (){FocusScope.of(context).unfocus();},
+            backgroundColor: Colors.green,
+            label: Text("Xong"),
+            icon: Icon(Icons.check),
+          ) : null
+      )
     );
   }
 

@@ -196,6 +196,7 @@ class _PostActionPageState extends State<PostActionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool _showFab = MediaQuery.of(context).viewInsets.bottom != 0.0;
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
@@ -445,10 +446,10 @@ class _PostActionPageState extends State<PostActionPage> {
                                           },
                                           child: Text("Giờ",
                                               style: TextStyle(
-                                                  fontSize: 15,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold))),
                                     ),
-                                    SizedBox(width: 4),
+                                    SizedBox(width: 3),
                                     Expanded(
                                       child: FlatButton(
                                           shape: RoundedRectangleBorder(
@@ -471,10 +472,10 @@ class _PostActionPageState extends State<PostActionPage> {
                                           },
                                           child: Text("Ngày",
                                               style: TextStyle(
-                                                  fontSize: 15,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold))),
                                     ),
-                                    SizedBox(width: 4),
+                                    SizedBox(width: 3),
                                     Expanded(
                                       child: FlatButton(
                                           shape: RoundedRectangleBorder(
@@ -497,10 +498,10 @@ class _PostActionPageState extends State<PostActionPage> {
                                           },
                                           child: Text("Tháng",
                                               style: TextStyle(
-                                                  fontSize: 15,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold))),
                                     ),
-                                    SizedBox(width: 4),
+                                    SizedBox(width: 3),
                                     Expanded(
                                       child: FlatButton(
                                           shape: RoundedRectangleBorder(
@@ -523,7 +524,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                           },
                                           child: Text("Năm",
                                               style: TextStyle(
-                                                  fontSize: 15,
+                                                  fontSize: 14,
                                                   fontWeight: FontWeight.bold))),
                                     ),
                                   ],
@@ -846,7 +847,16 @@ class _PostActionPageState extends State<PostActionPage> {
               ),
               _isLoading ? UILoadingOpacity() : Container()
             ],
-          )),
+          ),
+        floatingActionButton: _showFab
+            ? FloatingActionButton.extended(
+          onPressed: (){FocusScope.of(context).unfocus();},
+          backgroundColor: Colors.green,
+          label: Text("Xong"),
+          icon: Icon(Icons.check),
+        )
+            : null,
+      ),
     );
   }
 
