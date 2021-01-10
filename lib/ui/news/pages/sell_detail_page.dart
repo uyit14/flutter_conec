@@ -243,7 +243,6 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                                         error) =>
                                                         Image.asset(
                                                             "assets/images/error.png"),
-                                                    fit: BoxFit.cover,
                                                     width:
                                                     double.infinity,
                                                   ),
