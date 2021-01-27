@@ -63,7 +63,7 @@ dependencies:
   sign_in_with_apple: ^2.5.4
   multi_image_picker: ^4.7.14
   flutter_absolute_path: ^1.0.6
-  firebase_messaging: ^7.0.3
+  onesignal_flutter:
 
 dev_dependencies:
   flutter_test:

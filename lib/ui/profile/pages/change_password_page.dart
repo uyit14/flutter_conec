@@ -22,6 +22,9 @@ class _ChangePassWordPageState extends State<ChangePassWordPage> {
   bool _isLoading = false;
   bool _apiError = false;
   String _errorMessage;
+  bool _showOldPass = false;
+  bool _showNewPass = false;
+  bool _showConfirmPass = false;
 
   void changePassword() {
     if (_oldPassController.text.length == 0) {
@@ -95,7 +98,7 @@ class _ChangePassWordPageState extends State<ChangePassWordPage> {
                 maxLines: 1,
                 style: TextStyle(fontSize: 18),
                 textInputAction: TextInputAction.next,
-                obscureText: true,
+                obscureText: _showOldPass ? false : true,
                 controller: _oldPassController,
                 decoration: InputDecoration(
                     hintText: 'Mật khẩu cũ',
@@ -104,9 +107,16 @@ class _ChangePassWordPageState extends State<ChangePassWordPage> {
                     focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.green, width: 1)),
                     contentPadding: EdgeInsets.only(left: 8),
-                    prefixIcon: Icon(
-                      Icons.vpn_key,
-                      color: Colors.black,
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showOldPass = !_showOldPass;
+                        });
+                      },
+                      child: Icon(
+                        _showOldPass ? Icons.vpn_key : Icons.remove_red_eye,
+                        color: Colors.black,
+                      ),
                     ),
                     border: const OutlineInputBorder()),
               ),
@@ -114,7 +124,7 @@ class _ChangePassWordPageState extends State<ChangePassWordPage> {
               TextFormField(
                 maxLines: 1,
                 style: TextStyle(fontSize: 18),
-                obscureText: true,
+                obscureText: _showNewPass ? false : true,
                 controller: _newPassController,
                 textInputAction: TextInputAction.done,
                 decoration: InputDecoration(
@@ -125,9 +135,16 @@ class _ChangePassWordPageState extends State<ChangePassWordPage> {
                     focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.green, width: 1)),
                     contentPadding: EdgeInsets.only(left: 8),
-                    prefixIcon: Icon(
-                      Icons.confirmation_number,
-                      color: Colors.green,
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showNewPass = !_showNewPass;
+                        });
+                      },
+                      child: Icon(
+                        _showNewPass ? Icons.vpn_key : Icons.remove_red_eye,
+                        color: Colors.black,
+                      ),
                     ),
                     border: const OutlineInputBorder()),
               ),
@@ -135,7 +152,7 @@ class _ChangePassWordPageState extends State<ChangePassWordPage> {
               TextFormField(
                 maxLines: 1,
                 style: TextStyle(fontSize: 18),
-                obscureText: true,
+                obscureText: _showConfirmPass ? false : true,
                 textInputAction: TextInputAction.done,
                 controller: _confirmNewPassController,
                 decoration: InputDecoration(
@@ -146,9 +163,16 @@ class _ChangePassWordPageState extends State<ChangePassWordPage> {
                     focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.green, width: 1)),
                     contentPadding: EdgeInsets.only(left: 8),
-                    prefixIcon: Icon(
-                      Icons.confirmation_number,
-                      color: Colors.green,
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showConfirmPass = !_showConfirmPass;
+                        });
+                      },
+                      child: Icon(
+                        _showConfirmPass ? Icons.vpn_key : Icons.remove_red_eye,
+                        color: Colors.black,
+                      ),
                     ),
                     border: const OutlineInputBorder()),
               ),

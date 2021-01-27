@@ -1,4 +1,7 @@
 import 'dart:async';
+
+import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:conecapp/ui/onboarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,16 +20,22 @@ class _SplashScreenState extends State<SplashScreen> {
     var _duration = new Duration(seconds: 1);
 
     if (firstTime != null && !firstTime) {
-      return new Timer(_duration, navigationToHome);
+      return new Timer(_duration, navigationToHomeOrSignIn);
     } else {
       return new Timer(_duration, navigationToOnBoarding);
     }
   }
 
-  void navigationToHome() {
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
-  //Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME);
+  void navigationToHomeOrSignIn() async {
+    String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
+    if (!expired && token != null) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
+    } else {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          LoginPage.ROUTE_NAME, (Route<dynamic> route) => false);
+    }
   }
 
   void navigationToOnBoarding() {
@@ -49,8 +58,15 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image.asset("assets/images/conec_logo.png", width: 200, height: 100, fit: BoxFit.fill,),
-            SizedBox(height: 8,),
+            Image.asset(
+              "assets/images/conec_logo.png",
+              width: 200,
+              height: 100,
+              fit: BoxFit.fill,
+            ),
+            SizedBox(
+              height: 8,
+            ),
             Text(
               "Kết nối thể thao",
               style: TextStyle(
