@@ -44,7 +44,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   bool _enableConsentButton = false;
 
   // CHANGE THIS parameter to true if you want to test GDPR privacy consent
-  bool _requireConsent = true;
+  bool _requireConsent = false;
 
   void getToken() async {
     String token = await Helper.getToken();
@@ -109,7 +109,6 @@ class _ConecHomePageState extends State<ConecHomePage> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    if (!mounted) return;
 
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
@@ -125,6 +124,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
         _debugLabelString =
         "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}";
       });
+      print(_debugLabelString);
     });
 
     OneSignal.shared
@@ -133,6 +133,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
         _debugLabelString =
         "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}";
       });
+      print(_debugLabelString);
     });
 
     OneSignal.shared
@@ -141,6 +142,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
         _debugLabelString =
         "In App Message Clicked: \n${action.jsonRepresentation().replaceAll("\\n", "\n")}";
       });
+      print(_debugLabelString);
     });
 
     OneSignal.shared
@@ -159,7 +161,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
 
     // NOTE: Replace with your own app ID from https://www.onesignal.com
     await OneSignal.shared
-        .init("b2f7f966-d8cc-11e4-bed1-df8f05be55ba", iOSSettings: settings);
+        .init("7075e16c-c1fb-4d33-93b1-1c8cf007c294", iOSSettings: settings);
 
     OneSignal.shared
         .setInFocusDisplayType(OSNotificationDisplayType.notification);
@@ -169,71 +171,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
     this.setState(() {
       _enableConsentButton = requiresConsent;
     });
-
-    // Some examples of how to use In App Messaging public methods with OneSignal SDK
-    oneSignalInAppMessagingTriggerExamples();
-
-    // Some examples of how to use Outcome Events public methods with OneSignal SDK
-    oneSignalOutcomeEventsExamples();
   }
 
-  oneSignalInAppMessagingTriggerExamples() async {
-    /// Example addTrigger call for IAM
-    /// This will add 1 trigger so if there are any IAM satisfying it, it
-    /// will be shown to the user
-    OneSignal.shared.addTrigger("trigger_1", "one");
 
-    /// Example addTriggers call for IAM
-    /// This will add 2 triggers so if there are any IAM satisfying these, they
-    /// will be shown to the user
-    Map<String, Object> triggers = new Map<String, Object>();
-    triggers["trigger_2"] = "two";
-    triggers["trigger_3"] = "three";
-    OneSignal.shared.addTriggers(triggers);
 
-    // Removes a trigger by its key so if any future IAM are pulled with
-    // these triggers they will not be shown until the trigger is added back
-    OneSignal.shared.removeTriggerForKey("trigger_2");
-
-    // Get the value for a trigger by its key
-    Object triggerValue = await OneSignal.shared.getTriggerValueForKey("trigger_3");
-    print("'trigger_3' key trigger value: " + triggerValue.toString());
-
-    // Create a list and bulk remove triggers based on keys supplied
-    List<String> keys = ["trigger_1", "trigger_3"];
-    OneSignal.shared.removeTriggersForKeys(keys);
-
-    // Toggle pausing (displaying or not) of IAMs
-    OneSignal.shared.pauseInAppMessages(false);
-  }
-
-  oneSignalOutcomeEventsExamples() async {
-    // Await example for sending outcomes
-    outcomeAwaitExample();
-
-    // Send a normal outcome and get a reply with the name of the outcome
-    OneSignal.shared.sendOutcome("normal_1");
-    OneSignal.shared.sendOutcome("normal_2").then((outcomeEvent) {
-      print(outcomeEvent.jsonRepresentation());
-    });
-
-    // Send a unique outcome and get a reply with the name of the outcome
-    OneSignal.shared.sendUniqueOutcome("unique_1");
-    OneSignal.shared.sendUniqueOutcome("unique_2").then((outcomeEvent) {
-      print(outcomeEvent.jsonRepresentation());
-    });
-
-    // Send an outcome with a value and get a reply with the name of the outcome
-    OneSignal.shared.sendOutcomeWithValue("value_1", 3.2);
-    OneSignal.shared.sendOutcomeWithValue("value_2", 3.9).then((outcomeEvent) {
-      print(outcomeEvent.jsonRepresentation());
-    });
-  }
-
-  Future<void> outcomeAwaitExample() async {
-    var outcomeEvent = await OneSignal.shared.sendOutcome("await_normal_1");
-    print(outcomeEvent.jsonRepresentation());
-  }
 
 
   void getLocation() async {
