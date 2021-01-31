@@ -1,3 +1,4 @@
+import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,7 +54,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     prefs.setBool('onboarding', false);
     Navigator.pushReplacementNamed(
       context,
-      ConecHomePage.ROUTE_NAME,
+      LoginPage.ROUTE_NAME,
     );
   }
 

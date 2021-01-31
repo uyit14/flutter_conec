@@ -9,23 +9,23 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		223B8C2A255ECA5C007A2F46 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 223B8C29255ECA5C007A2F46 /* GoogleService-Info.plist */; };
-		22CBDF4325C2FE69002FDE9B /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22CBDF4225C2FE69002FDE9B /* NotificationService.swift */; };
-		22CBDF4725C2FE69002FDE9B /* ConecNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 22CBDF4025C2FE69002FDE9B /* ConecNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		227D7A5B25C6EBF0009C0D59 /* NotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = 227D7A5A25C6EBF0009C0D59 /* NotificationService.m */; };
+		227D7A5F25C6EBF0009C0D59 /* ConecNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 227D7A5725C6EBF0009C0D59 /* ConecNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3801AE2BFFDFFAB5E840821C /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B1F8C0CB65210A00FCF274E6 /* Pods_Runner.framework */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
-		685B8C2390EF1628349E925D /* Pods_ConecNotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896A178D23A5675B62280DBA /* Pods_ConecNotificationServiceExtension.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		835DC617670EAA13C1CFA09F /* Pods_ConecNotificationServiceExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896A178D23A5675B62280DBA /* Pods_ConecNotificationServiceExtension.framework */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		22CBDF4525C2FE69002FDE9B /* PBXContainerItemProxy */ = {
+		227D7A5D25C6EBF0009C0D59 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 22CBDF3F25C2FE69002FDE9B;
+			remoteGlobalIDString = 227D7A5625C6EBF0009C0D59;
 			remoteInfo = ConecNotificationServiceExtension;
 		};
 /* End PBXContainerItemProxy section */
@@ -37,7 +37,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				22CBDF4725C2FE69002FDE9B /* ConecNotificationServiceExtension.appex in Embed App Extensions */,
+				227D7A5F25C6EBF0009C0D59 /* ConecNotificationServiceExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -59,9 +59,10 @@
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		22142E06255D8B170035F7CF /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
 		223B8C29255ECA5C007A2F46 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		22CBDF4025C2FE69002FDE9B /* ConecNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ConecNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		22CBDF4225C2FE69002FDE9B /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		22CBDF4425C2FE69002FDE9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		227D7A5725C6EBF0009C0D59 /* ConecNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ConecNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		227D7A5925C6EBF0009C0D59 /* NotificationService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NotificationService.h; sourceTree = "<group>"; };
+		227D7A5A25C6EBF0009C0D59 /* NotificationService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NotificationService.m; sourceTree = "<group>"; };
+		227D7A5C25C6EBF0009C0D59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		49424BC8190FF01C50596420 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		6E0811AC48F4C0EFC2663D57 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
@@ -84,11 +85,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		22CBDF3D25C2FE69002FDE9B /* Frameworks */ = {
+		227D7A5425C6EBF0009C0D59 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				685B8C2390EF1628349E925D /* Pods_ConecNotificationServiceExtension.framework in Frameworks */,
+				835DC617670EAA13C1CFA09F /* Pods_ConecNotificationServiceExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,11 +104,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		22CBDF4125C2FE69002FDE9B /* ConecNotificationServiceExtension */ = {
+		227D7A5825C6EBF0009C0D59 /* ConecNotificationServiceExtension */ = {
 			isa = PBXGroup;
 			children = (
-				22CBDF4225C2FE69002FDE9B /* NotificationService.swift */,
-				22CBDF4425C2FE69002FDE9B /* Info.plist */,
+				227D7A5925C6EBF0009C0D59 /* NotificationService.h */,
+				227D7A5A25C6EBF0009C0D59 /* NotificationService.m */,
+				227D7A5C25C6EBF0009C0D59 /* Info.plist */,
 			);
 			path = ConecNotificationServiceExtension;
 			sourceTree = "<group>";
@@ -141,7 +143,7 @@
 			children = (
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
-				22CBDF4125C2FE69002FDE9B /* ConecNotificationServiceExtension */,
+				227D7A5825C6EBF0009C0D59 /* ConecNotificationServiceExtension */,
 				97C146EF1CF9000F007C117D /* Products */,
 				40EF2D1FBE256F84FCE3DB20 /* Pods */,
 				F204147AA6983F6B9CF430D7 /* Frameworks */,
@@ -152,7 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
-				22CBDF4025C2FE69002FDE9B /* ConecNotificationServiceExtension.appex */,
+				227D7A5725C6EBF0009C0D59 /* ConecNotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -186,14 +188,14 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		22CBDF3F25C2FE69002FDE9B /* ConecNotificationServiceExtension */ = {
+		227D7A5625C6EBF0009C0D59 /* ConecNotificationServiceExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 22CBDF4C25C2FE69002FDE9B /* Build configuration list for PBXNativeTarget "ConecNotificationServiceExtension" */;
+			buildConfigurationList = 227D7A6025C6EBF0009C0D59 /* Build configuration list for PBXNativeTarget "ConecNotificationServiceExtension" */;
 			buildPhases = (
-				A662F9BF9AEBC66F6E35504E /* [CP] Check Pods Manifest.lock */,
-				22CBDF3C25C2FE69002FDE9B /* Sources */,
-				22CBDF3D25C2FE69002FDE9B /* Frameworks */,
-				22CBDF3E25C2FE69002FDE9B /* Resources */,
+				7CEC455EDD359091392B41F1 /* [CP] Check Pods Manifest.lock */,
+				227D7A5325C6EBF0009C0D59 /* Sources */,
+				227D7A5425C6EBF0009C0D59 /* Frameworks */,
+				227D7A5525C6EBF0009C0D59 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -201,7 +203,7 @@
 			);
 			name = ConecNotificationServiceExtension;
 			productName = ConecNotificationServiceExtension;
-			productReference = 22CBDF4025C2FE69002FDE9B /* ConecNotificationServiceExtension.appex */;
+			productReference = 227D7A5725C6EBF0009C0D59 /* ConecNotificationServiceExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
@@ -222,7 +224,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				22CBDF4625C2FE69002FDE9B /* PBXTargetDependency */,
+				227D7A5E25C6EBF0009C0D59 /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -239,7 +241,7 @@
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
-					22CBDF3F25C2FE69002FDE9B = {
+					227D7A5625C6EBF0009C0D59 = {
 						CreatedOnToolsVersion = 12.3;
 					};
 					97C146ED1CF9000F007C117D = {
@@ -262,13 +264,13 @@
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
-				22CBDF3F25C2FE69002FDE9B /* ConecNotificationServiceExtension */,
+				227D7A5625C6EBF0009C0D59 /* ConecNotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		22CBDF3E25C2FE69002FDE9B /* Resources */ = {
+		227D7A5525C6EBF0009C0D59 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -326,6 +328,28 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		7CEC455EDD359091392B41F1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ConecNotificationServiceExtension-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9740EEB61CF901F6004384FC /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -357,28 +381,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A662F9BF9AEBC66F6E35504E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ConecNotificationServiceExtension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		F757725F2FECEAA42BD77D61 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -399,11 +401,11 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		22CBDF3C25C2FE69002FDE9B /* Sources */ = {
+		227D7A5325C6EBF0009C0D59 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22CBDF4325C2FE69002FDE9B /* NotificationService.swift in Sources */,
+				227D7A5B25C6EBF0009C0D59 /* NotificationService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,10 +421,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		22CBDF4625C2FE69002FDE9B /* PBXTargetDependency */ = {
+		227D7A5E25C6EBF0009C0D59 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 22CBDF3F25C2FE69002FDE9B /* ConecNotificationServiceExtension */;
-			targetProxy = 22CBDF4525C2FE69002FDE9B /* PBXContainerItemProxy */;
+			target = 227D7A5625C6EBF0009C0D59 /* ConecNotificationServiceExtension */;
+			targetProxy = 227D7A5D25C6EBF0009C0D59 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -446,7 +448,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		22CBDF4925C2FE69002FDE9B /* Debug */ = {
+		227D7A6125C6EBF0009C0D59 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA604244E1899BE1BCA8B468 /* Pods-ConecNotificationServiceExtension.debug.xcconfig */;
 			buildSettings = {
@@ -461,7 +463,7 @@
 				DEVELOPMENT_TEAM = KD3CLUH2UV;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = ConecNotificationServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -472,14 +474,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.conec.conecSport.ConecNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		22CBDF4A25C2FE69002FDE9B /* Release */ = {
+		227D7A6225C6EBF0009C0D59 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F780B1B35366960AC310EEC2 /* Pods-ConecNotificationServiceExtension.release.xcconfig */;
 			buildSettings = {
@@ -494,7 +493,7 @@
 				DEVELOPMENT_TEAM = KD3CLUH2UV;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = ConecNotificationServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -504,12 +503,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.conec.conecSport.ConecNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		22CBDF4B25C2FE69002FDE9B /* Profile */ = {
+		227D7A6325C6EBF0009C0D59 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E84015815F5E81FD5DC3605D /* Pods-ConecNotificationServiceExtension.profile.xcconfig */;
 			buildSettings = {
@@ -524,7 +522,7 @@
 				DEVELOPMENT_TEAM = KD3CLUH2UV;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = ConecNotificationServiceExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -534,7 +532,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.conec.conecSport.ConecNotificationServiceExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Profile;
@@ -601,7 +598,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = KD3CLUH2UV;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -743,7 +740,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = KD3CLUH2UV;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -779,7 +776,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = KD3CLUH2UV;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -805,12 +802,12 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		22CBDF4C25C2FE69002FDE9B /* Build configuration list for PBXNativeTarget "ConecNotificationServiceExtension" */ = {
+		227D7A6025C6EBF0009C0D59 /* Build configuration list for PBXNativeTarget "ConecNotificationServiceExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				22CBDF4925C2FE69002FDE9B /* Debug */,
-				22CBDF4A25C2FE69002FDE9B /* Release */,
-				22CBDF4B25C2FE69002FDE9B /* Profile */,
+				227D7A6125C6EBF0009C0D59 /* Debug */,
+				227D7A6225C6EBF0009C0D59 /* Release */,
+				227D7A6325C6EBF0009C0D59 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
