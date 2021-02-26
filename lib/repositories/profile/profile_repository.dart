@@ -10,8 +10,8 @@ class ProfileRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
 
   Future<ProfileResponse> fetchProfile() async {
-    final response =
-        await _helper.post("/api/Account/GetProfile", headers: await Helper.header());
+    final response = await _helper.post("/api/Account/GetProfile",
+        headers: await Helper.header());
     print(response);
     return ProfileResponse.fromJson(response);
   }
@@ -19,7 +19,10 @@ class ProfileRepository {
   Future<ProfileResponse> updateProfile(dynamic body) async {
     final response = await _helper.post("/api/Account/SaveProfile",
         headers: await Helper.header(), body: body);
-    Helper.appLog(className: "ProfileRepository", functionName: "updateProfile", message: response.toString());
+    Helper.appLog(
+        className: "ProfileRepository",
+        functionName: "updateProfile",
+        message: response.toString());
     return ProfileResponse.fromJson(response);
   }
 
@@ -33,8 +36,8 @@ class ProfileRepository {
   }
 
   Future<PageResponse> fetchPageInfo() async {
-    final response =
-    await _helper.get("/api/Account/GetMyPage", headers: await Helper.header());
+    final response = await _helper.get("/api/Account/GetMyPage",
+        headers: await Helper.header());
     print(response);
     return PageResponse.fromJson(response);
   }
@@ -46,4 +49,10 @@ class ProfileRepository {
     return PageResponse.fromJson(response);
   }
 
+  Future<bool> sendReport(dynamic body) async {
+    final response = await _helper.post('/api/feedback/create',
+        headers: await Helper.header(), body: body);
+    print(response);
+    return response['status'];
+  }
 }

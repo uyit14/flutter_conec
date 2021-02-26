@@ -9,9 +9,10 @@ import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/others/open_letter_page.dart';
 import 'package:conecapp/ui/others/terms_condition_page.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
-import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/change_password_page.dart';
+import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/guide_page.dart';
+import 'package:conecapp/ui/profile/pages/help_page.dart';
 import 'package:conecapp/ui/profile/widgets/custom_profile_clipper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -138,8 +139,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         fontWeight: FontWeight.w400)),
                                 InkWell(
                                   onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        DetailProfilePage.ROUTE_NAME).then((value) => _profileBloc.requestGetProfile());
+                                    Navigator.of(context)
+                                        .pushNamed(DetailProfilePage.ROUTE_NAME)
+                                        .then((value) =>
+                                            _profileBloc.requestGetProfile());
                                   },
                                   child: Text("Xem trang cá nhân",
                                       style: TextStyle(
@@ -151,7 +154,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             )
                           : Column(
                               children: <Widget>[
-                                Text(_isTokenExpired ? "Phiên đăng nhập hết hạn" : "Bạn chưa đăng nhập",
+                                Text(
+                                    _isTokenExpired
+                                        ? "Phiên đăng nhập hết hạn"
+                                        : "Bạn chưa đăng nhập",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 22,
@@ -167,7 +173,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                     color: Colors.white,
                                     textColor: Colors.red,
                                     icon: Icon(Icons.assignment_ind),
-                                    label: Text(_isTokenExpired ? "Đăng nhập lại": 'Đăng nhập ngay',
+                                    label: Text(
+                                        _isTokenExpired
+                                            ? "Đăng nhập lại"
+                                            : 'Đăng nhập ngay',
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w500))),
@@ -216,7 +225,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 SizedBox(height: 8),
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     Navigator.of(context).pushNamed(GuidePage.ROUTE_NAME);
                   },
                   child: Row(
@@ -269,36 +278,36 @@ class _ProfilePageState extends State<ProfilePage> {
                     ],
                   ),
                 ),
-                // _token != null && !_isTokenExpired ? SizedBox(height: 8) : Container(),
-                // _token != null && !_isTokenExpired
-                //     ? InkWell(
-                //   onTap: () {
-                //     Navigator.of(context).pushNamed(InfoPage.ROUTE_NAME);
-                //   },
-                //   child: Row(
-                //     children: <Widget>[
-                //       RawMaterialButton(
-                //         onPressed: () {},
-                //         elevation: 2.0,
-                //         fillColor: Colors.white,
-                //         child: Icon(
-                //           Icons.insert_drive_file,
-                //           color: Colors.cyan,
-                //           size: 30,
-                //         ),
-                //         padding: EdgeInsets.all(15.0),
-                //         shape: CircleBorder(),
-                //       ),
-                //       Text(
-                //         "Thông tin trang",
-                //         style: TextStyle(
-                //             fontSize: 20, fontWeight: FontWeight.w400),
-                //       )
-                //     ],
-                //   ),
-                // )
-                //     : Container(),
-                _token != null && !_isTokenExpired ? SizedBox(height: 8) : Container(),
+                SizedBox(height: 8),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(HelpPage.ROUTE_NAME);
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      RawMaterialButton(
+                        onPressed: () {},
+                        elevation: 2.0,
+                        fillColor: Colors.white,
+                        child: Icon(
+                          Icons.help,
+                          color: Colors.cyan,
+                          size: 30,
+                        ),
+                        padding: EdgeInsets.all(15.0),
+                        shape: CircleBorder(),
+                      ),
+                      Text(
+                        "Trợ giúp",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w400),
+                      )
+                    ],
+                  ),
+                ),
+                _token != null && !_isTokenExpired
+                    ? SizedBox(height: 8)
+                    : Container(),
                 _token != null && !_isTokenExpired && !_isSocial
                     ? InkWell(
                         onTap: () {
@@ -306,8 +315,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               .pushNamed(ChangePassWordPage.ROUTE_NAME)
                               .then((value) {
                             if (value != null) {
-                              ChangePassWordResponse changePassWordResponse = value;
-                              updateToken(changePassWordResponse.token, changePassWordResponse.expires);
+                              ChangePassWordResponse changePassWordResponse =
+                                  value;
+                              updateToken(changePassWordResponse.token,
+                                  changePassWordResponse.expires);
                             }
                           });
                         },
@@ -373,8 +384,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   alignment: Alignment.center,
                   child: Text(
                     "Version 1.0.0",
-                    style: TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w300),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
                   ),
                 )
               ],

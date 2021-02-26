@@ -158,7 +158,7 @@ class _TrainerPostPageState extends State<TrainerPostPage> {
                                               .width /
                                               2,
                                           child: Text(
-                                            "Cách đây: ${latestItem[index].distance.toInt()} km",
+                                            "Cách đây: ${Helper.handleDistance(distanceResponse: latestItem[index].distance)}",
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 fontStyle:

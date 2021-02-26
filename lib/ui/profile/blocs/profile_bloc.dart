@@ -98,6 +98,11 @@ class ProfileBloc {
     }
   }
 
+  Future<bool> requestReport(dynamic body) async {
+    final response = await _repository.sendReport(body);
+    return response;
+  }
+
   void dispose(){
     _profileController.close();
     _updateProfileController.close();

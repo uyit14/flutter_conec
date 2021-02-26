@@ -29,6 +29,7 @@ import 'ui/home/pages/items_by_category_page.dart';
 import 'ui/mypost/pages/post_action_page.dart';
 import 'ui/notify/pages/notify_detail_page.dart';
 import 'ui/onboarding/onboarding_screen.dart';
+import 'ui/profile/pages/help_page.dart';
 import 'ui/splash/splash_screen.dart';
 
 void main() {
@@ -84,7 +85,8 @@ class ConecApp extends StatelessWidget {
         GuidePage.ROUTE_NAME: (context) => GuidePage(),
         CategoryPage.ROUTE_NAME: (context) => CategoryPage(),
         NotifyDetailPage.ROUTE_NAME: (context) => NotifyDetailPage(),
-        ReportPage.ROUTE_NAME: (context) => ReportPage()
+        ReportPage.ROUTE_NAME: (context) => ReportPage(),
+        HelpPage.ROUTE_NAME: (context) => HelpPage()
       },
     );
   }
