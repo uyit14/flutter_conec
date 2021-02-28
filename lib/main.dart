@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/address/ward_page.dart';
 import 'package:conecapp/ui/authen/pages/confirm_email_page.dart';
@@ -27,6 +29,7 @@ import 'ui/authen/pages/reset_pass_page.dart';
 import 'ui/conec_home_page.dart';
 import 'ui/home/pages/items_by_category_page.dart';
 import 'ui/mypost/pages/post_action_page.dart';
+import 'ui/mypost/pages/sub_category_page.dart';
 import 'ui/notify/pages/notify_detail_page.dart';
 import 'ui/onboarding/onboarding_screen.dart';
 import 'ui/profile/pages/help_page.dart';
@@ -86,7 +89,8 @@ class ConecApp extends StatelessWidget {
         CategoryPage.ROUTE_NAME: (context) => CategoryPage(),
         NotifyDetailPage.ROUTE_NAME: (context) => NotifyDetailPage(),
         ReportPage.ROUTE_NAME: (context) => ReportPage(),
-        HelpPage.ROUTE_NAME: (context) => HelpPage()
+        HelpPage.ROUTE_NAME: (context) => HelpPage(),
+        SubCategoryPage.ROUTE_NAME: (context) => SubCategoryPage(),
       },
     );
   }

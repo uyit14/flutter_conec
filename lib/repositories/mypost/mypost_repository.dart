@@ -16,6 +16,16 @@ class MyPostRepository {
     return TopicResponse.fromJson(response).topics;
   }
 
+  Future<List<Topic>> fetchSubTopicWithHeader(bool isTopic, {String topicId}) async {
+    String query = isTopic ? "/api/Topic" : "/api/SubTopic?topicId=$topicId";
+    final response = await _helper.get(query, headers: await Helper.header());
+    if(isTopic){
+      return TopicResponse.fromJson(response).topics;
+    }else{
+      return SubTopicResponse.fromJson(response).topics;
+    }
+  }
+
   Future<List<Province>> getListProvince() async {
     final response = await _helper.get('/api/Address/LoadProvinces');
     return CityResponse.fromJson(response).provinces;

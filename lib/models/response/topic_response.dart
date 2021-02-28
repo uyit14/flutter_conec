@@ -15,3 +15,19 @@ class TopicResponse {
   }
 
 }
+
+class SubTopicResponse {
+  List<Topic> topics;
+
+  SubTopicResponse(this.topics);
+
+  SubTopicResponse.fromJson(Map<String, dynamic> json) {
+    if (json['subTopics'] != null) {
+      topics = new List<Topic>();
+      json['subTopics'].forEach((v) {
+        topics.add(new Topic.fromJson(v));
+      });
+    }
+  }
+
+}

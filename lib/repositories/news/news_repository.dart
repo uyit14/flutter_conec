@@ -23,9 +23,9 @@ class NewsRepository {
   }
 
   Future<List<Sport>> fetchAllAds(int page,
-      {String province, String district, String topic, String club, String keyword}) async {
+      {String province, String district, String topic, String club, String keyword, String topics}) async {
     final response = await _helper.get(
-        "/api/Ads/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}&keyword=${keyword ?? ""}");
+        "/api/Ads/GetAll?page=$page&topic=${topic ?? ""}&club=${club ?? ""}&keyword=${keyword ?? ""}&topics=${topics ?? ""}");
     return SportResponse.fromJson(response).sports;
   }
 

@@ -4,6 +4,8 @@ class PostActionRequest {
   String content;
   dynamic thumbnail;
   String topicId;
+  List<String> topicIds;
+  List<String> subTopicIds;
   List<Map> images;
   String province;
   String district;
@@ -27,6 +29,8 @@ class PostActionRequest {
     this.content,
     this.thumbnail,
     this.topicId,
+    this.topicIds,
+    this.subTopicIds,
     this.images,
     this.province,
     this.district,
@@ -49,6 +53,8 @@ class PostActionRequest {
     if(content!=null) 'content': content,
     if(thumbnail!=null) 'thumbnail': thumbnail,
     if(topicId!=null) 'topicId': topicId,
+    if(topicIds!=null) 'topicIds': topicIds,
+    if(subTopicIds!=null) 'subTopicIds': subTopicIds,
     if(province!=null) 'province': province,
     if(images!=null) 'images': images,
     if(district!=null) 'district': district,

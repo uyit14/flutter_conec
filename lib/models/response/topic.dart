@@ -13,6 +13,6 @@ class Topic {
     title = json['title'];
     description = json['description'];
     orderNo = json['orderNo'];
-    thumbnail = Helper.baseURL + json['thumbnail'];
+    thumbnail = json['thumbnail'] !=null ? Helper.baseURL + json['thumbnail'] : null;
   }
 }

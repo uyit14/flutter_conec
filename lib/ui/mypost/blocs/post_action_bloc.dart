@@ -68,6 +68,11 @@ class PostActionBloc {
   StreamController();
   Stream<ApiResponse<List<Topic>>> get topicStream => _topicController.stream;
 
+  //topic
+  StreamController<ApiResponse<List<Topic>>> _subTopicController =
+  StreamController.broadcast();
+  Stream<ApiResponse<List<Topic>>> get subTopicStream => _subTopicController.stream;
+
   void requestGetTopicWithHeader() async {
     _topicController.sink.add(ApiResponse.loading());
     try {
@@ -75,6 +80,17 @@ class PostActionBloc {
       _topicController.sink.add(ApiResponse.completed(topics));
     } catch (e) {
       _topicController.sink.addError(ApiResponse.error(e.toString()));
+      debugPrint(e.toString());
+    }
+  }
+
+  void requestGetSubTopicWithHeader(bool isTopic, {String topicId}) async {
+    _subTopicController.sink.add(ApiResponse.loading());
+    try {
+      final topics = await _repository.fetchSubTopicWithHeader(isTopic, topicId: topicId);
+      _subTopicController.sink.add(ApiResponse.completed(topics));
+    } catch (e) {
+      _subTopicController.sink.addError(ApiResponse.error(e.toString()));
       debugPrint(e.toString());
     }
   }
@@ -165,14 +181,15 @@ class PostActionBloc {
 //  }
 
   void dispose() {
-    _deleteMyPostController.close();
+    _deleteMyPostController?.close();
     //_deleteImageController.close();
-    _addPostController.close();
-    _updatePostController.close();
-    _provincesController.close();
-    _wardsController.close();
-    _districtsController.close();
-    _topicController.close();
-    _pushMyPostController.close();
+    _addPostController?.close();
+    _updatePostController?.close();
+    _provincesController?.close();
+    _wardsController?.close();
+    _districtsController?.close();
+    _topicController?.close();
+    _pushMyPostController?.close();
+    _subTopicController?.close();
   }
 }

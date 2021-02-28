@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                         List<model.Slider> slider = snapshot.data.data;
                         return CarouselSlider(
                           options: CarouselOptions(
-                            height: Helper.isTablet(context) ? 300 : 150,
+                            height: Helper.isTablet(context) ? 300 : 175,
                             autoPlay: true,
                             enlargeCenterPage: true,
                           ),
@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                                 ),
                                                 padding: EdgeInsets.symmetric(
-                                                    vertical: 10.0,
+                                                    vertical: 5.0,
                                                     horizontal: 20.0),
 //                                                child: Text(
 //                                                  item.title,

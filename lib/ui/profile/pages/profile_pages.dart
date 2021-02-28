@@ -17,6 +17,7 @@ import 'package:conecapp/ui/profile/widgets/custom_profile_clipper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -34,11 +35,19 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isTokenExpired = true;
   bool _isLoading = false;
   bool _isSocial = false;
+  String version = "";
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
+    getVersion();
     getToken();
+  }
+
+  void getVersion() async{
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+    print("version: " + version);
   }
 
   void getToken() async {
@@ -383,7 +392,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   width: double.infinity,
                   alignment: Alignment.center,
                   child: Text(
-                    "Version 1.0.0",
+                    "Version $version",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
                   ),
                 )

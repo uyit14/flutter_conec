@@ -1,5 +1,6 @@
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/image.dart';
+import 'package:conecapp/models/response/topic.dart';
 
 class AdsDetailsResponse {
   AdsDetail adsDetail;
@@ -50,6 +51,8 @@ class AdsDetail {
   String generalCondition;
   String phoneNumber;
   String shareLink;
+  List<Topic> topics;
+  List<Topic> subTopics;
 
   AdsDetail(
       {this.postId,
@@ -59,7 +62,7 @@ class AdsDetail {
       this.approvedDate,
       this.owner,
       this.ownerAvatar,
-        this.ownerId,
+      this.ownerId,
       this.ratingCount,
       this.ratingAvg,
       this.isRating,
@@ -69,7 +72,7 @@ class AdsDetail {
       this.likeOwner,
       this.thumbnail,
       this.topic,
-        this.topicId,
+      this.topicId,
       this.topicMetaLink,
       this.metaLink,
       this.metaTitle,
@@ -80,14 +83,16 @@ class AdsDetail {
       this.district,
       this.ward,
       this.address,
-        this.getAddress,
-        this.lat,
-        this.long,
+      this.getAddress,
+      this.lat,
+      this.long,
       this.joiningFee,
       this.uses,
       this.price,
       this.generalCondition,
-        this.shareLink,
+      this.shareLink,
+      this.topics,
+      this.subTopics,
       this.phoneNumber});
 
   AdsDetail.fromJson(Map<String, dynamic> json) {
@@ -97,7 +102,10 @@ class AdsDetail {
     content = json['content'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
-    ownerAvatar = json['ownerAvatar'] !=null && !json['ownerAvatar'].contains("http") ? Helper.baseURL + json['ownerAvatar'] : json['ownerAvatar'];
+    ownerAvatar =
+        json['ownerAvatar'] != null && !json['ownerAvatar'].contains("http")
+            ? Helper.baseURL + json['ownerAvatar']
+            : json['ownerAvatar'];
     ownerId = json['ownerId'] ?? null;
     ratingCount = json['ratingCount'];
     ratingAvg = json['ratingAvg'];
@@ -106,7 +114,9 @@ class AdsDetail {
     commentCount = json['commentCount'];
     likeCount = json['likeCount'];
     likeOwner = json['likeOwner'];
-    thumbnail = json['thumbnail'] !=null && !json['thumbnail'].contains("http") ? Helper.baseURL + json['thumbnail'] : json['thumbnail'];
+    thumbnail = json['thumbnail'] != null && !json['thumbnail'].contains("http")
+        ? Helper.baseURL + json['thumbnail']
+        : json['thumbnail'];
     topic = json['topic'];
     topicId = json['topicId'];
     topicMetaLink = json['topicMetaLink'];
@@ -133,5 +143,17 @@ class AdsDetail {
     generalCondition = json['generalCondition'];
     phoneNumber = json['phoneNumber'];
     shareLink = json['shareLink'];
+    if (json['topics'] != null) {
+      topics = new List<Topic>();
+      json['topics'].forEach((v) {
+        topics.add(new Topic.fromJson(v));
+      });
+    }
+    if (json['subTopics'] != null) {
+      subTopics = new List<Topic>();
+      json['subTopics'].forEach((v) {
+        subTopics.add(new Topic.fromJson(v));
+      });
+    }
   }
 }

@@ -78,13 +78,10 @@ class ItemsByCategoryBloc {
 
   void requestItemDetail(String postId) async {
     _itemDetailController.sink.add(ApiResponse.loading());
-    try {
+
       final itemDetail = await _repository.fetchItemDetail(postId);
       _itemDetailController.sink.add(ApiResponse.completed(itemDetail));
-    } catch (e) {
-      print(e.toString());
-      _itemDetailController.sink.addError(ApiResponse.error(e.toString()));
-    }
+
   }
 
   void requestGetAvatar() async {

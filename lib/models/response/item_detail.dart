@@ -1,5 +1,6 @@
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/image.dart';
+import 'package:conecapp/models/response/topic.dart';
 
 class ItemDetailResponse {
   ItemDetail itemDetail;
@@ -48,6 +49,8 @@ class ItemDetail {
   String phoneNumber;
   String status;
   String shareLink;
+  List<Topic> topics;
+  List<Topic> subTopics;
 
   ItemDetail(
       {this.postId,
@@ -83,7 +86,9 @@ class ItemDetail {
         this.generalCondition,
         this.phoneNumber,
         this.status,
-        this.shareLink
+        this.shareLink,
+        this.topics,
+        this.subTopics
       });
 
   ItemDetail.fromJson(Map<String, dynamic> json) {
@@ -125,7 +130,18 @@ class ItemDetail {
     generalCondition = json['generalCondition'];
     phoneNumber = json['phoneNumber'];
     status = json['status'];
-    shareLink = json['shareLink'];
+    if (json['topics'] != null) {
+      topics = new List<Topic>();
+      json['topics'].forEach((v) {
+        topics.add(new Topic.fromJson(v));
+      });
+    }
+    if (json['subTopics'] != null) {
+      subTopics = new List<Topic>();
+      json['subTopics'].forEach((v) {
+        subTopics.add(new Topic.fromJson(v));
+      });
+    }
   }
 }
 

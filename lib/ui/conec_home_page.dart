@@ -103,73 +103,34 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     //getLocation();
-    initPlatformState();
+    initOneSignal("7075e16c-c1fb-4d33-93b1-1c8cf007c294");
     getToken();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-
+  void initOneSignal(oneSignalAppId) {
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
 
-    OneSignal.shared.setRequiresUserPrivacyConsent(_requireConsent);
-
     var settings = {
-      OSiOSSettings.autoPrompt: false,
-      OSiOSSettings.promptBeforeOpeningPushUrl: true
+      OSiOSSettings.autoPrompt: true,
+      OSiOSSettings.inAppLaunchUrl: true
     };
 
-    OneSignal.shared.setNotificationReceivedHandler((OSNotification notification) {
-      this.setState(() {
-        _debugLabelString =
-        "Received notification: \n${notification.jsonRepresentation().replaceAll("\\n", "\n")}";
-      });
-      print(_debugLabelString);
-    });
-
-    OneSignal.shared
-        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      this.setState(() {
-        _debugLabelString =
-        "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}";
-      });
-      print(_debugLabelString);
-    });
-
-    OneSignal.shared
-        .setInAppMessageClickedHandler((OSInAppMessageAction action) {
-      this.setState(() {
-        _debugLabelString =
-        "In App Message Clicked: \n${action.jsonRepresentation().replaceAll("\\n", "\n")}";
-      });
-      print(_debugLabelString);
-    });
-
-    OneSignal.shared
-        .setSubscriptionObserver((OSSubscriptionStateChanges changes) {
-      print("SUBSCRIPTION STATE CHANGED: ${changes.jsonRepresentation()}");
-    });
-
-    OneSignal.shared.setPermissionObserver((OSPermissionStateChanges changes) {
-      print("PERMISSION STATE CHANGED: ${changes.jsonRepresentation()}");
-    });
-
-    OneSignal.shared.setEmailSubscriptionObserver(
-            (OSEmailSubscriptionStateChanges changes) {
-          print("EMAIL SUBSCRIPTION STATE CHANGED ${changes.jsonRepresentation()}");
-        });
-
-    // NOTE: Replace with your own app ID from https://www.onesignal.com
-    await OneSignal.shared
-        .init("7075e16c-c1fb-4d33-93b1-1c8cf007c294", iOSSettings: settings);
+    OneSignal.shared.init(oneSignalAppId, iOSSettings: settings);
 
     OneSignal.shared
         .setInFocusDisplayType(OSNotificationDisplayType.notification);
 
-    bool requiresConsent = await OneSignal.shared.requiresUserPrivacyConsent();
+    // will be called whenever a notification is received
+    OneSignal.shared
+        .setNotificationReceivedHandler((OSNotification notification) {
+      print('Received: ' + notification?.payload?.body ?? '');
+    });
 
-    this.setState(() {
-      _enableConsentButton = requiresConsent;
+    // will be called whenever a notification is opened/button pressed.
+    OneSignal.shared
+        .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
+      print('Opened: ' + result.notification?.payload?.body ?? '');
     });
   }
 

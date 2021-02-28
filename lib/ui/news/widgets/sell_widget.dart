@@ -1,18 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
-import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
-import 'package:conecapp/models/response/location/city_response.dart';
 import 'package:conecapp/models/response/sport.dart';
-import 'package:conecapp/ui/address/district_page.dart';
-import 'package:conecapp/ui/address/province_page.dart';
+import 'package:conecapp/models/response/topic.dart';
+import 'package:conecapp/ui/mypost/pages/sub_category_page.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class SellWidget extends StatefulWidget {
   @override
@@ -24,11 +21,8 @@ class _SellWidgetState extends State<SellWidget> {
   TextEditingController _searchController = TextEditingController();
   List<Sport> totalItemList = List<Sport>();
   ScrollController _scrollController;
-
-  //
-  Province provinceData;
-  Province districtData;
   String _keyword;
+  List<Topic> _topics = List();
 
   //
   int _currentPage = 1;
@@ -59,15 +53,24 @@ class _SellWidgetState extends State<SellWidget> {
       if (_shouldLoadMore) {
         print("goto _scrollListener");
         _shouldLoadMore = false;
-        _newsBloc.requestGetAllAds(_currentPage,
-            province: provinceData != null ? provinceData.name : "",
-            district: districtData != null ? districtData.name : "",
-            club: "", keyword: _keyword);
+        _newsBloc.requestGetAllAds(_currentPage, club: "", keyword: _keyword, topics: getTopicsString());
         setState(() {
           _currentPage++;
         });
       }
     }
+  }
+
+  String getTopicsString(){
+    String topicsString;
+    for(int i=0; i<_topics.length; i++){
+      if(i==0){
+        topicsString = _topics[0].id;
+      }else{
+        topicsString = topicsString + ';${_topics[i].id}';
+      }
+    }
+    return topicsString;
   }
 
   @override
@@ -114,13 +117,14 @@ class _SellWidgetState extends State<SellWidget> {
 //                          _newsBloc.searchSportAction(value);
 //                        }
                       },
-                      onFieldSubmitted: (value){
+                      onFieldSubmitted: (value) {
                         setState(() {
                           _needAddUI = true;
                         });
                         _currentPage = 1;
                         totalItemList.clear();
-                        _newsBloc.requestGetAllAds(_currentPage, keyword: value);
+                        _newsBloc.requestGetAllAds(_currentPage,
+                            keyword: value);
                         _currentPage = 2;
                         FocusScope.of(context).requestFocus(FocusNode());
                       },
@@ -180,88 +184,126 @@ class _SellWidgetState extends State<SellWidget> {
                   SizedBox(width: 4),
                   InkWell(
                     onTap: () {
-                      Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
-                          arguments: {'province': provinceData}).then((value) {
+                      Navigator.of(context)
+                          .pushNamed(SubCategoryPage.ROUTE_NAME)
+                          .then((value) {
                         if (value != null) {
                           setState(() {
-                            provinceData = value;
                             _needAddUI = true;
+                            _topics.addAll(value);
                           });
+                          print(_topics.length);
                           //TODO - call api with province here
                           _currentPage = 1;
                           totalItemList.clear();
-                          _newsBloc.requestGetAllAds(_currentPage,
-                              province: provinceData.name);
+                          _newsBloc.requestGetAllAds(
+                            _currentPage,
+                              topics: getTopicsString()
+                          );
                           _currentPage = 2;
                         }
                       });
                     },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 0.5, color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Row(
-                        children: <Widget>[
-                          Text(provinceData != null
-                              ? provinceData.name
-                              : "Tỉnh/Thành phố"),
-                          Icon(Icons.keyboard_arrow_down)
-                        ],
-                      ),
-                    ),
+                    child: _topics.length > 0
+                        ? Row(
+                            children: [
+                              Container(
+                                height: 30,
+                                width: MediaQuery.of(context).size.width - 70,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: _topics
+                                      .map((e) => Container(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 4, horizontal: 6),
+                                            margin: EdgeInsets.only(right: 8),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    width: 0.5,
+                                                    color: Colors.grey),
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
+                                            child: Center(
+                                                child: Text(e.title ?? "")),
+                                          ))
+                                      .toList(),
+                                ),
+                              ),
+                              IconButton(icon: Icon(Icons.refresh, color: Colors.black, size: 28,), onPressed: (){
+                                _newsBloc.requestGetAllAds(0);
+                                setState(() {
+                                  _topics.clear();
+                                });
+                              })
+
+                            ],
+                          )
+                        : Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 6),
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 0.5, color: Colors.grey),
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Row(
+                              children: <Widget>[
+                                Text("Chọn danh mục"),
+                                Icon(Icons.keyboard_arrow_down)
+                              ],
+                            ),
+                          ),
                   ),
-                  SizedBox(width: 4),
-                  InkWell(
-                    onTap: () {
-                      if (provinceData != null) {
-                        Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
-                            arguments: {
-                              'district': districtData,
-                              'provinceId': provinceData.id
-                            }).then((value) {
-                          if (value != null) {
-                            setState(() {
-                              districtData = value;
-                              _needAddUI = true;
-                            });
-                            //TODO - call api with district here
-                            _currentPage = 1;
-                            totalItemList.clear();
-                            _newsBloc.requestGetAllAds(_currentPage,
-                                province: provinceData.name,
-                                district: districtData.name);
-                            _currentPage = 2;
-                          }
-                        });
-                      } else {
-                        Fluttertoast.showToast(
-                            msg: "Vui lòng chọn tỉnh, thành");
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-                      decoration: BoxDecoration(
-                          color: provinceData != null
-                              ? Colors.white
-                              : Colors.black12,
-                          border: Border.all(width: 0.5, color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                              districtData != null
-                                  ? districtData.name
-                                  : "Quận/Huyện",
-                              style: TextStyle(
-                                  color: provinceData != null
-                                      ? Colors.black87
-                                      : Colors.grey)),
-                          Icon(Icons.keyboard_arrow_down)
-                        ],
-                      ),
-                    ),
-                  ),
+//                  SizedBox(width: 4),
+//                  InkWell(
+//                    onTap: () {
+//                      if (provinceData != null) {
+//                        Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
+//                            arguments: {
+//                              'district': districtData,
+//                              'provinceId': provinceData.id
+//                            }).then((value) {
+//                          if (value != null) {
+//                            setState(() {
+//                              districtData = value;
+//                              _needAddUI = true;
+//                            });
+//                            //TODO - call api with district here
+//                            _currentPage = 1;
+//                            totalItemList.clear();
+//                            _newsBloc.requestGetAllAds(_currentPage,
+//                                province: provinceData.name,
+//                                district: districtData.name);
+//                            _currentPage = 2;
+//                          }
+//                        });
+//                      } else {
+//                        Fluttertoast.showToast(
+//                            msg: "Vui lòng chọn tỉnh, thành");
+//                      }
+//                    },
+//                    child: Container(
+//                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+//                      decoration: BoxDecoration(
+//                          color: provinceData != null
+//                              ? Colors.white
+//                              : Colors.black12,
+//                          border: Border.all(width: 0.5, color: Colors.grey),
+//                          borderRadius: BorderRadius.circular(8)),
+//                      child: Row(
+//                        children: <Widget>[
+//                          Text(
+//                              districtData != null
+//                                  ? districtData.name
+//                                  : "Quận/Huyện",
+//                              style: TextStyle(
+//                                  color: provinceData != null
+//                                      ? Colors.black87
+//                                      : Colors.grey)),
+//                          Icon(Icons.keyboard_arrow_down)
+//                        ],
+//                      ),
+//                    ),
+//                  ),
                 ],
               ),
             ),
@@ -414,7 +456,7 @@ class _SellWidgetState extends State<SellWidget> {
                         return UIError(
                             errorMessage: snapshot.data.message,
                             onRetryPressed: () =>
-                                _newsBloc.requestGetAllAds(0));
+                                _newsBloc.requestGetAllAds(0, topics: getTopicsString()));
                     }
                   }
                   return Container(
