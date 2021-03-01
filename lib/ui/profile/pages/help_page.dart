@@ -141,7 +141,7 @@ class _HelpPageState extends State<HelpPage> {
                   height: 45,
                   child: Center(
                     child: Text(
-                      'Gưi',
+                      'Gửi',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 18,
