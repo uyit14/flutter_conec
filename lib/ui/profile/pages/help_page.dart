@@ -2,7 +2,15 @@ import 'dart:convert';
 
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+class Reason {
+  int id;
+  String reason;
+
+  Reason(this.id, this.reason);
+}
 
 class HelpPage extends StatefulWidget {
   static const ROUTE_NAME = "help-page";
@@ -18,13 +26,16 @@ class _HelpPageState extends State<HelpPage> {
   String _phoneNumber = "";
   String _emnail = "";
 
-  List<String> _reasonList = [
-    "Đăng tin",
-    "Sửa tin",
-    "Thanh toán",
-    "Tài khoản",
-    "Khác"
+  int selectedItem = 0;
+
+  List<Reason> _reasonList = [
+    Reason(0, "Đăng tin"),
+    Reason(1, "Sửa tin"),
+    Reason(2, "Thanh toán"),
+    Reason(3, "Tài khoản"),
+    Reason(4, "Khác")
   ];
+
   String _reason = 'Đăng tin';
 
   @override
@@ -71,25 +82,98 @@ class _HelpPageState extends State<HelpPage> {
                   children: [
                     Text("Về vấn đề"),
                     SizedBox(height: 2),
-                    DropdownButton<String>(
-                      value: _reason,
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                      onChanged: (String data) {
-                        setState(() {
-                          _reason = data;
-                        });
-                      },
-                      items: _reasonList
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
+                    // DropdownButton<String>(
+                    //   value: _reason,
+                    //   icon: Icon(Icons.arrow_drop_down),
+                    //   iconSize: 24,
+                    //   elevation: 16,
+                    //   style: TextStyle(color: Colors.black, fontSize: 18),
+                    //   onChanged: (String data) {
+                    //     setState(() {
+                    //       _reason = data;
+                    //     });
+                    //   },
+                    //   items: _reasonList
+                    //       .map<DropdownMenuItem<String>>((String value) {
+                    //     return DropdownMenuItem<String>(
+                    //       value: value,
+                    //       child: Text(value),
+                    //     );
+                    //   }).toList(),
+                    // ),
+                    // Container(
+                    //   height: 100,
+                    //   child: GridView.builder(
+                    //       gridDelegate:
+                    //           SliverGridDelegateWithFixedCrossAxisCount(
+                    //         crossAxisCount: 4,
+                    //         childAspectRatio: 0.5,
+                    //       ),
+                    //       itemCount: _reasonList.length,
+                    //       itemBuilder: (context, index) {
+                    //         return Card(
+                    //           elevation: 5,
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    //             child: Row(
+                    //               mainAxisSize: MainAxisSize.min,
+                    //               children: [
+                    //                 Text(
+                    //                   "aaaaa",
+                    //                   style: TextStyle(color: Colors.black),
+                    //                 ),
+                    //                 Radio(
+                    //                   value: _reasonList[index],
+                    //                   groupValue: 0,
+                    //                   activeColor: Color.fromRGBO(220, 65, 50, 1),
+                    //                   onChanged: (value) {
+                    //                     setState(() {
+                    //                       _reason = value;
+                    //                     });
+                    //                   },
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         );
+                    //       }),
+                    // ),
+                    Container(
+                      width: double.infinity,
+                      child: Wrap(
+                        children: _reasonList
+                            .map((e) => Container(
+                                  margin: EdgeInsets.only(right: 8, bottom: 8),
+                                  padding: EdgeInsets.only(left: 8),
+                                  decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                            blurRadius: 1, offset: Offset(0, 1))
+                                      ],
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6)),
+                                  child: Row(
+                                    children: [
+                                      Text(e.reason),
+                                      Radio(
+                                        value: e.id,
+                                        groupValue: selectedItem,
+                                        activeColor:
+                                            Color.fromRGBO(220, 65, 50, 1),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedItem = value;
+                                            _reason = e.reason;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                    mainAxisSize: MainAxisSize.min,
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -103,7 +187,7 @@ class _HelpPageState extends State<HelpPage> {
                     SizedBox(height: 2),
                     TextFormField(
                       controller: _controller,
-                      maxLines: 10,
+                      maxLines: 7,
                       textInputAction: TextInputAction.done,
                       style: TextStyle(fontSize: 18),
                       keyboardType: TextInputType.text,
@@ -120,6 +204,7 @@ class _HelpPageState extends State<HelpPage> {
               SizedBox(height: 24),
               InkWell(
                 onTap: () async {
+                  print(_reason);
                   bool result = await _profileBloc.requestReport(jsonEncode({
                     "fullName": _fullName,
                     "phoneNumber": _phoneNumber,
