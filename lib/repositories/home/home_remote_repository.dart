@@ -181,4 +181,16 @@ class HomeRemoteRepository {
     print(response);
     return response['status'];
   }
+
+  Future<bool> giftCheck() async{
+    final response = await _helper.get("/api/GiftCard/Check", headers: await Helper.header());
+    print("giftCheck" + response.toString());
+    return response['status'];
+  }
+
+  Future<bool> giftReceive() async{
+    final response = await _helper.get("/api/GiftCard/Receive", headers: await Helper.header());
+    print("giftReceive" + response.toString());
+    return response['status'];
+  }
 }

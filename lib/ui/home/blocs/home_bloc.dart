@@ -175,6 +175,16 @@ class HomeBloc {
     }
   }
 
+  Future<bool> requestGiftCheck() async {
+    final response = await _repository.giftCheck();
+    return response;
+  }
+
+  Future<bool> requestGiftReceive() async {
+    final response = await _repository.giftReceive();
+    return response;
+  }
+
   void dispose() {
     _topicController.close();
     _sliderController.close();

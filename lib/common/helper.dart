@@ -1,3 +1,5 @@
+import 'dart:developer' as dev;
+
 import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'globals.dart' as globals;
-import 'dart:developer' as dev;
 
 const GOOGLE_API_KEY = 'AIzaSyCB6MXwv-kgX2ecqg020GAIAV_VsHoKX8Y';
 
@@ -143,6 +143,26 @@ class Helper {
             ));
   }
 
+  static void showGiftCheckDialog(
+      BuildContext context, String title, String content, VoidCallback onOK) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: Text(title),
+              content: Text(content),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("Để sau", style: TextStyle(color: Colors.red)),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                CupertinoDialogAction(
+                  child: Text("Nhận ngay"),
+                  onPressed: onOK,
+                )
+              ],
+            ));
+  }
+
   static void showAuthenticationDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -221,18 +241,18 @@ class Helper {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        ));
+              title: Text(title),
+              content: Text(content),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ));
   }
 
   static Future<String> getToken() async {

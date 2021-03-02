@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
+import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 
@@ -54,5 +55,11 @@ class ProfileRepository {
         headers: await Helper.header(), body: body);
     print(response);
     return response['status'];
+  }
+
+  Future<GiftResponse> fetchGiftResponse() async{
+    final response = await _helper.get("/api/MyPost/CheckRemainPushPriority", headers: Helper.header());
+    print("fetchGiftResponse $response");
+    return GiftResponse.fromJson(response);
   }
 }

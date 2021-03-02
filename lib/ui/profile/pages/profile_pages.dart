@@ -97,6 +97,53 @@ class _ProfilePageState extends State<ProfilePage> {
     _profileBloc.requestGetProfile();
   }
 
+  int pushNumber = 5;
+  int postNumber = 9;
+
+  void showRemindDialog(BuildContext context){
+    Helper.showMissingDialog(context, "Bạn đang có", "$pushNumber lượt đẩy tin\n$postNumber lượt ưu tiên tin");
+  }
+
+  void requestGetGift() async{
+    String token = await Helper.getToken();
+    bool expired = await Helper.isTokenExpired();
+    bool isSocial = await Helper.getIsSocial();
+    setState(() {
+      _token = token;
+      _isTokenExpired = expired;
+      _isSocial = isSocial;
+    });
+    if (token != null && !expired) {
+      _profileBloc.requestGetProfile();
+      _profileBloc.profileStream.listen((event) {
+        switch (event.status) {
+          case Status.LOADING:
+            setState(() {
+              _isLoading = true;
+            });
+            break;
+          case Status.COMPLETED:
+            Profile profile = event.data;
+            setState(() {
+              _isLoading = false;
+              _name = profile.name;
+              _province = profile.province;
+              _address = '${profile.district ?? ""} ${profile.province}';
+              _avatar = profile.avatar;
+            });
+            break;
+          case Status.ERROR:
+            setState(() {
+              _isLoading = false;
+            });
+            Fluttertoast.showToast(
+                msg: "Không tải được thông tin", gravity: ToastGravity.CENTER);
+            break;
+        }
+      });
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();

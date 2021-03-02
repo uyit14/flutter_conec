@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/repositories/profile/profile_repository.dart';
@@ -37,6 +38,11 @@ class ProfileBloc {
   StreamController<ApiResponse<ChangePassWordResponse>> _changePassController =
   StreamController();
   Stream<ApiResponse<ChangePassWordResponse>> get changePassStream => _changePassController.stream;
+
+  //
+  StreamController<ApiResponse<GiftResponse>> _giftReponseController =
+  StreamController();
+  Stream<ApiResponse<GiftResponse>> get giftResponseStream => _giftReponseController.stream;
 
 
   void requestGetProfile() async {
@@ -102,12 +108,23 @@ class ProfileBloc {
     final response = await _repository.sendReport(body);
     return response;
   }
+  
+  void requestGetGiftResponse() async{
+    _giftReponseController.sink.add(ApiResponse.loading());
+    final result = await _repository.fetchGiftResponse();
+    if(result.status){
+      _giftReponseController.sink.add(ApiResponse.completed(result));
+    }else{
+      _giftReponseController.sink.add(ApiResponse.error("Có lỗi xảy ra, xin vui lòng thử lại"));
+    }
+  }
 
   void dispose(){
     _profileController.close();
     _updateProfileController.close();
     _changePassController.close();
     _updatePageController.close();
+    _giftReponseController?.close();
   }
 
   void disposePage(){

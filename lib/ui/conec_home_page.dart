@@ -107,6 +107,27 @@ class _ConecHomePageState extends State<ConecHomePage> {
     getToken();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    giftCheck(context);
+  }
+  
+  void giftCheck(BuildContext context) async{
+    bool result = await _homeBloc.requestGiftCheck();
+    if(result){
+      Helper.showGiftCheckDialog(context, "Điểm danh nhận quà", "Quà tháng này của bạn: \n5 lượt đẩy tin \n5 tin ưu tiên", () async{
+        Navigator.of(context).pop();
+        bool result2 = await _homeBloc.requestGiftReceive();
+        if(result2){
+          Helper.showMissingDialog(context, "Nhận quà thành công", "");
+        }else{
+          Helper.showMissingDialog(context, "Nhận quà thất bại", "Bạn đã nhận quà hoặc chưa tới thời gian nhận");
+        }
+      });
+    }
+  }
+
   // Platform messages are asynchronous, so we initialize in an async method.
   void initOneSignal(oneSignalAppId) {
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
