@@ -12,10 +12,11 @@ import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
-import 'package:html/parser.dart';
+import 'package:conecapp/ui/mypost/pages/sub_category_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:html/parser.dart';
 
 class ItemByCategory extends StatefulWidget {
   static const ROUTE_NAME = '/items-category';
@@ -40,6 +41,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   bool _firstTime;
   int _currentPage = 1;
   bool _shouldLoadMore = true;
+  List<Topic> _topics = List();
 
   //
   Province provinceData;
@@ -71,10 +73,22 @@ class _ItemByCategoryState extends State<ItemByCategory> {
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
       categoryTitle = routeArgs['title'] as String;
       categoryId = routeArgs['id'] as String;
-      _itemsByCategoryBloc.requestGetAllItem(_currentPage,
+      _itemsByCategoryBloc.requestGetAllItem(_currentPage, "",
           topic: categoryTitle ?? "");
       _currentPage = 2;
     }
+  }
+
+  String getTopicsString() {
+    String topicsString = "";
+    for (int i = 0; i < _topics.length; i++) {
+      if (i == 0) {
+        topicsString = _topics[0].id;
+      } else {
+        topicsString = topicsString + ';${_topics[i].id}';
+      }
+    }
+    return topicsString;
   }
 
   void _scrollListener() {
@@ -85,11 +99,12 @@ class _ItemByCategoryState extends State<ItemByCategory> {
       });
       if (_shouldLoadMore) {
         _shouldLoadMore = false;
-        _itemsByCategoryBloc.requestGetAllItem(_currentPage,
+        _itemsByCategoryBloc.requestGetAllItem(_currentPage, getTopicsString(),
             province: provinceData != null ? provinceData.name : "",
             district: districtData != null ? districtData.name : "",
             topic: selectedCategory ?? categoryTitle ?? "",
-            club: "", keyword: _keyword);
+            club: "",
+            keyword: _keyword);
         setState(() {
           _currentPage++;
         });
@@ -139,13 +154,15 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                       //   _itemsByCategoryBloc.searchAction(value);
                       // }
                     },
-                    onFieldSubmitted: (value){
+                    onFieldSubmitted: (value) {
                       setState(() {
                         _needAddUI = true;
                       });
                       _currentPage = 1;
                       totalItemList.clear();
-                      _itemsByCategoryBloc.requestGetAllItem(_currentPage, keyword: value);
+                      _itemsByCategoryBloc.requestGetAllItem(
+                          _currentPage, getTopicsString(),
+                          keyword: value);
                       _currentPage = 2;
                       FocusScope.of(context).requestFocus(FocusNode());
                     },
@@ -179,7 +196,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                     });
                     _currentPage = 1;
                     totalItemList.clear();
-                    _itemsByCategoryBloc.requestGetAllItem(_currentPage, keyword: _keyword);
+                    _itemsByCategoryBloc.requestGetAllItem(
+                        _currentPage, getTopicsString(),
+                        keyword: _keyword);
                     _currentPage = 2;
                     FocusScope.of(context).requestFocus(FocusNode());
                   },
@@ -210,7 +229,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                           });
                           _currentPage = 1;
                           totalItemList.clear();
-                          _itemsByCategoryBloc.requestGetAllItem(_currentPage,
+                          _itemsByCategoryBloc.requestGetAllItem(
+                              _currentPage, getTopicsString(),
                               province: provinceData.name,
                               topic: selectedCategory ?? categoryTitle ?? "");
                           _currentPage = 2;
@@ -257,7 +277,8 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                             });
                             _currentPage = 1;
                             totalItemList.clear();
-                            _itemsByCategoryBloc.requestGetAllItem(_currentPage,
+                            _itemsByCategoryBloc.requestGetAllItem(
+                                _currentPage, getTopicsString(),
                                 province: provinceData.name,
                                 district: districtData.name);
                             _currentPage = 2;
@@ -328,6 +349,173 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               ],
             ),
           ),
+          categoryId == "45f6d14c-3cb7-4bc9-91c1-1cc541dd8893"
+              ? Container(
+                  margin: EdgeInsets.only(top: 4),
+                  padding: EdgeInsets.all(8),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.symmetric(
+                          vertical:
+                              BorderSide(color: Colors.grey, width: 0.5))),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        SizedBox(width: 4),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                SubCategoryPage.ROUTE_NAME,
+                                arguments: {
+                                  "topicId": categoryId
+                                }).then((value) {
+                              if (value != null) {
+                                print(value);
+                                setState(() {
+                                  _needAddUI = true;
+                                  _topics.addAll(value);
+                                });
+                                print(_topics.length);
+                                //TODO - call api with province here
+                                _currentPage = 1;
+                                totalItemList.clear();
+                                _itemsByCategoryBloc.requestGetAllItem(
+                                    _currentPage, getTopicsString(),
+                                    province: provinceData != null
+                                        ? provinceData.name
+                                        : "",
+                                    district: districtData != null
+                                        ? districtData.name
+                                        : "",
+                                    topic:
+                                        selectedCategory ?? categoryTitle ?? "",
+                                    club: "",
+                                    keyword: _keyword);
+                                _currentPage = 2;
+                              }
+                            });
+                          },
+                          child: _topics.length > 0
+                              ? Row(
+                                  children: [
+                                    Container(
+                                      height: 30,
+                                      width: MediaQuery.of(context).size.width -
+                                          70,
+                                      child: ListView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: _topics
+                                            .map((e) => Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 4,
+                                                      horizontal: 6),
+                                                  margin:
+                                                      EdgeInsets.only(right: 8),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          width: 0.5,
+                                                          color: Colors.grey),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                  child: Center(
+                                                      child:
+                                                          Text(e.title ?? "")),
+                                                ))
+                                            .toList(),
+                                      ),
+                                    ),
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.refresh,
+                                          color: Colors.black,
+                                          size: 28,
+                                        ),
+                                        onPressed: () {
+                                          _itemsByCategoryBloc
+                                              .requestGetAllItem(
+                                                  0, "",
+                                                  topic: categoryTitle ?? "");
+                                          setState(() {
+                                            _topics.clear();
+                                          });
+                                        })
+                                  ],
+                                )
+                              : Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 6),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 0.5, color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text("Chọn danh mục"),
+                                      Icon(Icons.keyboard_arrow_down)
+                                    ],
+                                  ),
+                                ),
+                        ),
+//                  SizedBox(width: 4),
+//                  InkWell(
+//                    onTap: () {
+//                      if (provinceData != null) {
+//                        Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
+//                            arguments: {
+//                              'district': districtData,
+//                              'provinceId': provinceData.id
+//                            }).then((value) {
+//                          if (value != null) {
+//                            setState(() {
+//                              districtData = value;
+//                              _needAddUI = true;
+//                            });
+//                            //TODO - call api with district here
+//                            _currentPage = 1;
+//                            totalItemList.clear();
+//                            _newsBloc.requestGetAllAds(_currentPage,
+//                                province: provinceData.name,
+//                                district: districtData.name);
+//                            _currentPage = 2;
+//                          }
+//                        });
+//                      } else {
+//                        Fluttertoast.showToast(
+//                            msg: "Vui lòng chọn tỉnh, thành");
+//                      }
+//                    },
+//                    child: Container(
+//                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+//                      decoration: BoxDecoration(
+//                          color: provinceData != null
+//                              ? Colors.white
+//                              : Colors.black12,
+//                          border: Border.all(width: 0.5, color: Colors.grey),
+//                          borderRadius: BorderRadius.circular(8)),
+//                      child: Row(
+//                        children: <Widget>[
+//                          Text(
+//                              districtData != null
+//                                  ? districtData.name
+//                                  : "Quận/Huyện",
+//                              style: TextStyle(
+//                                  color: provinceData != null
+//                                      ? Colors.black87
+//                                      : Colors.grey)),
+//                          Icon(Icons.keyboard_arrow_down)
+//                        ],
+//                      ),
+//                    ),
+//                  ),
+                      ],
+                    ),
+                  ),
+                )
+              : Container(),
           Expanded(
             child: StreamBuilder<ApiResponse<List<LatestItem>>>(
                 stream: _itemsByCategoryBloc.allItemStream,
@@ -338,8 +526,9 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
                         //List<LatestItem> totalItemList = snapshot.data.data;
-                        print(
-                            "at UI: " + snapshot.data.data.length.toString() + 'with page $_currentPage');
+                        print("at UI: " +
+                            snapshot.data.data.length.toString() +
+                            'with page $_currentPage');
                         if (snapshot.data.data.length > 0 && _needAddUI) {
                           totalItemList.addAll(snapshot.data.data);
                           _shouldLoadMore = true;
@@ -357,8 +546,12 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                             controller: _scrollController,
                             itemCount: totalItemList.length,
                             itemBuilder: (context, index) {
-                              final document = parse(totalItemList[index].description ?? "");
-                              final String parsedString = parse(document.body.text).documentElement.text;
+                              final document =
+                                  parse(totalItemList[index].description ?? "");
+                              final String parsedString =
+                                  parse(document.body.text)
+                                      .documentElement
+                                      .text;
                               return InkWell(
                                 onTap: () {
                                   Navigator.of(context).pushNamed(
@@ -403,7 +596,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                           totalItemList[index]
                                                               .thumbnail,
                                                       placeholder: (context,
-                                                          url) =>
+                                                              url) =>
                                                           Image.asset(
                                                               "assets/images/placeholder.png",
                                                               width: 100,
@@ -429,8 +622,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(
-                                                    parsedString ??
-                                                        "",
+                                                    parsedString ?? "",
                                                     maxLines: 3,
                                                     style:
                                                         TextStyle(fontSize: 16),
@@ -440,9 +632,11 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                                   SizedBox(height: 4),
                                                   Text(
                                                     totalItemList[index]
-                                                                .joiningFee !=
-                                                            null && totalItemList[index]
-                                                        .joiningFee!=0
+                                                                    .joiningFee !=
+                                                                null &&
+                                                            totalItemList[index]
+                                                                    .joiningFee !=
+                                                                0
                                                         ? '${Helper.formatCurrency(totalItemList[index].joiningFee)} VND / ${totalItemList[index].joiningFeePeriod ?? ""}'
                                                         : "Liên hệ",
                                                     style: TextStyle(
@@ -518,10 +712,11 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               children: [
                 FlatButton(
                   child: Text("Xong", style: AppTheme.changeTextStyle(true)),
-                  onPressed: (){
+                  onPressed: () {
                     Navigator.of(context).pop();
                     if (selectedCategory == null) {
                       selectedCategory = _listTopic[0].title;
+                      categoryId = _listTopic[0].id;
                     }
                   },
                 ),
@@ -531,6 +726,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                     onSelectedItemChanged: (value) {
                       setState(() {
                         selectedCategory = _listTopic[value].title;
+                        categoryId = _listTopic[value].id;
                       });
                     },
                     itemExtent: 32,
@@ -543,13 +739,14 @@ class _ItemByCategoryState extends State<ItemByCategory> {
         }).then((value) {
       if (selectedCategory == null) {
         selectedCategory = _listTopic[0].title;
+        categoryId = _listTopic[0].title;
       }
       totalItemList.clear();
       setState(() {
         _currentPage = 1;
         _needAddUI = true;
       });
-      _itemsByCategoryBloc.requestGetAllItem(_currentPage,
+      _itemsByCategoryBloc.requestGetAllItem(_currentPage, getTopicsString(),
           province: provinceData != null ? provinceData.name : "",
           district: districtData != null ? districtData.name : "",
           topic: selectedCategory ?? "",

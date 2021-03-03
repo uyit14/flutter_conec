@@ -8,7 +8,6 @@ import 'package:conecapp/models/response/delete_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/latest_response.dart';
-import 'package:conecapp/models/response/nearby_club_response.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/news_reponse.dart';
@@ -21,7 +20,6 @@ import 'package:conecapp/models/response/sport.dart';
 import 'package:conecapp/models/response/sport_response.dart';
 import 'package:conecapp/models/response/topic.dart';
 import 'package:conecapp/models/response/topic_response.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeRemoteRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
@@ -61,24 +59,30 @@ class HomeRemoteRepository {
       String district,
       String topic,
       String club,
+      String subTopic,
       String keyword}) async {
     final response = await _helper.get(
-        '/api/Post/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}&keyword=${keyword ?? ""}');
+        '/api/Post/GetAll?page=$page&province=${province ?? ""}&district=${district ?? ""}&topic=${topic ?? ""}&club=${club ?? ""}&sub_topic=${subTopic ?? ""}&keyword=${keyword ?? ""}');
     return LatestResponse.fromJson(response).items;
   }
 
   Future<ItemDetail> fetchItemDetail(String postId) async {
-    String _queryEnPoint = await Helper.token()!=null ? "GetWithLogin" : "Get";
-    dynamic _header = await Helper.token()!=null ? await Helper.header() : null;
-    final response = await _helper.get('/api/Post/$_queryEnPoint?id=$postId', headers: _header);
+    String _queryEnPoint =
+        await Helper.token() != null ? "GetWithLogin" : "Get";
+    dynamic _header =
+        await Helper.token() != null ? await Helper.header() : null;
+    final response = await _helper.get('/api/Post/$_queryEnPoint?id=$postId',
+        headers: _header);
     return ItemDetailResponse.fromJson(response).itemDetail;
   }
 
   Future<List<Comment>> fetchComments(String postId) async {
-    String _queryEnPoint = await Helper.token()!=null ? "getCommentsWithLogin" : "getComments";
-    dynamic _header = await Helper.token()!=null ? await Helper.header() : null;
-    final response =
-        await _helper.get('/api/Comment/$_queryEnPoint?postId=$postId', headers: _header);
+    String _queryEnPoint =
+        await Helper.token() != null ? "getCommentsWithLogin" : "getComments";
+    dynamic _header =
+        await Helper.token() != null ? await Helper.header() : null;
+    final response = await _helper
+        .get('/api/Comment/$_queryEnPoint?postId=$postId', headers: _header);
     return CommentResponse.fromJson(response).comments;
   }
 
@@ -135,8 +139,9 @@ class HomeRemoteRepository {
 
   Future<NearbyResponse> fetchNearBy(
       double lat, double lng, int distance) async {
-    final response = await _helper
-        .get('/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance', headers: Helper.headerNoToken);
+    final response = await _helper.get(
+        '/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance',
+        headers: Helper.headerNoToken);
     return NearbyResponse.fromJson(response);
   }
 
@@ -182,14 +187,16 @@ class HomeRemoteRepository {
     return response['status'];
   }
 
-  Future<bool> giftCheck() async{
-    final response = await _helper.get("/api/GiftCard/Check", headers: await Helper.header());
+  Future<bool> giftCheck() async {
+    final response = await _helper.get("/api/GiftCard/Check",
+        headers: await Helper.header());
     print("giftCheck" + response.toString());
     return response['status'];
   }
 
-  Future<bool> giftReceive() async{
-    final response = await _helper.get("/api/GiftCard/Receive", headers: await Helper.header());
+  Future<bool> giftReceive() async {
+    final response = await _helper.get("/api/GiftCard/Receive",
+        headers: await Helper.header());
     print("giftReceive" + response.toString());
     return response['status'];
   }

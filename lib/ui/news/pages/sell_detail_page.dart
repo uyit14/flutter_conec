@@ -8,19 +8,19 @@ import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/ads_detail.dart';
-import 'package:conecapp/ui/home/pages/google_map_page.dart';
+import 'package:conecapp/models/response/image.dart' as myImage;
+import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
-import 'package:conecapp/models/response/image.dart' as myImage;
+import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SellDetailPage extends StatefulWidget {
@@ -44,6 +44,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
   bool _setBanners = true;
   bool _isCallApi = true;
   PageController _pageController = PageController(initialPage: 0);
+  ProfileBloc _profileBloc = ProfileBloc();
 
   String _token;
   bool _isTokenExpired = true;
@@ -54,6 +55,28 @@ class _SellDetailPageState extends State<SellDetailPage> {
     setState(() {
       _token = token;
       _isTokenExpired = expired;
+    });
+  }
+
+  int pushNumber = 0;
+  int postNumber = 0;
+
+  void giftCheck() {
+    _profileBloc.requestGetGiftResponse();
+    _profileBloc.giftResponseStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+        case Status.COMPLETED:
+          GiftResponse giftResponse = event.data;
+          setState(() {
+            pushNumber = giftResponse.remainPush;
+            postNumber = giftResponse.remainPriority;
+          });
+          break;
+          break;
+        case Status.ERROR:
+          break;
+      }
     });
   }
 
@@ -72,29 +95,74 @@ class _SellDetailPageState extends State<SellDetailPage> {
       postId = routeArgs['postId'];
       owner = routeArgs['owner'];
       _newsBloc.requestAdsDetail(postId);
+      giftCheck();
       _isCallApi = false;
     }
   }
 
   void getLatLng(String address) async {
-    try{
+    try {
       final result = await Helper.getLatLng(address);
       setState(() {
         lat = result.lat;
         lng = result.long;
       });
-    }catch(e){
+    } catch (e) {
       setState(() {
         lat = 0.0;
         lng = 0.0;
       });
     }
-
   }
 
   void doReload() {
     debugPrint("doReload");
     _newsBloc.requestAdsDetail(postId);
+  }
+
+  void showRemindDialog(BuildContext context) {
+    Helper.showMissingDialog2(context, "Bạn đang có",
+        "$pushNumber lượt đẩy tin </br>$postNumber lượt ưu tiên tin", () {
+      Navigator.of(context).pop();
+      if (pushNumber > 0 || postNumber > 0) {
+        final act = CupertinoActionSheet(
+            actions: <Widget>[
+              CupertinoActionSheetAction(
+                child: Text('Đẩy tin lên đầu',
+                    style: TextStyle(color: Colors.blue)),
+                onPressed: () {
+                  requestPush(true, false);
+                  Navigator.pop(context);
+                },
+              ),
+              CupertinoActionSheetAction(
+                child: Text('Ưu tiên tin',
+                    style: TextStyle(color: Colors.blue)),
+                onPressed: () {
+                  requestPush(false, true);
+                  Navigator.pop(context);
+                },
+              ),
+              CupertinoActionSheetAction(
+                child: Text('Đẩy tin và ưu tiên',
+                    style: TextStyle(color: Colors.blue)),
+                onPressed: () {
+                  requestPush(true, true);
+                  Navigator.pop(context);
+                },
+              )
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              child: Text('Hủy'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ));
+        showCupertinoModalPopup(
+            context: context,
+            builder: (BuildContext context) => act);
+      }
+    });
   }
 
   String getImageUrl(String thumnail, List<myImage.Image> img) {
@@ -123,21 +191,18 @@ class _SellDetailPageState extends State<SellDetailPage> {
     }
   }
 
-  void requestPush(bool isPush, bool isPriority){
-    _postActionBloc
-        .requestPushMyPost(postId, isPush: isPush, isPriority: isPriority);
+  void requestPush(bool isPush, bool isPriority) {
+    _postActionBloc.requestPushMyPost(postId,
+        isPush: isPush, isPriority: isPriority);
     _postActionBloc.pushMyPostStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
           break;
         case Status.COMPLETED:
-          Helper.showMissingDialog(context, "Thành công",
-              event.data ?? "");
+          Helper.showMissingDialog(context, "Thành công", event.data ?? "");
           break;
         case Status.ERROR:
-          Fluttertoast.showToast(
-              msg: event.message,
-              textColor: Colors.black87);
+          Fluttertoast.showToast(msg: event.message, textColor: Colors.black87);
           Navigator.pop(context);
           break;
       }
@@ -158,53 +223,17 @@ class _SellDetailPageState extends State<SellDetailPage> {
           elevation: 0,
           centerTitle: true,
           actions: <Widget>[
-            owner!=null ? IconButton(
-              onPressed: () {
-                final act = CupertinoActionSheet(
-                    actions: <Widget>[
-                      CupertinoActionSheetAction(
-                        child: Text('Đẩy tin lên đầu',
-                            style: TextStyle(
-                                color: Colors.blue)),
-                        onPressed: () {
-                          requestPush(true, false);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      CupertinoActionSheetAction(
-                        child: Text('Ưu tiên tin',
-                            style: TextStyle(
-                                color: Colors.blue)),
-                        onPressed: () {
-                          requestPush(false, true);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      CupertinoActionSheetAction(
-                        child: Text('Đẩy tin và ưu tiên',
-                            style: TextStyle(
-                                color: Colors.blue)),
-                        onPressed: () {
-                          requestPush(true, true);
-                          Navigator.pop(context);
-                        },
-                      )
-                    ],
-                    cancelButton: CupertinoActionSheetAction(
-                      child: Text('Hủy'),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ));
-                showCupertinoModalPopup(
-                    context: context,
-                    builder: (BuildContext context) => act);
-              },
-              icon: Icon(
-                Icons.publish,
-                color: Colors.orange,
-              ),
-            ) : Container(),
+            owner != null
+                ? IconButton(
+                    onPressed: () {
+                      showRemindDialog(context);
+                    },
+                    icon: Icon(
+                      Icons.publish,
+                      color: Colors.orange,
+                    ),
+                  )
+                : Container(),
             IconButton(
               onPressed: () {
                 if (_token == null || _token.length == 0) {
@@ -259,70 +288,72 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                               _currentIndex = currentPage;
                                             });
                                           },
-                                          height: Helper.isTablet(context) ? 320 : 225,
+                                          height: Helper.isTablet(context)
+                                              ? 320
+                                              : 225,
                                           autoPlay: true,
                                           enlargeCenterPage: false,
                                           viewportFraction: 1.0,
                                         ),
                                         items: adsDetail.images
                                             .map((item) => Container(
-                                          child: ClipRRect(
-                                              borderRadius:
-                                              BorderRadius.all(
-                                                  Radius.circular(
-                                                      8)),
-                                              child: Stack(
-                                                children: <Widget>[
-                                                  CachedNetworkImage(
-                                                    imageUrl:
-                                                    item.fileName,
-                                                    placeholder: (context,
-                                                        url) =>
-                                                        Image.asset(
-                                                            "assets/images/placeholder.png"),
-                                                    errorWidget: (context,
-                                                        url,
-                                                        error) =>
-                                                        Image.asset(
-                                                            "assets/images/error.png"),
-                                                    width:
-                                                    double.infinity,
-                                                  ),
-                                                  Positioned(
-                                                    bottom: 0.0,
-                                                    left: 0.0,
-                                                    right: 0.0,
-                                                    child: Container(
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        gradient:
-                                                        LinearGradient(
-                                                          colors: [
-                                                            Color
-                                                                .fromARGB(
-                                                                200,
-                                                                0,
-                                                                0,
-                                                                0),
-                                                            Color
-                                                                .fromARGB(
-                                                                0,
-                                                                0,
-                                                                0,
-                                                                0)
-                                                          ],
-                                                          begin: Alignment
-                                                              .bottomCenter,
-                                                          end: Alignment
-                                                              .topCenter,
-                                                        ),
-                                                      ),
-                                                      padding: EdgeInsets
-                                                          .symmetric(
-                                                          vertical:
-                                                          10.0,
-                                                          horizontal:
-                                                          20.0),
+                                                  child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8)),
+                                                      child: Stack(
+                                                        children: <Widget>[
+                                                          CachedNetworkImage(
+                                                            imageUrl:
+                                                                item.fileName,
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                Image.asset(
+                                                                    "assets/images/placeholder.png"),
+                                                            errorWidget: (context,
+                                                                    url,
+                                                                    error) =>
+                                                                Image.asset(
+                                                                    "assets/images/error.png"),
+                                                            width:
+                                                                double.infinity,
+                                                          ),
+                                                          Positioned(
+                                                            bottom: 0.0,
+                                                            left: 0.0,
+                                                            right: 0.0,
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    Color
+                                                                        .fromARGB(
+                                                                            200,
+                                                                            0,
+                                                                            0,
+                                                                            0),
+                                                                    Color
+                                                                        .fromARGB(
+                                                                            0,
+                                                                            0,
+                                                                            0,
+                                                                            0)
+                                                                  ],
+                                                                  begin: Alignment
+                                                                      .bottomCenter,
+                                                                  end: Alignment
+                                                                      .topCenter,
+                                                                ),
+                                                              ),
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          10.0,
+                                                                      horizontal:
+                                                                          20.0),
 //                                                child: Text(
 //                                                  item.title,
 //                                                  style: TextStyle(
@@ -331,11 +362,11 @@ class _SellDetailPageState extends State<SellDetailPage> {
 //                                                    fontWeight: FontWeight.bold,
 //                                                  ),
 //                                                ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )),
-                                        ))
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                ))
                                             .toList(),
                                       ),
                                       Positioned(
@@ -639,12 +670,16 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                 ),
                                 Container(
                                   padding: EdgeInsets.only(right: 20),
-                                  child: adsDetail.content.contains("<") ? Html(
-                                    data: adsDetail.content ?? "",
-                                    style: {
-                                      "p": Style(padding: EdgeInsets.only(right: 14)),
-                                    },
-                                  ) : Text(adsDetail.content ?? ""),
+                                  child: adsDetail.content.contains("<")
+                                      ? Html(
+                                          data: adsDetail.content ?? "",
+                                          style: {
+                                            "p": Style(
+                                                padding:
+                                                    EdgeInsets.only(right: 14)),
+                                          },
+                                        )
+                                      : Text(adsDetail.content ?? ""),
                                 ),
                                 Container(
                                     width: double.infinity,

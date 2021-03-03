@@ -16,6 +16,7 @@ class SubCategoryPage extends StatefulWidget {
 class _SubCategoryPageState extends State<SubCategoryPage> {
   PostActionBloc _postActionBloc = PostActionBloc();
   List<Topic> tags = List();
+  String topicId = "";
 
   @override
   void initState() {
@@ -25,7 +26,14 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _postActionBloc.requestGetSubTopicWithHeader(true);
+    final routeArgs =
+    ModalRoute.of(context).settings.arguments as Map<String, Object>;
+    topicId = routeArgs['topicId'];
+    if(topicId.length>0){
+      _postActionBloc.requestGetSubTopicWithHeader(false, topicId: topicId);
+    }else{
+      _postActionBloc.requestGetSubTopicWithHeader(true);
+    }
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -8,22 +7,21 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/item_detail.dart';
+import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
-import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/home/widgets/comment_widget.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
+import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:conecapp/models/response/image.dart' as myImage;
-import '../../../common/globals.dart' as globals;
+
 import '../../../common/helper.dart';
 
 class ItemDetailPage extends StatefulWidget {
@@ -51,6 +49,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   PageController _pageController = PageController(initialPage: 0);
   String _token;
   bool _isTokenExpired = true;
+  ProfileBloc _profileBloc = ProfileBloc();
 
   void getToken() async {
     String token = await Helper.getToken();
@@ -58,6 +57,75 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     setState(() {
       _token = token;
       _isTokenExpired = expired;
+    });
+  }
+
+  int pushNumber = 0;
+  int postNumber = 0;
+
+  void giftCheck() {
+    _profileBloc.requestGetGiftResponse();
+    _profileBloc.giftResponseStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+        case Status.COMPLETED:
+          GiftResponse giftResponse = event.data;
+          setState(() {
+            pushNumber = giftResponse.remainPush;
+            postNumber = giftResponse.remainPriority;
+          });
+          break;
+          break;
+        case Status.ERROR:
+          break;
+      }
+    });
+  }
+
+  void showRemindDialog(BuildContext context) {
+    Helper.showMissingDialog2(context, "Bạn đang có",
+        "$pushNumber lượt đẩy tin </br>$postNumber lượt ưu tiên tin", () {
+      Navigator.of(context).pop();
+      if (pushNumber > 0) {
+        final act = CupertinoActionSheet(
+            actions: <Widget>[
+              CupertinoActionSheetAction(
+                child: Text('Đẩy tin lên đầu',
+                    style: TextStyle(color: Colors.blue)),
+                onPressed: () {
+                  requestPush(true, false);
+                  Navigator.pop(context);
+                },
+              ),
+              // CupertinoActionSheetAction(
+              //   child: Text('Ưu tiên tin',
+              //       style: TextStyle(
+              //           color: Colors.blue)),
+              //   onPressed: () {
+              //     requestPush(false, true);
+              //     Navigator.pop(context);
+              //   },
+              // ),
+              // CupertinoActionSheetAction(
+              //   child: Text('Đẩy tin và ưu tiên',
+              //       style: TextStyle(
+              //           color: Colors.blue)),
+              //   onPressed: () {
+              //     requestPush(true, true);
+              //     Navigator.pop(context);
+              //   },
+              // )
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              child: Text('Hủy'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ));
+        showCupertinoModalPopup(
+            context: context,
+            builder: (BuildContext context) => act);
+      }
     });
   }
 
@@ -78,6 +146,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       title = routeArgs['title'];
       owner = routeArgs['owner'];
       _itemsByCategoryBloc.requestItemDetail(postId);
+      giftCheck();
       _isCallApi = false;
     }
   }
@@ -102,21 +171,18 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 //    });
 //  }
 
-  void requestPush(bool isPush, bool isPriority){
-    _postActionBloc
-        .requestPushMyPost(postId, isPush: isPush, isPriority: isPriority);
+  void requestPush(bool isPush, bool isPriority) {
+    _postActionBloc.requestPushMyPost(postId,
+        isPush: isPush, isPriority: isPriority);
     _postActionBloc.pushMyPostStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
           break;
         case Status.COMPLETED:
-          Helper.showMissingDialog(context, "Thành công",
-              event.data ?? "");
+          Helper.showMissingDialog(context, "Thành công", event.data ?? "");
           break;
         case Status.ERROR:
-          Fluttertoast.showToast(
-              msg: event.message,
-              textColor: Colors.black87);
+          Fluttertoast.showToast(msg: event.message, textColor: Colors.black87);
           Navigator.pop(context);
           break;
       }
@@ -156,53 +222,17 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
           elevation: 0,
           centerTitle: true,
           actions: <Widget>[
-            owner != null ? IconButton(
-              onPressed: () {
-                final act = CupertinoActionSheet(
-                    actions: <Widget>[
-                      CupertinoActionSheetAction(
-                        child: Text('Đẩy tin lên đầu',
-                            style: TextStyle(
-                                color: Colors.blue)),
-                        onPressed: () {
-                          requestPush(true, false);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      CupertinoActionSheetAction(
-                        child: Text('Ưu tiên tin',
-                            style: TextStyle(
-                                color: Colors.blue)),
-                        onPressed: () {
-                          requestPush(false, true);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      CupertinoActionSheetAction(
-                        child: Text('Đẩy tin và ưu tiên',
-                            style: TextStyle(
-                                color: Colors.blue)),
-                        onPressed: () {
-                          requestPush(true, true);
-                          Navigator.pop(context);
-                        },
-                      )
-                    ],
-                    cancelButton: CupertinoActionSheetAction(
-                      child: Text('Hủy'),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ));
-                showCupertinoModalPopup(
-                    context: context,
-                    builder: (BuildContext context) => act);
-              },
-              icon: Icon(
-                Icons.publish,
-                color: Colors.orange,
-              ),
-            ) : Container(),
+            owner != null
+                ? IconButton(
+                    onPressed: () {
+                      showRemindDialog(context);
+                    },
+                    icon: Icon(
+                      Icons.publish,
+                      color: Colors.orange,
+                    ),
+                  )
+                : Container(),
 //            IconButton(
 //              onPressed: () {
 //                Share.share(linkShare ?? Helper.applicationUrl());
@@ -294,7 +324,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                             });
                                           },
                                           //height: 225,
-                                          height: Helper.isTablet(context) ? 320 : 225,
+                                          height: Helper.isTablet(context)
+                                              ? 320
+                                              : 225,
                                           autoPlay: true,
                                           enlargeCenterPage: false,
                                           viewportFraction: 1.0,
@@ -675,9 +707,11 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                 ),
                                 Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: itemDetail.content.contains("<") ? Html(
-                                      data: itemDetail.content ?? "",
-                                    ) : Text(itemDetail.content)),
+                                    child: itemDetail.content.contains("<")
+                                        ? Html(
+                                            data: itemDetail.content ?? "",
+                                          )
+                                        : Text(itemDetail.content)),
                                 Container(
                                     width: double.infinity,
                                     height: 1,

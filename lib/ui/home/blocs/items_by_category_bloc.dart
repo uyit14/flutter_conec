@@ -53,12 +53,12 @@ class ItemsByCategoryBloc {
 //  Stream<List<Comment>> get childCommentStream =>
 //      _childCommentController.stream;
 
-  void requestGetAllItem(int page,
+  void requestGetAllItem(int page, String subTopic,
       {String province, String district, String topic, String club, String keyword}) async {
     _allItemController.sink.add(ApiResponse.completed([]));
     if (page != 1) {
       final items = await _repository.fetchAllItem(page,
-          province: province, district: district, club: club, topic: topic, keyword: keyword);
+          province: province, district: district, club: club, topic: topic, keyword: keyword, subTopic: subTopic);
       _originalItems.addAll(items);
       _allItemController.sink.add(ApiResponse.completed(items));
     } else {
@@ -66,7 +66,7 @@ class ItemsByCategoryBloc {
       _originalItems.clear();
       try {
         final items = await _repository.fetchAllItem(page,
-            province: province, district: district, club: club, topic: topic, keyword: keyword);
+            province: province, district: district, club: club, topic: topic, keyword: keyword, subTopic: subTopic);
         _originalItems.addAll(items);
         _allItemController.sink.add(ApiResponse.completed(items));
       } catch (e) {

@@ -226,15 +226,31 @@ class Helper {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-              title: Text(title),
-              content: Html(data: content),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: Text("OK"),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              ],
-            ));
+          title: Text(title),
+          content: Html(data: content),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("OK"),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        ));
+  }
+
+  static void showMissingDialog2(
+      BuildContext context, String title, String content, Function onOKPress) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text(title),
+          content: Html(data: content),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("OK"),
+              onPressed: onOKPress,
+            )
+          ],
+        ));
   }
 
   static void showCompleteDialog(

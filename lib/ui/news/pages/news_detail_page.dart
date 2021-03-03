@@ -9,10 +9,12 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/news_detail.dart';
+import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
+import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -37,6 +39,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   PageController _pageController = PageController(initialPage: 0);
   String _token;
   bool _isTokenExpired = true;
+  ProfileBloc _profileBloc = ProfileBloc();
 
   void getToken() async {
     String token = await Helper.getToken();
@@ -44,6 +47,28 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     setState(() {
       _token = token;
       _isTokenExpired = expired;
+    });
+  }
+
+  int pushNumber = 0;
+  int postNumber = 0;
+
+  void giftCheck() {
+    _profileBloc.requestGetGiftResponse();
+    _profileBloc.giftResponseStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+        case Status.COMPLETED:
+          GiftResponse giftResponse = event.data;
+          setState(() {
+            pushNumber = giftResponse.remainPush;
+            postNumber = giftResponse.remainPriority;
+          });
+          break;
+          break;
+        case Status.ERROR:
+          break;
+      }
     });
   }
 
@@ -61,6 +86,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     postId = routeArgs['postId'];
     owner = routeArgs['owner'];
     _newsBloc.requestNewsDetail(postId);
+    giftCheck();
   }
 
   void autoPlayBanners(List<myImage.Image> images) {
@@ -87,6 +113,50 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     _newsBloc.requestAdsDetail(postId);
   }
 
+  void showRemindDialog(BuildContext context) {
+    Helper.showMissingDialog2(context, "Bạn đang có",
+        "$pushNumber lượt đẩy tin </br>$postNumber lượt ưu tiên tin", () {
+      Navigator.of(context).pop();
+      if (pushNumber > 0) {
+        final act = CupertinoActionSheet(
+            actions: <Widget>[
+              CupertinoActionSheetAction(
+                child: Text('Đẩy tin lên đầu',
+                    style: TextStyle(color: Colors.blue)),
+                onPressed: () {
+                  requestPush(true, false);
+                  Navigator.pop(context);
+                },
+              ),
+              // CupertinoActionSheetAction(
+              //   child: Text('Ưu tiên tin',
+              //       style: TextStyle(color: Colors.blue)),
+              //   onPressed: () {
+              //     requestPush(false, true);
+              //     Navigator.pop(context);
+              //   },
+              // ),
+              // CupertinoActionSheetAction(
+              //   child: Text('Đẩy tin và ưu tiên',
+              //       style: TextStyle(color: Colors.blue)),
+              //   onPressed: () {
+              //     requestPush(true, true);
+              //     Navigator.pop(context);
+              //   },
+              // )
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              child: Text('Hủy'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ));
+        showCupertinoModalPopup(
+            context: context, builder: (BuildContext context) => act);
+      }
+    });
+  }
+
   void requestPush(bool isPush, bool isPriority) {
     _postActionBloc.requestPushMyPost(postId,
         isPush: isPush, isPriority: isPriority);
@@ -95,8 +165,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         case Status.LOADING:
           break;
         case Status.COMPLETED:
-          Helper.showMissingDialog(context, "Thành công",
-              event.data ?? "");
+          Helper.showMissingDialog(context, "Thành công", event.data ?? "");
           break;
         case Status.ERROR:
           Fluttertoast.showToast(msg: event.message, textColor: Colors.black87);
@@ -123,42 +192,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
             owner != null
                 ? IconButton(
                     onPressed: () {
-                      final act = CupertinoActionSheet(
-                          actions: <Widget>[
-                            CupertinoActionSheetAction(
-                              child: Text('Đẩy tin lên đầu',
-                                  style: TextStyle(color: Colors.blue)),
-                              onPressed: () {
-                                requestPush(true, false);
-                                Navigator.pop(context);
-                              },
-                            ),
-                            CupertinoActionSheetAction(
-                              child: Text('Ưu tiên tin',
-                                  style: TextStyle(color: Colors.blue)),
-                              onPressed: () {
-                                requestPush(false, true);
-                                Navigator.pop(context);
-                              },
-                            ),
-                            CupertinoActionSheetAction(
-                              child: Text('Đẩy tin và ưu tiên',
-                                  style: TextStyle(color: Colors.blue)),
-                              onPressed: () {
-                                requestPush(true, true);
-                                Navigator.pop(context);
-                              },
-                            )
-                          ],
-                          cancelButton: CupertinoActionSheetAction(
-                            child: Text('Hủy'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ));
-                      showCupertinoModalPopup(
-                          context: context,
-                          builder: (BuildContext context) => act);
+                      showRemindDialog(context);
                     },
                     icon: Icon(
                       Icons.publish,

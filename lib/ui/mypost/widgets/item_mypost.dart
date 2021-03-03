@@ -252,7 +252,8 @@ class _ItemMyPostState extends State<ItemMyPost> {
                                             Navigator.pop(context);
                                           },
                                         ),
-                                        CupertinoActionSheetAction(
+                                        widget.myPost.topicId ==
+                                            "333f691d-6585-443a-bae3-9a2681025b53" ? CupertinoActionSheetAction(
                                           child: Text('Ưu tiên tin',
                                               style: TextStyle(
                                                   color: Colors.blue)),
@@ -260,8 +261,9 @@ class _ItemMyPostState extends State<ItemMyPost> {
                                             requestPush(false, true);
                                             Navigator.pop(context);
                                           },
-                                        ),
-                                        CupertinoActionSheetAction(
+                                        ) : Container(),
+                                        widget.myPost.topicId ==
+                                            "333f691d-6585-443a-bae3-9a2681025b53" ? CupertinoActionSheetAction(
                                           child: Text('Đẩy tin và ưu tiên',
                                               style: TextStyle(
                                                   color: Colors.blue)),
@@ -269,7 +271,7 @@ class _ItemMyPostState extends State<ItemMyPost> {
                                             requestPush(true, true);
                                             Navigator.pop(context);
                                           },
-                                        )
+                                        ) : Container()
                                       ],
                                       cancelButton: CupertinoActionSheetAction(
                                         child: Text('Hủy'),
