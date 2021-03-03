@@ -50,15 +50,15 @@ class ProfileRepository {
     return PageResponse.fromJson(response);
   }
 
-  Future<bool> sendReport(dynamic body) async {
+  Future<bool> sendReport(dynamic body, bool isHaveToken) async {
     final response = await _helper.post('/api/feedback/create',
-        headers: await Helper.header(), body: body);
+        headers: isHaveToken ? await Helper.header() : null, body: body);
     print(response);
     return response['status'];
   }
 
   Future<GiftResponse> fetchGiftResponse() async{
-    final response = await _helper.get("/api/MyPost/CheckRemainPushPriority", headers: Helper.header());
+    final response = await _helper.get("/api/MyPost/CheckRemainPushPriority", headers: await Helper.header());
     print("fetchGiftResponse $response");
     return GiftResponse.fromJson(response);
   }

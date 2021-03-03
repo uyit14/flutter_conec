@@ -104,8 +104,8 @@ class ProfileBloc {
     }
   }
 
-  Future<bool> requestReport(dynamic body) async {
-    final response = await _repository.sendReport(body);
+  Future<bool> requestReport(dynamic body, bool isHaveToken) async {
+    final response = await _repository.sendReport(body, isHaveToken);
     return response;
   }
   

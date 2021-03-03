@@ -102,6 +102,27 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 //    });
 //  }
 
+  void requestPush(bool isPush, bool isPriority){
+    _postActionBloc
+        .requestPushMyPost(postId, isPush: isPush, isPriority: isPriority);
+    _postActionBloc.pushMyPostStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+          break;
+        case Status.COMPLETED:
+          Helper.showMissingDialog(context, "Thành công",
+              event.data ?? "");
+          break;
+        case Status.ERROR:
+          Fluttertoast.showToast(
+              msg: event.message,
+              textColor: Colors.black87);
+          Navigator.pop(context);
+          break;
+      }
+    });
+  }
+
   void autoPlayBanners(List<myImage.Image> images) {
     if (images.length > 1) {
       Timer.periodic(Duration(seconds: 2), (Timer timer) {
@@ -137,24 +158,45 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
           actions: <Widget>[
             owner != null ? IconButton(
               onPressed: () {
-                _postActionBloc
-                    .requestPushMyPost(postId);
-                _postActionBloc.pushMyPostStream.listen((event) {
-                  switch (event.status) {
-                    case Status.LOADING:
-                      break;
-                    case Status.COMPLETED:
-                      Helper.showMissingDialog(context, "Đẩy tin thành công",
-                          "Tin của bạn sẽ được hiện lên trang đầu");
-                      break;
-                    case Status.ERROR:
-                      Fluttertoast.showToast(
-                          msg: event.message,
-                          textColor: Colors.black87);
-                      Navigator.pop(context);
-                      break;
-                  }
-                });
+                final act = CupertinoActionSheet(
+                    actions: <Widget>[
+                      CupertinoActionSheetAction(
+                        child: Text('Đẩy tin lên đầu',
+                            style: TextStyle(
+                                color: Colors.blue)),
+                        onPressed: () {
+                          requestPush(true, false);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      CupertinoActionSheetAction(
+                        child: Text('Ưu tiên tin',
+                            style: TextStyle(
+                                color: Colors.blue)),
+                        onPressed: () {
+                          requestPush(false, true);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      CupertinoActionSheetAction(
+                        child: Text('Đẩy tin và ưu tiên',
+                            style: TextStyle(
+                                color: Colors.blue)),
+                        onPressed: () {
+                          requestPush(true, true);
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                    cancelButton: CupertinoActionSheetAction(
+                      child: Text('Hủy'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ));
+                showCupertinoModalPopup(
+                    context: context,
+                    builder: (BuildContext context) => act);
               },
               icon: Icon(
                 Icons.publish,

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/login_response.dart';
@@ -9,6 +8,7 @@ import 'package:conecapp/ui/authen/blocs/authen_bloc.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/authen/pages/register_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
+import 'package:conecapp/ui/profile/pages/help_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +16,10 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_zalo_login/flutter_zalo_login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import '../../../common/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
   static const ROUTE_NAME = '/login';
@@ -173,15 +174,14 @@ class _LoginPageState extends State<LoginPage> {
     listenLogin();
   }
 
-  void _loginApple() async{
+  void _loginApple() async {
     final credential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
         AppleIDAuthorizationScopes.fullName,
       ],
       webAuthenticationOptions: WebAuthenticationOptions(
-        clientId:
-        'com.conec.applesignin',
+        clientId: 'com.conec.applesignin',
         redirectUri: Uri.parse(
           'https://conec.vn/api/account/AppleLogin',
         ),
@@ -310,9 +310,9 @@ class _LoginPageState extends State<LoginPage> {
                                   BorderSide(color: Colors.green, width: 1)),
                           contentPadding: EdgeInsets.only(left: 8),
                           suffixIcon: InkWell(
-                            onTap: (){
+                            onTap: () {
                               setState(() {
-                                _showPass=!_showPass;
+                                _showPass = !_showPass;
                               });
                             },
                             child: Icon(
@@ -443,7 +443,7 @@ class _LoginPageState extends State<LoginPage> {
                               radius: 28,
                               backgroundColor: Colors.transparent,
                               backgroundImage:
-                              AssetImage("assets/images/zalo-logo.png"),
+                                  AssetImage("assets/images/zalo-logo.png"),
                             )),
 //                        SizedBox(width: 6),
 //                        Platform.isIOS ? InkWell(
@@ -451,15 +451,37 @@ class _LoginPageState extends State<LoginPage> {
 //                            child: Image.asset("assets/images/apple.png", width: 55, height: 55, fit: BoxFit.fill,)) : Container(),
                       ],
                     ),
-                    Platform.isIOS ? SizedBox(
-                      height: 16,
-                    ) : Container(),
-                    Platform.isIOS ? SignInWithAppleButton(
-                      onPressed: _loginApple,
-                    ) : Container(),
-                    Platform.isIOS ? SizedBox(
-                      height: 32,
-                    ) : Container(),
+                    Platform.isIOS
+                        ? SizedBox(
+                            height: 16,
+                          )
+                        : Container(),
+                    Platform.isIOS
+                        ? SignInWithAppleButton(
+                            onPressed: _loginApple,
+                          )
+                        : Container(),
+                    Platform.isIOS
+                        ? SizedBox(
+                            height: 4,
+                          )
+                        : Container(),
+                    Align(
+                      alignment: Alignment.center,
+                      child: FlatButton(
+                        onPressed: (){
+                          globals.name = "";
+                          globals.email = "";
+                          globals.phone = "";
+                          Navigator.of(context).pushNamed(HelpPage.ROUTE_NAME);
+                        },
+                        child: Text("Trợ giúp",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                                fontSize: 18)),
+                      ),
+                    )
                   ],
                 ),
               ),

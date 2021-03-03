@@ -4,6 +4,7 @@ import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -226,7 +227,7 @@ class Helper {
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
               title: Text(title),
-              content: Text(content),
+              content: Html(data: content),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text("OK"),

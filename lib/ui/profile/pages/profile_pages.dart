@@ -3,6 +3,7 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
+import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
@@ -19,6 +20,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../common/globals.dart' as globals;
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -38,13 +41,13 @@ class _ProfilePageState extends State<ProfilePage> {
   String version = "";
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     getVersion();
     getToken();
   }
 
-  void getVersion() async{
+  void getVersion() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     version = packageInfo.version;
     print("version: " + version);
@@ -60,6 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _isSocial = isSocial;
     });
     if (token != null && !expired) {
+      giftCheck();
       _profileBloc.requestGetProfile();
       _profileBloc.profileStream.listen((event) {
         switch (event.status) {
@@ -70,6 +74,10 @@ class _ProfilePageState extends State<ProfilePage> {
             break;
           case Status.COMPLETED:
             Profile profile = event.data;
+            globals.name = profile.name;
+            globals.email = profile.email;
+            globals.phone = profile.phoneNumber;
+
             setState(() {
               _isLoading = false;
               _name = profile.name;
@@ -97,14 +105,34 @@ class _ProfilePageState extends State<ProfilePage> {
     _profileBloc.requestGetProfile();
   }
 
-  int pushNumber = 5;
-  int postNumber = 9;
+  int pushNumber = 0;
+  int postNumber = 0;
 
-  void showRemindDialog(BuildContext context){
-    Helper.showMissingDialog(context, "Bạn đang có", "$pushNumber lượt đẩy tin\n$postNumber lượt ưu tiên tin");
+  void showRemindDialog(BuildContext context) {
+    Helper.showMissingDialog(context, "Bạn đang có",
+        "$pushNumber lượt đẩy tin </br>$postNumber lượt ưu tiên tin");
   }
 
-  void requestGetGift() async{
+  void giftCheck() {
+    _profileBloc.requestGetGiftResponse();
+    _profileBloc.giftResponseStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+        case Status.COMPLETED:
+          GiftResponse giftResponse = event.data;
+          setState(() {
+            pushNumber = giftResponse.remainPush;
+            postNumber = giftResponse.remainPriority;
+          });
+          break;
+          break;
+        case Status.ERROR:
+          break;
+      }
+    });
+  }
+
+  void requestGetGift() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
     bool isSocial = await Helper.getIsSocial();
@@ -124,6 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
             break;
           case Status.COMPLETED:
             Profile profile = event.data;
+
             setState(() {
               _isLoading = false;
               _name = profile.name;
@@ -248,6 +277,17 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundImage: _avatar != null
                             ? CachedNetworkImageProvider(_avatar)
                             : AssetImage("assets/images/avatar.png"),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      top: 80,
+                      child: IconButton(
+                        icon: Icon(Icons.card_giftcard,
+                            color: Colors.red, size: 32),
+                        onPressed: () {
+                          showRemindDialog(context);
+                        },
                       ),
                     )
                   ],

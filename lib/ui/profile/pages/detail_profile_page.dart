@@ -94,6 +94,14 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
+                                  Text("Tên đăng nhập", style: AppTheme.profileTitle),
+                                  Text(profile.userName ?? "",
+                                      style: AppTheme.profileInfo),
+                                  Container(
+                                    height: 0.5,
+                                    color: Colors.black12,
+                                    margin: EdgeInsets.symmetric(vertical: 12),
+                                  ),
                                   Text(
                                       profile.type == "Club"
                                           ? "Tên CLB"

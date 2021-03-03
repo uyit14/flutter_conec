@@ -4,6 +4,7 @@ import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../common/globals.dart' as globals;
 
 class Reason {
   int id;
@@ -22,11 +23,12 @@ class HelpPage extends StatefulWidget {
 class _HelpPageState extends State<HelpPage> {
   TextEditingController _controller = TextEditingController();
   ProfileBloc _profileBloc = ProfileBloc();
-  String _fullName = "";
-  String _phoneNumber = "";
-  String _emnail = "";
+  String _fullName = globals.name;
+  String _phoneNumber = globals.phone;
+  String _emnail = globals.email;
 
   int selectedItem = 0;
+  bool _isHaveToken = false;
 
   List<Reason> _reasonList = [
     Reason(0, "Đăng tin"),
@@ -60,19 +62,19 @@ class _HelpPageState extends State<HelpPage> {
                 setState(() {
                   _fullName = value;
                 });
-              }, Icons.person),
+              }, Icons.person, globals.name),
               SizedBox(height: 24),
               Input("Số điện thoại", (value) {
                 setState(() {
                   _phoneNumber = value;
                 });
-              }, Icons.phone),
+              }, Icons.phone, globals.phone),
               SizedBox(height: 24),
               Input("Email", (value) {
                 setState(() {
                   _emnail = value;
                 });
-              }, Icons.email),
+              }, Icons.email, globals.email),
               SizedBox(height: 24),
               Container(
                 margin: EdgeInsets.symmetric(horizontal: 16),
@@ -211,7 +213,7 @@ class _HelpPageState extends State<HelpPage> {
                     "email": _emnail,
                     "content": _controller.text,
                     "reason": _reason
-                  }));
+                  }), _isHaveToken);
                   if (result) {
                     Helper.showCompleteDialog(context, "Gửi thành công",
                         "Ý kiến của bạn đã được ghi nhận, chúng tôi sẽ sớm có phải hồi cho bạn");
@@ -246,16 +248,24 @@ class _HelpPageState extends State<HelpPage> {
 
 class Input extends StatefulWidget {
   final String title;
+  final String initValue;
   final Function(String value) onTextChanged;
   final IconData icon;
 
-  Input(this.title, this.onTextChanged, this.icon);
+  Input(this.title, this.onTextChanged, this.icon, this.initValue);
 
   @override
   _InputState createState() => _InputState();
 }
 
 class _InputState extends State<Input> {
+  TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initValue);
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -267,6 +277,7 @@ class _InputState extends State<Input> {
           SizedBox(height: 2),
           TextFormField(
             maxLines: 1,
+            controller: _controller,
             textInputAction: TextInputAction.next,
             style: TextStyle(fontSize: 18),
             keyboardType: TextInputType.text,

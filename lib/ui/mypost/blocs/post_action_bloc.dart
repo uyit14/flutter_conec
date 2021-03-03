@@ -139,10 +139,11 @@ class PostActionBloc {
     }
   }
 
-  void requestPushMyPost(String postId) async {
+  void requestPushMyPost(String postId, {bool isPush, bool isPriority}) async {
     _pushMyPostController.sink.add(ApiResponse.loading());
-    final result = await _repository.deleteMyPost(postId, "Push");
+    final result = await _repository.deleteMyPost(postId, "Push", isPush: isPush, isPriority: isPriority);
     if (result.status) {
+
       _pushMyPostController.sink
           .add(ApiResponse.completed(result.message));
     } else {

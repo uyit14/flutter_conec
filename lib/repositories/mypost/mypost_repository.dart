@@ -67,8 +67,9 @@ class MyPostRepository {
     return ItemDetailResponse.fromJson(response).itemDetail;
   }
 
-  Future<DeleteResponse> deleteMyPost(String postId, String type) async {
-    final response = await _helper.post('/api/MyPost/$type?id=$postId', headers: await Helper.header());
+  Future<DeleteResponse> deleteMyPost(String postId, String type, {bool isPush, bool isPriority}) async {
+    String pushQuery = type == "Push" ? "&push=$isPush&priority=$isPriority" : "";
+    final response = await _helper.post('/api/MyPost/$type?id=$postId$pushQuery', headers: await Helper.header());
     print(response);
     return DeleteResponse.fromJson(response);
   }

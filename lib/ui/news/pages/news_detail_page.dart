@@ -7,17 +7,17 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/news_detail.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
 import 'package:conecapp/ui/news/widgets/ads_comment_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:share/share.dart';
-import 'package:conecapp/models/response/image.dart' as myImage;
 
 class NewsDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/news-detail';
@@ -53,7 +53,6 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     getToken();
   }
 
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -88,6 +87,25 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     _newsBloc.requestAdsDetail(postId);
   }
 
+  void requestPush(bool isPush, bool isPriority) {
+    _postActionBloc.requestPushMyPost(postId,
+        isPush: isPush, isPriority: isPriority);
+    _postActionBloc.pushMyPostStream.listen((event) {
+      switch (event.status) {
+        case Status.LOADING:
+          break;
+        case Status.COMPLETED:
+          Helper.showMissingDialog(context, "Thành công",
+              event.data ?? "");
+          break;
+        case Status.ERROR:
+          Fluttertoast.showToast(msg: event.message, textColor: Colors.black87);
+          Navigator.pop(context);
+          break;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -102,32 +120,52 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
           elevation: 0,
           centerTitle: true,
           actions: <Widget>[
-            owner!=null ? IconButton(
-              onPressed: () {
-                _postActionBloc
-                    .requestPushMyPost(postId);
-                _postActionBloc.pushMyPostStream.listen((event) {
-                  switch (event.status) {
-                    case Status.LOADING:
-                      break;
-                    case Status.COMPLETED:
-                      Helper.showMissingDialog(context, "Đẩy tin thành công",
-                          "Tin của bạn sẽ được hiện lên trang đầu");
-                      break;
-                    case Status.ERROR:
-                      Fluttertoast.showToast(
-                          msg: event.message,
-                          textColor: Colors.black87);
-                      Navigator.pop(context);
-                      break;
-                  }
-                });
-              },
-              icon: Icon(
-                Icons.publish,
-                color: Colors.orange,
-              ),
-            ) : Container(),
+            owner != null
+                ? IconButton(
+                    onPressed: () {
+                      final act = CupertinoActionSheet(
+                          actions: <Widget>[
+                            CupertinoActionSheetAction(
+                              child: Text('Đẩy tin lên đầu',
+                                  style: TextStyle(color: Colors.blue)),
+                              onPressed: () {
+                                requestPush(true, false);
+                                Navigator.pop(context);
+                              },
+                            ),
+                            CupertinoActionSheetAction(
+                              child: Text('Ưu tiên tin',
+                                  style: TextStyle(color: Colors.blue)),
+                              onPressed: () {
+                                requestPush(false, true);
+                                Navigator.pop(context);
+                              },
+                            ),
+                            CupertinoActionSheetAction(
+                              child: Text('Đẩy tin và ưu tiên',
+                                  style: TextStyle(color: Colors.blue)),
+                              onPressed: () {
+                                requestPush(true, true);
+                                Navigator.pop(context);
+                              },
+                            )
+                          ],
+                          cancelButton: CupertinoActionSheetAction(
+                            child: Text('Hủy'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ));
+                      showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) => act);
+                    },
+                    icon: Icon(
+                      Icons.publish,
+                      color: Colors.orange,
+                    ),
+                  )
+                : Container(),
             IconButton(
               onPressed: () {
                 if (_token == null || _token.length == 0) {
@@ -171,106 +209,108 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                             tag: postId,
                             child: newsDetail.images.length > 0
                                 ? Stack(
-                              children: [
-                                // Container(
-                                //   height: 225,
-                                //   child: PageView.builder(
-                                //       itemCount: newsDetail.images.length,
-                                //       controller: _pageController,
-                                //       onPageChanged: (currentPage) {
-                                //         setState(() {
-                                //           _currentIndex = currentPage;
-                                //         });
-                                //       },
-                                //       itemBuilder: (context, index) {
-                                //         return CachedNetworkImage(
-                                //           imageUrl: newsDetail
-                                //               .images[index].fileName,
-                                //           placeholder: (context, url) =>
-                                //               Image.asset(
-                                //                   "assets/images/placeholder.png"),
-                                //           errorWidget: (context, url,
-                                //               error) =>
-                                //               Image.asset(
-                                //                   "assets/images/error.png"),
-                                //           fit: BoxFit.cover,
-                                //           width: double.infinity,
-                                //           height: 225,
-                                //         );
-                                //       }),
-                                // ),
-                                CarouselSlider(
-                                  options: CarouselOptions(
-                                    onPageChanged: (currentPage, reason) {
-                                      setState(() {
-                                        _currentIndex = currentPage;
-                                      });
-                                    },
-                                    height: Helper.isTablet(context) ? 320 : 225,
-                                    autoPlay: true,
-                                    enlargeCenterPage: false,
-                                    viewportFraction: 1.0,
-                                  ),
-                                  items: newsDetail.images
-                                      .map((item) => Container(
-                                    child: ClipRRect(
-                                        borderRadius:
-                                        BorderRadius.all(
-                                            Radius.circular(
-                                                8)),
-                                        child: Stack(
-                                          children: <Widget>[
-                                            CachedNetworkImage(
-                                              imageUrl:
-                                              item.fileName,
-                                              placeholder: (context,
-                                                  url) =>
-                                                  Image.asset(
-                                                      "assets/images/placeholder.png"),
-                                              errorWidget: (context,
-                                                  url,
-                                                  error) =>
-                                                  Image.asset(
-                                                      "assets/images/error.png"),
-                                              fit: BoxFit.cover,
-                                              width:
-                                              double.infinity,
-                                            ),
-                                            Positioned(
-                                              bottom: 0.0,
-                                              left: 0.0,
-                                              right: 0.0,
-                                              child: Container(
-                                                decoration:
-                                                BoxDecoration(
-                                                  gradient:
-                                                  LinearGradient(
-                                                    colors: [
-                                                      Color
-                                                          .fromARGB(
-                                                          200,
-                                                          0,
-                                                          0,
-                                                          0),
-                                                      Color
-                                                          .fromARGB(
-                                                          0,
-                                                          0,
-                                                          0,
-                                                          0)
-                                                    ],
-                                                    begin: Alignment
-                                                        .bottomCenter,
-                                                    end: Alignment
-                                                        .topCenter,
-                                                  ),
-                                                ),
-                                                padding: EdgeInsets
-                                                    .symmetric(
-                                                    vertical:
-                                                    10.0,
-                                                    horizontal:
-                                                    20.0),
+                                    children: [
+                                      // Container(
+                                      //   height: 225,
+                                      //   child: PageView.builder(
+                                      //       itemCount: newsDetail.images.length,
+                                      //       controller: _pageController,
+                                      //       onPageChanged: (currentPage) {
+                                      //         setState(() {
+                                      //           _currentIndex = currentPage;
+                                      //         });
+                                      //       },
+                                      //       itemBuilder: (context, index) {
+                                      //         return CachedNetworkImage(
+                                      //           imageUrl: newsDetail
+                                      //               .images[index].fileName,
+                                      //           placeholder: (context, url) =>
+                                      //               Image.asset(
+                                      //                   "assets/images/placeholder.png"),
+                                      //           errorWidget: (context, url,
+                                      //               error) =>
+                                      //               Image.asset(
+                                      //                   "assets/images/error.png"),
+                                      //           fit: BoxFit.cover,
+                                      //           width: double.infinity,
+                                      //           height: 225,
+                                      //         );
+                                      //       }),
+                                      // ),
+                                      CarouselSlider(
+                                        options: CarouselOptions(
+                                          onPageChanged: (currentPage, reason) {
+                                            setState(() {
+                                              _currentIndex = currentPage;
+                                            });
+                                          },
+                                          height: Helper.isTablet(context)
+                                              ? 320
+                                              : 225,
+                                          autoPlay: true,
+                                          enlargeCenterPage: false,
+                                          viewportFraction: 1.0,
+                                        ),
+                                        items: newsDetail.images
+                                            .map((item) => Container(
+                                                  child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8)),
+                                                      child: Stack(
+                                                        children: <Widget>[
+                                                          CachedNetworkImage(
+                                                            imageUrl:
+                                                                item.fileName,
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                Image.asset(
+                                                                    "assets/images/placeholder.png"),
+                                                            errorWidget: (context,
+                                                                    url,
+                                                                    error) =>
+                                                                Image.asset(
+                                                                    "assets/images/error.png"),
+                                                            fit: BoxFit.cover,
+                                                            width:
+                                                                double.infinity,
+                                                          ),
+                                                          Positioned(
+                                                            bottom: 0.0,
+                                                            left: 0.0,
+                                                            right: 0.0,
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                gradient:
+                                                                    LinearGradient(
+                                                                  colors: [
+                                                                    Color
+                                                                        .fromARGB(
+                                                                            200,
+                                                                            0,
+                                                                            0,
+                                                                            0),
+                                                                    Color
+                                                                        .fromARGB(
+                                                                            0,
+                                                                            0,
+                                                                            0,
+                                                                            0)
+                                                                  ],
+                                                                  begin: Alignment
+                                                                      .bottomCenter,
+                                                                  end: Alignment
+                                                                      .topCenter,
+                                                                ),
+                                                              ),
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      vertical:
+                                                                          10.0,
+                                                                      horizontal:
+                                                                          20.0),
 //                                                child: Text(
 //                                                  item.title,
 //                                                  style: TextStyle(
@@ -279,57 +319,61 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
 //                                                    fontWeight: FontWeight.bold,
 //                                                  ),
 //                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )),
-                                  ))
-                                      .toList(),
-                                ),
-                                Positioned(
-                                  bottom: 24,
-                                  child: Container(
-                                    height: 24,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Center(
-                                      child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          shrinkWrap: true,
-                                          itemCount:
-                                          newsDetail.images.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              width: 16,
-                                              height: 16,
-                                              margin:
-                                              EdgeInsets.only(right: 6),
-                                              decoration: BoxDecoration(
-                                                //borderRadius: BorderRadius.all(Radius.circular(16)),
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color: Colors.white),
-                                                  color: _currentIndex ==
-                                                      index
-                                                      ? Colors.white
-                                                      : Colors.transparent),
-                                            );
-                                          }),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                ))
+                                            .toList(),
+                                      ),
+                                      Positioned(
+                                        bottom: 24,
+                                        child: Container(
+                                          height: 24,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Center(
+                                            child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                shrinkWrap: true,
+                                                itemCount:
+                                                    newsDetail.images.length,
+                                                itemBuilder: (context, index) {
+                                                  return Container(
+                                                    width: 16,
+                                                    height: 16,
+                                                    margin: EdgeInsets.only(
+                                                        right: 6),
+                                                    decoration: BoxDecoration(
+                                                        //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                            width: 1,
+                                                            color:
+                                                                Colors.white),
+                                                        color: _currentIndex ==
+                                                                index
+                                                            ? Colors.white
+                                                            : Colors
+                                                                .transparent),
+                                                  );
+                                                }),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  )
                                 : CachedNetworkImage(
-                              imageUrl: newsDetail.thumbnail,
-                              placeholder: (context, url) => Image.asset(
-                                  "assets/images/placeholder.png"),
-                              errorWidget: (context, url, error) =>
-                                  Image.asset("assets/images/error.png"),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 225,
-                            ),
+                                    imageUrl: newsDetail.thumbnail,
+                                    placeholder: (context, url) => Image.asset(
+                                        "assets/images/placeholder.png"),
+                                    errorWidget: (context, url, error) =>
+                                        Image.asset("assets/images/error.png"),
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 225,
+                                  ),
                           ),
                           // if (newsDetail.images.length > 0)
                           //   Container(
@@ -404,12 +448,16 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                                 SizedBox(height: 8),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 20.0),
-                                  child: newsDetail.content.contains("<") ? Html(
-                                    data: newsDetail.content,
-                                    style: {
-                                      "p": Style(padding: EdgeInsets.only(right: 14)),
-                                    },
-                                  ) : Text((newsDetail.content ?? "")),
+                                  child: newsDetail.content.contains("<")
+                                      ? Html(
+                                          data: newsDetail.content,
+                                          style: {
+                                            "p": Style(
+                                                padding:
+                                                    EdgeInsets.only(right: 14)),
+                                          },
+                                        )
+                                      : Text((newsDetail.content ?? "")),
                                 ),
                                 AdsCommentWidget(postId, newsDetail, doReload)
 //                                Text(
@@ -429,7 +477,9 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                             _newsBloc.requestNewsDetail(postId));
                 }
               }
-              return Container(child: Text("Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+              return Container(
+                  child: Text(
+                      "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
 //        floatingActionButton: owner!=null ? FloatingActionButton.extended(
 //          onPressed: () {
