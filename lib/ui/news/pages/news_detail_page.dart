@@ -121,7 +121,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         final act = CupertinoActionSheet(
             actions: <Widget>[
               CupertinoActionSheetAction(
-                child: Text('Đẩy tin lên đầu',
+                child: Text('Đẩy tin lên đầu ($pushNumber)',
                     style: TextStyle(color: Colors.blue)),
                 onPressed: () {
                   requestPush(true, false);

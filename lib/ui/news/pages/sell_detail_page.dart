@@ -127,30 +127,36 @@ class _SellDetailPageState extends State<SellDetailPage> {
       if (pushNumber > 0 || postNumber > 0) {
         final act = CupertinoActionSheet(
             actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('Đẩy tin lên đầu',
-                    style: TextStyle(color: Colors.blue)),
-                onPressed: () {
-                  requestPush(true, false);
-                  Navigator.pop(context);
-                },
-              ),
-              CupertinoActionSheetAction(
-                child: Text('Ưu tiên tin',
-                    style: TextStyle(color: Colors.blue)),
-                onPressed: () {
-                  requestPush(false, true);
-                  Navigator.pop(context);
-                },
-              ),
-              CupertinoActionSheetAction(
-                child: Text('Đẩy tin và ưu tiên',
-                    style: TextStyle(color: Colors.blue)),
-                onPressed: () {
-                  requestPush(true, true);
-                  Navigator.pop(context);
-                },
-              )
+              pushNumber > 0
+                  ? CupertinoActionSheetAction(
+                      child: Text('Đẩy tin lên đầu ($pushNumber)',
+                          style: TextStyle(color: Colors.blue)),
+                      onPressed: () {
+                        requestPush(true, false);
+                        Navigator.pop(context);
+                      },
+                    )
+                  : Container(),
+              postNumber > 0
+                  ? CupertinoActionSheetAction(
+                      child: Text('Ưu tiên tin ($postNumber)',
+                          style: TextStyle(color: Colors.blue)),
+                      onPressed: () {
+                        requestPush(false, true);
+                        Navigator.pop(context);
+                      },
+                    )
+                  : Container(),
+              pushNumber > 0 && postNumber > 0
+                  ? CupertinoActionSheetAction(
+                      child: Text('Đẩy tin và ưu tiên',
+                          style: TextStyle(color: Colors.blue)),
+                      onPressed: () {
+                        requestPush(true, true);
+                        Navigator.pop(context);
+                      },
+                    )
+                  : Container()
             ],
             cancelButton: CupertinoActionSheetAction(
               child: Text('Hủy'),
@@ -159,8 +165,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
               },
             ));
         showCupertinoModalPopup(
-            context: context,
-            builder: (BuildContext context) => act);
+            context: context, builder: (BuildContext context) => act);
       }
     });
   }
