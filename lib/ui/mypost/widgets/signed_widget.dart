@@ -93,29 +93,29 @@ class _SignedState extends State<Signed> {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
+                    // FlatButton.icon(
+                    //     shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(50)),
+                    //     onPressed: () => _selectPage(0),
+                    //     textColor: _selectedPageIndex == 0
+                    //         ? Colors.blue
+                    //         : Colors.white,
+                    //     color: _selectedPageIndex == 0
+                    //         ? Colors.white
+                    //         : Colors.grey,
+                    //     icon: Icon(Icons.view_list, size: 22),
+                    //     label: Text("Hoàn thành",
+                    //         style: TextStyle(
+                    //             fontSize: 14, fontWeight: FontWeight.bold))),
+                    SizedBox(width: 4),
                     FlatButton.icon(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50)),
                         onPressed: () => _selectPage(0),
                         textColor: _selectedPageIndex == 0
-                            ? Colors.blue
-                            : Colors.white,
-                        color: _selectedPageIndex == 0
-                            ? Colors.white
-                            : Colors.grey,
-                        icon: Icon(Icons.view_list, size: 22),
-                        label: Text("Hoàn thành",
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold))),
-                    SizedBox(width: 4),
-                    FlatButton.icon(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50)),
-                        onPressed: () => _selectPage(1),
-                        textColor: _selectedPageIndex == 1
                             ? Colors.green
                             : Colors.white,
-                        color: _selectedPageIndex == 1
+                        color: _selectedPageIndex == 0
                             ? Colors.white
                             : Colors.grey,
                         icon: Icon(Icons.unarchive, size: 22),
@@ -126,11 +126,11 @@ class _SignedState extends State<Signed> {
                     FlatButton.icon(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50)),
-                        onPressed: () => _selectPage(2),
-                        textColor: _selectedPageIndex == 2
+                        onPressed: () => _selectPage(1),
+                        textColor: _selectedPageIndex == 1
                             ? Colors.orange
                             : Colors.white,
-                        color: _selectedPageIndex == 2
+                        color: _selectedPageIndex == 1
                             ? Colors.white
                             : Colors.grey,
                         icon: Icon(Icons.archive, size: 22),
@@ -141,10 +141,10 @@ class _SignedState extends State<Signed> {
                     FlatButton.icon(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50)),
-                        onPressed: () => _selectPage(3),
+                        onPressed: () => _selectPage(2),
                         textColor:
-                            _selectedPageIndex == 3 ? Colors.red : Colors.white,
-                        color: _selectedPageIndex == 3
+                            _selectedPageIndex == 2 ? Colors.red : Colors.white,
+                        color: _selectedPageIndex == 2
                             ? Colors.white
                             : Colors.grey,
                         icon: Icon(Icons.not_interested, size: 22),
@@ -155,10 +155,10 @@ class _SignedState extends State<Signed> {
                     FlatButton.icon(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50)),
-                        onPressed: () => _selectPage(4),
+                        onPressed: () => _selectPage(3),
                         textColor:
-                        _selectedPageIndex == 4 ? Colors.grey : Colors.white,
-                        color: _selectedPageIndex == 4
+                        _selectedPageIndex == 3 ? Colors.grey : Colors.white,
+                        color: _selectedPageIndex == 3
                             ? Colors.white
                             : Colors.grey,
                         icon: Icon(Icons.not_interested, size: 22),
@@ -174,7 +174,7 @@ class _SignedState extends State<Signed> {
                   controller: _pageController,
                   physics: NeverScrollableScrollPhysics(),
                   children: <Widget>[
-                    ArchiveMyPost(),
+                    //ArchiveMyPost(),
                     ApproveMyPost(),
                     PendingMyPost(),
                     RejectedMyPost(),

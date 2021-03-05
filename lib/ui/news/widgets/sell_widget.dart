@@ -53,7 +53,8 @@ class _SellWidgetState extends State<SellWidget> {
       if (_shouldLoadMore) {
         print("goto _scrollListener");
         _shouldLoadMore = false;
-        _newsBloc.requestGetAllAds(_currentPage, club: "", keyword: _keyword, topics: getTopicsString());
+        _newsBloc.requestGetAllAds(_currentPage,
+            club: "", keyword: _keyword, topics: getTopicsString());
         setState(() {
           _currentPage++;
         });
@@ -61,12 +62,12 @@ class _SellWidgetState extends State<SellWidget> {
     }
   }
 
-  String getTopicsString(){
+  String getTopicsString() {
     String topicsString;
-    for(int i=0; i<_topics.length; i++){
-      if(i==0){
+    for (int i = 0; i < _topics.length; i++) {
+      if (i == 0) {
         topicsString = _topics[0].id;
-      }else{
+      } else {
         topicsString = topicsString + ';${_topics[i].id}';
       }
     }
@@ -184,9 +185,9 @@ class _SellWidgetState extends State<SellWidget> {
                   SizedBox(width: 4),
                   InkWell(
                     onTap: () {
-                      Navigator.of(context)
-                          .pushNamed(SubCategoryPage.ROUTE_NAME)
-                          .then((value) {
+                      Navigator.of(context).pushNamed(
+                          SubCategoryPage.ROUTE_NAME,
+                          arguments: {"topicId": ""}).then((value) {
                         if (value != null) {
                           setState(() {
                             _needAddUI = true;
@@ -196,10 +197,8 @@ class _SellWidgetState extends State<SellWidget> {
                           //TODO - call api with province here
                           _currentPage = 1;
                           totalItemList.clear();
-                          _newsBloc.requestGetAllAds(
-                            _currentPage,
-                              topics: getTopicsString()
-                          );
+                          _newsBloc.requestGetAllAds(_currentPage,
+                              topics: getTopicsString());
                           _currentPage = 2;
                         }
                       });
@@ -229,13 +228,18 @@ class _SellWidgetState extends State<SellWidget> {
                                       .toList(),
                                 ),
                               ),
-                              IconButton(icon: Icon(Icons.refresh, color: Colors.black, size: 28,), onPressed: (){
-                                _newsBloc.requestGetAllAds(0);
-                                setState(() {
-                                  _topics.clear();
-                                });
-                              })
-
+                              IconButton(
+                                  icon: Icon(
+                                    Icons.refresh,
+                                    color: Colors.black,
+                                    size: 28,
+                                  ),
+                                  onPressed: () {
+                                    _newsBloc.requestGetAllAds(0);
+                                    setState(() {
+                                      _topics.clear();
+                                    });
+                                  })
                             ],
                           )
                         : Container(
@@ -455,8 +459,8 @@ class _SellWidgetState extends State<SellWidget> {
                       case Status.ERROR:
                         return UIError(
                             errorMessage: snapshot.data.message,
-                            onRetryPressed: () =>
-                                _newsBloc.requestGetAllAds(0, topics: getTopicsString()));
+                            onRetryPressed: () => _newsBloc.requestGetAllAds(0,
+                                topics: getTopicsString()));
                     }
                   }
                   return Container(

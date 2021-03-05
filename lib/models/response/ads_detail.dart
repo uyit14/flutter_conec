@@ -50,6 +50,7 @@ class AdsDetail {
   int price;
   String generalCondition;
   String phoneNumber;
+  String status;
   String shareLink;
   List<Topic> topics;
   List<Topic> subTopics;
@@ -90,6 +91,7 @@ class AdsDetail {
       this.uses,
       this.price,
       this.generalCondition,
+        this.status,
       this.shareLink,
       this.topics,
       this.subTopics,
@@ -121,6 +123,7 @@ class AdsDetail {
     topicId = json['topicId'];
     topicMetaLink = json['topicMetaLink'];
     metaLink = json['metaLink'];
+    status = json['status'];
     metaTitle = json['metaTitle'];
     metaDescription = json['metaDescription'];
     metaKeywords = json['metaKeywords'];

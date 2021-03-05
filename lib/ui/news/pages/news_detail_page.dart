@@ -32,6 +32,8 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   String postId;
   String owner;
   String linkShare;
+
+  bool isApprove = false;
   int _currentIndex = 0;
   NewsBloc _newsBloc = NewsBloc();
   PostActionBloc _postActionBloc = PostActionBloc();
@@ -114,47 +116,46 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   }
 
   void showRemindDialog(BuildContext context) {
-    Helper.showMissingDialog2(context, "Bạn đang có",
-        "$pushNumber lượt đẩy tin </br>$postNumber lượt ưu tiên tin", () {
-      Navigator.of(context).pop();
-      if (pushNumber > 0) {
-        final act = CupertinoActionSheet(
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('Đẩy tin lên đầu ($pushNumber)',
-                    style: TextStyle(color: Colors.blue)),
-                onPressed: () {
-                  requestPush(true, false);
-                  Navigator.pop(context);
-                },
-              ),
-              // CupertinoActionSheetAction(
-              //   child: Text('Ưu tiên tin',
-              //       style: TextStyle(color: Colors.blue)),
-              //   onPressed: () {
-              //     requestPush(false, true);
-              //     Navigator.pop(context);
-              //   },
-              // ),
-              // CupertinoActionSheetAction(
-              //   child: Text('Đẩy tin và ưu tiên',
-              //       style: TextStyle(color: Colors.blue)),
-              //   onPressed: () {
-              //     requestPush(true, true);
-              //     Navigator.pop(context);
-              //   },
-              // )
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              child: Text('Hủy'),
+    if (pushNumber > 0) {
+      final act = CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: Text('Đẩy tin lên đầu ($pushNumber)',
+                  style: TextStyle(color: Colors.blue)),
               onPressed: () {
+                requestPush(true, false);
                 Navigator.pop(context);
               },
-            ));
-        showCupertinoModalPopup(
-            context: context, builder: (BuildContext context) => act);
-      }
-    });
+            ),
+            // CupertinoActionSheetAction(
+            //   child: Text('Ưu tiên tin',
+            //       style: TextStyle(color: Colors.blue)),
+            //   onPressed: () {
+            //     requestPush(false, true);
+            //     Navigator.pop(context);
+            //   },
+            // ),
+            // CupertinoActionSheetAction(
+            //   child: Text('Đẩy tin và ưu tiên',
+            //       style: TextStyle(color: Colors.blue)),
+            //   onPressed: () {
+            //     requestPush(true, true);
+            //     Navigator.pop(context);
+            //   },
+            // )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text('Hủy'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ));
+      showCupertinoModalPopup(
+          context: context, builder: (BuildContext context) => act);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Bạn đã dùng hết lượt đẩy tin", textColor: Colors.black87);
+    }
   }
 
   void requestPush(bool isPush, bool isPriority) {
@@ -165,6 +166,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         case Status.LOADING:
           break;
         case Status.COMPLETED:
+          _profileBloc.requestGetGiftResponse();
           Helper.showMissingDialog(context, "Thành công", event.data ?? "");
           break;
         case Status.ERROR:
@@ -192,7 +194,12 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
             owner != null
                 ? IconButton(
                     onPressed: () {
-                      showRemindDialog(context);
+                      if (isApprove) {
+                        showRemindDialog(context);
+                      } else {
+                        Helper.showMissingDialog(context, "Thông báo",
+                            "Tin của bạn cần phải được duyệt trước khi làm mới");
+                      }
                     },
                     icon: Icon(
                       Icons.publish,
@@ -230,6 +237,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                   case Status.COMPLETED:
                     NewsDetail newsDetail = snapshot.data.data;
                     linkShare = newsDetail.shareLink;
+                    isApprove = newsDetail.status == "APPROVED";
                     // if (newsDetail.images.length > 0 && _setBanners) {
                     //   autoPlayBanners(newsDetail.images);
                     //   _setBanners = false;

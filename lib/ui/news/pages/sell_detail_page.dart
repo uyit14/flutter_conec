@@ -41,6 +41,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
   double lng = 106.7686185;
   bool _firstCalculate = true;
   String linkShare;
+  bool isApprove = false;
   bool _setBanners = true;
   bool _isCallApi = true;
   PageController _pageController = PageController(initialPage: 0);
@@ -121,53 +122,53 @@ class _SellDetailPageState extends State<SellDetailPage> {
   }
 
   void showRemindDialog(BuildContext context) {
-    Helper.showMissingDialog2(context, "Bạn đang có",
-        "$pushNumber lượt đẩy tin </br>$postNumber lượt ưu tiên tin", () {
-      Navigator.of(context).pop();
-      if (pushNumber > 0 || postNumber > 0) {
-        final act = CupertinoActionSheet(
-            actions: <Widget>[
-              pushNumber > 0
-                  ? CupertinoActionSheetAction(
-                      child: Text('Đẩy tin lên đầu ($pushNumber)',
-                          style: TextStyle(color: Colors.blue)),
-                      onPressed: () {
-                        requestPush(true, false);
-                        Navigator.pop(context);
-                      },
-                    )
-                  : Container(),
-              postNumber > 0
-                  ? CupertinoActionSheetAction(
-                      child: Text('Ưu tiên tin ($postNumber)',
-                          style: TextStyle(color: Colors.blue)),
-                      onPressed: () {
-                        requestPush(false, true);
-                        Navigator.pop(context);
-                      },
-                    )
-                  : Container(),
-              pushNumber > 0 && postNumber > 0
-                  ? CupertinoActionSheetAction(
-                      child: Text('Đẩy tin và ưu tiên',
-                          style: TextStyle(color: Colors.blue)),
-                      onPressed: () {
-                        requestPush(true, true);
-                        Navigator.pop(context);
-                      },
-                    )
-                  : Container()
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              child: Text('Hủy'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ));
-        showCupertinoModalPopup(
-            context: context, builder: (BuildContext context) => act);
-      }
-    });
+    if (pushNumber > 0 || postNumber > 0) {
+      final act = CupertinoActionSheet(
+          actions: <Widget>[
+            pushNumber > 0
+                ? CupertinoActionSheetAction(
+                    child: Text('Đẩy tin lên đầu ($pushNumber)',
+                        style: TextStyle(color: Colors.blue)),
+                    onPressed: () {
+                      requestPush(true, false);
+                      Navigator.pop(context);
+                    },
+                  )
+                : Container(),
+            postNumber > 0
+                ? CupertinoActionSheetAction(
+                    child: Text('Ưu tiên tin ($postNumber)',
+                        style: TextStyle(color: Colors.blue)),
+                    onPressed: () {
+                      requestPush(false, true);
+                      Navigator.pop(context);
+                    },
+                  )
+                : Container(),
+            pushNumber > 0 && postNumber > 0
+                ? CupertinoActionSheetAction(
+                    child: Text('Đẩy tin và ưu tiên',
+                        style: TextStyle(color: Colors.blue)),
+                    onPressed: () {
+                      requestPush(true, true);
+                      Navigator.pop(context);
+                    },
+                  )
+                : Container()
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text('Hủy'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ));
+      showCupertinoModalPopup(
+          context: context, builder: (BuildContext context) => act);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Bạn đã dùng hết lượt đẩy tin và ưu tiên tin",
+          textColor: Colors.black87);
+    }
   }
 
   String getImageUrl(String thumnail, List<myImage.Image> img) {
@@ -204,6 +205,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
         case Status.LOADING:
           break;
         case Status.COMPLETED:
+          _profileBloc.requestGetGiftResponse();
           Helper.showMissingDialog(context, "Thành công", event.data ?? "");
           break;
         case Status.ERROR:
@@ -231,7 +233,12 @@ class _SellDetailPageState extends State<SellDetailPage> {
             owner != null
                 ? IconButton(
                     onPressed: () {
-                      showRemindDialog(context);
+                      if (isApprove) {
+                        showRemindDialog(context);
+                      } else {
+                        Helper.showMissingDialog(context, "Thông báo",
+                            "Tin của bạn cần phải được duyệt trước khi làm mới hoặc ưu tiên");
+                      }
                     },
                     icon: Icon(
                       Icons.publish,
@@ -269,6 +276,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                   case Status.COMPLETED:
                     AdsDetail adsDetail = snapshot.data.data;
                     linkShare = adsDetail.shareLink;
+                    isApprove = adsDetail.status == "APPROVED";
                     // if (adsDetail.images.length > 0 && _setBanners) {
                     //   autoPlayBanners(adsDetail.images);
                     //   _setBanners = false;

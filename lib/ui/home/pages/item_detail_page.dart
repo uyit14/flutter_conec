@@ -36,6 +36,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   bool _isCallApi;
   String phoneNumber;
   String linkShare;
+  bool isApprove = false;
   int _currentIndex = 0;
   bool _setBanners = true;
   String postId;
@@ -83,50 +84,48 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   }
 
   void showRemindDialog(BuildContext context) {
-    Helper.showMissingDialog2(context, "Bạn đang có",
-        "$pushNumber lượt đẩy tin </br>$postNumber lượt ưu tiên tin", () {
-      Navigator.of(context).pop();
-      if (pushNumber > 0) {
-        final act = CupertinoActionSheet(
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('Đẩy tin lên đầu ($pushNumber)',
-                    style: TextStyle(color: Colors.blue)),
-                onPressed: () {
-                  requestPush(true, false);
-                  Navigator.pop(context);
-                },
-              ),
-              // CupertinoActionSheetAction(
-              //   child: Text('Ưu tiên tin',
-              //       style: TextStyle(
-              //           color: Colors.blue)),
-              //   onPressed: () {
-              //     requestPush(false, true);
-              //     Navigator.pop(context);
-              //   },
-              // ),
-              // CupertinoActionSheetAction(
-              //   child: Text('Đẩy tin và ưu tiên',
-              //       style: TextStyle(
-              //           color: Colors.blue)),
-              //   onPressed: () {
-              //     requestPush(true, true);
-              //     Navigator.pop(context);
-              //   },
-              // )
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              child: Text('Hủy'),
+    if (pushNumber > 0) {
+      final act = CupertinoActionSheet(
+          actions: <Widget>[
+            CupertinoActionSheetAction(
+              child: Text('Đẩy tin lên đầu ($pushNumber)',
+                  style: TextStyle(color: Colors.blue)),
               onPressed: () {
+                requestPush(true, false);
                 Navigator.pop(context);
               },
-            ));
-        showCupertinoModalPopup(
-            context: context,
-            builder: (BuildContext context) => act);
-      }
-    });
+            ),
+            // CupertinoActionSheetAction(
+            //   child: Text('Ưu tiên tin',
+            //       style: TextStyle(
+            //           color: Colors.blue)),
+            //   onPressed: () {
+            //     requestPush(false, true);
+            //     Navigator.pop(context);
+            //   },
+            // ),
+            // CupertinoActionSheetAction(
+            //   child: Text('Đẩy tin và ưu tiên',
+            //       style: TextStyle(
+            //           color: Colors.blue)),
+            //   onPressed: () {
+            //     requestPush(true, true);
+            //     Navigator.pop(context);
+            //   },
+            // )
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text('Hủy'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ));
+      showCupertinoModalPopup(
+          context: context, builder: (BuildContext context) => act);
+    } else {
+      Fluttertoast.showToast(
+          msg: "Bạn đã dùng hết lượt đẩy tin", textColor: Colors.black87);
+    }
   }
 
   @override
@@ -179,6 +178,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
         case Status.LOADING:
           break;
         case Status.COMPLETED:
+          _profileBloc.requestGetGiftResponse();
           Helper.showMissingDialog(context, "Thành công", event.data ?? "");
           break;
         case Status.ERROR:
@@ -225,7 +225,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
             owner != null
                 ? IconButton(
                     onPressed: () {
-                      showRemindDialog(context);
+                      if (isApprove) {
+                        showRemindDialog(context);
+                      } else {
+                        Helper.showMissingDialog(context, "Thông báo",
+                            "Tin của bạn cần phải được duyệt trước khi làm mới");
+                      }
                     },
                     icon: Icon(
                       Icons.publish,
@@ -271,6 +276,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     return UILoading(loadingMessage: snapshot.data.message);
                   case Status.COMPLETED:
                     ItemDetail itemDetail = snapshot.data.data;
+                    isApprove = itemDetail.status == "APPROVED";
                     // if (itemDetail.images.length > 0 && _setBanners) {
                     //   autoPlayBanners(itemDetail.images);
                     //   _setBanners = false;

@@ -240,7 +240,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _postActionBloc.requestGetSubTopicWithHeader(true,
                   topicId: topic.id);
               if (_itemDetail.content != null) {
-                final document = parse(_itemDetail.content ?? "");
+                final document = parse(_itemDetail.content.toString().replaceAll("<br>", "\n") ?? "");
                 final String parsedString =
                     parse(document.body.text).documentElement.text;
                 final notusDocument = _itemDetail.content != null
@@ -265,7 +265,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _postActionBloc.requestGetSubTopicWithHeader(true,
                   topicId: topic.id);
               if (_itemDetail.content != null) {
-                final document = parse(_itemDetail.content ?? "");
+                final document = parse(_itemDetail.content.toString().replaceAll("<br>", "\n") ?? "");
                 final String parsedString =
                     parse(document.body.text).documentElement.text;
                 final notusDocument = _itemDetail.content != null
@@ -290,7 +290,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _postActionBloc.requestGetSubTopicWithHeader(false,
                   topicId: topic.id);
               if (_itemDetail.content != null) {
-                final document = parse(_itemDetail.content ?? "");
+                final document = parse(_itemDetail.content.toString().replaceAll("<br>", "\n") ?? "");
                 final String parsedString =
                     parse(document.body.text).documentElement.text;
                 final notusDocument = _itemDetail.content != null
@@ -1066,7 +1066,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       _postActionRequest = PostActionRequest(
           postId: _itemDetail.postId,
           title: _titleController.text,
-          content: _controller.document.toPlainText(),
+          content: _controller.document.toPlainText().toString().replaceAll("\n", "<br>"),
           thumbnail: _images.length > 0 && _urlImages.length == 0
               ? {
                   "fileName": image01.path.split("/").last,
@@ -1094,7 +1094,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       _postActionRequest = PostActionRequest(
           postId: _itemDetail.postId,
           title: _titleController.text,
-          content: _controller.document.toPlainText(),
+          content: _controller.document.toPlainText().toString().replaceAll("\n", "<br>"),
           thumbnail: _images.length > 0
               ? {
                   "fileName": image01.path.split("/").last,
@@ -1117,7 +1117,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       _postActionRequest = PostActionRequest(
           postId: _itemDetail.postId,
           title: _titleController.text,
-          content: _controller.document.toPlainText(),
+          content: _controller.document.toPlainText().toString().replaceAll("\n", "<br>"),
           thumbnail: _images.length > 0
               ? {
                   "fileName": image01.path.split("/").last,

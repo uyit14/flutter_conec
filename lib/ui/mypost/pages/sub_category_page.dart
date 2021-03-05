@@ -95,7 +95,7 @@ class _SubCategoryPageState extends State<SubCategoryPage> {
                           return UIError(errorMessage: snapshot.data.message);
                       }
                     }
-                    return Center(child: Text("Không có dữ liệu"));
+                    return UILoading();
                   }),
             ),
           ],

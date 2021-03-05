@@ -40,9 +40,9 @@ class ProfileBloc {
   Stream<ApiResponse<ChangePassWordResponse>> get changePassStream => _changePassController.stream;
 
   //
-  StreamController<ApiResponse<GiftResponse>> _giftReponseController =
-  StreamController();
-  Stream<ApiResponse<GiftResponse>> get giftResponseStream => _giftReponseController.stream;
+  StreamController<ApiResponse<GiftResponse>> _giftResponseController =
+  StreamController.broadcast();
+  Stream<ApiResponse<GiftResponse>> get giftResponseStream => _giftResponseController.stream;
 
 
   void requestGetProfile() async {
@@ -110,12 +110,12 @@ class ProfileBloc {
   }
   
   void requestGetGiftResponse() async{
-    _giftReponseController.sink.add(ApiResponse.loading());
+    _giftResponseController.sink.add(ApiResponse.loading());
     final result = await _repository.fetchGiftResponse();
     if(result.status){
-      _giftReponseController.sink.add(ApiResponse.completed(result));
+      _giftResponseController.sink.add(ApiResponse.completed(result));
     }else{
-      _giftReponseController.sink.add(ApiResponse.error("Có lỗi xảy ra, xin vui lòng thử lại"));
+      _giftResponseController.sink.add(ApiResponse.error("Có lỗi xảy ra, xin vui lòng thử lại"));
     }
   }
 
@@ -124,7 +124,7 @@ class ProfileBloc {
     _updateProfileController.close();
     _changePassController.close();
     _updatePageController.close();
-    _giftReponseController?.close();
+    _giftResponseController?.close();
   }
 
   void disposePage(){

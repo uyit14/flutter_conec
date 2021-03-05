@@ -1013,7 +1013,7 @@ class _PostActionPageState extends State<PostActionPage> {
     }
     PostActionRequest _postActionRequest = PostActionRequest(
         title: _title,
-        content: _controller.document.toPlainText(),
+        content: _controller.document.toPlainText().toString().replaceAll("\n", "<br>"),
         thumbnail: _images.length > 0
             ? {
           "fileName": _images[0].path

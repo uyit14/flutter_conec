@@ -41,6 +41,7 @@ class NewsDetail {
   String ward;
   String address;
   String phoneNumber;
+  String status;
   String shareLink;
   List<Topic> topics;
   List<Topic> subTopics;
@@ -75,6 +76,7 @@ class NewsDetail {
       this.address,
       this.shareLink,
       this.topics,
+        this.status,
       this.subTopics,
       this.phoneNumber});
 
@@ -117,6 +119,7 @@ class NewsDetail {
     ward = json['ward'];
     address = json['address'];
     phoneNumber = json['phoneNumber'];
+    status = json['status'];
     shareLink = json['shareLink'];
     if (json['topics'] != null) {
       topics = new List<Topic>();
