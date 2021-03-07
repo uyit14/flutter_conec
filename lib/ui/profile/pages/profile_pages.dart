@@ -479,7 +479,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   width: double.infinity,
                   alignment: Alignment.center,
                   child: Text(
-                    "Version $version",
+                    "Version 1.0.8",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
                   ),
                 )

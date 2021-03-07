@@ -88,7 +88,9 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     postId = routeArgs['postId'];
     owner = routeArgs['owner'];
     _newsBloc.requestNewsDetail(postId);
-    giftCheck();
+    if(owner != null){
+      giftCheck();
+    }
   }
 
   void autoPlayBanners(List<myImage.Image> images) {

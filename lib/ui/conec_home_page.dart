@@ -9,13 +9,15 @@ import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:new_version/new_version.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+
+import '../common/globals.dart' as globals;
 import 'home/blocs/home_bloc.dart';
 import 'home/pages/items_by_category_page.dart';
 import 'mypost/pages/mypost_page.dart';
 import 'news/pages/news_page.dart';
 import 'profile/pages/profile_pages.dart';
-import '../common/globals.dart' as globals;
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';
@@ -103,8 +105,24 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     //getLocation();
+//    NewVersion(
+//        context: context,
+//        iOSId: 'com.google.Vespa',
+//        androidId: 'com.conec.flutter_conec',
+//        dialogTitle: "Cập nhật",
+//        dialogText: "Conec đã có bản cập nhật mới trên cửa hàng",
+//        dismissText: "Để sau",
+//        updateText: "Cập nhật"
+//    ).showAlertIfNecessary();
     initOneSignal("7075e16c-c1fb-4d33-93b1-1c8cf007c294");
     getToken();
+  }
+
+  void checkVersion(BuildContext context) async{
+
+//    final newVersion = NewVersion(context: context);
+//    final status = await newVersion.getVersionStatus();
+//    print(status.localVersion + "-" + status.storeVersion);
   }
 
   @override
@@ -112,17 +130,19 @@ class _ConecHomePageState extends State<ConecHomePage> {
     super.didChangeDependencies();
     giftCheck(context);
   }
-  
-  void giftCheck(BuildContext context) async{
+
+  void giftCheck(BuildContext context) async {
     bool result = await _homeBloc.requestGiftCheck();
-    if(result){
-      Helper.showGiftCheckDialog(context, "Điểm danh nhận quà", "Quà tháng này của bạn: \n5 lượt đẩy tin \n5 tin ưu tiên", () async{
+    if (result) {
+      Helper.showGiftCheckDialog(context, "Điểm danh nhận quà",
+          "Quà tháng này của bạn: \n5 lượt đẩy tin \n5 tin ưu tiên", () async {
         Navigator.of(context).pop();
         bool result2 = await _homeBloc.requestGiftReceive();
-        if(result2){
+        if (result2) {
           Helper.showMissingDialog(context, "Nhận quà thành công", "");
-        }else{
-          Helper.showMissingDialog(context, "Nhận quà thất bại", "Bạn đã nhận quà hoặc chưa tới thời gian nhận");
+        } else {
+          Helper.showMissingDialog(context, "Nhận quà thất bại",
+              "Bạn đã nhận quà hoặc chưa tới thời gian nhận");
         }
       });
     }
@@ -154,10 +174,6 @@ class _ConecHomePageState extends State<ConecHomePage> {
       print('Opened: ' + result.notification?.payload?.body ?? '');
     });
   }
-
-
-
-
 
   void getLocation() async {
     Position position =
@@ -196,29 +212,36 @@ class _ConecHomePageState extends State<ConecHomePage> {
                   ),
                   _token != null && !_isTokenExpired
                       ? Badge(
-                    padding: const EdgeInsets.all(3.0),
-                    position: BadgePosition.topEnd(top: 5, end: -7),
-                    badgeContent: Text(
-                      _number.toString(),
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    badgeColor: Colors.yellowAccent,
-                    showBadge: _number > 0 ? true : false,
-                    child: InkWell(
-                      child: Icon(Icons.notifications, size: 32, color: Colors.black87.withOpacity(0.8),),
-                      onTap: () => Navigator.of(context)
-                          .pushNamed(NotifyPage.ROUTE_NAME).then((value) {
-                            if(value==1){
-                              _homeBloc.requestGetNumberNotify();
-                            }
-                      }),
-                    ),
-                  )
+                          padding: const EdgeInsets.all(3.0),
+                          position: BadgePosition.topEnd(top: 5, end: -7),
+                          badgeContent: Text(
+                            _number.toString(),
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          badgeColor: Colors.yellowAccent,
+                          showBadge: _number > 0 ? true : false,
+                          child: InkWell(
+                            child: Icon(
+                              Icons.notifications,
+                              size: 32,
+                              color: Colors.black87.withOpacity(0.8),
+                            ),
+                            onTap: () => Navigator.of(context)
+                                .pushNamed(NotifyPage.ROUTE_NAME)
+                                .then((value) {
+                              if (value == 1) {
+                                _homeBloc.requestGetNumberNotify();
+                              }
+                            }),
+                          ),
+                        )
                       : Container(),
-                  SizedBox(width: 16,)
+                  SizedBox(
+                    width: 16,
+                  )
                 ],
               )
             : null,
@@ -227,7 +250,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             HomePage(callback: _initTab1Page),
-           NewsPage(_initIndex),
+            NewsPage(_initIndex),
             MyPost(),
             ProfilePage()
           ],

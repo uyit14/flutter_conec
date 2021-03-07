@@ -96,7 +96,9 @@ class _SellDetailPageState extends State<SellDetailPage> {
       postId = routeArgs['postId'];
       owner = routeArgs['owner'];
       _newsBloc.requestAdsDetail(postId);
-      giftCheck();
+      if(owner != null){
+        giftCheck();
+      }
       _isCallApi = false;
     }
   }

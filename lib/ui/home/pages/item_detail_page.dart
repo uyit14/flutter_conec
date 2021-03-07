@@ -145,7 +145,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       title = routeArgs['title'];
       owner = routeArgs['owner'];
       _itemsByCategoryBloc.requestItemDetail(postId);
-      giftCheck();
+      if(owner != null){
+        giftCheck();
+      }
       _isCallApi = false;
     }
   }
