@@ -23,6 +23,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   var username;
   String _apiErrorMess;
   bool _isLoading = false;
+  bool _showPass = false;
+  bool _showConfirmPass = false;
 
   @override
   void initState() {
@@ -146,7 +148,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 controller: _newPassController,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.text,
-                obscureText: true,
+                obscureText: _showPass ? false : true,
                 style: TextStyle(fontSize: 18),
                 decoration: InputDecoration(
                     hintText: "Nhập mật khẩu mới",
@@ -157,9 +159,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.green, width: 1)),
                     contentPadding: EdgeInsets.only(left: 8),
-                    suffixIcon: Icon(
-                      Icons.vpn_key,
-                      color: Colors.black,
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showPass = !_showPass;
+                        });
+                      },
+                      child: Icon(
+                        _showPass ? Icons.vpn_key : Icons.remove_red_eye,
+                        color: Colors.black,
+                      ),
                     ),
                     border: const OutlineInputBorder()),
               ),
@@ -169,7 +178,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 controller: _confirmPassController,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.text,
-                obscureText: true,
+                obscureText: _showConfirmPass ? false : true,
                 style: TextStyle(fontSize: 18),
                 decoration: InputDecoration(
                     hintText: "Xác nhận mật khẩu",
@@ -180,9 +189,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.green, width: 1)),
                     contentPadding: EdgeInsets.only(left: 8),
-                    suffixIcon: Icon(
-                      Icons.vpn_key,
-                      color: Colors.black,
+                    suffixIcon: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showConfirmPass = !_showConfirmPass;
+                        });
+                      },
+                      child: Icon(
+                        _showConfirmPass ? Icons.vpn_key : Icons.remove_red_eye,
+                        color: Colors.black,
+                      ),
                     ),
                     border: const OutlineInputBorder()),
               ),

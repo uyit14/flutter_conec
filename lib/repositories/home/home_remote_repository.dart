@@ -134,6 +134,7 @@ class HomeRemoteRepository {
   Future<bool> likePost(String postId) async {
     final response = await _helper.post("/api/Comment/likePost?id=$postId",
         headers: await Helper.header());
+    print(response);
     return response['status'];
   }
 
