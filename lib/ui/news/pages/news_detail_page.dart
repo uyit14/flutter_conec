@@ -10,6 +10,7 @@ import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/news_detail.dart';
 import 'package:conecapp/models/response/profile/GiftReponse.dart';
+import 'package:conecapp/ui/home/pages/image_viewer_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/news/blocs/news_bloc.dart';
@@ -249,112 +250,119 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                       margin: EdgeInsets.all(0),
                       child: Column(
                         children: <Widget>[
-                          Hero(
-                            tag: postId,
-                            child: newsDetail.images.length > 0
-                                ? Stack(
-                                    children: [
-                                      // Container(
-                                      //   height: 225,
-                                      //   child: PageView.builder(
-                                      //       itemCount: newsDetail.images.length,
-                                      //       controller: _pageController,
-                                      //       onPageChanged: (currentPage) {
-                                      //         setState(() {
-                                      //           _currentIndex = currentPage;
-                                      //         });
-                                      //       },
-                                      //       itemBuilder: (context, index) {
-                                      //         return CachedNetworkImage(
-                                      //           imageUrl: newsDetail
-                                      //               .images[index].fileName,
-                                      //           placeholder: (context, url) =>
-                                      //               Image.asset(
-                                      //                   "assets/images/placeholder.png"),
-                                      //           errorWidget: (context, url,
-                                      //               error) =>
-                                      //               Image.asset(
-                                      //                   "assets/images/error.png"),
-                                      //           fit: BoxFit.cover,
-                                      //           width: double.infinity,
-                                      //           height: 225,
-                                      //         );
-                                      //       }),
-                                      // ),
-                                      CarouselSlider(
-                                        options: CarouselOptions(
-                                          onPageChanged: (currentPage, reason) {
-                                            setState(() {
-                                              _currentIndex = currentPage;
-                                            });
-                                          },
-                                          height: Helper.isTablet(context)
-                                              ? 320
-                                              : 225,
-                                          autoPlay: true,
-                                          enlargeCenterPage: false,
-                                          viewportFraction: 1.0,
-                                        ),
-                                        items: newsDetail.images
-                                            .map((item) => Container(
-                                                  child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  8)),
-                                                      child: Stack(
-                                                        children: <Widget>[
-                                                          CachedNetworkImage(
-                                                            imageUrl:
-                                                                item.fileName,
-                                                            placeholder: (context,
-                                                                    url) =>
-                                                                Image.asset(
-                                                                    "assets/images/placeholder.png"),
-                                                            errorWidget: (context,
-                                                                    url,
-                                                                    error) =>
-                                                                Image.asset(
-                                                                    "assets/images/error.png"),
-                                                            fit: BoxFit.cover,
-                                                            width:
-                                                                double.infinity,
-                                                          ),
-                                                          Positioned(
-                                                            bottom: 0.0,
-                                                            left: 0.0,
-                                                            right: 0.0,
-                                                            child: Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                  colors: [
-                                                                    Color
-                                                                        .fromARGB(
-                                                                            200,
-                                                                            0,
-                                                                            0,
-                                                                            0),
-                                                                    Color
-                                                                        .fromARGB(
-                                                                            0,
-                                                                            0,
-                                                                            0,
-                                                                            0)
-                                                                  ],
-                                                                  begin: Alignment
-                                                                      .bottomCenter,
-                                                                  end: Alignment
-                                                                      .topCenter,
+                          InkWell(
+                            onTap: (){
+                              Navigator.of(context).push(PageRouteBuilder(
+                                  opaque: false,
+                                  pageBuilder: (BuildContext context, _, __) =>
+                                      ImageViewerPage(newsDetail.images, _currentIndex)));
+                            },
+                            child: Hero(
+                              tag: postId,
+                              child: newsDetail.images.length > 0
+                                  ? Stack(
+                                      children: [
+                                        // Container(
+                                        //   height: 225,
+                                        //   child: PageView.builder(
+                                        //       itemCount: newsDetail.images.length,
+                                        //       controller: _pageController,
+                                        //       onPageChanged: (currentPage) {
+                                        //         setState(() {
+                                        //           _currentIndex = currentPage;
+                                        //         });
+                                        //       },
+                                        //       itemBuilder: (context, index) {
+                                        //         return CachedNetworkImage(
+                                        //           imageUrl: newsDetail
+                                        //               .images[index].fileName,
+                                        //           placeholder: (context, url) =>
+                                        //               Image.asset(
+                                        //                   "assets/images/placeholder.png"),
+                                        //           errorWidget: (context, url,
+                                        //               error) =>
+                                        //               Image.asset(
+                                        //                   "assets/images/error.png"),
+                                        //           fit: BoxFit.cover,
+                                        //           width: double.infinity,
+                                        //           height: 225,
+                                        //         );
+                                        //       }),
+                                        // ),
+                                        CarouselSlider(
+                                          options: CarouselOptions(
+                                            onPageChanged: (currentPage, reason) {
+                                              setState(() {
+                                                _currentIndex = currentPage;
+                                              });
+                                            },
+                                            height: Helper.isTablet(context)
+                                                ? 320
+                                                : 225,
+                                            autoPlay: true,
+                                            enlargeCenterPage: false,
+                                            viewportFraction: 1.0,
+                                          ),
+                                          items: newsDetail.images
+                                              .map((item) => Container(
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8)),
+                                                        child: Stack(
+                                                          children: <Widget>[
+                                                            CachedNetworkImage(
+                                                              imageUrl:
+                                                                  item.fileName,
+                                                              placeholder: (context,
+                                                                      url) =>
+                                                                  Image.asset(
+                                                                      "assets/images/placeholder.png"),
+                                                              errorWidget: (context,
+                                                                      url,
+                                                                      error) =>
+                                                                  Image.asset(
+                                                                      "assets/images/error.png"),
+                                                              fit: BoxFit.cover,
+                                                              width:
+                                                                  double.infinity,
+                                                            ),
+                                                            Positioned(
+                                                              bottom: 0.0,
+                                                              left: 0.0,
+                                                              right: 0.0,
+                                                              child: Container(
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  gradient:
+                                                                      LinearGradient(
+                                                                    colors: [
+                                                                      Color
+                                                                          .fromARGB(
+                                                                              200,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                      Color
+                                                                          .fromARGB(
+                                                                              0,
+                                                                              0,
+                                                                              0,
+                                                                              0)
+                                                                    ],
+                                                                    begin: Alignment
+                                                                        .bottomCenter,
+                                                                    end: Alignment
+                                                                        .topCenter,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      vertical:
-                                                                          10.0,
-                                                                      horizontal:
-                                                                          20.0),
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        vertical:
+                                                                            10.0,
+                                                                        horizontal:
+                                                                            20.0),
 //                                                child: Text(
 //                                                  item.title,
 //                                                  style: TextStyle(
@@ -363,61 +371,62 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
 //                                                    fontWeight: FontWeight.bold,
 //                                                  ),
 //                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      )),
-                                                ))
-                                            .toList(),
-                                      ),
-                                      Positioned(
-                                        bottom: 24,
-                                        child: Container(
-                                          height: 24,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Center(
-                                            child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                shrinkWrap: true,
-                                                itemCount:
-                                                    newsDetail.images.length,
-                                                itemBuilder: (context, index) {
-                                                  return Container(
-                                                    width: 16,
-                                                    height: 16,
-                                                    margin: EdgeInsets.only(
-                                                        right: 6),
-                                                    decoration: BoxDecoration(
-                                                        //borderRadius: BorderRadius.all(Radius.circular(16)),
-                                                        shape: BoxShape.circle,
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color:
-                                                                Colors.white),
-                                                        color: _currentIndex ==
-                                                                index
-                                                            ? Colors.white
-                                                            : Colors
-                                                                .transparent),
-                                                  );
-                                                }),
-                                          ),
+                                                          ],
+                                                        )),
+                                                  ))
+                                              .toList(),
                                         ),
-                                      )
-                                    ],
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: newsDetail.thumbnail,
-                                    placeholder: (context, url) => Image.asset(
-                                        "assets/images/placeholder.png"),
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset("assets/images/error.png"),
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: 225,
-                                  ),
+                                        Positioned(
+                                          bottom: 24,
+                                          child: Container(
+                                            height: 24,
+                                            width:
+                                                MediaQuery.of(context).size.width,
+                                            child: Center(
+                                              child: ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  shrinkWrap: true,
+                                                  itemCount:
+                                                      newsDetail.images.length,
+                                                  itemBuilder: (context, index) {
+                                                    return Container(
+                                                      width: 16,
+                                                      height: 16,
+                                                      margin: EdgeInsets.only(
+                                                          right: 6),
+                                                      decoration: BoxDecoration(
+                                                          //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                          shape: BoxShape.circle,
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.white),
+                                                          color: _currentIndex ==
+                                                                  index
+                                                              ? Colors.white
+                                                              : Colors
+                                                                  .transparent),
+                                                    );
+                                                  }),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : CachedNetworkImage(
+                                      imageUrl: newsDetail.thumbnail,
+                                      placeholder: (context, url) => Image.asset(
+                                          "assets/images/placeholder.png"),
+                                      errorWidget: (context, url, error) =>
+                                          Image.asset("assets/images/error.png"),
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 225,
+                                    ),
+                            ),
                           ),
                           // if (newsDetail.images.length > 0)
                           //   Container(

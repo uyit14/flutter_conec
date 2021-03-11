@@ -12,6 +12,7 @@ import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
+import 'package:conecapp/ui/mypost/pages/category_page.dart';
 import 'package:conecapp/ui/mypost/pages/sub_category_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,19 +30,22 @@ class _ItemByCategoryState extends State<ItemByCategory> {
   ScrollController _scrollController;
   final _controller = TextEditingController();
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
-  var selectedCategory;
+
+  //var selectedCategory;
   bool _needAddUI = true;
   HomeBloc _homeBloc = HomeBloc();
 
   List<Topic> _listTopic = List<Topic>();
   List<LatestItem> totalItemList = List<LatestItem>();
   var routeArgs;
-  String categoryTitle;
-  var categoryId;
+
+  //String categoryTitle;
+  //var categoryId;
   bool _firstTime;
   int _currentPage = 1;
   bool _shouldLoadMore = true;
   List<Topic> _topics = List();
+  Topic topic;
 
   //
   Province provinceData;
@@ -71,10 +75,13 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     if (_firstTime) {
       routeArgs =
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
-      categoryTitle = routeArgs['title'] as String;
-      categoryId = routeArgs['id'] as String;
+      if (routeArgs['id'] != null && routeArgs['title'] != null) {
+        topic = Topic(
+            id: routeArgs['id'] as String, title: routeArgs['title'] as String);
+      }
+
       _itemsByCategoryBloc.requestGetAllItem(_currentPage, "",
-          topic: categoryTitle ?? "");
+          topic: topic != null ? topic.title : "");
       _currentPage = 2;
     }
   }
@@ -102,7 +109,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
         _itemsByCategoryBloc.requestGetAllItem(_currentPage, getTopicsString(),
             province: provinceData != null ? provinceData.name : "",
             district: districtData != null ? districtData.name : "",
-            topic: selectedCategory ?? categoryTitle ?? "",
+            topic: topic != null ? topic.title : "",
             club: "",
             keyword: _keyword);
         setState(() {
@@ -232,7 +239,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                           _itemsByCategoryBloc.requestGetAllItem(
                               _currentPage, getTopicsString(),
                               province: provinceData.name,
-                              topic: selectedCategory ?? categoryTitle ?? "");
+                              topic: topic != null ? topic.title : "");
                           _currentPage = 2;
                         }
                       });
@@ -322,10 +329,16 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                 Flexible(
                   flex: 1,
                   child: InkWell(
-                    onTap: () => showCategoryList(categoryId != null
-                        ? _listTopic.indexOf(_listTopic
-                            .firstWhere((element) => element.id == categoryId))
-                        : 0),
+                    onTap: () {
+                      Navigator.of(context).pushNamed(CategoryPage.ROUTE_NAME,
+                          arguments: {'category': topic}).then((value) {
+                        if (value != null) {
+                          setState(() {
+                            topic = value;
+                          });
+                        }
+                      });
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
                       decoration: BoxDecoration(
@@ -335,7 +348,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              selectedCategory ?? categoryTitle ?? "Chuyên mục",
+                              topic != null ? topic.title : "Chuyên mục",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -349,7 +362,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
               ],
             ),
           ),
-          categoryId == "45f6d14c-3cb7-4bc9-91c1-1cc541dd8893"
+          topic!=null && topic.id == "45f6d14c-3cb7-4bc9-91c1-1cc541dd8893"
               ? Container(
                   margin: EdgeInsets.only(top: 4),
                   padding: EdgeInsets.all(8),
@@ -369,9 +382,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                           onTap: () {
                             Navigator.of(context).pushNamed(
                                 SubCategoryPage.ROUTE_NAME,
-                                arguments: {
-                                  "topicId": categoryId
-                                }).then((value) {
+                                arguments: {"topicId": topic.id}).then((value) {
                               if (value != null) {
                                 print(value);
                                 setState(() {
@@ -390,8 +401,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                     district: districtData != null
                                         ? districtData.name
                                         : "",
-                                    topic:
-                                        selectedCategory ?? categoryTitle ?? "",
+                                    topic: topic != null ? topic.title : "",
                                     club: "",
                                     keyword: _keyword);
                                 _currentPage = 2;
@@ -436,9 +446,10 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                         ),
                                         onPressed: () {
                                           _itemsByCategoryBloc
-                                              .requestGetAllItem(
-                                                  0, "",
-                                                  topic: categoryTitle ?? "");
+                                              .requestGetAllItem(0, "",
+                                                  topic: topic != null
+                                                      ? topic.title
+                                                      : "");
                                           setState(() {
                                             _topics.clear();
                                           });
@@ -536,7 +547,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                         } else {
                           _shouldLoadMore = false;
                         }
-                        if (categoryTitle != null && _firstTime) {
+                        if (topic != null && _firstTime) {
                           //totalItemList.clear();
                           // _itemsByCategoryBloc
                           //     .filterTopic(categoryTitle.toLowerCase());
@@ -699,59 +710,59 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     _scrollController.dispose();
   }
 
-  void showCategoryList(int index) {
-    var controller = FixedExtentScrollController(initialItem: index);
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            color: Colors.white,
-            height: 250,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                FlatButton(
-                  child: Text("Xong", style: AppTheme.changeTextStyle(true)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    if (selectedCategory == null) {
-                      selectedCategory = _listTopic[0].title;
-                      categoryId = _listTopic[0].id;
-                    }
-                  },
-                ),
-                Expanded(
-                  child: CupertinoPicker(
-                    scrollController: controller,
-                    onSelectedItemChanged: (value) {
-                      setState(() {
-                        selectedCategory = _listTopic[value].title;
-                        categoryId = _listTopic[value].id;
-                      });
-                    },
-                    itemExtent: 32,
-                    children: _listTopic.map((e) => Text(e.title)).toList(),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }).then((value) {
-      if (selectedCategory == null) {
-        selectedCategory = _listTopic[0].title;
-        categoryId = _listTopic[0].title;
-      }
-      totalItemList.clear();
-      setState(() {
-        _currentPage = 1;
-        _needAddUI = true;
-      });
-      _itemsByCategoryBloc.requestGetAllItem(_currentPage, getTopicsString(),
-          province: provinceData != null ? provinceData.name : "",
-          district: districtData != null ? districtData.name : "",
-          topic: selectedCategory ?? "",
-          club: "");
-      _currentPage = 1;
-    });
-  }
+// void showCategoryList(int index) {
+//   var controller = FixedExtentScrollController(initialItem: index);
+//   showModalBottomSheet(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return Container(
+//           color: Colors.white,
+//           height: 250,
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.end,
+//             children: [
+//               FlatButton(
+//                 child: Text("Xong", style: AppTheme.changeTextStyle(true)),
+//                 onPressed: () {
+//                   Navigator.of(context).pop();
+//                   if (selectedCategory == null) {
+//                     selectedCategory = _listTopic[0].title;
+//                     categoryId = _listTopic[0].id;
+//                   }
+//                 },
+//               ),
+//               Expanded(
+//                 child: CupertinoPicker(
+//                   scrollController: controller,
+//                   onSelectedItemChanged: (value) {
+//                     setState(() {
+//                       selectedCategory = _listTopic[value].title;
+//                       categoryId = _listTopic[value].id;
+//                     });
+//                   },
+//                   itemExtent: 32,
+//                   children: _listTopic.map((e) => Text(e.title)).toList(),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         );
+//       }).then((value) {
+//     if (selectedCategory == null) {
+//       selectedCategory = _listTopic[0].title;
+//       categoryId = _listTopic[0].title;
+//     }
+//     totalItemList.clear();
+//     setState(() {
+//       _currentPage = 1;
+//       _needAddUI = true;
+//     });
+//     _itemsByCategoryBloc.requestGetAllItem(_currentPage, getTopicsString(),
+//         province: provinceData != null ? provinceData.name : "",
+//         district: districtData != null ? districtData.name : "",
+//         topic: selectedCategory ?? "",
+//         club: "");
+//     _currentPage = 1;
+//   });
+// }
 }

@@ -117,7 +117,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: Text("Reset mật khẩu")),
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         body: Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(

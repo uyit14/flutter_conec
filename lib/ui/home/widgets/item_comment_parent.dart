@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:flutter/material.dart';
 import '../../../common/globals.dart' as globals;
 
@@ -9,13 +10,15 @@ import 'child_comment_widget.dart';
 
 class ItemCommentParent extends StatefulWidget {
   final Comment comment;
+  final String ownerId;
   final ItemsByCategoryBloc bloc;
   final Function(String parentID, bool isDelete) callback;
 
-  ItemCommentParent(this.comment, this.bloc, this.callback);
+  ItemCommentParent(this.comment, this.ownerId, this.bloc, this.callback);
 
   @override
   _ItemCommentParentState createState() => _ItemCommentParentState();
+
 }
 
 class _ItemCommentParentState extends State<ItemCommentParent> {
@@ -64,12 +67,21 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: widget.comment.profilePictureUrl != null
-                      ? NetworkImage(widget.comment.profilePictureUrl)
-                      : AssetImage("assets/images/avatar.png"),
+                InkWell(
+                  onTap: (){
+                    Navigator.of(context).pushNamed(
+                        IntroducePage.ROUTE_NAME,
+                        arguments: {
+                          'clubId': widget.ownerId
+                        });
+                  },
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: widget.comment.profilePictureUrl != null
+                        ? NetworkImage(widget.comment.profilePictureUrl)
+                        : AssetImage("assets/images/avatar.png"),
+                  ),
                 ),
 //                CircleAvatar(
 //                  radius: 16,

@@ -32,6 +32,7 @@ class Profile {
   String avatar;
   String gender;
   String dob;
+  bool hideDOB;
   String phoneNumber;
   String type;
   String province;
@@ -58,6 +59,7 @@ class Profile {
         this.phoneNumber,
         this.type,
         this.province,
+        this.hideDOB,
         this.district,
         this.ward,
         this.address,
@@ -83,6 +85,7 @@ class Profile {
     province = json['province'];
     district = json['district'];
     ward = json['ward'];
+    hideDOB = json['hideDOB'];
     address = json['address'];
     getAddress = json['getAddress'];
     lat = json['lat'];

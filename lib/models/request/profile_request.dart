@@ -5,6 +5,7 @@ class ProfileRequest {
   String gender;
   dynamic dob;
   String phoneNumber;
+  bool hideDOB;
   String type;
   String province;
   String district;
@@ -23,6 +24,7 @@ class ProfileRequest {
       this.gender,
       this.dob,
       this.phoneNumber,
+      this.hideDOB,
       this.type,
       this.province,
       this.district,
@@ -48,6 +50,7 @@ class ProfileRequest {
         if (address != null) 'address': address,
         if (lat != null) 'lat': lat,
         if (lng != null) 'lng': lng,
+        if (hideDOB != null) 'hideDOB': hideDOB,
         if (about != null) 'about': about,
         if (videoLink != null) 'videoLink': videoLink,
         if (images != null) 'images': images,

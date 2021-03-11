@@ -77,7 +77,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(title: Text("Xác nhận email")),
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         body: Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: Column(

@@ -95,6 +95,11 @@ class PostActionBloc {
     }
   }
 
+  Future<String> requestGetTitle(String topicId) async{
+    final title = await _repository.fetchTitle(topicId);
+    return title;
+  }
+
   void requestGetProvinces() async{
     _provincesController.sink.add(ApiResponse.loading());
     try{

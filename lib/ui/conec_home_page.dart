@@ -61,6 +61,11 @@ class _ConecHomePageState extends State<ConecHomePage> {
       _profileBloc.profileStream.listen((event) {
         if (event.status == Status.COMPLETED) {
           final profile = event.data;
+          globals.province = profile.province;
+          globals.district = profile.district;
+          globals.ward = profile.ward;
+          globals.address = profile.address;
+          globals.phone = profile.phoneNumber;
           if (profile.name != null &&
               profile.type != null &&
               profile.phoneNumber != null) {

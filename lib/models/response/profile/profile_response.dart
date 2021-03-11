@@ -37,6 +37,7 @@ class Profile {
   String province;
   String district;
   String ward;
+  bool hideDOB;
   String address;
   String getAddress;
   String userName;
@@ -58,6 +59,7 @@ class Profile {
         this.dob,
         this.phoneNumber,
         this.type,
+        this.hideDOB,
         this.province,
         this.district,
         this.ward,
@@ -82,6 +84,7 @@ class Profile {
     dob = json['dob'] == null ? null : Helper.formatDob(json['dob']);
     phoneNumber = json['phoneNumber'];
     type = json['type'];
+    hideDOB = json['hideDOB'];
     province = json['province'];
     district = json['district'];
     ward = json['ward'];

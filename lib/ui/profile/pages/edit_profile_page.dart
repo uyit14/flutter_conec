@@ -59,6 +59,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Province wardData;
   List<Images> _urlImages = List();
   ZefyrController _controller;
+  bool _hidden = false;
 
   Future getImageAvatar(bool isCamera) async {
     final pickedFile = await picker.getImage(
@@ -94,7 +95,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     profile = routeArgs;
     _urlImages = profile.images;
     //init value
-    if (_isApiCall && profile!=null) {
+    if (_isApiCall && profile != null) {
       final document = profile.about != null
           ? _loadDocument('${profile.about}\n')
           : NotusDocument();
@@ -108,10 +109,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _address = profile.address;
       _email = profile.email;
       _phone = profile.phoneNumber;
+      _hidden = profile.hideDOB;
       _type = profile.type;
-      provinceData = profile.province!=null ? Province(name: profile.province) : null;
-      districtData = profile.district!=null ? Province(name: profile.district) : null;
-      wardData = profile.ward!=null ? Province(name: profile.ward) : null;
+      provinceData =
+          profile.province != null ? Province(name: profile.province) : null;
+      districtData =
+          profile.district != null ? Province(name: profile.district) : null;
+      wardData = profile.ward != null ? Province(name: profile.ward) : null;
       _avatar = profile.avatar;
       if (profile.type != null && profile.type == "Club") {
         _selectedType = 0;
@@ -151,7 +155,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
               CupertinoActionSheetAction(
                 child: Text('Chọn từ thư viện',
                     style: TextStyle(color: Colors.blue)),
-                onPressed: () => Platform.isAndroid ? getImageList() : getImageListIOS(),
+                onPressed: () =>
+                    Platform.isAndroid ? getImageList() : getImageListIOS(),
               )
             ],
             cancelButton: CupertinoActionSheetAction(
@@ -191,8 +196,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future getImageListIOS() async {
     List<Asset> assets = await MultiImagePicker.pickImages(maxImages: 10);
     print("size ${assets.length}");
-    assets.forEach((element) async{
-      final filePath = await FlutterAbsolutePath.getAbsolutePath(element.identifier);
+    assets.forEach((element) async {
+      final filePath =
+          await FlutterAbsolutePath.getAbsolutePath(element.identifier);
       File tempFile = File(filePath);
       if (tempFile.existsSync()) {
         //files.add(tempFile);
@@ -256,10 +262,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           child: CircleAvatar(
                             radius: 50,
                             backgroundImage: _image == null
-                                ? (_avatar==null
+                                ? (_avatar == null
                                     ? AssetImage("assets/images/avatar.png")
-                                    : CachedNetworkImageProvider(
-                                        _avatar))
+                                    : CachedNetworkImageProvider(_avatar))
                                 : FileImage(_image),
                           ),
                         ),
@@ -449,8 +454,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                               Icon(Icons.date_range),
                                               SizedBox(width: 16),
                                               Text(
-                                                DateFormat('dd-MM-yyyy')
-                                                    .format(_birthDay ?? DateTime(2000, 6, 16)),
+                                                _hidden
+                                                    ? "**********"
+                                                    : DateFormat('dd-MM-yyyy')
+                                                        .format(_birthDay ??
+                                                            DateTime(
+                                                                2000, 6, 16)),
                                                 textAlign: TextAlign.left,
                                                 style: TextStyle(
                                                     fontSize: 16,
@@ -458,6 +467,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                                         FontWeight.w500),
                                               ),
                                               Spacer(),
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    _hidden = !_hidden;
+                                                  });
+                                                },
+                                                child: Text(
+                                                    _hidden ? "Hiện" : "Ẩn",
+                                                    style: AppTheme
+                                                        .changeTextStyle(
+                                                            !_hidden)),
+                                              ),
+                                              SizedBox(width: 24),
                                               Text("Thay đổi",
                                                   style:
                                                       AppTheme.changeTextStyle(
@@ -505,8 +527,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 ),
                           InkWell(
                             onTap: () {
-                              Navigator.of(context).pushNamed(ProvincePage.ROUTE_NAME,
-                                  arguments: {'province': provinceData}).then((value) {
+                              Navigator.of(context).pushNamed(
+                                  ProvincePage.ROUTE_NAME,
+                                  arguments: {
+                                    'province': provinceData
+                                  }).then((value) {
                                 if (value != null) {
                                   setState(() {
                                     provinceData = value;
@@ -545,7 +570,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           InkWell(
                             onTap: () {
                               if (provinceData != null) {
-                                Navigator.of(context).pushNamed(DistrictPage.ROUTE_NAME,
+                                Navigator.of(context).pushNamed(
+                                    DistrictPage.ROUTE_NAME,
                                     arguments: {
                                       'district': districtData,
                                       'provinceId': provinceData.id,
@@ -594,11 +620,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           InkWell(
                             onTap: () {
                               if (districtData != null) {
-                                Navigator.of(context).pushNamed(WardPage.ROUTE_NAME,
-                                    arguments: {
-                                      'districtId': districtData.id,
-                                      'districtName': districtData.name,
-                                    }).then((value) {
+                                Navigator.of(context)
+                                    .pushNamed(WardPage.ROUTE_NAME, arguments: {
+                                  'districtId': districtData.id,
+                                  'districtName': districtData.name,
+                                }).then((value) {
                                   if (value != null) {
                                     setState(() {
                                       wardData = value;
@@ -621,7 +647,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     Icon(Icons.wallpaper),
                                     SizedBox(width: 16),
                                     Text(
-                                      wardData!=null ? wardData.name : "Phường/Xã",
+                                      wardData != null
+                                          ? wardData.name
+                                          : "Phường/Xã",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
                                           fontSize: 16,
@@ -707,7 +735,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                           SizedBox(height: 8),
                           Text("Giới thiệu", style: AppTheme.profileTitle),
-                          SizedBox(height: 8,),
+                          SizedBox(
+                            height: 8,
+                          ),
                           // HtmlEditor(
                           //     hint: profile.about == null ? "Nhập thông tin giới thiệu" : "",
                           //     value: profile.about ?? "",
@@ -715,7 +745,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           //     showBottomToolbar: false),
                           Container(
                             decoration: BoxDecoration(
-                                border: Border.all(width: 1, color: Colors.grey),
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(8),
                                     topRight: Radius.circular(8))),
@@ -728,93 +759,105 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 8,),
+                          SizedBox(
+                            height: 8,
+                          ),
                           Text("Thư viện ảnh", style: AppTheme.profileTitle),
                           _images.length == 0 && _urlImages.length == 0
                               ? Align(
-                            alignment: Alignment.centerLeft,
-                            child: _cameraHolder(),
-                          )
+                                  alignment: Alignment.centerLeft,
+                                  child: _cameraHolder(),
+                                )
                               : Container(
-                            height: 100,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: List.from(_urlImages
-                                  .map((e) => Stack(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(right: 4),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: e != null
-                                          ? Image.network(
-                                        e.fileName,
-                                        fit: BoxFit.cover,
-                                        width: 100,
-                                        height: 100,
-                                      )
-                                          : Container(),
-                                    ),
+                                  height: 100,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: List.from(_urlImages
+                                        .map((e) => Stack(
+                                              children: [
+                                                Container(
+                                                  margin:
+                                                      EdgeInsets.only(right: 4),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            6),
+                                                    child: e != null
+                                                        ? Image.network(
+                                                            e.fileName,
+                                                            fit: BoxFit.cover,
+                                                            width: 100,
+                                                            height: 100,
+                                                          )
+                                                        : Container(),
+                                                  ),
+                                                ),
+                                                Positioned(
+                                                  top: -14,
+                                                  right: -10,
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      //TODO - call api
+                                                      _urlImages.removeWhere(
+                                                          (element) =>
+                                                              element.id ==
+                                                              e.id);
+                                                      _postActionBloc
+                                                          .requestDeleteImage(
+                                                              e.id, "Account");
+                                                      setState(() {});
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.remove_circle,
+                                                      color: Colors.red,
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ))
+                                        .toList())
+                                      ..addAll(List.from(_images
+                                          .map((e) => Stack(
+                                                children: [
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                        right: 4),
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              6),
+                                                      child: e != null
+                                                          ? Image.file(
+                                                              e,
+                                                              fit: BoxFit.cover,
+                                                              width: 100,
+                                                              height: 100,
+                                                            )
+                                                          : Container(),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    top: -14,
+                                                    right: -10,
+                                                    child: IconButton(
+                                                      onPressed: () {
+                                                        _images.removeWhere(
+                                                            (element) =>
+                                                                element == e);
+                                                        setState(() {});
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.remove_circle,
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ))
+                                          .toList()))
+                                      ..add(_cameraHolder()),
                                   ),
-                                  Positioned(
-                                    top: -14,
-                                    right: -10,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        //TODO - call api
-                                        _urlImages.removeWhere(
-                                                (element) => element.id == e.id);
-                                        _postActionBloc.requestDeleteImage(e.id, "Account");
-                                        setState(() {});
-                                      },
-                                      icon: Icon(
-                                        Icons.remove_circle,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ))
-                                  .toList())
-                                ..addAll(List.from(_images
-                                    .map((e) => Stack(
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(right: 4),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                        BorderRadius.circular(6),
-                                        child: e != null
-                                            ? Image.file(
-                                          e,
-                                          fit: BoxFit.cover,
-                                          width: 100,
-                                          height: 100,
-                                        )
-                                            : Container(),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: -14,
-                                      right: -10,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          _images.removeWhere(
-                                                  (element) => element == e);
-                                          setState(() {});
-                                        },
-                                        icon: Icon(
-                                          Icons.remove_circle,
-                                          color: Colors.red,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ))
-                                    .toList()))
-                                ..add(_cameraHolder()),
-                            ),
-                          ),
+                                ),
                         ],
                       ),
                     ),
@@ -864,13 +907,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _isLoading = true;
     });
     var result;
-    try{
-      result = provinceData != null && districtData!=null && wardData!=null
+    try {
+      result = provinceData != null && districtData != null && wardData != null
           ? await Helper.getLatLng(
-          '$_address, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
+              '$_address, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
           : LatLong(lat: 0.0, long: 0.0);
       print(result.lat.toString() + "----" + result.long.toString());
-    }catch(e){
+    } catch (e) {
       //Helper.showMissingDialog(context, "Sai địa chỉ", "Vui lòng nhập đúng địa chỉ");
       result = LatLong(lat: 0.0, long: 0.0);
       setState(() {
@@ -880,13 +923,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     //
     ProfileRequest _request = ProfileRequest(
-      province: provinceData!=null ? provinceData.name : null,
-      district: districtData!=null ? districtData.name : null,
-      ward: wardData!=null ? wardData.name : null,
+      province: provinceData != null ? provinceData.name : null,
+      district: districtData != null ? districtData.name : null,
+      ward: wardData != null ? wardData.name : null,
       gender: _gender,
       name: _name,
       email: _email,
       address: _address,
+      hideDOB: _hidden,
       phoneNumber: _phone,
       dob: myEncode(_birthDay),
       type: _type,
@@ -903,7 +947,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
     _profileBloc.requestUpdateProfile(jsonEncode(_request.toJson()));
     _profileBloc.updateProfileStream.listen((event) {
-      switch(event.status){
+      switch (event.status) {
         case Status.COMPLETED:
           setState(() {
             _isLoading = false;

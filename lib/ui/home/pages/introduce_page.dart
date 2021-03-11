@@ -268,7 +268,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                         children: <Widget>[
                                           Text("Năm sinh",
                                               style: AppTheme.profileTitle),
-                                          Text(profile.dob ?? "",
+                                          Text(profile!=null && !profile.hideDOB ? profile.dob : "**********",
                                               style: AppTheme.profileInfo),
                                           Container(
                                             height: 0.5,

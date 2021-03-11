@@ -67,6 +67,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   Province wardData;
   int statusInt = 0;
   String statusType = "Mới";
+  String _titleHint = "Nhập tiêu đề";
 
   // multiple choice value
   List<Topic> tags = [];
@@ -323,6 +324,15 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
     }
   }
 
+  //
+  void getTitle(String topicId) async {
+    String title = await _postActionBloc.requestGetTitle(topicId);
+    print(title ?? "TITLE NULL");
+    setState(() {
+      _titleHint = title;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool _showFab = MediaQuery.of(context).viewInsets.bottom != 0.0;
@@ -349,6 +359,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                             setState(() {
                               topic = value;
                             });
+                            getTitle(topic.id);
                             if (_currentSelectedIndex != 6 &&
                                 _currentSelectedIndex != 7) {
                               _postActionBloc.requestGetSubTopicWithHeader(
@@ -431,7 +442,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                       style: TextStyle(fontSize: 18),
                       controller: _titleController,
                       decoration: InputDecoration(
-                          hintText: 'Nhập tiêu đề',
+                          hintText: _titleHint,
                           focusedBorder: const OutlineInputBorder(
                               borderSide:
                                   BorderSide(color: Colors.green, width: 1)),
@@ -897,7 +908,16 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                         : Container(),
                     SizedBox(height: 12),
                     //STEP 7
-                    Text("Hình Ảnh"),
+                    RichText(
+                        text: TextSpan(
+                            text: "Hình Ảnh ",
+                            style: TextStyle(color: Colors.black),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
+                                  " (Vui lòng chụp hình ảnh theo chiều ngang để hiển thị tốt trên ứng dụng)",
+                                  style: TextStyle(color: Colors.green))
+                            ])),
                     _images.length == 0 && _urlImages.length == 0
                         ? Align(
                             alignment: Alignment.centerLeft,

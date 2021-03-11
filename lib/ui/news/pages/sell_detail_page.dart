@@ -10,6 +10,7 @@ import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/ads_detail.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/profile/GiftReponse.dart';
+import 'package:conecapp/ui/home/pages/image_viewer_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
@@ -291,84 +292,91 @@ class _SellDetailPageState extends State<SellDetailPage> {
                     return SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
-                          Hero(
-                            tag: postId,
-                            child: adsDetail.images.length > 0
-                                ? Stack(
-                                    children: [
-                                      CarouselSlider(
-                                        options: CarouselOptions(
-                                          onPageChanged: (currentPage, reason) {
-                                            setState(() {
-                                              _currentIndex = currentPage;
-                                            });
-                                          },
-                                          height: Helper.isTablet(context)
-                                              ? 320
-                                              : 225,
-                                          autoPlay: true,
-                                          enlargeCenterPage: false,
-                                          viewportFraction: 1.0,
-                                        ),
-                                        items: adsDetail.images
-                                            .map((item) => Container(
-                                                  child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  8)),
-                                                      child: Stack(
-                                                        children: <Widget>[
-                                                          CachedNetworkImage(
-                                                            imageUrl:
-                                                                item.fileName,
-                                                            placeholder: (context,
-                                                                    url) =>
-                                                                Image.asset(
-                                                                    "assets/images/placeholder.png"),
-                                                            errorWidget: (context,
-                                                                    url,
-                                                                    error) =>
-                                                                Image.asset(
-                                                                    "assets/images/error.png"),
-                                                            width:
-                                                                double.infinity,
-                                                          ),
-                                                          Positioned(
-                                                            bottom: 0.0,
-                                                            left: 0.0,
-                                                            right: 0.0,
-                                                            child: Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                  colors: [
-                                                                    Color
-                                                                        .fromARGB(
-                                                                            200,
-                                                                            0,
-                                                                            0,
-                                                                            0),
-                                                                    Color
-                                                                        .fromARGB(
-                                                                            0,
-                                                                            0,
-                                                                            0,
-                                                                            0)
-                                                                  ],
-                                                                  begin: Alignment
-                                                                      .bottomCenter,
-                                                                  end: Alignment
-                                                                      .topCenter,
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(PageRouteBuilder(
+                                  opaque: false,
+                                  pageBuilder: (BuildContext context, _, __) =>
+                                      ImageViewerPage(adsDetail.images, _currentIndex)));
+                            },
+                            child: Hero(
+                              tag: postId,
+                              child: adsDetail.images.length > 0
+                                  ? Stack(
+                                      children: [
+                                        CarouselSlider(
+                                          options: CarouselOptions(
+                                            onPageChanged: (currentPage, reason) {
+                                              setState(() {
+                                                _currentIndex = currentPage;
+                                              });
+                                            },
+                                            height: Helper.isTablet(context)
+                                                ? 320
+                                                : 225,
+                                            autoPlay: true,
+                                            enlargeCenterPage: false,
+                                            viewportFraction: 1.0,
+                                          ),
+                                          items: adsDetail.images
+                                              .map((item) => Container(
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8)),
+                                                        child: Stack(
+                                                          children: <Widget>[
+                                                            CachedNetworkImage(
+                                                              imageUrl:
+                                                                  item.fileName,
+                                                              placeholder: (context,
+                                                                      url) =>
+                                                                  Image.asset(
+                                                                      "assets/images/placeholder.png"),
+                                                              errorWidget: (context,
+                                                                      url,
+                                                                      error) =>
+                                                                  Image.asset(
+                                                                      "assets/images/error.png"),
+                                                              width:
+                                                                  double.infinity,
+                                                            ),
+                                                            Positioned(
+                                                              bottom: 0.0,
+                                                              left: 0.0,
+                                                              right: 0.0,
+                                                              child: Container(
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  gradient:
+                                                                      LinearGradient(
+                                                                    colors: [
+                                                                      Color
+                                                                          .fromARGB(
+                                                                              200,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                      Color
+                                                                          .fromARGB(
+                                                                              0,
+                                                                              0,
+                                                                              0,
+                                                                              0)
+                                                                    ],
+                                                                    begin: Alignment
+                                                                        .bottomCenter,
+                                                                    end: Alignment
+                                                                        .topCenter,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      vertical:
-                                                                          10.0,
-                                                                      horizontal:
-                                                                          20.0),
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        vertical:
+                                                                            10.0,
+                                                                        horizontal:
+                                                                            20.0),
 //                                                child: Text(
 //                                                  item.title,
 //                                                  style: TextStyle(
@@ -377,61 +385,62 @@ class _SellDetailPageState extends State<SellDetailPage> {
 //                                                    fontWeight: FontWeight.bold,
 //                                                  ),
 //                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      )),
-                                                ))
-                                            .toList(),
-                                      ),
-                                      Positioned(
-                                        bottom: 24,
-                                        child: Container(
-                                          height: 24,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Center(
-                                            child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                shrinkWrap: true,
-                                                itemCount:
-                                                    adsDetail.images.length,
-                                                itemBuilder: (context, index) {
-                                                  return Container(
-                                                    width: 16,
-                                                    height: 16,
-                                                    margin: EdgeInsets.only(
-                                                        right: 6),
-                                                    decoration: BoxDecoration(
-                                                        //borderRadius: BorderRadius.all(Radius.circular(16)),
-                                                        shape: BoxShape.circle,
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color:
-                                                                Colors.white),
-                                                        color: _currentIndex ==
-                                                                index
-                                                            ? Colors.white
-                                                            : Colors
-                                                                .transparent),
-                                                  );
-                                                }),
-                                          ),
+                                                          ],
+                                                        )),
+                                                  ))
+                                              .toList(),
                                         ),
-                                      )
-                                    ],
-                                  )
-                                : CachedNetworkImage(
-                                    imageUrl: adsDetail.thumbnail,
-                                    placeholder: (context, url) => Image.asset(
-                                        "assets/images/placeholder.png"),
-                                    errorWidget: (context, url, error) =>
-                                        Image.asset("assets/images/error.png"),
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: 225,
-                                  ),
+                                        Positioned(
+                                          bottom: 24,
+                                          child: Container(
+                                            height: 24,
+                                            width:
+                                                MediaQuery.of(context).size.width,
+                                            child: Center(
+                                              child: ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  shrinkWrap: true,
+                                                  itemCount:
+                                                      adsDetail.images.length,
+                                                  itemBuilder: (context, index) {
+                                                    return Container(
+                                                      width: 16,
+                                                      height: 16,
+                                                      margin: EdgeInsets.only(
+                                                          right: 6),
+                                                      decoration: BoxDecoration(
+                                                          //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                          shape: BoxShape.circle,
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color:
+                                                                  Colors.white),
+                                                          color: _currentIndex ==
+                                                                  index
+                                                              ? Colors.white
+                                                              : Colors
+                                                                  .transparent),
+                                                    );
+                                                  }),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : CachedNetworkImage(
+                                      imageUrl: adsDetail.thumbnail,
+                                      placeholder: (context, url) => Image.asset(
+                                          "assets/images/placeholder.png"),
+                                      errorWidget: (context, url, error) =>
+                                          Image.asset("assets/images/error.png"),
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      height: 225,
+                                    ),
+                            ),
                           ),
                           // if (adsDetail.images.length > 0)
                           //   Container(

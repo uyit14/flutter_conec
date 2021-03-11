@@ -28,6 +28,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:zefyr/zefyr.dart';
+import '../../../common/globals.dart' as globals;
 
 class PostActionPage extends StatefulWidget {
   static const ROUTE_NAME = '/post-action';
@@ -43,8 +44,8 @@ class _PostActionPageState extends State<PostActionPage> {
   bool _isLoading = false;
   bool _isCallApi = false;
   PostActionBloc _postActionBloc = PostActionBloc();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
+  TextEditingController _addressController = TextEditingController(text: globals.address);
+  TextEditingController _phoneController = TextEditingController(text: globals.phone);
   TextEditingController _joiningFreeController = TextEditingController();
   TextEditingController _usesController = TextEditingController();
   List<Province> _listProvinces = List<Province>();
@@ -55,6 +56,7 @@ class _PostActionPageState extends State<PostActionPage> {
   int _selectedType;
   int statusInt = 0;
   String statusType = "Mới";
+  String _titleHint = "Nhập tiêu đề";
   String _type = "";
   bool _isAdsOrNews = false;
 
@@ -66,6 +68,9 @@ class _PostActionPageState extends State<PostActionPage> {
     super.initState();
     _controller = ZefyrController(NotusDocument());
     _isCallApi = true;
+    provinceData = Province(name: globals.province);
+    districtData = Province(name: globals.district);
+    wardData = Province(name: globals.ward);
   }
 
   List<File> _images = List<File>();
@@ -86,7 +91,7 @@ class _PostActionPageState extends State<PostActionPage> {
     print("size ${assets.length}");
     assets.forEach((element) async {
       final filePath =
-      await FlutterAbsolutePath.getAbsolutePath(element.identifier);
+          await FlutterAbsolutePath.getAbsolutePath(element.identifier);
       File tempFile = File(filePath);
       if (tempFile.existsSync()) {
         //files.add(tempFile);
@@ -100,7 +105,7 @@ class _PostActionPageState extends State<PostActionPage> {
 
   Future getImage() async {
     final pickedFile =
-    await picker.getImage(source: ImageSource.camera, imageQuality: 75);
+        await picker.getImage(source: ImageSource.camera, imageQuality: 75);
     _images.add(File(pickedFile.path));
     setState(() {});
     Navigator.pop(context);
@@ -110,9 +115,7 @@ class _PostActionPageState extends State<PostActionPage> {
     if (_currentSelectedIndex == 6) {
       if (topic == null ||
           _title == null ||
-          _controller.document
-              .toPlainText()
-              .length <= 0 && !_term) {
+          _controller.document.toPlainText().length <= 0 && !_term) {
         return false;
       }
     } else {
@@ -122,9 +125,7 @@ class _PostActionPageState extends State<PostActionPage> {
           districtData == null ||
           wardData == null ||
           _addressController.text.length == 0 ||
-          _controller.document
-              .toPlainText()
-              .length <= 0 && !_term) {
+          _controller.document.toPlainText().length <= 0 && !_term) {
         return false;
       }
     }
@@ -145,7 +146,7 @@ class _PostActionPageState extends State<PostActionPage> {
                 child: Text('Chọn từ thư viện',
                     style: TextStyle(color: Colors.blue)),
                 onPressed: () =>
-                Platform.isAndroid ? getImageList() : getImageListIOS(),
+                    Platform.isAndroid ? getImageList() : getImageListIOS(),
               )
             ],
             cancelButton: CupertinoActionSheetAction(
@@ -205,12 +206,18 @@ class _PostActionPageState extends State<PostActionPage> {
   // multiple choice value
   List<Topic> tags = [];
 
+  //
+  void getTitle(String topicId) async {
+    String title = await _postActionBloc.requestGetTitle(topicId);
+    print(title ?? "TITLE NULL");
+    setState(() {
+      _titleHint = title;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bool _showFab = MediaQuery
-        .of(context)
-        .viewInsets
-        .bottom != 0.0;
+    final bool _showFab = MediaQuery.of(context).viewInsets.bottom != 0.0;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -236,12 +243,13 @@ class _PostActionPageState extends State<PostActionPage> {
                             setState(() {
                               topic = value;
                             });
+                            getTitle(topic.id);
                             if (_currentSelectedIndex != 6 &&
                                 _currentSelectedIndex != 7) {
                               _postActionBloc.requestGetSubTopicWithHeader(
                                   false,
                                   topicId: topic.id);
-                                _isAdsOrNews = false;
+                              _isAdsOrNews = false;
                             } else {
                               _postActionBloc.requestGetSubTopicWithHeader(true,
                                   topicId: topic.id);
@@ -275,41 +283,41 @@ class _PostActionPageState extends State<PostActionPage> {
                     SizedBox(height: 12),
                     topic != null
                         ? StreamBuilder<ApiResponse<List<Topic>>>(
-                        stream: _postActionBloc.subTopicStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            switch (snapshot.data.status) {
-                              case Status.LOADING:
-                                return UILoading();
-                              case Status.COMPLETED:
-                                List<Topic> topics = snapshot.data.data;
-                                if (topics.length > 0) {
-                                  return Container(
-                                    child: ChipsChoice<Topic>.multiple(
-                                      value: tags,
-                                      wrapped: true,
-                                      onChanged: (val) =>
-                                          setState(() => tags = val),
-                                      choiceItems:
-                                      C2Choice.listFrom<Topic, Topic>(
-                                        source: topics,
-                                        value: (i, v) => v,
-                                        label: (i, v) => v.title,
-                                        tooltip: (i, v) => v.title,
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  return Container();
+                            stream: _postActionBloc.subTopicStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                switch (snapshot.data.status) {
+                                  case Status.LOADING:
+                                    return UILoading();
+                                  case Status.COMPLETED:
+                                    List<Topic> topics = snapshot.data.data;
+                                    if (topics.length > 0) {
+                                      return Container(
+                                        child: ChipsChoice<Topic>.multiple(
+                                          value: tags,
+                                          wrapped: true,
+                                          onChanged: (val) =>
+                                              setState(() => tags = val),
+                                          choiceItems:
+                                              C2Choice.listFrom<Topic, Topic>(
+                                            source: topics,
+                                            value: (i, v) => v,
+                                            label: (i, v) => v.title,
+                                            tooltip: (i, v) => v.title,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                    break;
+                                  case Status.ERROR:
+                                    return UIError(
+                                        errorMessage: snapshot.data.message);
                                 }
-                                break;
-                              case Status.ERROR:
-                                return UIError(
-                                    errorMessage: snapshot.data.message);
-                            }
-                          }
-                          return Container();
-                        })
+                              }
+                              return Container();
+                            })
                         : Container(),
                     topic != null ? SizedBox(height: 12) : Container(),
                     //STEP 2
@@ -325,10 +333,10 @@ class _PostActionPageState extends State<PostActionPage> {
                         });
                       },
                       decoration: InputDecoration(
-                          hintText: 'Nhập tiêu đề',
+                          hintText: _titleHint,
                           focusedBorder: const OutlineInputBorder(
                               borderSide:
-                              BorderSide(color: Colors.green, width: 1)),
+                                  BorderSide(color: Colors.green, width: 1)),
                           contentPadding: EdgeInsets.only(left: 8),
                           prefixIcon: Icon(
                             Icons.title,
@@ -358,499 +366,509 @@ class _PostActionPageState extends State<PostActionPage> {
                     SizedBox(height: 12),
                     _currentSelectedIndex == 7
                         ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Công dụng"),
-                        SizedBox(height: 4),
-                        TextFormField(
-                          maxLines: 1,
-                          style: TextStyle(fontSize: 18),
-                          textInputAction: TextInputAction.done,
-                          controller: _usesController,
-                          decoration: InputDecoration(
-                              hintText: 'Nhập công dụng',
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.green, width: 1)),
-                              contentPadding: EdgeInsets.only(left: 8),
-                              prefixIcon: Icon(
-                                Icons.accessibility,
-                                color: Colors.black,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Công dụng"),
+                              SizedBox(height: 4),
+                              TextFormField(
+                                maxLines: 1,
+                                style: TextStyle(fontSize: 18),
+                                textInputAction: TextInputAction.done,
+                                controller: _usesController,
+                                decoration: InputDecoration(
+                                    hintText: 'Nhập công dụng',
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.green, width: 1)),
+                                    contentPadding: EdgeInsets.only(left: 8),
+                                    prefixIcon: Icon(
+                                      Icons.accessibility,
+                                      color: Colors.black,
+                                    ),
+                                    border: const OutlineInputBorder()),
                               ),
-                              border: const OutlineInputBorder()),
-                        ),
-                      ],
-                    )
+                            ],
+                          )
                         : Container(),
                     _currentSelectedIndex == 7
                         ? SizedBox(height: 12)
                         : SizedBox(
-                      height: 0,
-                    ),
+                            height: 0,
+                          ),
                     _currentSelectedIndex == 7
                         ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Tình trạng"),
-                        SizedBox(height: 4),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: statusInt == 0
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          width: 1,
-                                          style: BorderStyle.solid),
-                                      borderRadius:
-                                      BorderRadius.circular(50)),
-                                  textColor: statusInt == 0
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  onPressed: () {
-                                    setState(() {
-                                      statusType = "Mới";
-                                      statusInt = 0;
-                                    });
-                                  },
-                                  child: Text("Mới",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold))),
-                            ),
-                            SizedBox(width: 4),
-                            Expanded(
-                              child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: statusInt == 1
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          width: 1,
-                                          style: BorderStyle.solid),
-                                      borderRadius:
-                                      BorderRadius.circular(50)),
-                                  textColor: statusInt == 1
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  onPressed: () {
-                                    setState(() {
-                                      statusType = "Đã sử dụng";
-                                      statusInt = 1;
-                                    });
-                                  },
-                                  child: Text("Đã sử dụng",
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold))),
-                            ),
-                          ],
-                        )
-                      ],
-                    )
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Tình trạng"),
+                              SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: FlatButton(
+                                        shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                                color: statusInt == 0
+                                                    ? Colors.red
+                                                    : Colors.grey,
+                                                width: 1,
+                                                style: BorderStyle.solid),
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        textColor: statusInt == 0
+                                            ? Colors.red
+                                            : Colors.grey,
+                                        onPressed: () {
+                                          setState(() {
+                                            statusType = "Mới";
+                                            statusInt = 0;
+                                          });
+                                        },
+                                        child: Text("Mới",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold))),
+                                  ),
+                                  SizedBox(width: 4),
+                                  Expanded(
+                                    child: FlatButton(
+                                        shape: RoundedRectangleBorder(
+                                            side: BorderSide(
+                                                color: statusInt == 1
+                                                    ? Colors.red
+                                                    : Colors.grey,
+                                                width: 1,
+                                                style: BorderStyle.solid),
+                                            borderRadius:
+                                                BorderRadius.circular(50)),
+                                        textColor: statusInt == 1
+                                            ? Colors.red
+                                            : Colors.grey,
+                                        onPressed: () {
+                                          setState(() {
+                                            statusType = "Đã sử dụng";
+                                            statusInt = 1;
+                                          });
+                                        },
+                                        child: Text("Đã sử dụng",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold))),
+                                  ),
+                                ],
+                              )
+                            ],
+                          )
                         : Container(),
                     SizedBox(height: 12),
                     //STEP 4
                     _currentSelectedIndex == 6
                         ? Container()
                         : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(_currentSelectedIndex == 7
-                            ? "Giá"
-                            : "Phí tham gia"),
-                        SizedBox(height: 4),
-                        TextFormField(
-                          maxLines: 1,
-                          controller: _joiningFreeController,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.done,
-                          style: TextStyle(fontSize: 18),
-                          decoration: InputDecoration(
-                              hintText: _currentSelectedIndex == 7
-                                  ? "Nhập giá"
-                                  : 'Nhập phí tham gia',
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.green, width: 1)),
-                              contentPadding: EdgeInsets.only(left: 8),
-                              prefixIcon: Icon(
-                                Icons.attach_money,
-                                color: Colors.black,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(_currentSelectedIndex == 7
+                                  ? "Giá"
+                                  : "Phí tham gia"),
+                              SizedBox(height: 4),
+                              TextFormField(
+                                maxLines: 1,
+                                controller: _joiningFreeController,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.done,
+                                style: TextStyle(fontSize: 18),
+                                decoration: InputDecoration(
+                                    hintText: _currentSelectedIndex == 7
+                                        ? "Nhập giá"
+                                        : 'Nhập phí tham gia',
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.green, width: 1)),
+                                    contentPadding: EdgeInsets.only(left: 8),
+                                    prefixIcon: Icon(
+                                      Icons.attach_money,
+                                      color: Colors.black,
+                                    ),
+                                    border: const OutlineInputBorder()),
                               ),
-                              border: const OutlineInputBorder()),
-                        ),
-                        _currentSelectedIndex == 7
-                            ? Container()
-                            : Row(
-                          children: [
-                            Expanded(
-                              child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: _selectedType == 0
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          width: 1,
-                                          style: BorderStyle.solid),
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                          50)),
-                                  textColor: _selectedType == 0
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  onPressed: () {
-                                    setState(() {
-                                      _type = "Giờ";
-                                      _selectedType = 0;
-                                    });
-                                  },
-                                  child: Text("Giờ",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight:
-                                          FontWeight.bold))),
-                            ),
-                            SizedBox(width: 3),
-                            Expanded(
-                              child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: _selectedType == 1
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          width: 1,
-                                          style: BorderStyle.solid),
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                          50)),
-                                  textColor: _selectedType == 1
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  onPressed: () {
-                                    setState(() {
-                                      _type = "Ngày";
-                                      _selectedType = 1;
-                                    });
-                                  },
-                                  child: Text("Ngày",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight:
-                                          FontWeight.bold))),
-                            ),
-                            SizedBox(width: 3),
-                            Expanded(
-                              child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: _selectedType == 2
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          width: 1,
-                                          style: BorderStyle.solid),
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                          50)),
-                                  textColor: _selectedType == 2
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  onPressed: () {
-                                    setState(() {
-                                      _type = "Tháng";
-                                      _selectedType = 2;
-                                    });
-                                  },
-                                  child: Text("Tháng",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight:
-                                          FontWeight.bold))),
-                            ),
-                            SizedBox(width: 3),
-                            Expanded(
-                              child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                          color: _selectedType == 3
-                                              ? Colors.red
-                                              : Colors.grey,
-                                          width: 1,
-                                          style: BorderStyle.solid),
-                                      borderRadius:
-                                      BorderRadius.circular(
-                                          50)),
-                                  textColor: _selectedType == 3
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  onPressed: () {
-                                    setState(() {
-                                      _type = "Năm";
-                                      _selectedType = 3;
-                                    });
-                                  },
-                                  child: Text("Năm",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight:
-                                          FontWeight.bold))),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 12,
-                        )
-                      ],
-                    ),
+                              _currentSelectedIndex == 7
+                                  ? Container()
+                                  : Row(
+                                      children: [
+                                        Expanded(
+                                          child: FlatButton(
+                                              shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                      color: _selectedType == 0
+                                                          ? Colors.red
+                                                          : Colors.grey,
+                                                      width: 1,
+                                                      style: BorderStyle.solid),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50)),
+                                              textColor: _selectedType == 0
+                                                  ? Colors.red
+                                                  : Colors.grey,
+                                              onPressed: () {
+                                                setState(() {
+                                                  _type = "Giờ";
+                                                  _selectedType = 0;
+                                                });
+                                              },
+                                              child: Text("Giờ",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold))),
+                                        ),
+                                        SizedBox(width: 3),
+                                        Expanded(
+                                          child: FlatButton(
+                                              shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                      color: _selectedType == 1
+                                                          ? Colors.red
+                                                          : Colors.grey,
+                                                      width: 1,
+                                                      style: BorderStyle.solid),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50)),
+                                              textColor: _selectedType == 1
+                                                  ? Colors.red
+                                                  : Colors.grey,
+                                              onPressed: () {
+                                                setState(() {
+                                                  _type = "Ngày";
+                                                  _selectedType = 1;
+                                                });
+                                              },
+                                              child: Text("Ngày",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold))),
+                                        ),
+                                        SizedBox(width: 3),
+                                        Expanded(
+                                          child: FlatButton(
+                                              shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                      color: _selectedType == 2
+                                                          ? Colors.red
+                                                          : Colors.grey,
+                                                      width: 1,
+                                                      style: BorderStyle.solid),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50)),
+                                              textColor: _selectedType == 2
+                                                  ? Colors.red
+                                                  : Colors.grey,
+                                              onPressed: () {
+                                                setState(() {
+                                                  _type = "Tháng";
+                                                  _selectedType = 2;
+                                                });
+                                              },
+                                              child: Text("Tháng",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold))),
+                                        ),
+                                        SizedBox(width: 3),
+                                        Expanded(
+                                          child: FlatButton(
+                                              shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                      color: _selectedType == 3
+                                                          ? Colors.red
+                                                          : Colors.grey,
+                                                      width: 1,
+                                                      style: BorderStyle.solid),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50)),
+                                              textColor: _selectedType == 3
+                                                  ? Colors.red
+                                                  : Colors.grey,
+                                              onPressed: () {
+                                                setState(() {
+                                                  _type = "Năm";
+                                                  _selectedType = 3;
+                                                });
+                                              },
+                                              child: Text("Năm",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold))),
+                                        ),
+                                      ],
+                                    ),
+                              SizedBox(
+                                height: 12,
+                              )
+                            ],
+                          ),
                     //STEP 5
                     _currentSelectedIndex != 6
                         ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Số điện thoại"),
-                        SizedBox(height: 4),
-                        TextFormField(
-                          maxLines: 1,
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          textInputAction: TextInputAction.done,
-                          style: TextStyle(fontSize: 18),
-                          decoration: InputDecoration(
-                              hintText: 'Nhập số điện thoại',
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.green, width: 1)),
-                              contentPadding: EdgeInsets.only(left: 8),
-                              prefixIcon: Icon(
-                                Icons.phone,
-                                color: Colors.black,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("Số điện thoại"),
+                              SizedBox(height: 4),
+                              TextFormField(
+                                maxLines: 1,
+                                controller: _phoneController,
+                                keyboardType: TextInputType.phone,
+                                textInputAction: TextInputAction.done,
+                                style: TextStyle(fontSize: 18),
+                                decoration: InputDecoration(
+                                    hintText: 'Nhập số điện thoại',
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.green, width: 1)),
+                                    contentPadding: EdgeInsets.only(left: 8),
+                                    prefixIcon: Icon(
+                                      Icons.phone,
+                                      color: Colors.black,
+                                    ),
+                                    border: const OutlineInputBorder()),
                               ),
-                              border: const OutlineInputBorder()),
-                        ),
-                        SizedBox(height: 12),
-                        //STEP 6
-                        Text("Địa chỉ *"),
-                        SizedBox(height: 4),
-                        Column(
-                          children: <Widget>[
-                            InkWell(
-                              onTap: () {
-                                Navigator.of(context).pushNamed(
-                                    ProvincePage.ROUTE_NAME,
-                                    arguments: {
-                                      'province': provinceData
-                                    }).then((value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      provinceData = value;
-                                    });
-                                  }
-                                });
-                              },
-                              child: Card(
-                                margin:
-                                EdgeInsets.symmetric(horizontal: 0),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Icon(Icons.location_city),
-                                      Text(
-                                        provinceData != null
-                                            ? provinceData.name
-                                            : "Tỉnh/Thành phố",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      Text("Thay đổi",
-                                          style: AppTheme.changeTextStyle(
-                                              true))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            InkWell(
-                              onTap: () {
-                                if (provinceData != null) {
-                                  Navigator.of(context).pushNamed(
-                                      DistrictPage.ROUTE_NAME,
-                                      arguments: {
-                                        'district': districtData,
-                                        'provinceId': provinceData.id
-                                      }).then((value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        districtData = value;
+                              SizedBox(height: 12),
+                              //STEP 6
+                              Text("Địa chỉ *"),
+                              SizedBox(height: 4),
+                              Column(
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                          ProvincePage.ROUTE_NAME,
+                                          arguments: {
+                                            'province': provinceData
+                                          }).then((value) {
+                                        if (value != null) {
+                                          setState(() {
+                                            provinceData = value;
+                                          });
+                                        }
                                       });
-                                    }
-                                  });
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "Vui lòng chọn tỉnh, thành");
-                                }
-                              },
-                              child: Card(
-                                margin:
-                                EdgeInsets.symmetric(horizontal: 0),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Icon(Icons.home),
-                                      Text(
-                                        districtData != null
-                                            ? districtData.name
-                                            : "Quận/Huyện",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500),
+                                    },
+                                    child: Card(
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 8),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Icon(Icons.location_city),
+                                            Text(
+                                              provinceData != null
+                                                  ? provinceData.name
+                                                  : "Tỉnh/Thành phố",
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Text("Thay đổi",
+                                                style: AppTheme.changeTextStyle(
+                                                    true))
+                                          ],
+                                        ),
                                       ),
-                                      Text("Thay đổi",
-                                          style: AppTheme.changeTextStyle(
-                                              provinceData != null))
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            InkWell(
-                              onTap: () {
-                                if (districtData != null) {
-                                  Navigator.of(context).pushNamed(
-                                      WardPage.ROUTE_NAME,
-                                      arguments: {
-                                        'districtId': districtData.id
-                                      }).then((value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        wardData = value;
-                                      });
-                                    }
-                                  });
-                                } else {
-                                  Fluttertoast.showToast(
-                                      msg: "Vui lòng chọn quận, huyện");
-                                }
-                              },
-                              child: Card(
-                                margin:
-                                EdgeInsets.symmetric(horizontal: 0),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 8),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Icon(Icons.wallpaper),
-                                      Text(
-                                        wardData != null
-                                            ? wardData.name
-                                            : "Phường/Xã",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500),
+                                  SizedBox(height: 8),
+                                  InkWell(
+                                    onTap: () {
+                                      if (provinceData != null) {
+                                        Navigator.of(context).pushNamed(
+                                            DistrictPage.ROUTE_NAME,
+                                            arguments: {
+                                              'district': districtData,
+                                              'provinceId': provinceData.id,
+                                              'provinceName': provinceData.name
+                                            }).then((value) {
+                                          if (value != null) {
+                                            setState(() {
+                                              districtData = value;
+                                            });
+                                          }
+                                        });
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg: "Vui lòng chọn tỉnh, thành");
+                                      }
+                                    },
+                                    child: Card(
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 8),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Icon(Icons.home),
+                                            Text(
+                                              districtData != null
+                                                  ? districtData.name
+                                                  : "Quận/Huyện",
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Text("Thay đổi",
+                                                style: AppTheme.changeTextStyle(
+                                                    provinceData != null))
+                                          ],
+                                        ),
                                       ),
-                                      Text("Thay đổi",
-                                          style: AppTheme.changeTextStyle(
-                                              districtData != null))
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  SizedBox(height: 8),
+                                  InkWell(
+                                    onTap: () {
+                                      if (districtData != null) {
+                                        Navigator.of(context).pushNamed(
+                                            WardPage.ROUTE_NAME,
+                                            arguments: {
+                                              'districtId': districtData.id,
+                                              'districtName': districtData.name,
+                                            }).then((value) {
+                                          if (value != null) {
+                                            setState(() {
+                                              wardData = value;
+                                            });
+                                          }
+                                        });
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg: "Vui lòng chọn quận, huyện");
+                                      }
+                                    },
+                                    child: Card(
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 8),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Icon(Icons.wallpaper),
+                                            Text(
+                                              wardData != null
+                                                  ? wardData.name
+                                                  : "Phường/Xã",
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Text("Thay đổi",
+                                                style: AppTheme.changeTextStyle(
+                                                    districtData != null))
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  TextFormField(
+                                    maxLines: 1,
+                                    controller: _addressController,
+                                    style: TextStyle(fontSize: 18),
+                                    textInputAction: TextInputAction.done,
+                                    decoration: InputDecoration(
+                                        hintText: 'Số nhà, tên đường',
+                                        focusedBorder: const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.green, width: 1)),
+                                        contentPadding:
+                                            EdgeInsets.only(left: 8),
+                                        prefixIcon: Icon(
+                                          Icons.location_on,
+                                          color: Colors.black,
+                                        ),
+                                        border: const OutlineInputBorder()),
+                                  ),
+                                ],
                               ),
-                            ),
-                            SizedBox(height: 8),
-                            TextFormField(
-                              maxLines: 1,
-                              controller: _addressController,
-                              style: TextStyle(fontSize: 18),
-                              textInputAction: TextInputAction.done,
-                              decoration: InputDecoration(
-                                  hintText: 'Số nhà, tên đường',
-                                  focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.green, width: 1)),
-                                  contentPadding:
-                                  EdgeInsets.only(left: 8),
-                                  prefixIcon: Icon(
-                                    Icons.location_on,
-                                    color: Colors.black,
-                                  ),
-                                  border: const OutlineInputBorder()),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12),
-                        //TEP 7
-                        Text("Hình Ảnh"),
-                      ],
-                    )
+                              SizedBox(height: 12),
+                              //TEP 7
+                              RichText(
+                                  text: TextSpan(
+                                      text: "Hình Ảnh ",
+                                      style: TextStyle(color: Colors.black),
+                                      children: <TextSpan>[
+                                    TextSpan(
+                                        text:
+                                            " (Vui lòng chụp hình ảnh theo chiều ngang để hiển thị tốt trên ứng dụng)",
+                                        style: TextStyle(color: Colors.green))
+                                  ]))
+                            ],
+                          )
                         : Container(),
                     SizedBox(height: 4),
                     _images.length == 0
                         ? Align(
-                      alignment: Alignment.centerLeft,
-                      child: _cameraHolder(),
-                    )
+                            alignment: Alignment.centerLeft,
+                            child: _cameraHolder(),
+                          )
                         : Container(
-                      height: 100,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: List.from(_images
-                            .map((e) =>
-                            Stack(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(right: 4),
-                                  child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(6),
-                                    child: e != null
-                                        ? Image.file(
-                                      e,
-                                      fit: BoxFit.cover,
-                                      width: 100,
-                                      height: 100,
-                                    )
-                                        : Container(),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: -14,
-                                  right: -10,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      _images.removeWhere(
-                                              (element) => element == e);
-                                      setState(() {});
-                                    },
-                                    icon: Icon(
-                                      Icons.remove_circle,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ))
-                            .toList())
-                          ..add(_cameraHolder()),
-                      ),
-                    ),
+                            height: 100,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: List.from(_images
+                                  .map((e) => Stack(
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(right: 4),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
+                                              child: e != null
+                                                  ? Image.file(
+                                                      e,
+                                                      fit: BoxFit.cover,
+                                                      width: 100,
+                                                      height: 100,
+                                                    )
+                                                  : Container(),
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: -14,
+                                            right: -10,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                _images.removeWhere(
+                                                    (element) => element == e);
+                                                setState(() {});
+                                              },
+                                              icon: Icon(
+                                                Icons.remove_circle,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ))
+                                  .toList())
+                                ..add(_cameraHolder()),
+                            ),
+                          ),
                     SizedBox(height: 12),
                     //STEP 8
                     Text("Chính sách của Conec"),
@@ -869,7 +887,7 @@ class _PostActionPageState extends State<PostActionPage> {
                               value: _term,
                               activeColor: const Color(0xff00bbff),
                               materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
+                                  MaterialTapTargetSize.shrinkWrap,
                             ),
                             Expanded(
                               child: RichText(
@@ -891,7 +909,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                               fontSize: 14)),
                                       TextSpan(
                                           text:
-                                          "Nếu vi phạm sẽ chịu mọi xử lý từ Conec",
+                                              "Nếu vi phạm sẽ chịu mọi xử lý từ Conec",
                                           style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 14))
@@ -927,10 +945,7 @@ class _PostActionPageState extends State<PostActionPage> {
                           icon: Icon(Icons.check),
                           padding: EdgeInsets.symmetric(
                               horizontal:
-                              MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 5),
+                                  MediaQuery.of(context).size.width / 5),
                           label: Text("Đăng tin",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w500))),
@@ -944,13 +959,13 @@ class _PostActionPageState extends State<PostActionPage> {
         ),
         floatingActionButton: _showFab
             ? FloatingActionButton.extended(
-          onPressed: () {
-            FocusScope.of(context).unfocus();
-          },
-          backgroundColor: Colors.green,
-          label: Text("Xong"),
-          icon: Icon(Icons.check),
-        )
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                },
+                backgroundColor: Colors.green,
+                label: Text("Xong"),
+                icon: Icon(Icons.check),
+              )
             : null,
       ),
     );
@@ -994,11 +1009,10 @@ class _PostActionPageState extends State<PostActionPage> {
     if (_currentSelectedIndex != 6) {
       try {
         result = provinceData != null &&
-            districtData != null &&
-            wardData != null
+                districtData != null &&
+                wardData != null
             ? await Helper.getLatLng(
-            '${_addressController.text ?? ""}, ${wardData.name}, ${districtData
-                .name}, ${provinceData.name}')
+                '${_addressController.text ?? ""}, ${wardData.name}, ${districtData.name}, ${provinceData.name}')
             : LatLong(lat: 0.0, long: 0.0);
         print(result.lat.toString() + "----" + result.long.toString());
       } catch (e) {
@@ -1013,57 +1027,58 @@ class _PostActionPageState extends State<PostActionPage> {
     }
     PostActionRequest _postActionRequest = PostActionRequest(
         title: _title,
-        content: _controller.document.toPlainText().toString().replaceAll("\n", "<br>"),
+        content: _controller.document
+            .toPlainText()
+            .toString()
+            .replaceAll("\n", "<br>"),
         thumbnail: _images.length > 0
             ? {
-          "fileName": _images[0].path
-              .split("/")
-              .last,
-          "base64": base64Encode(_images[0].readAsBytesSync())
-        }
+                "fileName": _images[0].path.split("/").last,
+                "base64": base64Encode(_images[0].readAsBytesSync())
+              }
             : null,
         topicId: topic.id,
         topicIds: _isAdsOrNews ? getTopicIds() : [],
         subTopicIds: !_isAdsOrNews ? getTopicIds() : [],
         images: base64ListImage(_images),
         province: provinceData != null ? provinceData.name : null,
-    district: districtData != null ? districtData.name : null,
-    ward: wardData != null ? wardData.name : null,
-    address: _addressController.text,
-    joiningFee: getJoiningFree(),
-    joiningFeePeriod: _type,
-    price: getPrice(),
-    uses: _usesController.text ?? null,
-    generalCondition: statusType ?? null,
-    phoneNumber: _phoneController.text,
-    lat: result.lat ?? 0.0,
-    lng: result.long ?? 0.0,
-    status: "SUBMITTED");
+        district: districtData != null ? districtData.name : null,
+        ward: wardData != null ? wardData.name : null,
+        address: _addressController.text,
+        joiningFee: getJoiningFree(),
+        joiningFeePeriod: _type,
+        price: getPrice(),
+        uses: _usesController.text ?? null,
+        generalCondition: statusType ?? null,
+        phoneNumber: _phoneController.text,
+        lat: result.lat ?? 0.0,
+        lng: result.long ?? 0.0,
+        status: "SUBMITTED");
 //    Map inputs = jsonDecode(_postActionRequest);
     //print("aa: " + inputs.toString());
     print("images: " + base64ListImage(_images).length.toString());
     print("post_request: " + jsonEncode(_postActionRequest.toJson()));
     _postActionBloc.requestAddMyPost(
-    jsonEncode(_postActionRequest.toJson()), "Add");
+        jsonEncode(_postActionRequest.toJson()), "Add");
     _postActionBloc.addMyPostStream.listen((event) {
-    switch (event.status) {
-    case Status.LOADING:
-    setState(() {
-    _isLoading = true;
-    });
-    break;
-    case Status.COMPLETED:
-    setState(() {
-    _isLoading = false;
-    });
+      switch (event.status) {
+        case Status.LOADING:
+          setState(() {
+            _isLoading = true;
+          });
+          break;
+        case Status.COMPLETED:
+          setState(() {
+            _isLoading = false;
+          });
 //          Fluttertoast.showToast(
 //              msg: "Đăng bài thành công!", textColor: Colors.black87);
-    showOKDialog();
-    break;
-    case Status.ERROR:
-    Fluttertoast.showToast(msg: event.message, textColor: Colors.black87);
-    break;
-    }
+          showOKDialog();
+          break;
+        case Status.ERROR:
+          Fluttertoast.showToast(msg: event.message, textColor: Colors.black87);
+          break;
+      }
     });
   }
 
@@ -1072,9 +1087,7 @@ class _PostActionPageState extends State<PostActionPage> {
     if (fileList.length > 0)
       fileList.forEach((element) {
         Map a = {
-          'fileName': element.path
-              .split("/")
-              .last,
+          'fileName': element.path.split("/").last,
           'base64': base64Encode(element.readAsBytesSync())
         };
         s.add(a);
@@ -1085,18 +1098,16 @@ class _PostActionPageState extends State<PostActionPage> {
   showOKDialog() {
     showDialog(
         context: context,
-        builder: (BuildContext context) =>
-            CupertinoAlertDialog(
+        builder: (BuildContext context) => CupertinoAlertDialog(
               title: Text("Đăng bài thành công"),
               content:
-              Text("Tin của bạn đang chờ phê duyệt, quay lại trang chủ?"),
+                  Text("Tin của bạn đang chờ phê duyệt, quay lại trang chủ?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                     child: Text("OK"),
-                    onPressed: () =>
-                        Navigator.of(context)
-                            .pushNamedAndRemoveUntil(ConecHomePage.ROUTE_NAME,
-                                (Route<dynamic> route) => false))
+                    onPressed: () => Navigator.of(context)
+                        .pushNamedAndRemoveUntil(ConecHomePage.ROUTE_NAME,
+                            (Route<dynamic> route) => false))
               ],
             ));
   }
@@ -1104,8 +1115,7 @@ class _PostActionPageState extends State<PostActionPage> {
   showFailDialog() {
     showDialog(
         context: context,
-        builder: (BuildContext context) =>
-            CupertinoAlertDialog(
+        builder: (BuildContext context) => CupertinoAlertDialog(
               title: Text("Lỗi nhập thiếu"),
               content: Text("Bạn vui lòng điền đầy đủ thông tin bắt buộc"),
               actions: <Widget>[
