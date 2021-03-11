@@ -110,15 +110,15 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     //getLocation();
-//    NewVersion(
-//        context: context,
-//        iOSId: 'com.google.Vespa',
-//        androidId: 'com.conec.flutter_conec',
-//        dialogTitle: "Cập nhật",
-//        dialogText: "Conec đã có bản cập nhật mới trên cửa hàng",
-//        dismissText: "Để sau",
-//        updateText: "Cập nhật"
-//    ).showAlertIfNecessary();
+   NewVersion(
+       context: context,
+       iOSId: 'com.conec.conecSport',
+       androidId: 'com.conec.flutter_conec',
+       dialogTitle: "Cập nhật",
+       dialogText: "Conec đã có bản cập nhật mới trên cửa hàng",
+       dismissText: "Để sau",
+       updateText: "Cập nhật"
+   ).showAlertIfNecessary();
     initOneSignal("7075e16c-c1fb-4d33-93b1-1c8cf007c294");
     getToken();
   }
