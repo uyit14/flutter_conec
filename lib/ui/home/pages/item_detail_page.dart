@@ -371,6 +371,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                                       "assets/images/error.png"),
                                                               width: double
                                                                   .infinity,
+                                                              fit: BoxFit.cover,
                                                             ),
                                                             Positioned(
                                                               bottom: 0.0,

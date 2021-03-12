@@ -279,17 +279,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             : AssetImage("assets/images/avatar.png"),
                       ),
                     ),
-                    Positioned(
-                      right: 0,
-                      top: 80,
-                      child: IconButton(
-                        icon: Icon(Icons.card_giftcard,
-                            color: Colors.red, size: 32),
-                        onPressed: () {
-                          showRemindDialog(context);
-                        },
-                      ),
-                    )
                   ],
                 ),
                 SizedBox(height: 32),
@@ -368,6 +357,33 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       Text(
                         "Chính sách & điều khoản",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w400),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+                InkWell(
+                  onTap: () {
+                    showRemindDialog(context);
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      RawMaterialButton(
+                        onPressed: () {},
+                        elevation: 2.0,
+                        fillColor: Colors.white,
+                        child: Icon(
+                          Icons.card_giftcard,
+                          color: Colors.red,
+                          size: 30,
+                        ),
+                        padding: EdgeInsets.all(15.0),
+                        shape: CircleBorder(),
+                      ),
+                      Text(
+                        "Quà của tôi",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w400),
                       )

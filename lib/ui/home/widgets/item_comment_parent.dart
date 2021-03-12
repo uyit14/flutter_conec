@@ -100,19 +100,35 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(widget.comment.fullname ?? "",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue)),
-                          Text(
-                            Helper.calculatorTime(widget.comment.created),
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w400),
-                          )
-                        ],
+                      InkWell(
+                        onTap: (){
+                          Navigator.of(context).pushNamed(
+                              IntroducePage.ROUTE_NAME,
+                              arguments: {
+                                'clubId': widget.ownerId
+                              });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(widget.comment.fullname ?? "",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue)),
+                            ),
+                            Container(
+                              width: 80,
+                              child: Text(
+                                Helper.calculatorTime(widget.comment.created),
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w400),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       Text(
                         widget.comment.content,
