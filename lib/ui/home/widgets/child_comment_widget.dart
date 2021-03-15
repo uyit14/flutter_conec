@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:flutter/material.dart';
 import '../../../common/globals.dart' as globals;
 
@@ -61,12 +62,21 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
 //                  backgroundImage:
 //                      CachedNetworkImageProvider(_comment.profilePictureUrl),
 //                ),
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: widget.comment.profilePictureUrl != null
-                      ? NetworkImage(widget.comment.profilePictureUrl)
-                      : AssetImage("assets/images/avatar.png"),
+                InkWell(
+                  onTap: (){
+                    Navigator.of(context).pushNamed(
+                        IntroducePage.ROUTE_NAME,
+                        arguments: {
+                          'clubId': widget.comment.ownerId
+                        });
+                  },
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: widget.comment.profilePictureUrl != null
+                        ? NetworkImage(widget.comment.profilePictureUrl)
+                        : AssetImage("assets/images/avatar.png"),
+                  ),
                 ),
                 SizedBox(width: 4),
                 Container(
@@ -80,19 +90,35 @@ class _ChildCommentWidgetState extends State<ChildCommentWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(widget.comment.fullname ?? "",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue)),
-                          Text(
-                            Helper.calculatorTime(widget.comment.created),
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w400),
-                          )
-                        ],
+                      InkWell(
+                       onTap: (){
+                         Navigator.of(context).pushNamed(
+                             IntroducePage.ROUTE_NAME,
+                             arguments: {
+                               'clubId': widget.comment.ownerId
+                             });
+                       },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(widget.comment.fullname ?? "",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue)),
+                            ),
+                            Container(
+                              width: 80,
+                              child: Text(
+                                Helper.calculatorTime(widget.comment.created),
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w400),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       Text(
                         widget.comment.content,

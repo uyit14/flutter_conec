@@ -58,6 +58,7 @@ class Comment {
   int upvoteCount;
   bool userHasUpvoted;
   bool isNew;
+  String ownerId;
 
   Comment(
       {this.id,
@@ -73,6 +74,7 @@ class Comment {
       this.createdByCurrentUser,
       this.upvoteCount,
       this.userHasUpvoted,
+      this.ownerId,
       this.isNew});
 
   Comment.fromJson(Map<String, dynamic> json) {
@@ -96,6 +98,7 @@ class Comment {
     upvoteCount = json['upvote_count'];
     userHasUpvoted = json['user_has_upvoted'];
     isNew = json['is_new'];
+    ownerId = json['ownerId'];
   }
 
   Map<String, dynamic> toJson() {

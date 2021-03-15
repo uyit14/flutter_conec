@@ -175,7 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ? Helper.getScreenHeight(context) * 0.2
                           : Helper.getScreenWidth(context) * 0.2,
                       decoration: BoxDecoration(
-                          color: Color(0xffff3b30),
+                          color: Color(0xfff10801),
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(
                                   Helper.getScreenHeight(context) * 0.3 / 2))),
@@ -184,10 +184,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         children: <Widget>[
                           Expanded(
                             child: Image.asset(
-                              "assets/images/conec_logo.png",
-                              width: Helper.isTablet(context) ? 300 : 200,
+                              "assets/images/logo_test.png",
+                              width: Helper.isTablet(context) ? 350 : 250,
                               height: Helper.isTablet(context) ? 200 : 100,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
                             ),
                           ),
                           Container(

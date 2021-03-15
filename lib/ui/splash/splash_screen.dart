@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image.asset(
-              "assets/images/conec_logo.png",
+              "assets/images/logo_tranparent.png",
               width: 200,
               height: 100,
               fit: BoxFit.fill,

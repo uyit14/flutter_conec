@@ -10,11 +10,10 @@ import 'child_comment_widget.dart';
 
 class ItemCommentParent extends StatefulWidget {
   final Comment comment;
-  final String ownerId;
   final ItemsByCategoryBloc bloc;
   final Function(String parentID, bool isDelete) callback;
 
-  ItemCommentParent(this.comment, this.ownerId, this.bloc, this.callback);
+  ItemCommentParent(this.comment, this.bloc, this.callback);
 
   @override
   _ItemCommentParentState createState() => _ItemCommentParentState();
@@ -72,7 +71,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                     Navigator.of(context).pushNamed(
                         IntroducePage.ROUTE_NAME,
                         arguments: {
-                          'clubId': widget.ownerId
+                          'clubId': widget.comment.ownerId
                         });
                   },
                   child: CircleAvatar(
@@ -105,7 +104,7 @@ class _ItemCommentParentState extends State<ItemCommentParent> {
                           Navigator.of(context).pushNamed(
                               IntroducePage.ROUTE_NAME,
                               arguments: {
-                                'clubId': widget.ownerId
+                                'clubId': widget.comment.ownerId
                               });
                         },
                         child: Row(

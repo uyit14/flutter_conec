@@ -271,7 +271,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                                   comments.map((parentComment) {
                             print("-------" + parentComment.content);
                             return ItemCommentParent(
-                                parentComment, widget.itemDetail.ownerId, _itemsByCategoryBloc,
+                                parentComment, _itemsByCategoryBloc,
                                 (parentID, isDelete) {
                               requestFocus(parentID, isDelete);
                             });
