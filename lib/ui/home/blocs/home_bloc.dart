@@ -43,7 +43,7 @@ class HomeBloc {
 
   //nearby
   StreamController<ApiResponse<NearbyResponse>> _nearByController =
-  StreamController();
+  StreamController.broadcast();
   Stream<ApiResponse<NearbyResponse>> get nearByStream => _nearByController.stream;
 
   //nearby
