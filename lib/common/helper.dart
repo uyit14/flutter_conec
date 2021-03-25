@@ -164,6 +164,26 @@ class Helper {
             ));
   }
 
+  static void showUpdateVersionDialog(
+      BuildContext context, String title, String content, VoidCallback onOK) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("Để sau", style: TextStyle(color: Colors.red)),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            CupertinoDialogAction(
+              child: Text("Cập nhật ngay"),
+              onPressed: onOK,
+            )
+          ],
+        ));
+  }
+
   static void showAuthenticationDialog(BuildContext context) {
     showDialog(
         context: context,

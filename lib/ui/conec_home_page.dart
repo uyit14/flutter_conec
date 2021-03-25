@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:new_version/new_version.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../common/globals.dart' as globals;
 import 'home/blocs/home_bloc.dart';
@@ -18,6 +19,7 @@ import 'home/pages/items_by_category_page.dart';
 import 'mypost/pages/mypost_page.dart';
 import 'news/pages/news_page.dart';
 import 'profile/pages/profile_pages.dart';
+import 'dart:io' as pf;
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';
@@ -110,24 +112,37 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     //getLocation();
-   NewVersion(
-       context: context,
-       iOSId: 'com.conec.conecSport',
-       androidId: 'com.conec.flutter_conec',
-       dialogTitle: "Cập nhật",
-       dialogText: "Conec đã có bản cập nhật mới trên cửa hàng",
-       dismissText: "Để sau",
-       updateText: "Cập nhật"
-   ).showAlertIfNecessary();
+    // NewVersion(
+    //     context: context,
+    //     iOSId: 'com.conec.conecSport',
+    //     androidId: 'com.conec.flutter_conec',
+    //     dialogTitle: "Cập nhật",
+    //     dialogText: "Conec đã có bản cập nhật mới trên cửa hàng",
+    //     dismissText: "Để sau",
+    //     updateText: "Cập nhật"
+    // ).showAlertIfNecessary();
+    checkVersion(context);
     initOneSignal("7075e16c-c1fb-4d33-93b1-1c8cf007c294");
     getToken();
   }
 
-  void checkVersion(BuildContext context) async{
-
-//    final newVersion = NewVersion(context: context);
-//    final status = await newVersion.getVersionStatus();
-//    print(status.localVersion + "-" + status.storeVersion);
+  void checkVersion(BuildContext context) async {
+    final newVersion = NewVersion(context: context);
+    final status = await newVersion.getVersionStatus();
+    if(status.localVersion != status.storeVersion){
+      Helper.showUpdateVersionDialog(
+          context, "Cập nhật", "Conec đã có bản cập nhật mới trên cửa hàng",
+              () async {
+            if (pf.Platform.isIOS) {
+              await launch(
+                  'https://itunes.apple.com/lookup?bundleId=com.conec.conecSport');
+            } else {
+              await launch(
+                  "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
+            }
+          });
+    }
+    print(status.localVersion + "-" + status.storeVersion);
   }
 
   @override
