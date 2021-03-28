@@ -44,7 +44,7 @@ class Helper {
   }
 
   static String applicationUrl() {
-    return "https://play.google.com/store/apps/details?id=conec.vinaas.app&hl=vi_VN";
+    return "https://play.google.com/store/apps/details?id=com.conec.flutter_conec&hl=vi_VN";
   }
 
   static String formatCurrency(int number) {

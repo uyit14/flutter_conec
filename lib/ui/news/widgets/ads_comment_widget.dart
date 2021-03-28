@@ -223,6 +223,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                   Spacer(),
                   InkWell(
                     onTap: () {
+                      print("shared: ${widget.itemDetail.shareLink}");
                       Share.share(widget.itemDetail.shareLink ??
                           Helper.applicationUrl());
                     },

@@ -40,6 +40,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
 
   String _token;
   bool _isTokenExpired = true;
+  String _deviceToken = "";
 
   //For one signal
   String _debugLabelString = "";
@@ -68,6 +69,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
           globals.ward = profile.ward;
           globals.address = profile.address;
           globals.phone = profile.phoneNumber;
+          registerDeviceToken(_deviceToken, profile.id);
           if (profile.name != null &&
               profile.type != null &&
               profile.phoneNumber != null) {
@@ -168,10 +170,20 @@ class _ConecHomePageState extends State<ConecHomePage> {
     }
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  void initOneSignal(oneSignalAppId) {
-    OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+  void registerDeviceToken(String deviceToken, String userId) async{
+    String result2 = await _homeBloc.requestRegisterDeviceToken(deviceToken, userId);
+    print("registerDeviceToken: $result2");
+  }
 
+  // Platform messages are asynchronous, so we initialize in an async method.
+  void initOneSignal(oneSignalAppId) async{
+    OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
+    var status = await OneSignal.shared.getPermissionSubscriptionState();
+    print("DeviceToken: ${status.subscriptionStatus.userId}");
+    globals.deviceToken = status.subscriptionStatus.userId;
+    setState(() {
+      _deviceToken = status.subscriptionStatus.userId;
+    });
     var settings = {
       OSiOSSettings.autoPrompt: true,
       OSiOSSettings.inAppLaunchUrl: true

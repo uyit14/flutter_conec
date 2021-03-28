@@ -201,4 +201,16 @@ class HomeRemoteRepository {
     print("giftReceive" + response.toString());
     return response['status'];
   }
+
+  Future<String> registerDeviceToken(String deviceToken, String userId) async {
+    String userIdQuery = "";
+    if(userId.length > 0){
+      userIdQuery = "&userId=$userId";
+    }
+
+    final response = await _helper.get("/api/Account/UpdateOneSignalToken?token=$deviceToken$userIdQuery",
+        headers: await Helper.header());
+    print("registerDeviceTokenResponse: " + response.toString());
+    return response['status'];
+  }
 }

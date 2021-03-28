@@ -7,6 +7,7 @@ import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
+import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/others/open_letter_page.dart';
 import 'package:conecapp/ui/others/terms_condition_page.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
@@ -30,6 +31,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   ProfileBloc _profileBloc = ProfileBloc();
+  HomeBloc _homeBloc = HomeBloc();
   String _name;
   String _address;
   String _province;
@@ -173,10 +175,16 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  void registerDeviceToken(String deviceToken, String userId) async{
+    String result2 = await _homeBloc.requestRegisterDeviceToken(deviceToken, userId);
+    print("registerDeviceToken: $result2");
+  }
+
   @override
   void dispose() {
     super.dispose();
     _profileBloc.dispose();
+    _homeBloc.dispose();
   }
 
   @override
@@ -460,6 +468,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 8),
                 InkWell(
                   onTap: () async {
+                    registerDeviceToken(globals.deviceToken, "");
                     SharedPreferences prefs =
                         await SharedPreferences.getInstance();
                     prefs.setString('token', null);

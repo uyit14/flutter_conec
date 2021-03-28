@@ -104,6 +104,7 @@ class ItemDetail {
     ratingAvg = json['ratingAvg'];
     isRating = json['isRating'];
     viewCount = json['viewCount'];
+    shareLink = json['shareLink'];
     commentCount = json['commentCount'];
     likeCount = json['likeCount'];
     likeOwner = json['likeOwner'];

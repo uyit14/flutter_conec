@@ -185,6 +185,11 @@ class HomeBloc {
     return response;
   }
 
+  Future<String> requestRegisterDeviceToken(String deviceToken, String userId) async {
+    final response = await _repository.registerDeviceToken(deviceToken, userId);
+    return response;
+  }
+
   void dispose() {
     _topicController.close();
     _sliderController.close();
