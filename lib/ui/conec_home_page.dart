@@ -1,3 +1,5 @@
+import 'dart:io' as pf;
+
 import 'package:badges/badges.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
@@ -15,11 +17,11 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../common/globals.dart' as globals;
 import 'home/blocs/home_bloc.dart';
+import 'home/pages/item_detail_page.dart';
 import 'home/pages/items_by_category_page.dart';
 import 'mypost/pages/mypost_page.dart';
 import 'news/pages/news_page.dart';
 import 'profile/pages/profile_pages.dart';
-import 'dart:io' as pf;
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';
@@ -131,18 +133,18 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void checkVersion(BuildContext context) async {
     final newVersion = NewVersion(context: context);
     final status = await newVersion.getVersionStatus();
-    if(status.localVersion != status.storeVersion){
+    if (status.localVersion != status.storeVersion) {
       Helper.showUpdateVersionDialog(
           context, "Cập nhật", "Conec đã có bản cập nhật mới trên cửa hàng",
-              () async {
-            if (pf.Platform.isIOS) {
-              await launch(
-                  'https://itunes.apple.com/lookup?bundleId=com.conec.conecSport');
-            } else {
-              await launch(
-                  "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
-            }
-          });
+          () async {
+        if (pf.Platform.isIOS) {
+          await launch(
+              'https://itunes.apple.com/lookup?bundleId=com.conec.conecSport');
+        } else {
+          await launch(
+              "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
+        }
+      });
     }
     print(status.localVersion + "-" + status.storeVersion);
   }
@@ -170,13 +172,14 @@ class _ConecHomePageState extends State<ConecHomePage> {
     }
   }
 
-  void registerDeviceToken(String deviceToken, String userId) async{
-    String result2 = await _homeBloc.requestRegisterDeviceToken(deviceToken, userId);
+  void registerDeviceToken(String deviceToken, String userId) async {
+    String result2 =
+        await _homeBloc.requestRegisterDeviceToken(deviceToken, userId);
     print("registerDeviceToken: $result2");
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  void initOneSignal(oneSignalAppId) async{
+  void initOneSignal(oneSignalAppId) async {
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
     var status = await OneSignal.shared.getPermissionSubscriptionState();
     print("DeviceToken: ${status.subscriptionStatus.userId}");
@@ -203,7 +206,19 @@ class _ConecHomePageState extends State<ConecHomePage> {
     // will be called whenever a notification is opened/button pressed.
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      print('Opened: ' + result.notification?.payload?.body ?? '');
+      //print('Opened: ' + result.notification?.payload?.body ?? '');
+      print(
+          "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
+      print(
+          "postIdddd: " + result.notification.payload.additionalData["postId"]);
+      if (result.notification.payload.additionalData["postId"] != null) {
+        String postId = result.notification.payload.additionalData["postId"];
+        String title = result.notification.payload.title;
+        Navigator.of(context).pushNamed(ItemDetailPage.ROUTE_NAME, arguments: {
+          'postId': postId,
+          'title': title,
+        });
+      }
     });
   }
 
