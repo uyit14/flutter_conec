@@ -6,15 +6,16 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/models/response/page/hidden_response.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
-import 'package:conecapp/ui/profile/pages/video_player_page.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:html/parser.dart';
 
+import '../../../common/globals.dart' as globals;
 import 'item_detail_page.dart';
 
 class IntroducePage extends StatefulWidget {
@@ -30,6 +31,8 @@ class _IntroducePageState extends State<IntroducePage> {
   String clubId;
   String _token;
   bool _isTokenExpired = true;
+  bool _shouldShow = false;
+  String _errorText = "";
 
   void getToken() async {
     String token = await Helper.getToken();
@@ -248,27 +251,58 @@ class _IntroducePageState extends State<IntroducePage> {
                                         ))
                                   ],
                                 ),
-                                Text(
-                                    profile.type == "Club"
-                                        ? "Tên CLB"
-                                        : "Họ tên",
-                                    style: AppTheme.profileTitle),
-                                Text(profile.name ?? "",
-                                    style: AppTheme.profileInfo),
-                                Container(
-                                  height: 0.5,
-                                  color: Colors.black12,
-                                  margin: EdgeInsets.symmetric(vertical: 12),
-                                ),
-                                profile.type == "Club"
-                                    ? Container()
-                                    : Column(
+                                SizedBox(height: 8),
+                                !_shouldShow
+                                    ? Align(
+                                        alignment: Alignment.center,
+                                        child: Text(_errorText.length > 0 &&
+                                                _errorText != null
+                                            ? _errorText
+                                            : "Thông tin bị ẩn, vui lòng nhấn chi tiết để xem thêm"),
+                                      )
+                                    : Container(),
+                                !_shouldShow
+                                    ? Align(
+                                        alignment: Alignment.center,
+                                        child: FlatButton(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8)),
+                                            onPressed: () async {
+                                              HiddenResponse response =
+                                                  await _homeBloc.requestHidden(
+                                                      globals.ownerId, clubId);
+                                              setState(() {
+                                                _shouldShow = response.status;
+                                                _errorText = response.message;
+                                              });
+                                            },
+                                            color: Colors.blue,
+                                            textColor: Colors.white,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .width /
+                                                        5),
+                                            child: Text("Xem chi tiết",
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.w500))),
+                                      )
+                                    : Container(),
+                                _shouldShow
+                                    ? Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text("Năm sinh",
+                                        children: [
+                                          Text(
+                                              profile.type == "Club"
+                                                  ? "Tên CLB"
+                                                  : "Họ tên",
                                               style: AppTheme.profileTitle),
-                                          Text(profile!=null && !profile.hideDOB ? profile.dob : "**********",
+                                          Text(profile.name ?? "",
                                               style: AppTheme.profileInfo),
                                           Container(
                                             height: 0.5,
@@ -276,9 +310,47 @@ class _IntroducePageState extends State<IntroducePage> {
                                             margin: EdgeInsets.symmetric(
                                                 vertical: 12),
                                           ),
-                                          Text("Giới tính",
+                                          profile.type == "Club"
+                                              ? Container()
+                                              : Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Text("Năm sinh",
+                                                        style: AppTheme
+                                                            .profileTitle),
+                                                    Text(
+                                                        profile != null &&
+                                                                !profile.hideDOB
+                                                            ? profile.dob
+                                                            : "**********",
+                                                        style: AppTheme
+                                                            .profileInfo),
+                                                    Container(
+                                                      height: 0.5,
+                                                      color: Colors.black12,
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 12),
+                                                    ),
+                                                    Text("Giới tính",
+                                                        style: AppTheme
+                                                            .profileTitle),
+                                                    Text(profile.gender ?? "",
+                                                        style: AppTheme
+                                                            .profileInfo),
+                                                    Container(
+                                                      height: 0.5,
+                                                      color: Colors.black12,
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 12),
+                                                    ),
+                                                  ],
+                                                ),
+                                          Text("Địa chỉ",
                                               style: AppTheme.profileTitle),
-                                          Text(profile.gender ?? "",
+                                          Text(profile.getAddress ?? "",
                                               style: AppTheme.profileInfo),
                                           Container(
                                             height: 0.5,
@@ -286,28 +358,23 @@ class _IntroducePageState extends State<IntroducePage> {
                                             margin: EdgeInsets.symmetric(
                                                 vertical: 12),
                                           ),
+                                          Text("Điện thoại",
+                                              style: AppTheme.profileTitle),
+                                          Text(profile.phoneNumber ?? "",
+                                              style: AppTheme.profileInfo),
+                                          Container(
+                                            height: 0.5,
+                                            color: Colors.black12,
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: 12),
+                                          ),
+                                          Text("Email",
+                                              style: AppTheme.profileTitle),
+                                          Text(profile.email ?? "",
+                                              style: AppTheme.profileInfo),
                                         ],
-                                      ),
-                                Text("Địa chỉ", style: AppTheme.profileTitle),
-                                Text(profile.getAddress ?? "",
-                                    style: AppTheme.profileInfo),
-                                Container(
-                                  height: 0.5,
-                                  color: Colors.black12,
-                                  margin: EdgeInsets.symmetric(vertical: 12),
-                                ),
-                                Text("Điện thoại",
-                                    style: AppTheme.profileTitle),
-                                Text(profile.phoneNumber ?? "",
-                                    style: AppTheme.profileInfo),
-                                Container(
-                                  height: 0.5,
-                                  color: Colors.black12,
-                                  margin: EdgeInsets.symmetric(vertical: 12),
-                                ),
-                                Text("Email", style: AppTheme.profileTitle),
-                                Text(profile.email ?? "",
-                                    style: AppTheme.profileInfo),
+                                      )
+                                    : Container(),
                                 Container(
                                   height: 0.5,
                                   color: Colors.black12,
@@ -332,19 +399,20 @@ class _IntroducePageState extends State<IntroducePage> {
                                 profile.images != null &&
                                         profile.images.length > 0
                                     ? SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                      child: Row(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
                                           children: profile.images
                                               .map((image) => Container(
-                                            height: 100,
-                                                    margin:
-                                                        EdgeInsets.only(right: 8),
+                                                    height: 100,
+                                                    margin: EdgeInsets.only(
+                                                        right: 8),
                                                     child: ClipRRect(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               6),
                                                       child: CachedNetworkImage(
-                                                        imageUrl: image.fileName,
+                                                        imageUrl:
+                                                            image.fileName,
                                                         placeholder: (context,
                                                                 url) =>
                                                             Image.asset(
@@ -366,7 +434,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                                   ))
                                               .toList(),
                                         ),
-                                    )
+                                      )
                                     : Text("Chưa có ảnh nào"),
 //                                Container(
 //                                  height: 0.5,
@@ -423,132 +491,151 @@ class _IntroducePageState extends State<IntroducePage> {
                                 Text("Tin đăng gần đây",
                                     style: AppTheme.profileTitle),
                                 SizedBox(height: 8),
-                                profile.posts.length > 0 ? Container(
-                                  color:  Colors.black12,
-                                  child: GridView.builder(
-                                      physics: NeverScrollableScrollPhysics(),
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      itemCount: profile.posts.length,
-                                      padding: EdgeInsets.all(4),
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2),
-                                      itemBuilder: (_, index) {
-                                        final document = parse(profile
-                                            .posts[index].description ?? "");
-                                        final String parsedString = parse(document.body.text).documentElement.text;
-                                        return InkWell(
-                                          onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                                ItemDetailPage.ROUTE_NAME,
-                                                arguments: {
-                                                  'postId': profile
-                                                      .posts[index].postId,
-                                                  'title':
-                                                      profile.posts[index].title
-                                                });
-                                          },
-                                          child: Container(
-                                            margin: EdgeInsets.all(4),
-                                            child: Stack(
-                                              children: <Widget>[
-                                                ClipRRect(
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(15),
-                                                  child: Hero(
-                                                    tag: profile
-                                                        .posts[index]
-                                                        .postId,
-                                                    child:
-                                                    CachedNetworkImage(
-                                                      imageUrl: profile
-                                                          .posts[
-                                                      index]
-                                                          .thumbnail ??
-                                                          "",
-                                                      placeholder: (context,
-                                                          url) =>
-                                                          Image.asset(
-                                                              "assets/images/placeholder.png"),
-                                                      errorWidget: (context,
-                                                          url,
-                                                          error) =>
-                                                          Image.asset(
-                                                              "assets/images/error.png"),
-                                                      fit: BoxFit.cover,
-                                                      width: double
-                                                          .infinity,
-                                                      height: double
-                                                          .infinity,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Align(
-                                                  alignment:
-                                                      Alignment.bottomCenter,
-                                                  child: Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 16),
-                                                    decoration: BoxDecoration(
-                                                        color: Color(0xFF0E3311)
-                                                            .withOpacity(0.5),
+                                profile.posts.length > 0
+                                    ? Container(
+                                        color: Colors.black12,
+                                        child: GridView.builder(
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            scrollDirection: Axis.vertical,
+                                            shrinkWrap: true,
+                                            itemCount: profile.posts.length,
+                                            padding: EdgeInsets.all(4),
+                                            gridDelegate:
+                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                    crossAxisCount: 2),
+                                            itemBuilder: (_, index) {
+                                              final document = parse(profile
+                                                      .posts[index]
+                                                      .description ??
+                                                  "");
+                                              final String parsedString =
+                                                  parse(document.body.text)
+                                                      .documentElement
+                                                      .text;
+                                              return InkWell(
+                                                onTap: () {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          ItemDetailPage
+                                                              .ROUTE_NAME,
+                                                          arguments: {
+                                                        'postId': profile
+                                                            .posts[index]
+                                                            .postId,
+                                                        'title': profile
+                                                            .posts[index].title
+                                                      });
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.all(4),
+                                                  child: Stack(
+                                                    children: <Widget>[
+                                                      ClipRRect(
                                                         borderRadius:
-                                                            BorderRadius.only(
-                                                                bottomLeft: Radius
-                                                                    .circular(
-                                                                        15),
-                                                                bottomRight: Radius
-                                                                    .circular(
-                                                                        15))),
-                                                    height: 70,
-                                                    width: double.infinity,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          profile.posts[index]
-                                                              .title,
-                                                          style: TextStyle(
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color:
-                                                                  Colors.white),
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
+                                                            BorderRadius
+                                                                .circular(15),
+                                                        child: Hero(
+                                                          tag: profile
+                                                              .posts[index]
+                                                              .postId,
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl: profile
+                                                                    .posts[
+                                                                        index]
+                                                                    .thumbnail ??
+                                                                "",
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                Image.asset(
+                                                                    "assets/images/placeholder.png"),
+                                                            errorWidget: (context,
+                                                                    url,
+                                                                    error) =>
+                                                                Image.asset(
+                                                                    "assets/images/error.png"),
+                                                            fit: BoxFit.cover,
+                                                            width:
+                                                                double.infinity,
+                                                            height:
+                                                                double.infinity,
+                                                          ),
                                                         ),
-                                                        Text(
-                                                          parsedString ??
-                                                              "",
-                                                          style: TextStyle(
-                                                              fontSize: 14,
-                                                              color:
-                                                                  Colors.white),
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        )
-                                                      ],
-                                                    ),
+                                                      ),
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .bottomCenter,
+                                                        child: Container(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      16),
+                                                          decoration: BoxDecoration(
+                                                              color: Color(
+                                                                      0xFF0E3311)
+                                                                  .withOpacity(
+                                                                      0.5),
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomLeft: Radius
+                                                                      .circular(
+                                                                          15),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          15))),
+                                                          height: 70,
+                                                          width:
+                                                              double.infinity,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                profile
+                                                                    .posts[
+                                                                        index]
+                                                                    .title,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color: Colors
+                                                                        .white),
+                                                                maxLines: 1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                              Text(
+                                                                parsedString ??
+                                                                    "",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    color: Colors
+                                                                        .white),
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ) : Text("Chưa có")
-                                
+                                              );
+                                            }),
+                                      )
+                                    : Text("Chưa có")
                               ],
                             ),
                           )

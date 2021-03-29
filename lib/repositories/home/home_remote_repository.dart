@@ -13,6 +13,7 @@ import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/news_reponse.dart';
 import 'package:conecapp/models/response/notify/notify_response.dart';
 import 'package:conecapp/models/response/notify/number_response.dart';
+import 'package:conecapp/models/response/page/hidden_response.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/models/response/slider.dart';
 import 'package:conecapp/models/response/slider_response.dart';
@@ -202,13 +203,22 @@ class HomeRemoteRepository {
     return response['status'];
   }
 
+  Future<HiddenResponse> getHidden(String ownerId, String userId) async {
+    final response = await _helper.get(
+        "/api/account/ShowProfileDetail?ownerId=$ownerId&userId=$userId",
+        headers: await Helper.header());
+    print("getHidden" + response.toString());
+    return HiddenResponse.fromJson(response);
+  }
+
   Future<String> registerDeviceToken(String deviceToken, String userId) async {
     String userIdQuery = "";
-    if(userId.length > 0){
+    if (userId.length > 0) {
       userIdQuery = "&userId=$userId";
     }
 
-    final response = await _helper.get("/api/Account/UpdateOneSignalToken?token=$deviceToken$userIdQuery",
+    final response = await _helper.get(
+        "/api/Account/UpdateOneSignalToken?token=$deviceToken$userIdQuery",
         headers: await Helper.header());
     print("registerDeviceTokenResponse: " + response.toString());
     return response['status'];

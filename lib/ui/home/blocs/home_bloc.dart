@@ -4,6 +4,7 @@ import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/nearby_club_response.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
+import 'package:conecapp/models/response/page/hidden_response.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/models/response/slider.dart';
 import 'package:conecapp/models/response/sport.dart';
@@ -182,6 +183,11 @@ class HomeBloc {
 
   Future<bool> requestGiftReceive() async {
     final response = await _repository.giftReceive();
+    return response;
+  }
+
+  Future<HiddenResponse> requestHidden(String ownerId, String userId) async {
+    final response = await _repository.getHidden(ownerId, userId);
     return response;
   }
 

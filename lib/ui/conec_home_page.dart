@@ -71,6 +71,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
           globals.ward = profile.ward;
           globals.address = profile.address;
           globals.phone = profile.phoneNumber;
+          globals.ownerId = profile.id;
           registerDeviceToken(_deviceToken, profile.id);
           if (profile.name != null &&
               profile.type != null &&

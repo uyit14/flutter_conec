@@ -12,3 +12,6 @@ String ward = "";
 String address = "";
 
 String deviceToken = "";
+
+String userId = "";
+String ownerId = "";
