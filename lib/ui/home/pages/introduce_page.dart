@@ -255,10 +255,17 @@ class _IntroducePageState extends State<IntroducePage> {
                                 !_shouldShow
                                     ? Align(
                                         alignment: Alignment.center,
-                                        child: Text(_errorText.length > 0 &&
-                                                _errorText != null
-                                            ? _errorText
-                                            : "Thông tin bị ẩn, vui lòng nhấn chi tiết để xem thêm"),
+                                        child: Text(
+                                          _errorText.length > 0 &&
+                                                  _errorText != null
+                                              ? _errorText
+                                              : "Thông tin bị ẩn, vui lòng nhấn chi tiết để xem thêm",
+                                          style: TextStyle(
+                                              color: _errorText.length > 0 &&
+                                                      _errorText != null
+                                                  ? Colors.red
+                                                  : Colors.black),
+                                        ),
                                       )
                                     : Container(),
                                 !_shouldShow
@@ -271,10 +278,12 @@ class _IntroducePageState extends State<IntroducePage> {
                                             onPressed: () async {
                                               HiddenResponse response =
                                                   await _homeBloc.requestHidden(
-                                                      globals.ownerId, clubId);
+                                                      globals.ownerId,
+                                                      clubId);
                                               setState(() {
                                                 _shouldShow = response.status;
-                                                _errorText = response.message;
+                                                _errorText =
+                                                    response.message ?? "";
                                               });
                                             },
                                             color: Colors.blue,

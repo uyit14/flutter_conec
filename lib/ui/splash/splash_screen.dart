@@ -5,7 +5,7 @@ import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/conec_home_page.dart';
 import 'package:conecapp/ui/onboarding/onboarding_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+//import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
+  //static FirebaseAnalytics analytics = FirebaseAnalytics();
 
   startTime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     startTime();
     super.initState();
-    analytics.logAppOpen();
+    //analytics.logAppOpen();
   }
 
   @override

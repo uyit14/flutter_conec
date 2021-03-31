@@ -13,16 +13,6 @@ class PageResponse {
     profile =
     json['profile'] != null ? new Profile.fromJson(json['profile']) : null;
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['error'] = this.error;
-    if (this.profile != null) {
-      data['profile'] = this.profile.toJson();
-    }
-    return data;
-  }
 }
 
 class Profile {
@@ -106,33 +96,6 @@ class Profile {
         posts.add(new Posts.fromJson(v));
       });
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['avatar'] = this.avatar;
-    data['gender'] = this.gender;
-    data['dob'] = this.dob;
-    data['phoneNumber'] = this.phoneNumber;
-    data['type'] = this.type;
-    data['province'] = this.province;
-    data['district'] = this.district;
-    data['ward'] = this.ward;
-    data['address'] = this.address;
-    data['lat'] = this.lat;
-    data['lng'] = this.lng;
-    data['ratingAvg'] = this.ratingAvg;
-    data['about'] = this.about;
-    data['videoLink'] = this.videoLink;
-    if (this.images != null) {
-      data['images'] = this.images.map((v) => v.toJson()).toList();
-    }
-    if (this.posts != null) {
-      data['posts'] = this.posts.map((v) => v.toJson()).toList();
-    }
-    return data;
   }
 }
 

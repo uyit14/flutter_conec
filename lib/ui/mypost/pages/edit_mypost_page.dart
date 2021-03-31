@@ -27,6 +27,7 @@ import 'package:html/parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:quill_delta/quill_delta.dart';
+import 'package:smart_select/smart_select.dart';
 import 'package:zefyr/zefyr.dart';
 
 import 'category_page.dart';
@@ -241,7 +242,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _postActionBloc.requestGetSubTopicWithHeader(true,
                   topicId: topic.id);
               if (_itemDetail.content != null) {
-                final document = parse(_itemDetail.content.toString().replaceAll("<br>", "\n") ?? "");
+                final document = parse(
+                    _itemDetail.content.toString().replaceAll("<br>", "\n") ??
+                        "");
                 final String parsedString =
                     parse(document.body.text).documentElement.text;
                 final notusDocument = _itemDetail.content != null
@@ -266,7 +269,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _postActionBloc.requestGetSubTopicWithHeader(true,
                   topicId: topic.id);
               if (_itemDetail.content != null) {
-                final document = parse(_itemDetail.content.toString().replaceAll("<br>", "\n") ?? "");
+                final document = parse(
+                    _itemDetail.content.toString().replaceAll("<br>", "\n") ??
+                        "");
                 final String parsedString =
                     parse(document.body.text).documentElement.text;
                 final notusDocument = _itemDetail.content != null
@@ -291,7 +296,9 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _postActionBloc.requestGetSubTopicWithHeader(false,
                   topicId: topic.id);
               if (_itemDetail.content != null) {
-                final document = parse(_itemDetail.content.toString().replaceAll("<br>", "\n") ?? "");
+                final document = parse(
+                    _itemDetail.content.toString().replaceAll("<br>", "\n") ??
+                        "");
                 final String parsedString =
                     parse(document.body.text).documentElement.text;
                 final notusDocument = _itemDetail.content != null
@@ -405,21 +412,32 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                     return UILoading();
                                   case Status.COMPLETED:
                                     List<Topic> topics = snapshot.data.data;
-                                    print("ags.length: "+tags.length.toString());
+                                    print("ags.length: " +
+                                        tags.length.toString());
                                     if (topics.length > 0) {
                                       return Container(
-                                        child: ChipsChoice<Topic>.multiple(
+                                        // child: ChipsChoice<Topic>.multiple(
+                                        //   value: tags,
+                                        //   wrapped: true,
+                                        //   onChanged: (val) =>
+                                        //       setState(() => tags = val),
+                                        //   choiceItems:
+                                        //       C2Choice.listFrom<Topic, Topic>(
+                                        //     source: topics,
+                                        //     value: (i, v) => v,
+                                        //     label: (i, v) => v.title,
+                                        //     tooltip: (i, v) => v.title,
+                                        //   ),
+                                        // ),
+                                        child: SmartSelect<Topic>.multiple(
                                           value: tags,
-                                          wrapped: true,
-                                          onChanged: (val) =>
-                                              setState(() => tags = val),
-                                          choiceItems:
-                                              C2Choice.listFrom<Topic, Topic>(
-                                            source: topics,
-                                            value: (i, v) => v,
-                                            label: (i, v) => v.title,
-                                            tooltip: (i, v) => v.title,
-                                          ),
+                                          choiceType: S2ChoiceType.chips,
+                                          onChange: (val) =>
+                                              setState(() => tags = val.value),
+                                          choiceItems: S2Choice.listFrom(
+                                              source: topics,
+                                              value: (i, v) => v,
+                                              title: (i, v) => v.title),
                                         ),
                                       );
                                     } else {
@@ -913,11 +931,11 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                             text: "Hình Ảnh ",
                             style: TextStyle(color: Colors.black),
                             children: <TextSpan>[
-                              TextSpan(
-                                  text:
+                          TextSpan(
+                              text:
                                   " (Vui lòng chụp hình ảnh theo chiều ngang để hiển thị tốt trên ứng dụng)",
-                                  style: TextStyle(color: Colors.green))
-                            ])),
+                              style: TextStyle(color: Colors.green))
+                        ])),
                     _images.length == 0 && _urlImages.length == 0
                         ? Align(
                             alignment: Alignment.centerLeft,
@@ -1086,7 +1104,10 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       _postActionRequest = PostActionRequest(
           postId: _itemDetail.postId,
           title: _titleController.text,
-          content: _controller.document.toPlainText().toString().replaceAll("\n", "<br>"),
+          content: _controller.document
+              .toPlainText()
+              .toString()
+              .replaceAll("\n", "<br>"),
           thumbnail: _images.length > 0 && _urlImages.length == 0
               ? {
                   "fileName": image01.path.split("/").last,
@@ -1114,7 +1135,10 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       _postActionRequest = PostActionRequest(
           postId: _itemDetail.postId,
           title: _titleController.text,
-          content: _controller.document.toPlainText().toString().replaceAll("\n", "<br>"),
+          content: _controller.document
+              .toPlainText()
+              .toString()
+              .replaceAll("\n", "<br>"),
           thumbnail: _images.length > 0
               ? {
                   "fileName": image01.path.split("/").last,
@@ -1137,7 +1161,10 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       _postActionRequest = PostActionRequest(
           postId: _itemDetail.postId,
           title: _titleController.text,
-          content: _controller.document.toPlainText().toString().replaceAll("\n", "<br>"),
+          content: _controller.document
+              .toPlainText()
+              .toString()
+              .replaceAll("\n", "<br>"),
           thumbnail: _images.length > 0
               ? {
                   "fileName": image01.path.split("/").last,

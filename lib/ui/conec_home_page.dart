@@ -20,7 +20,9 @@ import 'home/blocs/home_bloc.dart';
 import 'home/pages/item_detail_page.dart';
 import 'home/pages/items_by_category_page.dart';
 import 'mypost/pages/mypost_page.dart';
+import 'news/pages/news_detail_page.dart';
 import 'news/pages/news_page.dart';
+import 'news/pages/sell_detail_page.dart';
 import 'profile/pages/profile_pages.dart';
 
 class ConecHomePage extends StatefulWidget {
@@ -182,12 +184,6 @@ class _ConecHomePageState extends State<ConecHomePage> {
   // Platform messages are asynchronous, so we initialize in an async method.
   void initOneSignal(oneSignalAppId) async {
     OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-    var status = await OneSignal.shared.getPermissionSubscriptionState();
-    print("DeviceToken: ${status.subscriptionStatus.userId}");
-    globals.deviceToken = status.subscriptionStatus.userId;
-    setState(() {
-      _deviceToken = status.subscriptionStatus.userId;
-    });
     var settings = {
       OSiOSSettings.autoPrompt: true,
       OSiOSSettings.inAppLaunchUrl: true
@@ -197,7 +193,12 @@ class _ConecHomePageState extends State<ConecHomePage> {
 
     OneSignal.shared
         .setInFocusDisplayType(OSNotificationDisplayType.notification);
-
+    var status = await OneSignal.shared.getPermissionSubscriptionState();
+    print("DeviceToken: ${status.subscriptionStatus.userId}");
+    globals.deviceToken = status.subscriptionStatus.userId;
+    setState(() {
+      _deviceToken = status.subscriptionStatus.userId;
+    });
     // will be called whenever a notification is received
     OneSignal.shared
         .setNotificationReceivedHandler((OSNotification notification) {
@@ -212,13 +213,24 @@ class _ConecHomePageState extends State<ConecHomePage> {
           "Opened notification: \n${result.notification.jsonRepresentation().replaceAll("\\n", "\n")}");
       print(
           "postIdddd: " + result.notification.payload.additionalData["postId"]);
-      if (result.notification.payload.additionalData["postId"] != null) {
+      if (result.notification.payload.additionalData["postId"] != null &&
+          result.notification.payload.additionalData["type"] != null) {
         String postId = result.notification.payload.additionalData["postId"];
+        String type = result.notification.payload.additionalData["type"];
         String title = result.notification.payload.title;
-        Navigator.of(context).pushNamed(ItemDetailPage.ROUTE_NAME, arguments: {
-          'postId': postId,
-          'title': title,
-        });
+        print("Open: $type");
+        if (type == "TOPIC") {
+          Navigator.of(context).pushNamed(ItemDetailPage.ROUTE_NAME,
+              arguments: {'postId': postId, 'title': title});
+        }
+        if (type == "ADS") {
+          Navigator.of(context).pushNamed(SellDetailPage.ROUTE_NAME,
+              arguments: {'postId': postId});
+        }
+        if (type == "NEWS") {
+          Navigator.of(context).pushNamed(NewsDetailPage.ROUTE_NAME,
+              arguments: {'postId': postId});
+        }
       }
     });
   }
