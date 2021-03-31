@@ -3,6 +3,7 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
+import 'package:conecapp/models/response/page/hidden_response.dart';
 import 'package:conecapp/repositories/home/home_remote_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tiengviet/tiengviet.dart';
@@ -165,69 +166,7 @@ class ItemsByCategoryBloc {
 //    return false;
   }
 
-//  void requestCommentByParentId(String parentID) async{
-//    final childList = allComments.where((element) => element.parent == parentID).toList();
-//
-//    if(childList.length > 0){
-//      debugPrint("parentID: " + parentID + "------" + "childList: " + childList.length.toString());
-//      _childCommentController.sink.add(childList);
-//    }
-//  }
 
-//  //
-//  List<String> _totalList = List();
-//
-//  void requestLoadList(bool isLoadMore) async {
-//    if (!isLoadMore)
-//      _itemController.sink.add(ApiResponse.loading("Loading..."));
-//    List<String> imgList = List();
-//    int currentLengthList = _totalList.length;
-//    try {
-//      if (!isLoadMore) {
-//        imgList = DummyData.imgListLoadmore.sublist(currentLengthList, 6);
-//      } else {
-//        if (currentLengthList < DummyData.imgListLoadmore.length) {
-//          imgList = DummyData.imgListLoadmore.sublist(
-//              currentLengthList,
-//              currentLengthList + 6 <= DummyData.imgListLoadmore.length
-//                  ? currentLengthList + 6
-//                  : DummyData.imgListLoadmore.length);
-//        }
-//      }
-//      _totalList.addAll(imgList);
-//      _itemController.sink.add(ApiResponse.completed(_totalList));
-//    } on Exception catch (e) {
-//      _itemController.sink.addError(ApiResponse.error(e.toString()));
-//      debugPrint(e.toString());
-//    }
-//  }
-//
-//  void requestSearch(String query) {
-//    _itemController.sink.add(ApiResponse.loading("Loading..."));
-//    List<String> _searchList = List();
-//    if (query.isNotEmpty) {
-//      List<String> dummyListData = List();
-//      _totalList.forEach((element) {
-//        if (element.toLowerCase().contains(query)) {
-//          dummyListData.add(element);
-//        }
-//      });
-//      _searchList.addAll(dummyListData);
-//      _itemController.sink.add(ApiResponse.completed(_searchList));
-//    } else {
-//      _itemController.sink.add(ApiResponse.completed(_totalList));
-//    }
-//  }
-//
-//  void requestCancel() {
-//    _itemController.sink.add(ApiResponse.completed(_totalList));
-//  }
-
-//  void filterByCategory(String topicName){
-//    List<LatestItem> _filterResult = List<LatestItem>();
-//    _filterResult = _originalItems.where((element) => element.topic.toLowerCase() == topicName).toList();
-//    _allItemController.sink.add(ApiResponse.completed(_filterResult));
-//  }
 
   void clearSearch() {
     _allItemController.sink.add(ApiResponse.completed(_originalItems));
@@ -253,21 +192,10 @@ class ItemsByCategoryBloc {
     return false;
   }
 
-  // void filterCity(String cityName){
-  //   var filterList = _originalItems.where((element) => element.province.toLowerCase() == cityName).toList();
-  //   _allItemController.sink.add(ApiResponse.completed(filterList));
-  // }
-  //
-  // void filterDistrict(String districtName){
-  //   var filterList = _originalItems.where((element) => element.district.toLowerCase() == districtName || element.district.toLowerCase() == 'quận $districtName').toList();
-  //   _allItemController.sink.add(ApiResponse.completed(filterList));
-  // }
-  //
-  // void filterTopic(String topicName){
-  //   var filterList = _originalItems.where((element) => element.topic.toLowerCase() == topicName.toLowerCase()).toList();
-  //   print("filter with $topicName ==> data: " + filterList.length.toString());
-  //   _allItemController.sink.add(ApiResponse.completed(filterList));
-  // }
+  Future<HiddenResponse> requestHiddenPostInfo(String ownerId, String userId, String postId) async {
+    final response = await _repository.getHiddenPostInfo(ownerId, userId, postId);
+    return response;
+  }
 
   void dispose() {
     _allItemController?.close();

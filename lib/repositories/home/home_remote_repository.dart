@@ -211,6 +211,14 @@ class HomeRemoteRepository {
     return HiddenResponse.fromJson(response);
   }
 
+  Future<HiddenResponse> getHiddenPostInfo(String ownerId, String userId, String postId) async {
+    final response = await _helper.get(
+        "/api/post/ShowPostContact?ownerId=$ownerId&userId=$userId&postId=$postId",
+        headers: await Helper.header());
+    print("getHiddenPostInfo" + response.toString());
+    return HiddenResponse.fromJson(response);
+  }
+
   Future<String> registerDeviceToken(String deviceToken, String userId) async {
     String userIdQuery = "";
     if (userId.length > 0) {

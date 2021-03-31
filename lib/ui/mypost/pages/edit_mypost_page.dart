@@ -27,7 +27,6 @@ import 'package:html/parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:quill_delta/quill_delta.dart';
-import 'package:smart_select/smart_select.dart';
 import 'package:zefyr/zefyr.dart';
 
 import 'category_page.dart';
@@ -71,7 +70,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   String _titleHint = "Nhập tiêu đề";
 
   // multiple choice value
-  List<Topic> tags = [];
+  List<String> tags = [];
 
   @override
   void initState() {
@@ -220,6 +219,15 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
     }
   }
 
+  List<String> getTopicIds2(List<Topic> topics) {
+    List<String> ids = List();
+    if(topics.length == 0) return [];
+    for (int i = 0; i < topics.length; i++) {
+      ids.add(topics[i].id);
+    }
+    return ids;
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -237,7 +245,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _itemDetail = event.data;
               topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
               setState(() {
-                tags = _itemDetail.topics;
+                tags = getTopicIds2(_itemDetail.topics);
               });
               _postActionBloc.requestGetSubTopicWithHeader(true,
                   topicId: topic.id);
@@ -264,7 +272,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _itemDetail = event.data;
               topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
               setState(() {
-                tags = _itemDetail.topics;
+                tags = getTopicIds2(_itemDetail.topics);
               });
               _postActionBloc.requestGetSubTopicWithHeader(true,
                   topicId: topic.id);
@@ -291,7 +299,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _itemDetail = event.data;
               topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
               setState(() {
-                tags = _itemDetail.subTopics;
+                tags = getTopicIds2(_itemDetail.topics);
               });
               _postActionBloc.requestGetSubTopicWithHeader(false,
                   topicId: topic.id);
@@ -343,6 +351,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   @override
   Widget build(BuildContext context) {
     final bool _showFab = MediaQuery.of(context).viewInsets.bottom != 0.0;
+    print("ags.length: " + "000");
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(title: Text("Sửa bài đăng")),
@@ -416,29 +425,19 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                         tags.length.toString());
                                     if (topics.length > 0) {
                                       return Container(
-                                        // child: ChipsChoice<Topic>.multiple(
-                                        //   value: tags,
-                                        //   wrapped: true,
-                                        //   onChanged: (val) =>
-                                        //       setState(() => tags = val),
-                                        //   choiceItems:
-                                        //       C2Choice.listFrom<Topic, Topic>(
-                                        //     source: topics,
-                                        //     value: (i, v) => v,
-                                        //     label: (i, v) => v.title,
-                                        //     tooltip: (i, v) => v.title,
-                                        //   ),
-                                        // ),
-                                        child: SmartSelect<Topic>.multiple(
-                                          value: tags,
-                                          choiceType: S2ChoiceType.chips,
-                                          onChange: (val) =>
-                                              setState(() => tags = val.value),
-                                          choiceItems: S2Choice.listFrom(
-                                              source: topics,
-                                              value: (i, v) => v,
-                                              title: (i, v) => v.title),
-                                        ),
+                                         child: ChipsChoice<String>.multiple(
+                                           value: tags,
+                                           wrapped: true,
+                                           onChanged: (val) =>
+                                               setState(() => tags = val),
+                                           choiceItems:
+                                               C2Choice.listFrom<String, Topic>(
+                                             source: topics,
+                                             value: (i, v) => v.id,
+                                             label: (i, v) => v.title,
+                                             tooltip: (i, v) => v.title,
+                                           ),
+                                         ),
                                       );
                                     } else {
                                       return Container();
@@ -1068,11 +1067,12 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
   PostActionRequest _postActionRequest;
 
   List<String> getTopicIds() {
-    List<String> ids = List();
-    for (int i = 0; i < tags.length; i++) {
-      ids.add(tags[i].id);
-    }
-    return ids;
+//    List<String> ids = List();
+//    for (int i = 0; i < tags.length; i++) {
+//      ids.add(tags[i].id);
+//    }
+//    return ids;
+  return tags;
   }
 
   void doUpdateAction() async {

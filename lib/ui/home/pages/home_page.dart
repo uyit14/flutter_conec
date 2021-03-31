@@ -13,11 +13,11 @@ import 'package:conecapp/ui/home/widgets/new_product_widget.dart';
 import 'package:conecapp/ui/home/widgets/new_sport_widget.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
-import '../../../common/globals.dart' as globals;
 import 'package:flutter/cupertino.dart';
-import 'package:geolocator/geolocator.dart';
-import '../widgets/custom_clipper.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../../../common/globals.dart' as globals;
 import 'item_detail_page.dart';
 import 'items_by_category_page.dart';
 
@@ -33,6 +33,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedPageIndex = 0;
   HomeBloc _homeBloc = HomeBloc();
+
   //ScrollController _scrollController = ScrollController();
   List<LatestItem> clubs = List<LatestItem>();
 
@@ -93,19 +94,20 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Stack(
-              children: <Widget>[
-                ClipPath(
-                  clipper: CustomShapeClipper(),
-                  child: Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.red, Colors.redAccent[200]])),
-                  ),
-                ),
-              ],
-            ),
+//            Stack(
+//              children: <Widget>[
+//                ClipPath(
+//                  clipper: CustomShapeClipper(),
+//                  child: Container(
+//                    height: 50,
+//                    decoration: BoxDecoration(
+//                        gradient: LinearGradient(
+//                            colors: [Colors.red, Colors.redAccent[200]])),
+//                  ),
+//                ),
+//              ],
+//            ),
+            SizedBox(height: 8),
             StreamBuilder<ApiResponse<List<model.Slider>>>(
                 stream: _homeBloc.sliderStream,
                 builder: (context, snapshot) {
@@ -117,8 +119,9 @@ class _HomePageState extends State<HomePage> {
                         List<model.Slider> slider = snapshot.data.data;
                         return CarouselSlider(
                           options: CarouselOptions(
-                            height: Helper.isTablet(context) ? 300 : 175,
+                            height: Helper.isTablet(context) ? 325 : 215,
                             autoPlay: true,
+                            viewportFraction: 0.9,
                             enlargeCenterPage: true,
                           ),
                           items: slider
@@ -137,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                                                       error) =>
                                                   Image.asset(
                                                       "assets/images/error.png"),
-                                              fit: BoxFit.cover,
+                                              fit: BoxFit.fill,
                                               width: double.infinity,
                                             ),
                                             Positioned(
@@ -204,8 +207,8 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(
                           "Tin ưu tiên",
-                          style:
-                              TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         InkWell(
                           onTap: () => doCallback(page: 0),
@@ -223,209 +226,212 @@ class _HomePageState extends State<HomePage> {
                 : Container(),
             clubs.length > 0
                 ? Card(
-              child: CarouselSlider(
-                options: CarouselOptions(
-                    height: Helper.isTablet(context) ? 300 : 150,
-                  autoPlay: true,
-                  enlargeCenterPage: true,
-                  viewportFraction: 0.3
-                ),
-                // items: clubs
-                //     .map((item) => Banner(
-                //   message: "Ưu tiên",
-                //   location: BannerLocation.topEnd,
-                //   color: Colors.deepOrange,
-                //       child: InkWell(
-                //         onTap: (){
-                //           if(item.topicId == "333f691d-6595-443d-bae3-9a2681025b53"){
-                //             Navigator.of(context).pushNamed(
-                //                 NewsDetailPage.ROUTE_NAME,
-                //                 arguments: {
-                //                   'postId': item.postId,
-                //                 });
-                //           }else if(item.topicId == "333f691d-6585-443a-bae3-9a2681025b53"){
-                //             Navigator.of(context).pushNamed(
-                //                 SellDetailPage.ROUTE_NAME,
-                //                 arguments: {
-                //                   'postId': item.postId,
-                //                 });
-                //           }else{
-                //             Navigator.of(context).pushNamed(
-                //                 ItemDetailPage.ROUTE_NAME,
-                //                 arguments: {
-                //                   'postId': item.postId,
-                //                   'title': item.title,
-                //                 });
-                //           }
-                //         },
-                //         child: Container(
-                //   child: ClipRRect(
-                //           borderRadius: BorderRadius.all(
-                //               Radius.circular(8)),
-                //           child: Stack(
-                //             children: <Widget>[
-                //               CachedNetworkImage(
-                //                 imageUrl: item.thumbnail,
-                //                 placeholder: (context, url) =>
-                //                     Image.asset(
-                //                         "assets/images/placeholder.png"),
-                //                 errorWidget: (context, url,
-                //                     error) =>
-                //                     Image.asset(
-                //                         "assets/images/error.png"),
-                //                 fit: BoxFit.cover,
-                //                 width: double.infinity,
-                //               ),
-                //               Positioned(
-                //                 bottom: 0.0,
-                //                 left: 0.0,
-                //                 right: 0.0,
-                //                 child: Container(
-                //                   decoration: BoxDecoration(
-                //                     gradient: LinearGradient(
-                //                       colors: [
-                //                         Color.fromARGB(
-                //                             200, 0, 0, 0),
-                //                         Color.fromARGB(0, 0, 0, 0)
-                //                       ],
-                //                       begin:
-                //                       Alignment.bottomCenter,
-                //                       end: Alignment.topCenter,
-                //                     ),
-                //                   ),
-                //                   padding: EdgeInsets.symmetric(
-                //                       vertical: 10.0,
-                //                       horizontal: 20.0),
-                //                                  child: Column(
-                //                                    children: [
-                //                                      Text(
-                //                                        item.title,
-                //                                        maxLines: 3,
-                //                                        overflow: TextOverflow.ellipsis,
-                //                                        style: TextStyle(
-                //                                          color: Colors.white,
-                //                                          fontSize: 16,
-                //                                          fontWeight: FontWeight.bold,
-                //                                        ),
-                //                                      ),
-                //                                      SizedBox(height: 6),
-                //                                      Text(
-                //                                        item.price != null &&
-                //                                            item.price != 0
-                //                                            ? '${Helper.formatCurrency(item.price)} VND'
-                //                                            : "Liên hệ",
-                //                                        style: TextStyle(
-                //                                          color: Colors.white,
-                //                                          fontSize: 16,
-                //                                          fontWeight: FontWeight.bold,
-                //                                        ),
-                //                                      ),
-                //                                    ],
-                //                                  ),
-                //                 ),
-                //               ),
-                //             ],
-                //           )),
-                // ),
-                //       ),
-                //     ))
-                //     .toList(),
-                items: clubs
-                    .map((item) => InkWell(
-                      onTap: (){
-                        if(item.topicId == "333f691d-6595-443d-bae3-9a2681025b53"){
-                          Navigator.of(context).pushNamed(
-                              NewsDetailPage.ROUTE_NAME,
-                              arguments: {
-                                'postId': item.postId,
-                              });
-                        }else if(item.topicId == "333f691d-6585-443a-bae3-9a2681025b53"){
-                          Navigator.of(context).pushNamed(
-                              SellDetailPage.ROUTE_NAME,
-                              arguments: {
-                                'postId': item.postId,
-                              });
-                        }else{
-                          Navigator.of(context).pushNamed(
-                              ItemDetailPage.ROUTE_NAME,
-                              arguments: {
-                                'postId': item.postId,
-                                'title': item.title,
-                              });
-                        }
-                      },
-                      child: Container(
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(8)),
-                            child: Stack(
-                              children: <Widget>[
-                                CachedNetworkImage(
-                                  imageUrl: item.thumbnail,
-                                  placeholder: (context, url) =>
-                                      Image.asset(
-                                          "assets/images/placeholder.png"),
-                                  errorWidget: (context, url,
-                                      error) =>
-                                      Image.asset(
-                                          "assets/images/error.png"),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                ),
-                                Positioned(
-                                  bottom: 0.0,
-                                  left: 0.0,
-                                  right: 0.0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Color.fromARGB(
-                                              200, 0, 0, 0),
-                                          Color.fromARGB(0, 0, 0, 0)
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                          height: Helper.isTablet(context) ? 300 : 150,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          viewportFraction: 0.3),
+                      // items: clubs
+                      //     .map((item) => Banner(
+                      //   message: "Ưu tiên",
+                      //   location: BannerLocation.topEnd,
+                      //   color: Colors.deepOrange,
+                      //       child: InkWell(
+                      //         onTap: (){
+                      //           if(item.topicId == "333f691d-6595-443d-bae3-9a2681025b53"){
+                      //             Navigator.of(context).pushNamed(
+                      //                 NewsDetailPage.ROUTE_NAME,
+                      //                 arguments: {
+                      //                   'postId': item.postId,
+                      //                 });
+                      //           }else if(item.topicId == "333f691d-6585-443a-bae3-9a2681025b53"){
+                      //             Navigator.of(context).pushNamed(
+                      //                 SellDetailPage.ROUTE_NAME,
+                      //                 arguments: {
+                      //                   'postId': item.postId,
+                      //                 });
+                      //           }else{
+                      //             Navigator.of(context).pushNamed(
+                      //                 ItemDetailPage.ROUTE_NAME,
+                      //                 arguments: {
+                      //                   'postId': item.postId,
+                      //                   'title': item.title,
+                      //                 });
+                      //           }
+                      //         },
+                      //         child: Container(
+                      //   child: ClipRRect(
+                      //           borderRadius: BorderRadius.all(
+                      //               Radius.circular(8)),
+                      //           child: Stack(
+                      //             children: <Widget>[
+                      //               CachedNetworkImage(
+                      //                 imageUrl: item.thumbnail,
+                      //                 placeholder: (context, url) =>
+                      //                     Image.asset(
+                      //                         "assets/images/placeholder.png"),
+                      //                 errorWidget: (context, url,
+                      //                     error) =>
+                      //                     Image.asset(
+                      //                         "assets/images/error.png"),
+                      //                 fit: BoxFit.cover,
+                      //                 width: double.infinity,
+                      //               ),
+                      //               Positioned(
+                      //                 bottom: 0.0,
+                      //                 left: 0.0,
+                      //                 right: 0.0,
+                      //                 child: Container(
+                      //                   decoration: BoxDecoration(
+                      //                     gradient: LinearGradient(
+                      //                       colors: [
+                      //                         Color.fromARGB(
+                      //                             200, 0, 0, 0),
+                      //                         Color.fromARGB(0, 0, 0, 0)
+                      //                       ],
+                      //                       begin:
+                      //                       Alignment.bottomCenter,
+                      //                       end: Alignment.topCenter,
+                      //                     ),
+                      //                   ),
+                      //                   padding: EdgeInsets.symmetric(
+                      //                       vertical: 10.0,
+                      //                       horizontal: 20.0),
+                      //                                  child: Column(
+                      //                                    children: [
+                      //                                      Text(
+                      //                                        item.title,
+                      //                                        maxLines: 3,
+                      //                                        overflow: TextOverflow.ellipsis,
+                      //                                        style: TextStyle(
+                      //                                          color: Colors.white,
+                      //                                          fontSize: 16,
+                      //                                          fontWeight: FontWeight.bold,
+                      //                                        ),
+                      //                                      ),
+                      //                                      SizedBox(height: 6),
+                      //                                      Text(
+                      //                                        item.price != null &&
+                      //                                            item.price != 0
+                      //                                            ? '${Helper.formatCurrency(item.price)} VND'
+                      //                                            : "Liên hệ",
+                      //                                        style: TextStyle(
+                      //                                          color: Colors.white,
+                      //                                          fontSize: 16,
+                      //                                          fontWeight: FontWeight.bold,
+                      //                                        ),
+                      //                                      ),
+                      //                                    ],
+                      //                                  ),
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           )),
+                      // ),
+                      //       ),
+                      //     ))
+                      //     .toList(),
+                      items: clubs
+                          .map((item) => InkWell(
+                                onTap: () {
+                                  if (item.topicId ==
+                                      "333f691d-6595-443d-bae3-9a2681025b53") {
+                                    Navigator.of(context).pushNamed(
+                                        NewsDetailPage.ROUTE_NAME,
+                                        arguments: {
+                                          'postId': item.postId,
+                                        });
+                                  } else if (item.topicId ==
+                                      "333f691d-6585-443a-bae3-9a2681025b53") {
+                                    Navigator.of(context).pushNamed(
+                                        SellDetailPage.ROUTE_NAME,
+                                        arguments: {
+                                          'postId': item.postId,
+                                        });
+                                  } else {
+                                    Navigator.of(context).pushNamed(
+                                        ItemDetailPage.ROUTE_NAME,
+                                        arguments: {
+                                          'postId': item.postId,
+                                          'title': item.title,
+                                        });
+                                  }
+                                },
+                                child: Container(
+                                  child: ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          CachedNetworkImage(
+                                            imageUrl: item.thumbnail,
+                                            placeholder: (context, url) =>
+                                                Image.asset(
+                                                    "assets/images/placeholder.png"),
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                Image.asset(
+                                                    "assets/images/error.png"),
+                                            fit: BoxFit.cover,
+                                            width: double.infinity,
+                                          ),
+                                          Positioned(
+                                            bottom: 0.0,
+                                            left: 0.0,
+                                            right: 0.0,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Color.fromARGB(
+                                                        200, 0, 0, 0),
+                                                    Color.fromARGB(0, 0, 0, 0)
+                                                  ],
+                                                  begin: Alignment.bottomCenter,
+                                                  end: Alignment.topCenter,
+                                                ),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10.0,
+                                                  horizontal: 20.0),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    item.title,
+                                                    maxLines: 3,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 6),
+                                                  Text(
+                                                    item.price != null &&
+                                                            item.price != 0
+                                                        ? '${Helper.formatCurrency(item.price)} VND'
+                                                        : "Liên hệ",
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ],
-                                        begin:
-                                        Alignment.bottomCenter,
-                                        end: Alignment.topCenter,
-                                      ),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 10.0,
-                                        horizontal: 20.0),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          item.title,
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 6),
-                                        Text(
-                                          item.price != null &&
-                                              item.price != 0
-                                              ? '${Helper.formatCurrency(item.price)} VND'
-                                              : "Liên hệ",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                      )),
                                 ),
-                              ],
-                            )),
-                      ),
-                    ))
-                    .toList(),
-              ),
+                              ))
+                          .toList(),
+                    ),
                   )
                 : Container(),
             clubs.length > 0 ? SizedBox(height: 8) : Container(),

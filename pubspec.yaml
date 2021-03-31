@@ -68,8 +68,7 @@ dependencies:
   onesignal_flutter: 2.6.3
   new_version: ^0.0.6
   photo_view: ^0.10.2
-  smart_select: ^4.3.2
-  #firebase_analytics: ^7.0.1
+  firebase_analytics: ^7.0.1
 
 dev_dependencies:
   flutter_test:

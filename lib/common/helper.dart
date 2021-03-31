@@ -169,19 +169,19 @@ class Helper {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("Để sau", style: TextStyle(color: Colors.red)),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            CupertinoDialogAction(
-              child: Text("Cập nhật ngay"),
-              onPressed: onOK,
-            )
-          ],
-        ));
+              title: Text(title),
+              content: Text(content),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("Để sau", style: TextStyle(color: Colors.red)),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                CupertinoDialogAction(
+                  child: Text("Cập nhật ngay"),
+                  onPressed: onOK,
+                )
+              ],
+            ));
   }
 
   static void showAuthenticationDialog(BuildContext context) {
@@ -225,6 +225,21 @@ class Helper {
             ));
   }
 
+  static void showHiddenDialog(
+      BuildContext context, String content, Function onOKPress) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              content: Text(content),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: onOKPress,
+                )
+              ],
+            ));
+  }
+
   static void showTokenExpiredDialog(BuildContext context) {
     showDialog(
         context: context,
@@ -246,15 +261,15 @@ class Helper {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(title),
-          content: Html(data: content),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("OK"),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ],
-        ));
+              title: Text(title),
+              content: Html(data: content),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            ));
   }
 
   static void showMissingDialog2(
@@ -262,15 +277,15 @@ class Helper {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(
-          title: Text(title),
-          content: Html(data: content),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text("OK"),
-              onPressed: onOKPress,
-            )
-          ],
-        ));
+              title: Text(title),
+              content: Html(data: content),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text("OK"),
+                  onPressed: onOKPress,
+                )
+              ],
+            ));
   }
 
   static void showCompleteDialog(

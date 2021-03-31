@@ -9,6 +9,7 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/item_detail.dart';
+import 'package:conecapp/models/response/page/hidden_response.dart';
 import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../common/globals.dart' as globals;
 import '../../../common/helper.dart';
 import 'image_viewer_page.dart';
 
@@ -35,7 +37,9 @@ class ItemDetailPage extends StatefulWidget {
 class _ItemDetailPageState extends State<ItemDetailPage> {
   bool _isFavorite = false;
   bool _isCallApi;
-  String phoneNumber;
+
+  //String phoneNumber;
+  bool _shouldShow = false;
   String linkShare;
   bool isApprove = false;
   int _currentIndex = 0;
@@ -284,7 +288,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     //   autoPlayBanners(itemDetail.images);
                     //   _setBanners = false;
                     // }
-                    phoneNumber = itemDetail.phoneNumber;
+                    //phoneNumber = itemDetail.phoneNumber;
                     linkShare = itemDetail.shareLink;
 //                    if (_firstCalculate) {
 //                      getLatLng(itemDetail.getAddress);
@@ -298,7 +302,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                               Navigator.of(context).push(PageRouteBuilder(
                                   opaque: false,
                                   pageBuilder: (BuildContext context, _, __) =>
-                                      ImageViewerPage(itemDetail.images, _currentIndex)));
+                                      ImageViewerPage(
+                                          itemDetail.images, _currentIndex)));
                             },
                             child: Hero(
                               tag: postId,
@@ -601,13 +606,40 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               padding:
                                                   EdgeInsets.only(right: 0),
                                               onPressed: () async {
-                                                await launch(
-                                                    'tel:${itemDetail.phoneNumber}');
+                                                if (_shouldShow) {
+                                                  await launch(
+                                                      'tel:${itemDetail.phoneNumber}');
+                                                } else {
+                                                  HiddenResponse response =
+                                                      await _itemsByCategoryBloc
+                                                          .requestHiddenPostInfo(
+                                                              globals.ownerId,
+                                                              itemDetail
+                                                                  .ownerId,
+                                                              itemDetail
+                                                                  .postId);
+                                                  if (response.status) {
+                                                    setState(() {
+                                                      _shouldShow =
+                                                          response.status;
+                                                    });
+                                                  } else {
+                                                    Helper.showHiddenDialog(
+                                                        context,
+                                                        response.message ??
+                                                            "Có lỗi xảy ra, xin thử lại sau",
+                                                        () {
+                                                      Navigator.pop(context);
+                                                    });
+                                                  }
+                                                }
                                               },
                                               icon: Icon(Icons.phone,
                                                   color: Colors.blue),
                                               label: Text(
-                                                itemDetail.phoneNumber ?? "",
+                                                _shouldShow
+                                                    ? itemDetail.phoneNumber
+                                                    : "Liên hệ",
                                                 style: TextStyle(
                                                     color: Colors.blue,
                                                     fontSize: 16,
@@ -673,22 +705,26 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     height: 1,
                                     color: Colors.black12,
                                     margin: EdgeInsets.symmetric(vertical: 8)),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.location_on,
-                                      color: Colors.green,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text("Địa chỉ",
-                                        style: AppTheme.commonDetail),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(itemDetail.getAddress ?? "",
-                                      style: TextStyle(fontSize: 14)),
-                                ),
+                                _shouldShow
+                                    ? Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.location_on,
+                                            color: Colors.green,
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text("Địa chỉ",
+                                              style: AppTheme.commonDetail),
+                                        ],
+                                      )
+                                    : Container(),
+                                _shouldShow
+                                    ? Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(itemDetail.getAddress ?? "",
+                                            style: TextStyle(fontSize: 14)),
+                                      )
+                                    : Container(),
                                 // InkWell(
                                 //   onTap: () {
                                 //     Navigator.of(context).pushNamed(
@@ -713,11 +749,14 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                 //     width: double.infinity,
                                 //   ),
                                 // ),
-                                Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: Colors.black12,
-                                    margin: EdgeInsets.symmetric(vertical: 8)),
+                                _shouldShow
+                                    ? Container(
+                                        width: double.infinity,
+                                        height: 1,
+                                        color: Colors.black12,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 8))
+                                    : Container(),
                                 Row(
                                   children: <Widget>[
                                     Icon(
