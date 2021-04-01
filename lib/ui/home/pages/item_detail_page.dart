@@ -39,7 +39,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   bool _isCallApi;
 
   //String phoneNumber;
-  bool _shouldShow = false;
+  //bool _shouldShow = false;
   String linkShare;
   bool isApprove = false;
   int _currentIndex = 0;
@@ -606,40 +606,35 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               padding:
                                                   EdgeInsets.only(right: 0),
                                               onPressed: () async {
-                                                if (_shouldShow) {
-                                                  await launch(
-                                                      'tel:${itemDetail.phoneNumber}');
+                                                HiddenResponse response =
+                                                    await _itemsByCategoryBloc
+                                                        .requestHiddenPostInfo(
+                                                            globals.ownerId,
+                                                            itemDetail.ownerId,
+                                                            itemDetail.postId);
+                                                if (response.status) {
+                                                  Helper.showInfoDialog(
+                                                      context,
+                                                      itemDetail.phoneNumber,
+                                                      itemDetail.getAddress,
+                                                      () async {
+                                                    await launch(
+                                                        'tel:${itemDetail.phoneNumber}');
+                                                  });
                                                 } else {
-                                                  HiddenResponse response =
-                                                      await _itemsByCategoryBloc
-                                                          .requestHiddenPostInfo(
-                                                              globals.ownerId,
-                                                              itemDetail
-                                                                  .ownerId,
-                                                              itemDetail
-                                                                  .postId);
-                                                  if (response.status) {
-                                                    setState(() {
-                                                      _shouldShow =
-                                                          response.status;
-                                                    });
-                                                  } else {
-                                                    Helper.showHiddenDialog(
-                                                        context,
-                                                        response.message ??
-                                                            "Có lỗi xảy ra, xin thử lại sau",
-                                                        () {
-                                                      Navigator.pop(context);
-                                                    });
-                                                  }
+                                                  Helper.showHiddenDialog(
+                                                      context,
+                                                      response.message ??
+                                                          "Có lỗi xảy ra, xin thử lại sau",
+                                                      () {
+                                                    Navigator.pop(context);
+                                                  });
                                                 }
                                               },
                                               icon: Icon(Icons.phone,
                                                   color: Colors.blue),
                                               label: Text(
-                                                _shouldShow
-                                                    ? itemDetail.phoneNumber
-                                                    : "Liên hệ",
+                                                "Liên hệ",
                                                 style: TextStyle(
                                                     color: Colors.blue,
                                                     fontSize: 16,
@@ -705,26 +700,26 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     height: 1,
                                     color: Colors.black12,
                                     margin: EdgeInsets.symmetric(vertical: 8)),
-                                _shouldShow
-                                    ? Row(
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.location_on,
-                                            color: Colors.green,
-                                          ),
-                                          SizedBox(width: 8),
-                                          Text("Địa chỉ",
-                                              style: AppTheme.commonDetail),
-                                        ],
-                                      )
-                                    : Container(),
-                                _shouldShow
-                                    ? Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(itemDetail.getAddress ?? "",
-                                            style: TextStyle(fontSize: 14)),
-                                      )
-                                    : Container(),
+                                // _shouldShow
+                                //     ? Row(
+                                //         children: <Widget>[
+                                //           Icon(
+                                //             Icons.location_on,
+                                //             color: Colors.green,
+                                //           ),
+                                //           SizedBox(width: 8),
+                                //           Text("Địa chỉ",
+                                //               style: AppTheme.commonDetail),
+                                //         ],
+                                //       )
+                                //     : Container(),
+                                // _shouldShow
+                                //     ? Padding(
+                                //         padding: const EdgeInsets.all(8.0),
+                                //         child: Text(itemDetail.getAddress ?? "",
+                                //             style: TextStyle(fontSize: 14)),
+                                //       )
+                                //     : Container(),
                                 // InkWell(
                                 //   onTap: () {
                                 //     Navigator.of(context).pushNamed(
@@ -749,14 +744,14 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                 //     width: double.infinity,
                                 //   ),
                                 // ),
-                                _shouldShow
-                                    ? Container(
-                                        width: double.infinity,
-                                        height: 1,
-                                        color: Colors.black12,
-                                        margin:
-                                            EdgeInsets.symmetric(vertical: 8))
-                                    : Container(),
+                                // _shouldShow
+                                //     ? Container(
+                                //         width: double.infinity,
+                                //         height: 1,
+                                //         color: Colors.black12,
+                                //         margin:
+                                //             EdgeInsets.symmetric(vertical: 8))
+                                //     : Container(),
                                 Row(
                                   children: <Widget>[
                                     Icon(

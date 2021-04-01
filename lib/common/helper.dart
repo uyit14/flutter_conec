@@ -240,6 +240,72 @@ class Helper {
             ));
   }
 
+  static void showInfoDialog(BuildContext context, String phone, String address,
+      Function onPhoneCall) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: Text("Thông tin liên hệ"),
+              content: Material(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 8),
+                    InkWell(
+                      onTap: onPhoneCall,
+                      child: Row(
+                        children: [
+                          Icon(Icons.phone_android),
+                          SizedBox(width: 4),
+                          Text("Liên hệ: ", style: TextStyle(fontSize: 14)),
+                          SizedBox(width: 8),
+                          Text(
+                            phone,
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on),
+                        SizedBox(width: 4),
+                        Text("Địa chỉ: ", style: TextStyle(fontSize: 14)),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            address,
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w500),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: FlatButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(
+                      "Đóng",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                )
+              ],
+            ));
+  }
+
   static void showTokenExpiredDialog(BuildContext context) {
     showDialog(
         context: context,

@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                           options: CarouselOptions(
                             height: Helper.isTablet(context) ? 325 : 215,
                             autoPlay: true,
-                            viewportFraction: 0.9,
+                            viewportFraction: 0.86,
                             enlargeCenterPage: true,
                           ),
                           items: slider

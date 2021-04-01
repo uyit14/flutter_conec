@@ -564,25 +564,55 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                           ),
                                         ),
                                         SizedBox(width: 12),
-                                        FlatButton.icon(
-                                            padding: EdgeInsets.only(right: 0),
-                                            onPressed: () async {
-                                              await launch(
-                                                  'tel:${adsDetail.phoneNumber}');
-                                            },
-                                            icon: Icon(Icons.phone,
-                                                color: Colors.blue),
-                                            label: Text(
-                                              adsDetail.phoneNumber ?? "",
-                                              style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500),
-                                            ))
+                                        // FlatButton.icon(
+                                        //     padding: EdgeInsets.only(right: 0),
+                                        //     onPressed: () async {
+                                        //       await launch(
+                                        //           'tel:${adsDetail.phoneNumber}');
+                                        //     },
+                                        //     icon: Icon(Icons.phone,
+                                        //         color: Colors.blue),
+                                        //     label: Text(
+                                        //       adsDetail.phoneNumber ?? "",
+                                        //       style: TextStyle(
+                                        //           color: Colors.blue,
+                                        //           fontSize: 16,
+                                        //           fontWeight: FontWeight.w500),
+                                        //     ))
                                       ],
                                     ),
                                   ),
                                 ),
+                                Container(
+                                  width: double.infinity,
+                                  height: 1,
+                                  color: Colors.black12,
+                                ),
+                                SizedBox(height: 8),
+                                Row(
+                                  children: <Widget>[
+                                    Icon(Icons.phone_android,
+                                        color: Colors.green),
+                                    SizedBox(width: 8),
+                                    Text("Liên hệ",
+                                        style: AppTheme.commonDetail),
+                                    Spacer(),
+                                    InkWell(
+                                      onTap: () async {
+                                        await launch(
+                                            'tel:${adsDetail.phoneNumber}');
+                                      },
+                                      child: Text(
+                                        adsDetail.phoneNumber ?? "",
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: 8),
                                 Container(
                                   width: double.infinity,
                                   height: 1,
