@@ -24,6 +24,7 @@ import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/change_password_page.dart';
 import 'package:conecapp/ui/profile/pages/guide_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'ui/address/district_page.dart';
 import 'ui/authen/pages/reset_pass_page.dart';
 import 'ui/conec_home_page.dart';
@@ -38,6 +39,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Firebase.initializeApp();
   runApp(ConecApp());
 }

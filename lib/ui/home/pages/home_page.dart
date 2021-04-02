@@ -86,6 +86,8 @@ class _HomePageState extends State<HomePage> {
     //_scrollController.dispose();
   }
 
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,7 +109,6 @@ class _HomePageState extends State<HomePage> {
 //                ),
 //              ],
 //            ),
-            SizedBox(height: 8),
             StreamBuilder<ApiResponse<List<model.Slider>>>(
                 stream: _homeBloc.sliderStream,
                 builder: (context, snapshot) {
@@ -117,52 +118,59 @@ class _HomePageState extends State<HomePage> {
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
                         List<model.Slider> slider = snapshot.data.data;
-                        return CarouselSlider(
-                          options: CarouselOptions(
-                            height: Helper.isTablet(context) ? 325 : 215,
-                            autoPlay: true,
-                            viewportFraction: 0.86,
-                            enlargeCenterPage: true,
-                          ),
-                          items: slider
-                              .map((item) => Container(
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8)),
-                                        child: Stack(
-                                          children: <Widget>[
-                                            CachedNetworkImage(
-                                              imageUrl: item.thumbnail,
-                                              placeholder: (context, url) =>
-                                                  Image.asset(
-                                                      "assets/images/placeholder.png"),
-                                              errorWidget: (context, url,
-                                                      error) =>
-                                                  Image.asset(
-                                                      "assets/images/error.png"),
-                                              fit: BoxFit.fill,
-                                              width: double.infinity,
-                                            ),
-                                            Positioned(
-                                              bottom: 0.0,
-                                              left: 0.0,
-                                              right: 0.0,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    colors: [
-                                                      Color.fromARGB(
-                                                          200, 0, 0, 0),
-                                                      Color.fromARGB(0, 0, 0, 0)
-                                                    ],
-                                                    begin:
-                                                        Alignment.bottomCenter,
-                                                    end: Alignment.topCenter,
-                                                  ),
+                        return Stack(
+                          children: [
+                            CarouselSlider(
+                              options: CarouselOptions(
+                                height: Helper.isTablet(context) ? 360 : 215,
+                                autoPlay: true,
+                                viewportFraction: 1,
+                                enlargeCenterPage: true,
+                                onPageChanged: (currentPage, reason) {
+                                  setState(() {
+                                    _currentIndex = currentPage;
+                                  });
+                                },
+                              ),
+                              items: slider
+                                  .map((item) => Container(
+                                        child: ClipRRect(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(0)),
+                                            child: Stack(
+                                              children: <Widget>[
+                                                CachedNetworkImage(
+                                                  imageUrl: item.thumbnail,
+                                                  placeholder: (context, url) =>
+                                                      Image.asset(
+                                                          "assets/images/placeholder.png"),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      Image.asset(
+                                                          "assets/images/error.png"),
+                                                  fit: BoxFit.fill,
+                                                  width: double.infinity,
                                                 ),
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 5.0,
-                                                    horizontal: 20.0),
+                                                Positioned(
+                                                  bottom: 0.0,
+                                                  left: 0.0,
+                                                  right: 0.0,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                        colors: [
+                                                          Color.fromARGB(
+                                                              200, 0, 0, 0),
+                                                          Color.fromARGB(0, 0, 0, 0)
+                                                        ],
+                                                        begin:
+                                                            Alignment.bottomCenter,
+                                                        end: Alignment.topCenter,
+                                                      ),
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(
+                                                        vertical: 5.0,
+                                                        horizontal: 20.0),
 //                                                child: Text(
 //                                                  item.title,
 //                                                  style: TextStyle(
@@ -171,12 +179,50 @@ class _HomePageState extends State<HomePage> {
 //                                                    fontWeight: FontWeight.bold,
 //                                                  ),
 //                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )),
-                                  ))
-                              .toList(),
+                                                  ),
+                                                ),
+                                              ],
+                                            )),
+                                      ))
+                                  .toList(),
+                            ),
+                            Positioned(
+                              bottom: 24,
+                              child: Container(
+                                height: 24,
+                                width:
+                                MediaQuery.of(context).size.width,
+                                child: Center(
+                                  child: ListView.builder(
+                                      scrollDirection:
+                                      Axis.horizontal,
+                                      shrinkWrap: true,
+                                      itemCount:
+                                      slider.length,
+                                      itemBuilder: (context, index) {
+                                        return Container(
+                                          width: 16,
+                                          height: 16,
+                                          margin: EdgeInsets.only(
+                                              right: 6),
+                                          decoration: BoxDecoration(
+                                            //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                  Colors.white),
+                                              color: _currentIndex ==
+                                                  index
+                                                  ? Colors.white
+                                                  : Colors
+                                                  .transparent),
+                                        );
+                                      }),
+                                ),
+                              ),
+                            )
+                          ],
                         );
                       case Status.ERROR:
                         return UIError(

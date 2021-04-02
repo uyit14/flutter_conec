@@ -299,7 +299,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
               _itemDetail = event.data;
               topic = Topic(id: _itemDetail.topicId, title: _itemDetail.topic);
               setState(() {
-                tags = getTopicIds2(_itemDetail.topics);
+                tags = getTopicIds2(_itemDetail.subTopics);
               });
               _postActionBloc.requestGetSubTopicWithHeader(false,
                   topicId: topic.id);
@@ -374,6 +374,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                             setSelectedIndex(value);
                             setState(() {
                               topic = value;
+                              tags = [];
                             });
                             getTitle(topic.id);
                             if (_currentSelectedIndex != 6 &&
