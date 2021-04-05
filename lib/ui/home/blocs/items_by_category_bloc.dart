@@ -85,6 +85,11 @@ class ItemsByCategoryBloc {
 
   }
 
+//  Future<String> requestItemDetailOnly(String postId) async {
+//    final ownerId = await _repository.fetchItemDetailOnlyOwnerId(postId);
+//    return ownerId;
+//  }
+
   void requestGetAvatar() async {
     _avatarController.sink.add(ApiResponse.loading());
     final avatar = await _repository.getUserAvatar();

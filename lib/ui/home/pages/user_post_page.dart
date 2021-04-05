@@ -208,12 +208,12 @@ class _UserPostPageState extends State<UserPostPage> {
                       ],
                     );
                   }
-                  return UILoading(loadingMessage: "Đang tải");
+                  return Container(child: Center(child: Text("Không có câu lạc bộ nào gần bạn")));
                 case Status.ERROR:
                   return UIError(errorMessage: snapshot.data.message);
               }
             }
-            return UILoading(loadingMessage: "Đang tải");
+            return Container(child: Center(child: Text("Không có câu lạc bộ nào gần bạn")));
           }),
     );
   }

@@ -77,6 +77,18 @@ class HomeRemoteRepository {
     return ItemDetailResponse.fromJson(response).itemDetail;
   }
 
+//  Future<String> fetchItemDetailOnlyOwnerId(String postId) async {
+//    String _queryEnPoint =
+//    await Helper.token() != null ? "GetWithLogin" : "Get";
+//    dynamic _header =
+//    await Helper.token() != null ? await Helper.header() : null;
+//    final response = await _helper.get('/api/Post/$_queryEnPoint?id=$postId',
+//        headers: _header);
+//    final post = response['post'];
+//    return post['ownerId'];
+//  }
+
+
   Future<List<Comment>> fetchComments(String postId) async {
     String _queryEnPoint =
         await Helper.token() != null ? "getCommentsWithLogin" : "getComments";
@@ -141,6 +153,10 @@ class HomeRemoteRepository {
 
   Future<NearbyResponse> fetchNearBy(
       double lat, double lng, int distance) async {
+    if(lat == null || lng == null){
+      lat = 22.370297;
+      lng = 114.173564;
+    }
     final response = await _helper.get(
         '/api/NearBy/GetAll?lat=$lat&lng=$lng&distance=$distance',
         headers: Helper.headerNoToken);

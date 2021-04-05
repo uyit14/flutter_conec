@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             CarouselSlider(
                               options: CarouselOptions(
-                                height: Helper.isTablet(context) ? 360 : 215,
+                                height: Helper.isTablet(context) ? 360 : 225,
                                 autoPlay: true,
                                 viewportFraction: 1,
                                 enlargeCenterPage: true,
@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
                         "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"),
                   );
                 }),
-            SizedBox(height: 8),
+            SizedBox(height: 4),
             Padding(
               padding: const EdgeInsets.only(left: 6),
               child: Text(
@@ -400,7 +400,7 @@ class _HomePageState extends State<HomePage> {
                                         ItemDetailPage.ROUTE_NAME,
                                         arguments: {
                                           'postId': item.postId,
-                                          'title': item.title,
+                                          'title': item.title
                                         });
                                   }
                                 },

@@ -59,7 +59,6 @@ class Comment {
   bool userHasUpvoted;
   bool isNew;
   String ownerId;
-
   Comment(
       {this.id,
       this.parent,

@@ -5,6 +5,8 @@ import 'package:conecapp/ui/news/pages/news_detail_page.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:conecapp/ui/notify/blocs/notify_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NotifyDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/notify-detail';
@@ -76,7 +78,7 @@ class _NotifyDetailPageState extends State<NotifyDetailPage> {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                 SizedBox(height: 4),
-                Text(_notify.content),
+                Html(data:_notify.content),
                 SizedBox(height: 4),
                 Row(
                   children: [
@@ -88,30 +90,35 @@ class _NotifyDetailPageState extends State<NotifyDetailPage> {
                     Spacer(),
                     _notify.topicId != null ? FlatButton(
                         onPressed: () {
-                          if (_notify.topicId != null) {
-                            if (_notify.topicId ==
-                                "333f691d-6595-443d-bae3-9a2681025b53") {
-                              Navigator.of(context).pushNamed(
-                                  NewsDetailPage.ROUTE_NAME,
-                                  arguments: {
-                                    'postId': _notify.typeId,
-                                  });
-                            } else if (_notify.topicId ==
-                                "333f691d-6585-443a-bae3-9a2681025b53") {
-                              Navigator.of(context).pushNamed(
-                                  SellDetailPage.ROUTE_NAME,
-                                  arguments: {
-                                    'postId': _notify.typeId,
-                                  });
-                            } else {
-                              Navigator.of(context).pushNamed(
-                                  ItemDetailPage.ROUTE_NAME,
-                                  arguments: {
-                                    'postId': _notify.typeId,
-                                    'title': ""
-                                  });
+                          if(_notify.content.contains("từ chối")){
+                            Fluttertoast.showToast(msg: "Tin của bạn chưa được phê duyệt");
+                          }else{
+                            if (_notify.topicId != null) {
+                              if (_notify.topicId ==
+                                  "333f691d-6595-443d-bae3-9a2681025b53") {
+                                Navigator.of(context).pushNamed(
+                                    NewsDetailPage.ROUTE_NAME,
+                                    arguments: {
+                                      'postId': _notify.typeId,
+                                    });
+                              } else if (_notify.topicId ==
+                                  "333f691d-6585-443a-bae3-9a2681025b53") {
+                                Navigator.of(context).pushNamed(
+                                    SellDetailPage.ROUTE_NAME,
+                                    arguments: {
+                                      'postId': _notify.typeId,
+                                    });
+                              } else {
+                                Navigator.of(context).pushNamed(
+                                    ItemDetailPage.ROUTE_NAME,
+                                    arguments: {
+                                      'postId': _notify.typeId,
+                                      'title': ""
+                                    });
+                              }
                             }
                           }
+
                         },
                         child: Text(
                           "Xem Tin",

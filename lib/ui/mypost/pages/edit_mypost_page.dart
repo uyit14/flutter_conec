@@ -174,14 +174,14 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
       if (typePost == "post") {
         getSelectedType(_itemDetail.joiningFeePeriod);
         _joiningFreeController =
-            TextEditingController(text: _itemDetail.joiningFee.toString());
+            TextEditingController(text: _itemDetail.joiningFee != null && _itemDetail.joiningFee.toString() != "null"  ? _itemDetail.joiningFee.toString() : "");
         _type = _itemDetail.joiningFeePeriod;
         _conditionController =
             TextEditingController(text: _itemDetail.generalCondition);
         _usesController = TextEditingController(text: _itemDetail.uses);
       } else if (typePost == "sell") {
         _joiningFreeController =
-            TextEditingController(text: _itemDetail.price.toString());
+            TextEditingController(text: _itemDetail.price != null && _itemDetail.price.toString() != "null" ? _itemDetail.price.toString() : "");
         _usesController = TextEditingController(text: _itemDetail.uses);
         _conditionController =
             TextEditingController(text: _itemDetail.generalCondition);
@@ -1124,7 +1124,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
           ward: wardData.name,
           address: _addressController.text,
           price: _joiningFreeController.text.length > 0
-              ? int.parse(_joiningFreeController.text)
+              ? int.parse(_joiningFreeController.text, onError:(source) => null)
               : null,
           uses: _usesController.text,
           generalCondition: statusType ?? null,
@@ -1180,8 +1180,8 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
           district: districtData.name,
           ward: wardData.name,
           address: _addressController.text,
-          joiningFee: _joiningFreeController.text.length > 0
-              ? int.parse(_joiningFreeController.text)
+          joiningFee:  _joiningFreeController.text != null && _joiningFreeController.text.length > 0
+              ? int.parse(_joiningFreeController.text, onError:(source) => null)
               : null,
           joiningFeePeriod: _type,
           phoneNumber: _phoneController.text,

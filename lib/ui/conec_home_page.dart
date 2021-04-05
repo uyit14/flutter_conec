@@ -136,20 +136,35 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void checkVersion(BuildContext context) async {
     final newVersion = NewVersion(context: context);
     final status = await newVersion.getVersionStatus();
-    if (status.localVersion != status.storeVersion) {
+    String newStoreVersion;
+    //add this check because ios version local = store + 1;
+    if (status.storeVersion.length > 0) {
+      int newSVer = int.parse(
+          status.storeVersion.substring(3, 5), onError: (source) => 10);
+      int newSVerP = newSVer + 1;
+      String storeVer = '1.0.$newSVerP';
+      print('storeVer: ' + storeVer);
+      if(pf.Platform.isIOS){
+        newStoreVersion = storeVer;
+      }else{
+        newStoreVersion = status.storeVersion;
+      }
+    }
+    print(status.localVersion + "-" + newStoreVersion);
+
+    if (status.localVersion != newStoreVersion) {
       Helper.showUpdateVersionDialog(
           context, "Cập nhật", "Conec đã có bản cập nhật mới trên cửa hàng",
-          () async {
-        if (pf.Platform.isIOS) {
-          await launch(
-              'https://itunes.apple.com/lookup?bundleId=com.conec.conecSport');
-        } else {
-          await launch(
-              "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
-        }
-      });
+              () async {
+            if (pf.Platform.isIOS) {
+              await launch(
+                  'https://itunes.apple.com/lookup?bundleId=com.conec.conecSport');
+            } else {
+              await launch(
+                  "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
+            }
+          });
     }
-    print(status.localVersion + "-" + status.storeVersion);
   }
 
   @override
@@ -221,7 +236,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
         print("Open: $type");
         if (type == "TOPIC") {
           Navigator.of(context).pushNamed(ItemDetailPage.ROUTE_NAME,
-              arguments: {'postId': postId, 'title': title});
+              arguments: {'postId': postId, 'title': title,});
         }
         if (type == "ADS") {
           Navigator.of(context).pushNamed(SellDetailPage.ROUTE_NAME,

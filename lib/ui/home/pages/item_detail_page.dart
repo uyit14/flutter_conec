@@ -56,6 +56,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   String _token;
   bool _isTokenExpired = true;
   ProfileBloc _profileBloc = ProfileBloc();
+  HiddenResponse _response;
 
   void getToken() async {
     String token = await Helper.getToken();
@@ -149,12 +150,22 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       postId = routeArgs['postId'];
       title = routeArgs['title'];
       owner = routeArgs['owner'];
+      //requestGetHidden(postId);
       _itemsByCategoryBloc.requestItemDetail(postId);
       if (owner != null) {
         giftCheck();
       }
       _isCallApi = false;
     }
+  }
+
+  void requestGetHidden(String postId, String ownerId) async {
+    //String ownerId = await _itemsByCategoryBloc.requestItemDetailOnly(postId);
+    final response = await _itemsByCategoryBloc.requestHiddenPostInfo(
+        globals.ownerId, ownerId, postId);
+    setState(() {
+      _response = response;
+    });
   }
 
   void doReload() {
@@ -290,10 +301,11 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     // }
                     //phoneNumber = itemDetail.phoneNumber;
                     linkShare = itemDetail.shareLink;
-//                    if (_firstCalculate) {
+                    if (_firstCalculate) {
 //                      getLatLng(itemDetail.getAddress);
-//                      _firstCalculate = false;
-//                    }
+                      requestGetHidden(postId, itemDetail.ownerId);
+                      _firstCalculate = false;
+                    }
                     return SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
@@ -606,13 +618,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               padding:
                                                   EdgeInsets.only(right: 0),
                                               onPressed: () async {
-                                                HiddenResponse response =
-                                                    await _itemsByCategoryBloc
-                                                        .requestHiddenPostInfo(
-                                                            globals.ownerId,
-                                                            itemDetail.ownerId,
-                                                            itemDetail.postId);
-                                                if (response.status) {
+                                                if (_response.status) {
                                                   Helper.showInfoDialog(
                                                       context,
                                                       itemDetail.phoneNumber,
@@ -624,7 +630,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                 } else {
                                                   Helper.showHiddenDialog(
                                                       context,
-                                                      response.message ??
+                                                      _response.message ??
                                                           "Có lỗi xảy ra, xin thử lại sau",
                                                       () {
                                                     Navigator.pop(context);
@@ -634,7 +640,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               icon: Icon(Icons.phone,
                                                   color: Colors.blue),
                                               label: Text(
-                                                "Liên hệ",
+                                                "(${_response != null && _response.userViewPostCount > 0 ? _response.userViewPostCount : ""}) Liên hệ",
                                                 style: TextStyle(
                                                     color: Colors.blue,
                                                     fontSize: 16,
