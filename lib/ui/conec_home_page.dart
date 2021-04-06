@@ -390,7 +390,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
           child: Container(
-            margin: EdgeInsets.only(left: 12, right: 16),
+            margin: EdgeInsets.only( left: Helper.isTablet(context) ? 24 : 12, right: Helper.isTablet(context) ? 32 : 16),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -416,7 +416,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ],
                   ),
                 ),
-                SizedBox(width: Helper.getScreenWidth(context)/14),
+                SizedBox(
+                    width: Helper.isTablet(context)
+                        ? Helper.getScreenWidth(context) / 7
+                        : Helper.getScreenWidth(context) / 14),
                 InkWell(
                   onTap: () => _selectPage(1),
                   child: Column(
@@ -462,7 +465,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ],
                   ),
                 ),
-                SizedBox(width: Helper.getScreenWidth(context)/10 ),
+                SizedBox(
+                    width: Helper.isTablet(context)
+                        ? Helper.getScreenWidth(context) / 7
+                        : Helper.getScreenWidth(context) / 10),
                 InkWell(
                   onTap: () => _selectPage(3),
                   child: Column(

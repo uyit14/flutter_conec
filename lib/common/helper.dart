@@ -1,4 +1,5 @@
 import 'dart:developer' as dev;
+import 'dart:isolate';
 
 import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
@@ -468,6 +469,30 @@ class Helper {
   //         ],
   //       ));
   // }
+
+  void createPort() async{
+    var receivePort = new ReceivePort();
+    await Isolate.spawn(entryPoint, receivePort.sendPort);
+    // Receive the SendPort from the Isolate
+    SendPort sendPort = await receivePort.first;
+
+    // Send a message to the Isolate
+    sendPort.send("hello");
+  }
+  // Entry point for your Isolate
+  entryPoint(SendPort sendPort) async {
+
+    // Open the ReceivePort to listen for incoming messages (optional)
+    var port = new ReceivePort();
+
+    // Send messages to other Isolates
+    sendPort.send(port.sendPort);
+
+    // Listen for messages (optional)
+    await for (var data in port) {
+      // `data` is the message received.
+    }
+  }
 
   static const String loadingMessage = "Đang tải...";
   static const String verifyMessage =
