@@ -213,7 +213,7 @@ class _UserPostPageState extends State<UserPostPage> {
                   return UIError(errorMessage: snapshot.data.message);
               }
             }
-            return Container(child: Center(child: Text("Không có câu lạc bộ nào gần bạn")));
+            return UILoading(loadingMessage: "Đang tải");
           }),
     );
   }

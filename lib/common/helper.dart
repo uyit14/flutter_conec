@@ -401,11 +401,13 @@ class Helper {
     //var expiredDay = "2020-09-28T20:38:41.2397583+07:00";
     if (expiredDay != null) {
       if (DateTime.parse(expiredDay).isBefore(DateTime.now())) {
+        print('token valid');
         return true;
       } else {
         return false;
       }
     }
+    print('token expired');
     return false;
   }
 

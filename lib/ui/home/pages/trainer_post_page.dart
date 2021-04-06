@@ -213,7 +213,7 @@ class _TrainerPostPageState extends State<TrainerPostPage> {
                   return UIError(errorMessage: snapshot.data.message);
               }
             }
-            return Container(child: Center(child: Text("Không có huấn luyện viên nào gần bạn")));
+            return UILoading(loadingMessage: "Đang tải");
           }),
     );
   }

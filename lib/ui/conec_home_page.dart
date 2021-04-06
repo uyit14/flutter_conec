@@ -139,14 +139,14 @@ class _ConecHomePageState extends State<ConecHomePage> {
     String newStoreVersion;
     //add this check because ios version local = store + 1;
     if (status.storeVersion.length > 0) {
-      int newSVer = int.parse(
-          status.storeVersion.substring(3, 5), onError: (source) => 10);
-      int newSVerP = newSVer + 1;
-      String storeVer = '1.0.$newSVerP';
-      print('storeVer: ' + storeVer);
-      if(pf.Platform.isIOS){
-        newStoreVersion = storeVer;
-      }else{
+      if (pf.Platform.isIOS) {
+        int newSVer = int.parse(status.storeVersion.substring(3, 5),
+            onError: (source) => 10);
+        int newSVerPlush = newSVer + 1;
+        String storeVerFinal = '1.0.$newSVerPlush';
+        print('storeVer: ' + storeVerFinal);
+        newStoreVersion = storeVerFinal;
+      } else {
         newStoreVersion = status.storeVersion;
       }
     }
@@ -155,15 +155,15 @@ class _ConecHomePageState extends State<ConecHomePage> {
     if (status.localVersion != newStoreVersion) {
       Helper.showUpdateVersionDialog(
           context, "Cập nhật", "Conec đã có bản cập nhật mới trên cửa hàng",
-              () async {
-            if (pf.Platform.isIOS) {
-              await launch(
-                  'https://itunes.apple.com/lookup?bundleId=com.conec.conecSport');
-            } else {
-              await launch(
-                  "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
-            }
-          });
+          () async {
+        if (pf.Platform.isIOS) {
+          await launch(
+              'https://itunes.apple.com/lookup?bundleId=com.conec.conecSport');
+        } else {
+          await launch(
+              "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
+        }
+      });
     }
   }
 
@@ -235,8 +235,11 @@ class _ConecHomePageState extends State<ConecHomePage> {
         String title = result.notification.payload.title;
         print("Open: $type");
         if (type == "TOPIC") {
-          Navigator.of(context).pushNamed(ItemDetailPage.ROUTE_NAME,
-              arguments: {'postId': postId, 'title': title,});
+          Navigator.of(context)
+              .pushNamed(ItemDetailPage.ROUTE_NAME, arguments: {
+            'postId': postId,
+            'title': title,
+          });
         }
         if (type == "ADS") {
           Navigator.of(context).pushNamed(SellDetailPage.ROUTE_NAME,
@@ -361,6 +364,25 @@ class _ConecHomePageState extends State<ConecHomePage> {
               Icons.add,
               color: Colors.white,
             ),
+            // child: SizedBox.fromSize(
+            //   size: Size(56, 56), // button width and height
+            //   child: ClipOval(
+            //     child: Material(
+            //       color: Colors.red, // button color
+            //       child: InkWell(
+            //         splashColor: Colors.green, // splash color
+            //         onTap: () {}, // button pressed
+            //         child: Center(
+            //             child: Text(
+            //           "Đăng tin",
+            //           textAlign: TextAlign.center,
+            //           style: TextStyle(
+            //               color: Colors.white, fontWeight: FontWeight.bold),
+            //         )), // text
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -368,38 +390,100 @@ class _ConecHomePageState extends State<ConecHomePage> {
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 28),
+            margin: EdgeInsets.only(left: 12, right: 16),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                IconButton(
-                  color: _selectedPageIndex == 0 ? Colors.red : Colors.grey,
-                  onPressed: () => _selectPage(0),
-                  iconSize: 30,
-                  icon: Icon(Icons.home),
-                  tooltip: "Trang chủ",
+                InkWell(
+                  onTap: () => _selectPage(0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.home,
+                        size: 30,
+                        color:
+                            _selectedPageIndex == 0 ? Colors.red : Colors.grey,
+                      ),
+                      Text("Trang chủ",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: _selectedPageIndex == 0
+                                ? Colors.red
+                                : Colors.grey,
+                          )),
+                      SizedBox(height: 2)
+                    ],
+                  ),
                 ),
-                IconButton(
-                  color: _selectedPageIndex == 1 ? Colors.red : Colors.grey,
-                  onPressed: () => _selectPage(1),
-                  iconSize: 30,
-                  icon: Icon(Icons.explore),
-                  tooltip: "Dụng cụ",
+                SizedBox(width: Helper.getScreenWidth(context)/14),
+                InkWell(
+                  onTap: () => _selectPage(1),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.explore,
+                        size: 30,
+                        color:
+                            _selectedPageIndex == 1 ? Colors.red : Colors.grey,
+                      ),
+                      Text(" Dụng cụ  ",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: _selectedPageIndex == 1
+                                ? Colors.red
+                                : Colors.grey,
+                          )),
+                      SizedBox(height: 2)
+                    ],
+                  ),
                 ),
-                IconButton(
-                  color: _selectedPageIndex == 2 ? Colors.red : Colors.grey,
-                  onPressed: () => _selectPage(2),
-                  iconSize: 30,
-                  icon: Icon(Icons.list),
-                  tooltip: "Tin đăng",
+                Spacer(),
+                InkWell(
+                  onTap: () => _selectPage(2),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.list,
+                        size: 30,
+                        color:
+                            _selectedPageIndex == 2 ? Colors.red : Colors.grey,
+                      ),
+                      Text("Tin đăng",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: _selectedPageIndex == 2
+                                ? Colors.red
+                                : Colors.grey,
+                          )),
+                      SizedBox(height: 2)
+                    ],
+                  ),
                 ),
-                IconButton(
-                  color: _selectedPageIndex == 3 ? Colors.red : Colors.grey,
-                  onPressed: () => _selectPage(3),
-                  iconSize: 30,
-                  icon: Icon(Icons.more_horiz),
-                  tooltip: "Thêm",
+                SizedBox(width: Helper.getScreenWidth(context)/10 ),
+                InkWell(
+                  onTap: () => _selectPage(3),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.more_horiz,
+                        size: 30,
+                        color:
+                            _selectedPageIndex == 3 ? Colors.red : Colors.grey,
+                      ),
+                      Text("  Thêm  ",
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: _selectedPageIndex == 3
+                                ? Colors.red
+                                : Colors.grey,
+                          )),
+                      SizedBox(height: 2)
+                    ],
+                  ),
                 ),
               ],
             ),
