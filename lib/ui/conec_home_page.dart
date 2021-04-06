@@ -158,7 +158,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
           () async {
         if (pf.Platform.isIOS) {
           await launch(
-              'https://itunes.apple.com/lookup?bundleId=com.conec.conecSport');
+              'https://apps.apple.com/vn/app/id1539002688?l=vi');
         } else {
           await launch(
               "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
