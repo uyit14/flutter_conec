@@ -49,6 +49,7 @@ class ItemDetail {
   String phoneNumber;
   String status;
   String shareLink;
+  int userViewPostCount;
   List<Topic> topics;
   List<Topic> subTopics;
 
@@ -72,6 +73,7 @@ class ItemDetail {
         this.topicId,
         this.topic,
         this.images,
+        this.userViewPostCount,
         this.province,
         this.district,
         this.ward,
@@ -108,6 +110,7 @@ class ItemDetail {
     commentCount = json['commentCount'];
     likeCount = json['likeCount'];
     likeOwner = json['likeOwner'];
+    userViewPostCount = json['userViewPostCount'];
     thumbnail = json['thumbnail'];
     topicId = json['topicId'];
     topic = json['topic'];

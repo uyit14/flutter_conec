@@ -55,8 +55,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   PageController _pageController = PageController(initialPage: 0);
   String _token;
   bool _isTokenExpired = true;
+  int _userViewPostCount = 0;
   ProfileBloc _profileBloc = ProfileBloc();
-  HiddenResponse _response;
 
   void getToken() async {
     String token = await Helper.getToken();
@@ -157,15 +157,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
       }
       _isCallApi = false;
     }
-  }
-
-  void requestGetHidden(String postId, String ownerId) async {
-    //String ownerId = await _itemsByCategoryBloc.requestItemDetailOnly(postId);
-    final response = await _itemsByCategoryBloc.requestHiddenPostInfo(
-        globals.ownerId, ownerId, postId);
-    setState(() {
-      _response = response;
-    });
   }
 
   void doReload() {
@@ -301,11 +292,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                     // }
                     //phoneNumber = itemDetail.phoneNumber;
                     linkShare = itemDetail.shareLink;
-                    if (_firstCalculate) {
+//                    if (_firstCalculate) {
 //                      getLatLng(itemDetail.getAddress);
-                      requestGetHidden(postId, itemDetail.ownerId);
-                      _firstCalculate = false;
-                    }
+//                      _firstCalculate = false;
+//                    }
                     return SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
@@ -618,7 +608,18 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               padding:
                                                   EdgeInsets.only(right: 0),
                                               onPressed: () async {
-                                                if (_response.status) {
+                                                HiddenResponse response =
+                                                    await _itemsByCategoryBloc
+                                                        .requestHiddenPostInfo(
+                                                            globals.ownerId,
+                                                            itemDetail.ownerId,
+                                                            postId);
+                                                if (response.status) {
+                                                  setState(() {
+                                                    _userViewPostCount =
+                                                        response
+                                                            .userViewPostCount;
+                                                  });
                                                   Helper.showInfoDialog(
                                                       context,
                                                       itemDetail.phoneNumber,
@@ -630,7 +631,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                 } else {
                                                   Helper.showHiddenDialog(
                                                       context,
-                                                      _response.message ??
+                                                      response.message ??
                                                           "Có lỗi xảy ra, xin thử lại sau",
                                                       () {
                                                     Navigator.pop(context);
@@ -640,7 +641,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                               icon: Icon(Icons.phone,
                                                   color: Colors.blue),
                                               label: Text(
-                                                "(${_response != null && _response.userViewPostCount > 0 ? _response.userViewPostCount : ""}) Liên hệ",
+                                                "(${_userViewPostCount > 0 ? _userViewPostCount : itemDetail.userViewPostCount}) Liên hệ",
                                                 style: TextStyle(
                                                     color: Colors.blue,
                                                     fontSize: 16,

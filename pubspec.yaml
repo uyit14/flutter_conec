@@ -16,9 +16,9 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 #android
-version: 1.0.2+14
+#version: 1.0.3+15
 #ios
-#version: 1.0.11
+version: 1.0.12
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -123,6 +123,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-  #after submit, plush 1 for each os
-  #For now, store version name: 1.0.10, build version: 1.0.2
-  #For now, store version name: 1.0.10, build version: 1.0.11
+  #after submit, plush 1 for each os (android plush 1 at version name and 1 at version code)
+  #android - For now, store version name: 1.0.11, build version: 1.0.3+15
+  #ios For now, store version name: 1.0.11, build version: 1.0.12

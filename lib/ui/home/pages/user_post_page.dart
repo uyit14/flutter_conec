@@ -8,9 +8,10 @@ import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/home/widgets/radius_filter.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
+
 import '../../../common/globals.dart' as globals;
 import 'item_detail_page.dart';
-import 'package:html/parser.dart';
 
 class UserPostPage extends StatefulWidget {
   @override
@@ -30,29 +31,29 @@ class _UserPostPageState extends State<UserPostPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: StreamBuilder<ApiResponse<NearbyResponse>>(
-          stream: _homeBloc.nearByStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              switch (snapshot.data.status) {
-                case Status.LOADING:
-                  return UILoading(loadingMessage: snapshot.data.message);
-                case Status.COMPLETED:
-                  List<LatestItem> latestItem =
-                      snapshot.data.data.data.userPosts;
-                  if (latestItem.length > 0) {
-                    return Column(
-                      children: [
-                        RadiusFilter((radius) {
-                          print("radius $radius");
-                          setState(() {
-                            selectedValue = radius;
-                          });
-                          _homeBloc.requestGetNearBy(
-                              globals.latitude, globals.longitude, radius);
-                        }, selectedValue),
-                        Expanded(
-                          child: ListView.builder(
+      child: Column(
+        children: [
+          RadiusFilter((radius) {
+            print("radius $radius");
+            setState(() {
+              selectedValue = radius;
+            });
+            _homeBloc.requestGetNearBy(
+                globals.latitude, globals.longitude, radius);
+          }, selectedValue),
+          Expanded(
+            child: StreamBuilder<ApiResponse<NearbyResponse>>(
+                stream: _homeBloc.nearByStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    switch (snapshot.data.status) {
+                      case Status.LOADING:
+                        return UILoading(loadingMessage: snapshot.data.message);
+                      case Status.COMPLETED:
+                        List<LatestItem> latestItem =
+                            snapshot.data.data.data.userPosts;
+                        if (latestItem.length > 0) {
+                          return ListView.builder(
                               itemCount: latestItem.length,
                               itemBuilder: (context, index) {
                                 final document =
@@ -203,18 +204,18 @@ class _UserPostPageState extends State<UserPostPage> {
                                     ),
                                   ),
                                 );
-                              }),
-                        ),
-                      ],
-                    );
+                              });
+                        }
+                        return Container(child: Center(child: Text("Không có câu lạc bộ nào gần bạn")));
+                      case Status.ERROR:
+                        return UIError(errorMessage: snapshot.data.message);
+                    }
                   }
-                  return Container(child: Center(child: Text("Không có câu lạc bộ nào gần bạn")));
-                case Status.ERROR:
-                  return UIError(errorMessage: snapshot.data.message);
-              }
-            }
-            return UILoading(loadingMessage: "Đang tải");
-          }),
+                  return UILoading(loadingMessage: "Đang tải");
+                }),
+          ),
+        ],
+      ),
     );
   }
 }

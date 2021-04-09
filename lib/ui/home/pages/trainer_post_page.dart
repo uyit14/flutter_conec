@@ -24,35 +24,35 @@ class _TrainerPostPageState extends State<TrainerPostPage> {
   @override
   void initState() {
     super.initState();
-    _homeBloc.requestGetNearBy(globals.latitude, globals.longitude, 50);
+    _homeBloc.requestGetNearBy(globals.latitude, globals.longitude, 5);
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: StreamBuilder<ApiResponse<NearbyResponse>>(
-          stream: _homeBloc.nearByStream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              switch (snapshot.data.status) {
-                case Status.LOADING:
-                  return UILoading(loadingMessage: snapshot.data.message);
-                case Status.COMPLETED:
-                  List<LatestItem> latestItem =
-                      snapshot.data.data.data.trainerPosts;
-                  if (latestItem.length > 0) {
-                    return Column(
-                      children: [
-                        RadiusFilter((radius) {
-                          print("radius $radius");
-                          setState(() {
-                            selectedValue = radius;
-                          });
-                          _homeBloc.requestGetNearBy(
-                              globals.latitude, globals.longitude, radius);
-                        }, selectedValue),
-                        Expanded(
-                          child: ListView.builder(
+      child: Column(
+        children: [
+          RadiusFilter((radius) {
+            print("radius $radius");
+            setState(() {
+              selectedValue = radius;
+            });
+            _homeBloc.requestGetNearBy(
+                globals.latitude, globals.longitude, radius);
+          }, selectedValue),
+          Expanded(
+            child: StreamBuilder<ApiResponse<NearbyResponse>>(
+                stream: _homeBloc.nearByStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    switch (snapshot.data.status) {
+                      case Status.LOADING:
+                        return UILoading(loadingMessage: snapshot.data.message);
+                      case Status.COMPLETED:
+                        List<LatestItem> latestItem =
+                            snapshot.data.data.data.trainerPosts;
+                        if (latestItem.length > 0) {
+                          return ListView.builder(
                               itemCount: latestItem.length,
                               itemBuilder: (context, index) {
                                 final document =
@@ -203,18 +203,18 @@ class _TrainerPostPageState extends State<TrainerPostPage> {
                                     ),
                                   ),
                                 );
-                              }),
-                        ),
-                      ],
-                    );
+                              });
+                        }
+                        return Container(child: Center(child: Text("Không có huấn luyện viên nào gần bạn")));
+                      case Status.ERROR:
+                        return UIError(errorMessage: snapshot.data.message);
+                    }
                   }
-                  return Container(child: Center(child: Text("Không có huấn luyện viên nào gần bạn")));
-                case Status.ERROR:
-                  return UIError(errorMessage: snapshot.data.message);
-              }
-            }
-            return UILoading(loadingMessage: "Đang tải");
-          }),
+                  return UILoading(loadingMessage: "Đang tải");
+                }),
+          ),
+        ],
+      ),
     );
   }
 }
