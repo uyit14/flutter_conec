@@ -128,9 +128,33 @@ class _ConecHomePageState extends State<ConecHomePage> {
     //     dismissText: "Để sau",
     //     updateText: "Cập nhật"
     // ).showAlertIfNecessary();
-    checkVersion(context);
+    //checkVersion(context);
+    checkAppVersionApi();
     initOneSignal("7075e16c-c1fb-4d33-93b1-1c8cf007c294");
     getToken();
+  }
+
+  void checkAppVersionApi() async {
+    //TODO - call api to get app version
+    String apiAppVersion = "1.0.11";
+    String currentAppVersion = await Helper.getAppVersion();
+    Helper.appLog(
+        className: "ConecHomePage",
+        functionName: "checkAppVersionApi",
+        message: '$apiAppVersion - $currentAppVersion');
+    if (currentAppVersion == null || currentAppVersion != apiAppVersion) {
+      Helper.setAppVersion(apiAppVersion);
+      Helper.showUpdateVersionDialog(
+          context, "Cập nhật", "Conec đã có bản cập nhật mới trên cửa hàng",
+          () async {
+        if (pf.Platform.isIOS) {
+          await launch('https://apps.apple.com/vn/app/id1539002688?l=vi');
+        } else {
+          await launch(
+              "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
+        }
+      });
+    }
   }
 
   void checkVersion(BuildContext context) async {
@@ -157,8 +181,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
           context, "Cập nhật", "Conec đã có bản cập nhật mới trên cửa hàng",
           () async {
         if (pf.Platform.isIOS) {
-          await launch(
-              'https://apps.apple.com/vn/app/id1539002688?l=vi');
+          await launch('https://apps.apple.com/vn/app/id1539002688?l=vi');
         } else {
           await launch(
               "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");
@@ -390,7 +413,9 @@ class _ConecHomePageState extends State<ConecHomePage> {
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
           child: Container(
-            margin: EdgeInsets.only( left: Helper.isTablet(context) ? 24 : 12, right: Helper.isTablet(context) ? 32 : 16),
+            margin: EdgeInsets.only(
+                left: Helper.isTablet(context) ? 24 : 12,
+                right: Helper.isTablet(context) ? 32 : 16),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[

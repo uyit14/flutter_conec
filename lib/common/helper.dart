@@ -380,6 +380,17 @@ class Helper {
     return token;
   }
 
+  static void setAppVersion(String appVersion) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('app_ver', appVersion);
+  }
+
+  static Future<String> getAppVersion() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var appVersion = prefs.getString('app_ver');
+    return appVersion;
+  }
+
   static Future<bool> getIsSocial() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.getBool('isSocial') == null) {
