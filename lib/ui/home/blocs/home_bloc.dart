@@ -186,6 +186,11 @@ class HomeBloc {
     return response;
   }
 
+  Future<String> requestGetAppVersion() async {
+    final response = await _repository.getAppVersion();
+    return response;
+  }
+
   Future<HiddenResponse> requestHidden(String ownerId, String userId) async {
     final response = await _repository.getHidden(ownerId, userId);
     return response;

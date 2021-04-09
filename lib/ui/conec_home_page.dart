@@ -128,25 +128,31 @@ class _ConecHomePageState extends State<ConecHomePage> {
     //     dismissText: "Để sau",
     //     updateText: "Cập nhật"
     // ).showAlertIfNecessary();
-    //checkVersion(context);
-    checkAppVersionApi();
+    if (pf.Platform.isIOS) {
+      checkAppVersionApi();
+    } else {
+      checkVersion(context);
+    }
     initOneSignal("7075e16c-c1fb-4d33-93b1-1c8cf007c294");
     getToken();
   }
 
   void checkAppVersionApi() async {
-    //TODO - call api to get app version
-    String apiAppVersion = "1.0.11";
+    final apiAppVersion = await _homeBloc.requestGetAppVersion();
     String currentAppVersion = await Helper.getAppVersion();
     Helper.appLog(
         className: "ConecHomePage",
         functionName: "checkAppVersionApi",
         message: '$apiAppVersion - $currentAppVersion');
-    if (currentAppVersion == null || currentAppVersion != apiAppVersion) {
+    if (currentAppVersion == null) {
       Helper.setAppVersion(apiAppVersion);
+      return;
+    }
+    if (currentAppVersion != apiAppVersion) {
       Helper.showUpdateVersionDialog(
           context, "Cập nhật", "Conec đã có bản cập nhật mới trên cửa hàng",
           () async {
+        Helper.setAppVersion(apiAppVersion);
         if (pf.Platform.isIOS) {
           await launch('https://apps.apple.com/vn/app/id1539002688?l=vi');
         } else {
@@ -160,29 +166,28 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void checkVersion(BuildContext context) async {
     final newVersion = NewVersion(context: context);
     final status = await newVersion.getVersionStatus();
-    String newStoreVersion;
-    //add this check because ios version local = store + 1;
-    if (status.storeVersion.length > 0) {
-      if (pf.Platform.isIOS) {
-        int newSVer = int.parse(status.storeVersion.substring(3, 5),
-            onError: (source) => 10);
-        int newSVerPlush = newSVer + 1;
-        String storeVerFinal = '1.0.$newSVerPlush';
-        print('storeVer: ' + storeVerFinal);
-        newStoreVersion = storeVerFinal;
-      } else {
-        newStoreVersion = status.storeVersion;
-      }
-    }
-    print(status.localVersion + "-" + newStoreVersion);
+//    String newStoreVersion;
+//    //add this check because ios version local = store + 1;
+//    if (status.storeVersion.length > 0) {
+//      if (pf.Platform.isIOS) {
+//        int newSVer = int.parse(status.storeVersion.substring(3, 5),
+//            onError: (source) => 10);
+//        int newSVerPlush = newSVer + 1;
+//        String storeVerFinal = '1.0.$newSVerPlush';
+//        print('storeVer: ' + storeVerFinal);
+//        newStoreVersion = storeVerFinal;
+//      } else {
+//        newStoreVersion = status.storeVersion;
+//      }
+//    }
+    print(status.localVersion + "-" + status.storeVersion);
 
-    if (status.localVersion != newStoreVersion) {
+    if (status.localVersion != status.storeVersion) {
       Helper.showUpdateVersionDialog(
           context, "Cập nhật", "Conec đã có bản cập nhật mới trên cửa hàng",
           () async {
         if (pf.Platform.isIOS) {
-          await launch(
-              "https://apps.apple.com/vn/app/id1539002688?l=vi");
+          await launch("https://apps.apple.com/vn/app/id1539002688?l=vi");
         } else {
           await launch(
               "https://play.google.com/store/apps/details?id=com.conec.flutter_conec");

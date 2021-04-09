@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 #android
 #version: 1.0.3+15
 #ios
-version: 1.0.12
+version: 1.0.13
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

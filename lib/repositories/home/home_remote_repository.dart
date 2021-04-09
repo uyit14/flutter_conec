@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
@@ -88,7 +89,6 @@ class HomeRemoteRepository {
 //    return post['ownerId'];
 //  }
 
-
   Future<List<Comment>> fetchComments(String postId) async {
     String _queryEnPoint =
         await Helper.token() != null ? "getCommentsWithLogin" : "getComments";
@@ -153,7 +153,7 @@ class HomeRemoteRepository {
 
   Future<NearbyResponse> fetchNearBy(
       double lat, double lng, int distance) async {
-    if(lat == null || lng == null){
+    if (lat == null || lng == null) {
       lat = 22.370297;
       lng = 114.173564;
     }
@@ -227,7 +227,8 @@ class HomeRemoteRepository {
     return HiddenResponse.fromJson(response);
   }
 
-  Future<HiddenResponse> getHiddenPostInfo(String ownerId, String userId, String postId) async {
+  Future<HiddenResponse> getHiddenPostInfo(
+      String ownerId, String userId, String postId) async {
     final response = await _helper.get(
         "/api/post/ShowPostContact?ownerId=$ownerId&userId=$userId&postId=$postId",
         headers: await Helper.header());
@@ -246,5 +247,15 @@ class HomeRemoteRepository {
         headers: await Helper.header());
     print("registerDeviceTokenResponse: " + response.toString());
     return response['status'];
+  }
+
+  Future<String> getAppVersion() async {
+    final response = await _helper.get("/api/ConfigSetting/GetAppVersion",
+        headers: Helper.headerNoToken);
+    print(response.toString());
+    if(Platform.isIOS){
+      return response['iOS_Version'];
+    }
+    return response['android_Version'];
   }
 }

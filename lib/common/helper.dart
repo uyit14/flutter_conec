@@ -381,6 +381,7 @@ class Helper {
   }
 
   static void setAppVersion(String appVersion) async{
+    appLog(className: "Helper", functionName: "setAppVersion", message: "set $appVersion to stored");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('app_ver', appVersion);
   }
