@@ -24,6 +24,7 @@ import 'news/pages/news_detail_page.dart';
 import 'news/pages/news_page.dart';
 import 'news/pages/sell_detail_page.dart';
 import 'profile/pages/profile_pages.dart';
+import '../common/ui/speed_dial.dart' as mySpeedDial;
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';
@@ -362,59 +363,65 @@ class _ConecHomePageState extends State<ConecHomePage> {
             ProfilePage()
           ],
         ),
-        floatingActionButton: Container(
-          child: FloatingActionButton(
-            onPressed: () {
-              if (_token == null || _token.length == 0) {
-                Helper.showAuthenticationDialog(context);
-              } else {
-                if (_isTokenExpired) {
-                  Helper.showTokenExpiredDialog(context);
-                } else {
-                  if (_isMissingData) {
-                    Helper.showMissingDataDialog(context, () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context)
-                          .pushNamed(EditProfilePage.ROUTE_NAME,
-                              arguments: _profile)
-                          .then((value) {
-                        if (value == 0) {
-                          _profileBloc.requestGetProfile();
-                        }
-                      });
-                    });
-                  } else {
-                    Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
-                  }
-                }
-              }
-            },
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            // child: SizedBox.fromSize(
-            //   size: Size(56, 56), // button width and height
-            //   child: ClipOval(
-            //     child: Material(
-            //       color: Colors.red, // button color
-            //       child: InkWell(
-            //         splashColor: Colors.green, // splash color
-            //         onTap: () {}, // button pressed
-            //         child: Center(
-            //             child: Text(
-            //           "Đăng tin",
-            //           textAlign: TextAlign.center,
-            //           style: TextStyle(
-            //               color: Colors.white, fontWeight: FontWeight.bold),
-            //         )), // text
-            //       ),
-            //     ),
-            //   ),
-            // ),
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+//        floatingActionButton: Container(
+//          child: FloatingActionButton(
+//            onPressed: () {
+//              if (_token == null || _token.length == 0) {
+//                Helper.showAuthenticationDialog(context);
+//              } else {
+//                if (_isTokenExpired) {
+//                  Helper.showTokenExpiredDialog(context);
+//                } else {
+//                  if (_isMissingData) {
+//                    Helper.showMissingDataDialog(context, () {
+//                      Navigator.of(context).pop();
+//                      Navigator.of(context)
+//                          .pushNamed(EditProfilePage.ROUTE_NAME,
+//                              arguments: _profile)
+//                          .then((value) {
+//                        if (value == 0) {
+//                          _profileBloc.requestGetProfile();
+//                        }
+//                      });
+//                    });
+//                  } else {
+//                    Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
+//                  }
+//                }
+//              }
+//            },
+//            child: Icon(
+//              Icons.add,
+//              color: Colors.white,
+//            ),
+//            // child: SizedBox.fromSize(
+//            //   size: Size(56, 56), // button width and height
+//            //   child: ClipOval(
+//            //     child: Material(
+//            //       color: Colors.red, // button color
+//            //       child: InkWell(
+//            //         splashColor: Colors.green, // splash color
+//            //         onTap: () {}, // button pressed
+//            //         child: Center(
+//            //             child: Text(
+//            //           "Đăng tin",
+//            //           textAlign: TextAlign.center,
+//            //           style: TextStyle(
+//            //               color: Colors.white, fontWeight: FontWeight.bold),
+//            //         )), // text
+//            //       ),
+//            //     ),
+//            //   ),
+//            // ),
+//          ),
+//        ),
+      floatingActionButton: mySpeedDial.SpeedDial(
+          onOpenZalo: () => print("Zalo"),
+    onOpenMess: () => print("mess"),
+    onAddNew: () => print("add"),
+    onFabAction: onFabAction,
+    ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         extendBody: true,
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
@@ -528,6 +535,13 @@ class _ConecHomePageState extends State<ConecHomePage> {
         ),
       ),
     );
+  }
+
+  bool _isSpeedOpen = false;
+  void onFabAction(bool value) {
+    setState(() {
+      _isSpeedOpen = value;
+    });
   }
 }
 
