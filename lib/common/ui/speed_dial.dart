@@ -222,7 +222,7 @@ class SpeedDialState extends State<SpeedDial>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 3.0,
+            _translateButton.value * 2.0,
             0.0,
           ),
           child: messButton(),
@@ -230,19 +230,19 @@ class SpeedDialState extends State<SpeedDial>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 2.0,
+            _translateButton.value * 1.0,
             0.0,
           ),
           child: zaloButton(),
         ),
-        Transform(
-          transform: Matrix4.translationValues(
-            0.0,
-            _translateButton.value,
-            0.0,
-          ),
-          child: addNewButton(),
-        ),
+        // Transform(
+        //   transform: Matrix4.translationValues(
+        //     0.0,
+        //     _translateButton.value,
+        //     0.0,
+        //   ),
+        //   child: addNewButton(),
+        // ),
         fabButton(),
       ],
     );

@@ -371,40 +371,54 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     height: double.infinity,
                     width: double.infinity,
                   )
-                : Container()
+                : Container(),
+            Positioned(
+              bottom: 60,
+              right: 16,
+              child: mySpeedDial.SpeedDial(
+                onOpenZalo: () =>
+                    launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
+                onOpenMess: () =>
+                    launch("https://messenger.com/t/www.conec.vn"),
+                onAddNew: () {
+                  if (_token == null || _token.length == 0) {
+                    Helper.showAuthenticationDialog(context);
+                  } else {
+                    if (_isTokenExpired) {
+                      Helper.showTokenExpiredDialog(context);
+                    } else {
+                      if (_isMissingData) {
+                        Helper.showMissingDataDialog(context, () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context)
+                              .pushNamed(EditProfilePage.ROUTE_NAME,
+                                  arguments: _profile)
+                              .then((value) {
+                            if (value == 0) {
+                              _profileBloc.requestGetProfile();
+                            }
+                          });
+                        });
+                      } else {
+                        Navigator.of(context)
+                            .pushNamed(PostActionPage.ROUTE_NAME);
+                      }
+                    }
+                  }
+                },
+                onFabAction: onFabAction,
+              ),
+            ),
           ],
         ),
-//        floatingActionButton: Container(
-//          child: FloatingActionButton(
-//            onPressed: () {
-//              if (_token == null || _token.length == 0) {
-//                Helper.showAuthenticationDialog(context);
-//              } else {
-//                if (_isTokenExpired) {
-//                  Helper.showTokenExpiredDialog(context);
-//                } else {
-//                  if (_isMissingData) {
-//                    Helper.showMissingDataDialog(context, () {
-//                      Navigator.of(context).pop();
-//                      Navigator.of(context)
-//                          .pushNamed(EditProfilePage.ROUTE_NAME,
-//                              arguments: _profile)
-//                          .then((value) {
-//                        if (value == 0) {
-//                          _profileBloc.requestGetProfile();
-//                        }
-//                      });
-//                    });
-//                  } else {
-//                    Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
-//                  }
-//                }
-//              }
-//            },
-        floatingActionButton: mySpeedDial.SpeedDial(
-          onOpenZalo: () => launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
-          onOpenMess: () => launch("https://messenger.com/t/www.conec.vn"),
-          onAddNew: () {
+        floatingActionButton: Container(
+            child: FloatingActionButton(
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          heroTag: 'add',
+          onPressed: () {
             if (_token == null || _token.length == 0) {
               Helper.showAuthenticationDialog(context);
             } else {
@@ -429,9 +443,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
               }
             }
           },
-          onFabAction: onFabAction,
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        )),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         extendBody: true,
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
@@ -465,10 +478,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ],
                   ),
                 ),
-                // SizedBox(
-                //     width: Helper.isTablet(context)
-                //         ? Helper.getScreenWidth(context) / 7
-                //         : Helper.getScreenWidth(context) / 14),
+                SizedBox(
+                    width: Helper.isTablet(context)
+                        ? Helper.getScreenWidth(context) / 7
+                        : Helper.getScreenWidth(context) / 14),
                 InkWell(
                   onTap: () => _selectPage(1),
                   child: Column(
@@ -491,7 +504,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ],
                   ),
                 ),
-                //Spacer(),
+                Spacer(),
                 InkWell(
                   onTap: () => _selectPage(2),
                   child: Column(
@@ -514,10 +527,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ],
                   ),
                 ),
-                // SizedBox(
-                //     width: Helper.isTablet(context)
-                //         ? Helper.getScreenWidth(context) / 7
-                //         : Helper.getScreenWidth(context) / 10),
+                SizedBox(
+                    width: Helper.isTablet(context)
+                        ? Helper.getScreenWidth(context) / 7
+                        : Helper.getScreenWidth(context) / 10),
                 InkWell(
                   onTap: () => _selectPage(3),
                   child: Column(
