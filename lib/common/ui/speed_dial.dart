@@ -5,7 +5,9 @@ class SpeedDial extends StatefulWidget {
   final Function() onOpenMess;
   final Function() onAddNew;
   final Function(bool) onFabAction;
-  SpeedDial({this.onOpenZalo, this.onOpenMess, this.onAddNew, this.onFabAction});
+
+  SpeedDial(
+      {this.onOpenZalo, this.onOpenMess, this.onAddNew, this.onFabAction});
 
   @override
   State<StatefulWidget> createState() => SpeedDialState();
@@ -83,74 +85,130 @@ class SpeedDialState extends State<SpeedDial>
   }
 
   Widget zaloButton() {
-    return Container(
-      child: FloatingActionButton(
-        onPressed: (){
-          animate();
-          widget.onOpenZalo();
-        },
-        tooltip: 'distance',
-        heroTag: 'distance',
-        backgroundColor: Colors.white,
-        child: Image.asset(
-          'assets/images/zalo-logo.png',
-          color: Color.fromRGBO(182, 110, 218, 1),
+    return InkWell(
+      onTap: () {
+        animate();
+        widget.onOpenZalo();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
         ),
-        elevation: _shouldHaveElevation ? 6.0 : 0,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: _isOpened
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Hỗ trợ ngay qua Zalo", style: TextStyle(fontSize: 16)),
+                  FloatingActionButton(
+                    onPressed: null,
+                    backgroundColor: Colors.white,
+                    tooltip: 'zalo',
+                    heroTag: 'zalo',
+                    child: Image.asset(
+                      'assets/images/zalo-logo.png',
+                      width: 34,
+                      height: 34,
+                      fit: BoxFit.cover,
+                    ),
+                    elevation: 0,
+                  ),
+                ],
+              )
+            : Container(),
       ),
     );
   }
 
   Widget messButton() {
-    return Container(
-      child: FloatingActionButton(
-        onPressed: (){
-          animate();
-          widget.onOpenMess();
-        },
-        tooltip: 'likes',
-        heroTag: 'likes',
-        backgroundColor: Colors.white,
-        child: Image.asset(
-          'assets/images/facebook.png',
+    return InkWell(
+      onTap: () {
+        animate();
+        widget.onOpenMess();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
         ),
-        elevation: _shouldHaveElevation ? 6.0 : 0,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: _isOpened
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Hỗ trợ ngay qua Messenger",
+                      style: TextStyle(fontSize: 16)),
+                  FloatingActionButton(
+                    onPressed: null,
+                    tooltip: 'mess',
+                    heroTag: 'mess',
+                    backgroundColor: Colors.white,
+                    child: Image.asset(
+                      'assets/images/messenger.png',
+                      width: 34,
+                      height: 34,
+                      fit: BoxFit.cover,
+                    ),
+                    elevation: 0,
+                  ),
+                ],
+              )
+            : Container(),
       ),
     );
   }
 
   Widget addNewButton() {
-    return Container(
-      child: FloatingActionButton(
-        onPressed: (){
-          animate();
-          widget.onAddNew();
-        },
-        tooltip: 'bookmarks',
-        heroTag: 'bookmarks',
-        backgroundColor: Colors.white,
-        child: Image.asset(
-          'assets/images/add.png'
+    return InkWell(
+      onTap: () {
+        animate();
+        widget.onAddNew();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
         ),
-        elevation: _shouldHaveElevation ? 6.0 : 0,
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: _isOpened
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Đăng tin mới", style: TextStyle(fontSize: 16)),
+                  FloatingActionButton(
+                    onPressed: null,
+                    tooltip: 'addnew',
+                    heroTag: 'addnew',
+                    backgroundColor: Colors.white,
+                    child: Image.asset(
+                      'assets/images/add.png',
+                      width: 34,
+                      height: 34,
+                      fit: BoxFit.cover,
+                    ),
+                    elevation: 0,
+                  ),
+                ],
+              )
+            : Container(),
       ),
     );
   }
 
-
   Widget fabButton() {
     return Container(
       child: FloatingActionButton(
-        backgroundColor: Colors.white,
+        backgroundColor: !_isOpened ? Colors.blue[400] : Colors.white,
         onPressed: animate,
         tooltip: 'Toggle menu',
         child: Image.asset(
-          _isOpened ? "assets/images/close.png" :
-          'assets/images/filter.png',
+          _isOpened ? "assets/images/close.png" : 'assets/images/add.png',
           width: 34,
           height: 34,
           color: _isOpened ? Colors.red : null,
         ),
+        elevation: 6,
       ),
     );
   }
@@ -167,7 +225,7 @@ class SpeedDialState extends State<SpeedDial>
             _translateButton.value * 3.0,
             0.0,
           ),
-          child: zaloButton(),
+          child: messButton(),
         ),
         Transform(
           transform: Matrix4.translationValues(
@@ -175,7 +233,7 @@ class SpeedDialState extends State<SpeedDial>
             _translateButton.value * 2.0,
             0.0,
           ),
-          child: messButton(),
+          child: zaloButton(),
         ),
         Transform(
           transform: Matrix4.translationValues(

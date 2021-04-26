@@ -353,14 +353,25 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 ],
               )
             : null,
-        body: PageView(
-          controller: _pageController,
-          physics: NeverScrollableScrollPhysics(),
-          children: <Widget>[
-            HomePage(callback: _initTab1Page),
-            NewsPage(_initIndex),
-            MyPost(),
-            ProfilePage()
+        body: Stack(
+          children: [
+            PageView(
+              controller: _pageController,
+              physics: NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                HomePage(callback: _initTab1Page),
+                NewsPage(_initIndex),
+                MyPost(),
+                ProfilePage()
+              ],
+            ),
+            _isSpeedOpen
+                ? Container(
+                    color: Color(0xff0c0c0c).withOpacity(0.4),
+                    height: double.infinity,
+                    width: double.infinity,
+                  )
+                : Container()
           ],
         ),
 //        floatingActionButton: Container(
@@ -390,38 +401,37 @@ class _ConecHomePageState extends State<ConecHomePage> {
 //                }
 //              }
 //            },
-//            child: Icon(
-//              Icons.add,
-//              color: Colors.white,
-//            ),
-//            // child: SizedBox.fromSize(
-//            //   size: Size(56, 56), // button width and height
-//            //   child: ClipOval(
-//            //     child: Material(
-//            //       color: Colors.red, // button color
-//            //       child: InkWell(
-//            //         splashColor: Colors.green, // splash color
-//            //         onTap: () {}, // button pressed
-//            //         child: Center(
-//            //             child: Text(
-//            //           "Đăng tin",
-//            //           textAlign: TextAlign.center,
-//            //           style: TextStyle(
-//            //               color: Colors.white, fontWeight: FontWeight.bold),
-//            //         )), // text
-//            //       ),
-//            //     ),
-//            //   ),
-//            // ),
-//          ),
-//        ),
-      floatingActionButton: mySpeedDial.SpeedDial(
-          onOpenZalo: () => print("Zalo"),
-    onOpenMess: () => print("mess"),
-    onAddNew: () => print("add"),
-    onFabAction: onFabAction,
-    ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: mySpeedDial.SpeedDial(
+          onOpenZalo: () => launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
+          onOpenMess: () => launch("https://messenger.com/t/www.conec.vn"),
+          onAddNew: () {
+            if (_token == null || _token.length == 0) {
+              Helper.showAuthenticationDialog(context);
+            } else {
+              if (_isTokenExpired) {
+                Helper.showTokenExpiredDialog(context);
+              } else {
+                if (_isMissingData) {
+                  Helper.showMissingDataDialog(context, () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context)
+                        .pushNamed(EditProfilePage.ROUTE_NAME,
+                            arguments: _profile)
+                        .then((value) {
+                      if (value == 0) {
+                        _profileBloc.requestGetProfile();
+                      }
+                    });
+                  });
+                } else {
+                  Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
+                }
+              }
+            }
+          },
+          onFabAction: onFabAction,
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         extendBody: true,
         bottomNavigationBar: BottomAppBar(
           shape: CircularNotchedRectangle(),
@@ -431,6 +441,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 right: Helper.isTablet(context) ? 32 : 16),
             child: Row(
               mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 InkWell(
                   onTap: () => _selectPage(0),
@@ -454,10 +465,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ],
                   ),
                 ),
-                SizedBox(
-                    width: Helper.isTablet(context)
-                        ? Helper.getScreenWidth(context) / 7
-                        : Helper.getScreenWidth(context) / 14),
+                // SizedBox(
+                //     width: Helper.isTablet(context)
+                //         ? Helper.getScreenWidth(context) / 7
+                //         : Helper.getScreenWidth(context) / 14),
                 InkWell(
                   onTap: () => _selectPage(1),
                   child: Column(
@@ -480,7 +491,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ],
                   ),
                 ),
-                Spacer(),
+                //Spacer(),
                 InkWell(
                   onTap: () => _selectPage(2),
                   child: Column(
@@ -503,10 +514,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ],
                   ),
                 ),
-                SizedBox(
-                    width: Helper.isTablet(context)
-                        ? Helper.getScreenWidth(context) / 7
-                        : Helper.getScreenWidth(context) / 10),
+                // SizedBox(
+                //     width: Helper.isTablet(context)
+                //         ? Helper.getScreenWidth(context) / 7
+                //         : Helper.getScreenWidth(context) / 10),
                 InkWell(
                   onTap: () => _selectPage(3),
                   child: Column(
@@ -538,6 +549,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   }
 
   bool _isSpeedOpen = false;
+
   void onFabAction(bool value) {
     setState(() {
       _isSpeedOpen = value;
