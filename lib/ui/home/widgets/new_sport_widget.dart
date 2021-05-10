@@ -21,7 +21,7 @@ class _NewSportWidgetState extends State<NewSportWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _homeBloc.requestGetSport();
+    _homeBloc.startSport();
   }
 
   @override
@@ -136,12 +136,10 @@ class _NewSportWidgetState extends State<NewSportWidget> {
               case Status.ERROR:
                 return UIError(
                     errorMessage: snapshot.data.message,
-                    onRetryPressed: () => _homeBloc.requestGetSport());
+                    onRetryPressed: () => _homeBloc.startSport());
             }
           }
-          return Center(
-              child: Text(
-                  "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+          return UILoading(loadingMessage: "Đang tải");
         });
   }
 }

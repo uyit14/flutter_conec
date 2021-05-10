@@ -21,7 +21,7 @@ class _NewProductWidgetState extends State<NewProductWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _homeBloc.requestGetNews();
+    _homeBloc.startNews();
   }
 
   @override
@@ -127,12 +127,10 @@ class _NewProductWidgetState extends State<NewProductWidget> {
               case Status.ERROR:
                 return UIError(
                     errorMessage: snapshot.data.message,
-                    onRetryPressed: () => _homeBloc.requestGetNews());
+                    onRetryPressed: () => _homeBloc.startNews());
             }
           }
-          return Container(
-              child: Text(
-                  "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+          return UILoading(loadingMessage: "Đang tải");
         });
   }
 }

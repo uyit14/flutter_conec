@@ -19,7 +19,7 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _homeBloc.requestGetLatestItem();
+    _homeBloc.startLatestItem();
   }
 
   @override
@@ -155,10 +155,10 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
               case Status.ERROR:
                 return UIError(
                     errorMessage: snapshot.data.message,
-                    onRetryPressed: () => _homeBloc.requestGetLatestItem());
+                    onRetryPressed: () => _homeBloc.startLatestItem());
             }
           }
-          return Center(child: Text("Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+          return UILoading(loadingMessage: "Đang tải");
         });
   }
 }

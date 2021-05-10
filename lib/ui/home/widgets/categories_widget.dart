@@ -21,7 +21,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _homeBloc.requestGetTopic();
+    _homeBloc.startTopic();
   }
 
   @override
@@ -153,12 +153,10 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                 case Status.ERROR:
                   return UIError(
                       errorMessage: snapshot.data.message,
-                      onRetryPressed: () => _homeBloc.requestGetTopic());
+                      onRetryPressed: () => _homeBloc.startTopic());
               }
             }
-            return Container(
-                child: Text(
-                    "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+            return UILoading(loadingMessage: "Đang tải");
           }),
     );
   }

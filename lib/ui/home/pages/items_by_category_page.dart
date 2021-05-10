@@ -58,7 +58,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
     _scrollController = new ScrollController()..addListener(_scrollListener);
     _itemsByCategoryBloc = ItemsByCategoryBloc();
     _firstTime = true;
-    _homeBloc.requestGetTopic();
+    _homeBloc.startTopic();
     _homeBloc.topicStream.listen((event) {
       switch (event.status) {
         case Status.COMPLETED:

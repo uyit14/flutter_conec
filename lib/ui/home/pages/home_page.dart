@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _homeBloc.requestGetSlider();
+    _homeBloc.startSlider();
   }
 
   @override
@@ -227,13 +227,10 @@ class _HomePageState extends State<HomePage> {
                       case Status.ERROR:
                         return UIError(
                             errorMessage: snapshot.data.message,
-                            onRetryPressed: () => _homeBloc.requestGetSlider());
+                            onRetryPressed: () => _homeBloc.startSlider());
                     }
                   }
-                  return Center(
-                    child: Text(
-                        "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"),
-                  );
+                  return UILoading(loadingMessage: "Đang tải");
                 }),
             SizedBox(height: 4),
             Padding(

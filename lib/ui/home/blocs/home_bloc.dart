@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/nearby_club_response.dart';
@@ -13,7 +14,7 @@ import 'package:conecapp/repositories/home/home_remote_repository.dart';
 import 'package:flutter/foundation.dart';
 
 class HomeBloc {
-  HomeRemoteRepository _repository;
+  static HomeRemoteRepository _repository = HomeRemoteRepository();
 
   //topic
   StreamController<ApiResponse<List<Topic>>> _topicController =
@@ -66,9 +67,9 @@ class HomeBloc {
   StreamController.broadcast();
   Stream<ApiResponse<int>> get numberNotifyStream => _numberNotifyController.stream;
 
-  HomeBloc() {
-    _repository = HomeRemoteRepository();
-  }
+  // HomeBloc() {
+  //   _repository = HomeRemoteRepository();
+  // }
 
   void requestPageIntroduce(String clubId)async{
     _pageIntroController.sink.add(ApiResponse.loading());
@@ -102,10 +103,28 @@ class HomeBloc {
     }
   }
 
-  void requestGetTopic() async {
+  //
+  Isolate isolate;
+  //topic
+  void startTopic() async {
+    ReceivePort receivePort= ReceivePort(); //port for isolate to receive messages.
+    isolate = await Isolate.spawn(runTopic, receivePort.sendPort);
+    receivePort.listen((data) {
+      print("Receive Topic: ${data.length}");
+      requestGetTopic(data);
+    });
+  }
+
+  static void runTopic(SendPort sendPort) async{
+    final topics = await _repository.fetchTopic();
+      sendPort.send(topics);
+  }
+
+
+  void requestGetTopic(var topics) async {
     _topicController.sink.add(ApiResponse.loading());
     try {
-      final topics = await _repository.fetchTopic();
+      //final topics = await _repository.fetchTopic();
       _topicController.sink.add(ApiResponse.completed(topics));
     } catch (e) {
       _topicController.sink.addError(ApiResponse.error(e.toString()));
@@ -113,10 +132,25 @@ class HomeBloc {
     }
   }
 
-  void requestGetSlider() async {
+  //slide
+  void startSlider() async {
+    ReceivePort receivePort= ReceivePort(); //port for isolate to receive messages.
+    isolate = await Isolate.spawn(runSlider, receivePort.sendPort);
+    receivePort.listen((data) {
+      print("Receive Slider: ${data.length}");
+      requestGetSlider(data);
+    });
+  }
+
+  static void runSlider(SendPort sendPort) async{
+    final sliders = await _repository.fetchSlider();
+    sendPort.send(sliders);
+  }
+
+  void requestGetSlider(var sliders) async {
     _sliderController.sink.add(ApiResponse.loading());
     try {
-      final sliders = await _repository.fetchSlider();
+      //final sliders = await _repository.fetchSlider();
       _sliderController.sink.add(ApiResponse.completed(sliders));
     } catch (e) {
       _sliderController.sink.addError(ApiResponse.error(e.toString()));
@@ -124,10 +158,25 @@ class HomeBloc {
     }
   }
 
-  void requestGetLatestItem() async {
+  //new item
+  void startLatestItem() async {
+    ReceivePort receivePort= ReceivePort(); //port for isolate to receive messages.
+    isolate = await Isolate.spawn(runLatestItem, receivePort.sendPort);
+    receivePort.listen((data) {
+      print("Receive LatestItem: ${data.length}");
+      requestGetLatestItem(data);
+    });
+  }
+
+  static void runLatestItem(SendPort sendPort) async{
+    final items = await _repository.fetchLatestItem();
+    sendPort.send(items);
+  }
+
+  void requestGetLatestItem(var items) async {
     _latestItemController.sink.add(ApiResponse.loading());
     try {
-      final items = await _repository.fetchLatestItem();
+      //final items = await _repository.fetchLatestItem();
       _latestItemController.sink.add(ApiResponse.completed(items));
     } catch (e) {
       _latestItemController.sink.addError(ApiResponse.error(e.toString()));
@@ -135,10 +184,24 @@ class HomeBloc {
     }
   }
 
-  void requestGetSport() async {
+  void startSport() async {
+    ReceivePort receivePort= ReceivePort(); //port for isolate to receive messages.
+    isolate = await Isolate.spawn(runSport, receivePort.sendPort);
+    receivePort.listen((data) {
+      print("Receive Sport: ${data.length}");
+      requestGetSport(data);
+    });
+  }
+
+  static void runSport(SendPort sendPort) async{
+    final sports = await _repository.fetchSport();
+    sendPort.send(sports);
+  }
+
+  void requestGetSport(var sports) async {
     _sportController.sink.add(ApiResponse.loading());
     try {
-      final sports = await _repository.fetchSport();
+      //final sports = await _repository.fetchSport();
       _sportController.sink.add(ApiResponse.completed(sports));
     } catch (e) {
       _sportController.sink.addError(ApiResponse.error(e.toString()));
@@ -146,10 +209,24 @@ class HomeBloc {
     }
   }
 
-  void requestGetNews() async {
+
+  void startNews() async {
+    ReceivePort receivePort= ReceivePort(); //port for isolate to receive messages.
+    isolate = await Isolate.spawn(runNews, receivePort.sendPort);
+    receivePort.listen((data) {
+      print("Receive News: ${data.length}");
+      requestGetNews(data);
+    });
+  }
+
+  static void runNews(SendPort sendPort) async{
+    final news = await _repository.fetchNews();
+    sendPort.send(news);
+  }
+  void requestGetNews(var news) async {
     _newsController.sink.add(ApiResponse.loading());
     try {
-      final news = await _repository.fetchNews();
+      //final news = await _repository.fetchNews();
       _newsController.sink.add(ApiResponse.completed(news));
     } catch (e) {
       _newsController.sink.addError(ApiResponse.error(e.toString()));
@@ -201,6 +278,13 @@ class HomeBloc {
     return response;
   }
 
+  void stop() {
+    if (isolate != null) {
+      isolate.kill(priority: Isolate.immediate);
+      isolate = null;
+    }
+  }
+
   void dispose() {
     _topicController.close();
     _sliderController.close();
@@ -209,6 +293,7 @@ class HomeBloc {
     _newsController.close();
     _numberNotifyController.close();
     _nearByClubController.close();
+    stop();
   }
 
   void disposeNearBy(){
