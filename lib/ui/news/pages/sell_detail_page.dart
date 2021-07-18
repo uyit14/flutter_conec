@@ -515,11 +515,11 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                 Row(
                                   children: <Widget>[
                                     Icon(
-                                      Icons.person_pin,
+                                      Icons.streetview,
                                       color: Colors.green,
                                     ),
                                     SizedBox(width: 8),
-                                    Text("Người đăng",
+                                    Text("Xem thông tin",
                                         style: AppTheme.commonDetail)
                                   ],
                                 ),
@@ -736,30 +736,30 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                         )
                                       : Text(adsDetail.content ?? ""),
                                 ),
-                                Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: Colors.black12,
-                                    margin: EdgeInsets.symmetric(vertical: 8)),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.verified_user,
-                                      color: Colors.green,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text("Kiểm duyệt",
-                                        style: AppTheme.commonDetail),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8, right: 8, top: 8),
-                                  child: Text(
-                                    "Tin đăng đã được kiểm duyệt. Nếu gặp vấn đề, vui lòng báo cáo tin đăng hoặc liên hệ CSKH để được trợ giúp.",
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                ),
+                                // Container(
+                                //     width: double.infinity,
+                                //     height: 1,
+                                //     color: Colors.black12,
+                                //     margin: EdgeInsets.symmetric(vertical: 8)),
+                                // Row(
+                                //   children: <Widget>[
+                                //     Icon(
+                                //       Icons.verified_user,
+                                //       color: Colors.green,
+                                //     ),
+                                //     SizedBox(width: 8),
+                                //     Text("Kiểm duyệt",
+                                //         style: AppTheme.commonDetail),
+                                //   ],
+                                // ),
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       left: 8, right: 8, top: 8),
+                                //   child: Text(
+                                //     "Tin đăng đã được kiểm duyệt. Nếu gặp vấn đề, vui lòng báo cáo tin đăng hoặc liên hệ CSKH để được trợ giúp.",
+                                //     style: TextStyle(fontSize: 15),
+                                //   ),
+                                // ),
                                 AdsCommentWidget(postId, adsDetail, doReload)
 //                                Center(
 //                                  child: FlatButton.icon(

@@ -199,11 +199,11 @@ class SpeedDialState extends State<SpeedDial>
   Widget fabButton() {
     return Container(
       child: FloatingActionButton(
-        backgroundColor: !_isOpened ? Colors.blue[400] : Colors.white,
+        backgroundColor: !_isOpened ? Colors.white : Colors.white,
         onPressed: animate,
         tooltip: 'Toggle menu',
         child: Image.asset(
-          _isOpened ? "assets/images/close.png" : 'assets/images/add.png',
+          _isOpened ? "assets/images/close.png" : 'assets/images/comments.png',
           width: 34,
           height: 34,
           color: _isOpened ? Colors.red : null,

@@ -1,18 +1,16 @@
 import 'dart:convert';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
+import 'package:conecapp/models/response/comment/follow_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/widgets/item_comment_parent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
-import '../../../common/globals.dart' as globals;
 
 class CommentWidget extends StatefulWidget {
   final String postId;
@@ -40,25 +38,28 @@ class _CommentWidgetState extends State<CommentWidget> {
   String _token;
   bool _isTokenExpired = true;
   String _avatar;
+  List<Follower> _datas = List();
 
-  void getToken() async{
+  void getToken() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
     setState(() {
       _token = token;
       _isTokenExpired = expired;
     });
-    if(!expired && token!=null){
+    if (!expired && token != null) {
       _itemsByCategoryBloc.requestGetAvatar();
       _itemsByCategoryBloc.avatarStream.listen((event) {
-        switch(event.status){
-          case Status.LOADING: break;
+        switch (event.status) {
+          case Status.LOADING:
+            break;
           case Status.COMPLETED:
             setState(() {
               _avatar = event.data;
             });
             break;
-          case Status.ERROR: break;
+          case Status.ERROR:
+            break;
         }
       });
     }
@@ -68,6 +69,7 @@ class _CommentWidgetState extends State<CommentWidget> {
   void initState() {
     _addDataToList = true;
     super.initState();
+    _itemsByCategoryBloc.requestGetFollower(widget.postId);
     getToken();
     _likeCount = widget.itemDetail.likeCount;
     _isLikeOwner = widget.itemDetail.likeOwner;
@@ -77,6 +79,13 @@ class _CommentWidgetState extends State<CommentWidget> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_addDataToList) _itemsByCategoryBloc.requestComment(widget.postId);
+    _itemsByCategoryBloc.followerStream.listen((event) {
+      if (event.status == Status.COMPLETED) {
+        setState(() {
+          _datas = event.data;
+        });
+      }
+    });
   }
 
   void requestFocus(String parentId, bool isDelete) {
@@ -84,9 +93,9 @@ class _CommentWidgetState extends State<CommentWidget> {
     if (_token == null || _token.length == 0) {
       Helper.showAuthenticationDialog(context);
     } else {
-      if(_isTokenExpired){
+      if (_isTokenExpired) {
         Helper.showTokenExpiredDialog(context);
-      }else{
+      } else {
         if (!isDelete) {
           _parentId = parentId;
           _focusNode.requestFocus();
@@ -94,16 +103,16 @@ class _CommentWidgetState extends State<CommentWidget> {
             _isShowCommentInput = !_isShowCommentInput;
           });
         } else {
-          Helper.showDeleteDialog(context, "Xóa bình luận", "Bạn có chắc chắn muốn xóa bình luận này?", () {
+          Helper.showDeleteDialog(context, "Xóa bình luận",
+              "Bạn có chắc chắn muốn xóa bình luận này?", () {
             print("ui delete at: " +
                 comments
                     .indexWhere((element) => element.id == parentId)
                     .toString());
             print("with content ui: " + comments[0].content);
-            int deleteAt = comments.indexWhere((element) => element.id == parentId);
-            _itemsByCategoryBloc
-                .requestDeleteComment(parentId)
-                .then((value) {
+            int deleteAt =
+                comments.indexWhere((element) => element.id == parentId);
+            _itemsByCategoryBloc.requestDeleteComment(parentId).then((value) {
               if (deleteAt == -1) {
                 _itemsByCategoryBloc.allComments
                     .removeWhere((element) => element.id == parentId);
@@ -112,7 +121,6 @@ class _CommentWidgetState extends State<CommentWidget> {
               setState(() {
                 _addDataToList = true;
               });
-
             });
             comments.clear();
             Navigator.pop(context);
@@ -126,6 +134,34 @@ class _CommentWidgetState extends State<CommentWidget> {
     }
   }
 
+  Widget _itemPerson(Follower fl) {
+    return Container(
+      margin: EdgeInsets.all(8),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.grey,
+                backgroundImage: fl.avatar != null
+                    ? NetworkImage(fl.avatar)
+                    : AssetImage("assets/images/avatar.png"),
+              ),
+              SizedBox(width: 8),
+              Text(fl.owner ?? "", style: TextStyle(fontSize: 18)),
+            ],
+          ),
+          SizedBox(height: 8),
+          Container(
+              height: 0.5,
+              color: Colors.grey,
+              margin: EdgeInsets.only(left: 50)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -135,22 +171,55 @@ class _CommentWidgetState extends State<CommentWidget> {
           margin: EdgeInsets.only(top: 8),
           child: Column(
             children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Icon(
-                    Icons.thumb_up,
-                    size: 18,
-                    color: Colors.blue,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    _likeCount.toString() ?? "0",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Spacer(),
-                  Text('${widget.itemDetail.viewCount} lượt xem')
-                ],
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: ListView(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 8),
+                                child: Row(
+                                  children: [
+                                    Text("Theo dõi",
+                                        style: TextStyle(
+                                            fontSize: 22, color: Colors.black)),
+                                    Spacer(),
+                                    IconButton(
+                                        icon: Icon(Icons.close, size: 28),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop())
+                                  ],
+                                ),
+                              ),
+                              ..._datas.map((e) => _itemPerson(e))
+                            ],
+                          ),
+                        );
+                      });
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Icon(
+                      Icons.thumb_up,
+                      size: 18,
+                      color: Colors.blue,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      _likeCount.toString() ?? "0",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Spacer(),
+                    Text('${widget.itemDetail.viewCount} lượt xem')
+                  ],
+                ),
               ),
               Container(
                   width: double.infinity,
@@ -162,13 +231,14 @@ class _CommentWidgetState extends State<CommentWidget> {
                 children: <Widget>[
                   InkWell(
                     onTap: () {
-                      if(_token == null || _token.length == 0){
+                      if (_token == null || _token.length == 0) {
                         Helper.showAuthenticationDialog(context);
-                      }else{
-                        if(_isTokenExpired){
+                      } else {
+                        if (_isTokenExpired) {
                           Helper.showTokenExpiredDialog(context);
-                        }else{
-                          _itemsByCategoryBloc.requestLikePost(widget.itemDetail.postId);
+                        } else {
+                          _itemsByCategoryBloc
+                              .requestLikePost(widget.itemDetail.postId);
                           if (!_isLikeOwner) {
                             _likeCount++;
                           } else {
@@ -190,7 +260,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                         ),
                         SizedBox(width: 8),
                         Text(
-                          "Thích",
+                          "Theo dõi",
                           style: TextStyle(
                             fontSize: 16,
                             color: _isLikeOwner ? Colors.blue : Colors.black87,
@@ -220,7 +290,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                   InkWell(
                     onTap: () {
                       print("shared: ${widget.itemDetail.shareLink}");
-                      Share.share(widget.itemDetail.shareLink ?? Helper.applicationUrl());
+                      Share.share(widget.itemDetail.shareLink ??
+                          Helper.applicationUrl());
                     },
                     child: Row(
                       children: [
@@ -257,13 +328,15 @@ class _CommentWidgetState extends State<CommentWidget> {
                             _addDataToList = false;
                             debugPrint(comments.length.toString() +
                                 "---ui lenght list");
-                            comments.forEach((element) {print(element.content);});
+                            comments.forEach((element) {
+                              print(element.content);
+                            });
                           }
 
                           return Column(
                               children: List<Widget>.from(
                                   comments.map((parentComment) {
-                                    print("-------" + parentComment.content);
+                            print("-------" + parentComment.content);
                             return ItemCommentParent(
                                 parentComment, _itemsByCategoryBloc,
                                 (parentID, isDelete) {
@@ -299,13 +372,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                     !_isLoading
                         ? CircleAvatar(
                             radius: 25,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: _avatar !=
-                          null
-                          ? NetworkImage(
-                          _avatar)
-                          : AssetImage(
-                          "assets/images/avatar.png"),
+                            backgroundColor: Colors.grey,
+                            backgroundImage: _avatar != null
+                                ? NetworkImage(_avatar)
+                                : AssetImage("assets/images/avatar.png"),
                           )
                         : CupertinoActivityIndicator(
                             radius: 16,
@@ -334,19 +404,18 @@ class _CommentWidgetState extends State<CommentWidget> {
                             _isLoading = true;
                           });
                           _itemsByCategoryBloc
-                              .requestPostComment(
-                                  jsonEncode(_parentId == null
-                                      ? {
-                                          "content": _controller.text,
-                                          "postId": widget.postId
-                                        }
-                                      : {
-                                          "content": _controller.text,
-                                          "postId": widget.postId,
-                                          "parent": _parentId
-                                        }))
+                              .requestPostComment(jsonEncode(_parentId == null
+                                  ? {
+                                      "content": _controller.text,
+                                      "postId": widget.postId
+                                    }
+                                  : {
+                                      "content": _controller.text,
+                                      "postId": widget.postId,
+                                      "parent": _parentId
+                                    }))
                               .then((value) {
-                                print("value: $value");
+                            print("value: $value");
                             if (value.parent == null) {
                               comments.add(value);
                             } else {

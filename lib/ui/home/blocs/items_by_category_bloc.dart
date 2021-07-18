@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
+import 'package:conecapp/models/response/comment/follow_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/page/hidden_response.dart';
@@ -36,6 +37,13 @@ class ItemsByCategoryBloc {
   Stream<ApiResponse<ItemDetail>> get itemDetailStream =>
       _itemDetailController.stream;
 
+  //follower
+  StreamController<ApiResponse<List<Follower>>> _followerController =
+      StreamController.broadcast();
+
+  Stream<ApiResponse<List<Follower>>> get followerStream =>
+      _followerController.stream;
+
   //
   final List<Comment> allComments = List();
 
@@ -55,11 +63,20 @@ class ItemsByCategoryBloc {
 //      _childCommentController.stream;
 
   void requestGetAllItem(int page, String subTopic,
-      {String province, String district, String topic, String club, String keyword}) async {
+      {String province,
+      String district,
+      String topic,
+      String club,
+      String keyword}) async {
     _allItemController.sink.add(ApiResponse.completed([]));
     if (page != 1) {
       final items = await _repository.fetchAllItem(page,
-          province: province, district: district, club: club, topic: topic, keyword: keyword, subTopic: subTopic);
+          province: province,
+          district: district,
+          club: club,
+          topic: topic,
+          keyword: keyword,
+          subTopic: subTopic);
       _originalItems.addAll(items);
       _allItemController.sink.add(ApiResponse.completed(items));
     } else {
@@ -67,7 +84,12 @@ class ItemsByCategoryBloc {
       _originalItems.clear();
       try {
         final items = await _repository.fetchAllItem(page,
-            province: province, district: district, club: club, topic: topic, keyword: keyword, subTopic: subTopic);
+            province: province,
+            district: district,
+            club: club,
+            topic: topic,
+            keyword: keyword,
+            subTopic: subTopic);
         _originalItems.addAll(items);
         _allItemController.sink.add(ApiResponse.completed(items));
       } catch (e) {
@@ -80,9 +102,14 @@ class ItemsByCategoryBloc {
   void requestItemDetail(String postId) async {
     _itemDetailController.sink.add(ApiResponse.loading());
 
-      final itemDetail = await _repository.fetchItemDetail(postId);
-      _itemDetailController.sink.add(ApiResponse.completed(itemDetail));
+    final itemDetail = await _repository.fetchItemDetail(postId);
+    _itemDetailController.sink.add(ApiResponse.completed(itemDetail));
+  }
 
+  void requestGetFollower(String postId) async {
+    final result = await _repository.fetFollower(postId);
+    if (result.status)
+      _followerController.sink.add(ApiResponse.completed(result.followers));
   }
 
 //  Future<String> requestItemDetailOnly(String postId) async {
@@ -171,8 +198,6 @@ class ItemsByCategoryBloc {
 //    return false;
   }
 
-
-
   void clearSearch() {
     _allItemController.sink.add(ApiResponse.completed(_originalItems));
   }
@@ -197,8 +222,10 @@ class ItemsByCategoryBloc {
     return false;
   }
 
-  Future<HiddenResponse> requestHiddenPostInfo(String ownerId, String userId, String postId) async {
-    final response = await _repository.getHiddenPostInfo(ownerId, userId, postId);
+  Future<HiddenResponse> requestHiddenPostInfo(
+      String ownerId, String userId, String postId) async {
+    final response =
+        await _repository.getHiddenPostInfo(ownerId, userId, postId);
     return response;
   }
 
@@ -207,6 +234,7 @@ class ItemsByCategoryBloc {
     _itemDetailController?.close();
     _parentCommentController?.close();
     _avatarController?.close();
+    _followerController?.close();
     //_childCommentController?.close();
   }
 }

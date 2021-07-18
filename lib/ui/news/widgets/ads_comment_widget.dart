@@ -13,6 +13,7 @@ import 'package:conecapp/ui/home/widgets/item_comment_parent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
+import 'package:conecapp/models/response/comment/follow_response.dart';
 import '../../../common/globals.dart' as globals;
 
 class AdsCommentWidget extends StatefulWidget {
@@ -38,6 +39,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   String _token;
   bool _isTokenExpired = true;
   String _avatar;
+  List<Follower> _datas = List();
 
   String _parentId;
   var _focusNode = FocusNode();
@@ -48,6 +50,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
     super.initState();
     _likeCount = widget.itemDetail.likeCount;
     _isLikeOwner = widget.itemDetail.likeOwner;
+    _itemsByCategoryBloc.requestGetFollower(widget.postId);
     getToken();
   }
 
@@ -55,6 +58,13 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_addDataToList) _itemsByCategoryBloc.requestComment(widget.postId);
+    _itemsByCategoryBloc.followerStream.listen((event) {
+      if (event.status == Status.COMPLETED) {
+        setState(() {
+          _datas = event.data;
+        });
+      }
+    });
   }
 
   void getToken() async {
@@ -129,6 +139,34 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
     }
   }
 
+  Widget _itemPerson(Follower fl) {
+    return Container(
+      margin: EdgeInsets.all(8),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.grey,
+                backgroundImage: fl.avatar != null
+                    ? NetworkImage(fl.avatar)
+                    : AssetImage("assets/images/avatar.png"),
+              ),
+              SizedBox(width: 8),
+              Text(fl.owner ?? "", style: TextStyle(fontSize: 18)),
+            ],
+          ),
+          SizedBox(height: 8),
+          Container(
+              height: 0.5,
+              color: Colors.grey,
+              margin: EdgeInsets.only(left: 50)),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -138,22 +176,55 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
           margin: EdgeInsets.only(top: 8),
           child: Column(
             children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Icon(
-                    Icons.thumb_up,
-                    size: 18,
-                    color: Colors.blue,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    _likeCount.toString() ?? "0",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  Spacer(),
-                  Text('${widget.itemDetail.viewCount} lượt xem')
-                ],
+              InkWell(
+                onTap: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: ListView(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 8),
+                                child: Row(
+                                  children: [
+                                    Text("Theo dõi",
+                                        style: TextStyle(
+                                            fontSize: 22, color: Colors.black)),
+                                    Spacer(),
+                                    IconButton(
+                                        icon: Icon(Icons.close, size: 28),
+                                        onPressed: () =>
+                                            Navigator.of(context).pop())
+                                  ],
+                                ),
+                              ),
+                              ..._datas.map((e) => _itemPerson(e))
+                            ],
+                          ),
+                        );
+                      });
+                },
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Icon(
+                      Icons.thumb_up,
+                      size: 18,
+                      color: Colors.blue,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      _likeCount.toString() ?? "0",
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Spacer(),
+                    Text('${widget.itemDetail.viewCount} lượt xem')
+                  ],
+                ),
               ),
               Container(
                   width: double.infinity,
@@ -194,7 +265,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                         ),
                         SizedBox(width: 8),
                         Text(
-                          "Thích",
+                          "Theo dõi",
                           style: TextStyle(
                             fontSize: 16,
                             color: _isLikeOwner ? Colors.blue : Colors.black87,

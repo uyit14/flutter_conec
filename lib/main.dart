@@ -6,6 +6,7 @@ import 'package:conecapp/ui/authen/pages/confirm_email_page.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/authen/pages/register_page.dart';
+import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
@@ -95,6 +96,7 @@ class ConecApp extends StatelessWidget {
         ReportPage.ROUTE_NAME: (context) => ReportPage(),
         HelpPage.ROUTE_NAME: (context) => HelpPage(),
         SubCategoryPage.ROUTE_NAME: (context) => SubCategoryPage(),
+        ChatPage.ROUTE_NAME: (context) => ChatPage(),
       },
     );
   }

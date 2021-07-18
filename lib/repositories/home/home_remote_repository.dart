@@ -5,6 +5,7 @@ import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/avatar_response.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
+import 'package:conecapp/models/response/comment/follow_response.dart';
 import 'package:conecapp/models/response/delete_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
@@ -253,9 +254,16 @@ class HomeRemoteRepository {
     final response = await _helper.get("/api/ConfigSetting/GetAppVersion",
         headers: Helper.headerNoToken);
     print(response.toString());
-    if(Platform.isIOS){
+    if (Platform.isIOS) {
       return response['iOS_Version'];
     }
     return response['android_Version'];
+  }
+
+  Future<FollowResponse> fetFollower(String postId) async {
+    final response = await _helper.get("/api/post/GetFollows?id=$postId&page=1",
+        headers: await Helper.header());
+    print("getFollower: " + response.toString());
+    return FollowResponse.fromJson(response);
   }
 }

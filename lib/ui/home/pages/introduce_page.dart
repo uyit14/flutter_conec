@@ -8,6 +8,7 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/page/hidden_response.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
+import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:html/parser.dart';
 
 import '../../../common/globals.dart' as globals;
+import '../../chat/chat_page.dart';
 import 'item_detail_page.dart';
 
 class IntroducePage extends StatefulWidget {
@@ -656,6 +658,12 @@ class _IntroducePageState extends State<IntroducePage> {
                 }
                 return Container();
               }),
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.chat),
+          onPressed: (){
+            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME);
+          },
         ),
       ),
     );

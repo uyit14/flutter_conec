@@ -89,6 +89,7 @@ class _NewProductWidgetState extends State<NewProductWidget> {
                                             tag: news[index].postId,
                                             child: CachedNetworkImage(
                                               imageUrl: news[index].thumbnail,
+                                              fit: BoxFit.cover,
                                               placeholder: (context, url) =>
                                                   Image.asset(
                                                       "assets/images/placeholder.png",
