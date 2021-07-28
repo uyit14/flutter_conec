@@ -6,6 +6,7 @@ import 'package:conecapp/common/ui/ui_loading_opacity.dart';
 import 'package:conecapp/models/response/profile/GiftReponse.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
+import 'package:conecapp/partner_module/ui/partner_main.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/others/open_letter_page.dart';
@@ -310,6 +311,33 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       Text(
                         "Thư ngỏ",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w400),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 8),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(PartnerMain.ROUTE_NAME);
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      RawMaterialButton(
+                        onPressed: () {},
+                        elevation: 2.0,
+                        fillColor: Colors.white,
+                        child: Icon(
+                          Icons.account_tree,
+                          color: Colors.red,
+                          size: 30,
+                        ),
+                        padding: EdgeInsets.all(15.0),
+                        shape: CircleBorder(),
+                      ),
+                      Text(
+                        "Đối tác",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w400),
                       )

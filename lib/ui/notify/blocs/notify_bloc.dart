@@ -42,6 +42,6 @@ class NotifyBloc {
   }
 
   void dispose() {
-    _notifyController.close();
+    _notifyController?.close();
   }
 }

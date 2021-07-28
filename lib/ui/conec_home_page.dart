@@ -132,7 +132,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
     if (pf.Platform.isIOS) {
       checkAppVersionApi();
     } else {
-      checkVersion(context);
+      //checkVersion(context);
     }
     initOneSignal("7075e16c-c1fb-4d33-93b1-1c8cf007c294");
     getToken();

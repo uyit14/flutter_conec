@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:conecapp/partner_module/ui/notify/notify_partner_detail_page.dart';
+import 'package:conecapp/partner_module/ui/notify/notify_partner_page.dart';
+import 'package:conecapp/partner_module/ui/partner_main.dart';
 import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/address/ward_page.dart';
 import 'package:conecapp/ui/authen/pages/confirm_email_page.dart';
@@ -97,6 +100,9 @@ class ConecApp extends StatelessWidget {
         HelpPage.ROUTE_NAME: (context) => HelpPage(),
         SubCategoryPage.ROUTE_NAME: (context) => SubCategoryPage(),
         ChatPage.ROUTE_NAME: (context) => ChatPage(),
+        PartnerMain.ROUTE_NAME: (context) => PartnerMain(),
+        NotifyPartnerPage.ROUTE_NAME: (context) => NotifyPartnerPage(),
+        NotifyPartnerDetailPage.ROUTE_NAME: (context) => NotifyPartnerDetailPage()
       },
     );
   }
