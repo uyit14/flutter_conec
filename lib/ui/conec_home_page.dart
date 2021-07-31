@@ -3,6 +3,8 @@ import 'dart:io' as pf;
 import 'package:badges/badges.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
+import 'package:conecapp/ui/chat/chat_list_page.dart';
 import 'package:conecapp/ui/home/pages/home_page.dart';
 import 'package:conecapp/ui/mypost/pages/post_action_page.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
@@ -405,6 +407,9 @@ class _ConecHomePageState extends State<ConecHomePage> {
                       }
                     }
                   }
+                },
+                onOpenChat: (){
+                  Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);
                 },
                 onFabAction: onFabAction,
               ),

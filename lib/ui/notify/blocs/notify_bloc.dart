@@ -12,7 +12,6 @@ class NotifyBloc {
     _repository = HomeRemoteRepository();
   }
 
-  //topic
   StreamController<ApiResponse<List<Notify>>> _notifyController =
       StreamController();
 

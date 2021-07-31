@@ -1,12 +1,12 @@
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
-import 'package:conecapp/models/response/notify/notify_response.dart';
-import 'package:conecapp/ui/notify/blocs/notify_bloc.dart';
+import 'package:conecapp/partner_module/models/p_notify_reponse.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 
 import 'notify_partner_detail_page.dart';
+import 'p_notify_bloc.dart';
 
 class NotifyPartnerPage extends StatefulWidget {
   static const ROUTE_NAME = '/notify-partner';
@@ -16,18 +16,18 @@ class NotifyPartnerPage extends StatefulWidget {
 }
 
 class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
-  NotifyBloc _notifyBloc = NotifyBloc();
+  PNotifyBloc _notifyBloc = PNotifyBloc();
   ScrollController _scrollController;
   bool _shouldLoadMore = true;
-  int _currentPage = 1;
-  List<Notify> notifyList = List<Notify>();
+  int _currentPage = 0;
+  List<PNotifyLite> notifyList = List<PNotifyLite>();
 
   @override
   void initState() {
     super.initState();
     _scrollController = new ScrollController()..addListener(_scrollListener);
     _notifyBloc.requestGetNotify(_currentPage);
-    _currentPage = 2;
+    _currentPage = 1;
   }
 
   void _scrollListener() {
@@ -65,9 +65,8 @@ class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
           ),
         ),
         body: Container(
-            color: Colors.black26,
             padding: EdgeInsets.all(8),
-            child: StreamBuilder<ApiResponse<List<Notify>>>(
+            child: StreamBuilder<ApiResponse<List<PNotifyLite>>>(
                 stream: _notifyBloc.notifyStream,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -88,29 +87,27 @@ class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
                               controller: _scrollController,
                               itemCount: notifyList.length,
                               itemBuilder: (context, index) {
-                                final document = parse(notifyList[index].content ?? "");
-                                final String parsedString = parse(document.body.text).documentElement.text;
+                                final document =
+                                    parse(notifyList[index].description ?? "");
+                                final String parsedString =
+                                    parse(document.body.text)
+                                        .documentElement
+                                        .text;
                                 return InkWell(
                                   onTap: () {
-                                    print('at index $index :' + notifyList[index].read.toString());
-                                    notifyList[index].read = true;
                                     Navigator.of(context).pushNamed(
                                         NotifyPartnerDetailPage.ROUTE_NAME,
-                                        arguments: notifyList[index]).then((value) {
-                                      if(value==1){
-                                        _notifyBloc.requestGetNotify(1);
-                                        notifyList.clear();
-                                      }
-                                    });
+                                        arguments: notifyList[index].postId);
                                   },
                                   child: Card(
                                     color: Colors.white,
+                                    elevation: 4,
                                     margin: EdgeInsets.symmetric(vertical: 2),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Text(notifyList[index].title,
                                               maxLines: 1,
@@ -119,14 +116,40 @@ class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 16)),
                                           SizedBox(height: 4),
-                                          Text(parsedString ?? "", maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,),
-                                          SizedBox(height: 4),
-                                          Text(notifyList[index].createdDate,
-                                              style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400)),
+                                          Text(
+                                            parsedString ?? "",
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 12),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                  notifyList[index]
+                                                      .approvedDate,
+                                                  style: TextStyle(
+                                                      color: Colors.blue,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400)),
+                                              Spacer(),
+                                              Text("Thông báo"),
+                                              SizedBox(width: 6),
+                                              Text(
+                                                notifyList[index]
+                                                    .notificationCount
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.red,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                              ),
+                                              SizedBox(
+                                                width: 6,
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -136,23 +159,19 @@ class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
                         }
                         return Center(
                             child: Text(
-                              "Chưa có thông báo",
-                              style: TextStyle(fontSize: 18),
-                            ));
+                          "Chưa có thông báo",
+                          style: TextStyle(fontSize: 18),
+                        ));
                       case Status.ERROR:
                         return UIError(errorMessage: snapshot.data.message);
                     }
                   }
                   return Center(
                       child: Text(
-                        "Chưa có thông báo",
-                        style: TextStyle(fontSize: 18),
-                      ));
+                    "Chưa có thông báo",
+                    style: TextStyle(fontSize: 18),
+                  ));
                 })),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-        ),
       ),
     );
   }

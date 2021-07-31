@@ -20,7 +20,7 @@ class _ChatPageState extends State<ChatPage> {
       10,
       (index) => ChatDoc(
           index % 2 == 0 ? "Me" : "Friend",
-          "New message at $index",
+          index != 3 ? "New message at $index" : "TỐI 29/7 THÊM 4.773 CA COVID-19 TỔNG SỐ CA TRONG NGÀY LÀ 7.594 CA TP.HCM CÓ 4.592 CA",
           ChatDoc.avatar,
           index % 2 == 0 ? true : false,
           index.toString()));
@@ -50,7 +50,37 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        //appBar: AppBar(title: Text("Chat")),
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop(1);
+            },
+            icon: Icon(Icons.arrow_back_ios),
+          ),
+          actions: [
+            CircleAvatar(
+              radius: 20,
+              backgroundColor: Colors.grey,
+              backgroundImage: Helper.tempAvatar != null
+                  ? NetworkImage(Helper.tempAvatar)
+                  : AssetImage("assets/images/avatar.png"),
+            ),
+            SizedBox(width: 6),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Tải Bảo Uy",
+                    style: TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold)),
+                SizedBox(height: 2),
+                Text("2 giờ trước",
+                    style: TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.w400)),
+              ],
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width - 160,)
+          ],
+        ),
         body: Container(
           child: Column(
             children: [

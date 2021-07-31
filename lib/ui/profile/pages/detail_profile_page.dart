@@ -94,7 +94,8 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text("Tên đăng nhập", style: AppTheme.profileTitle),
+                                  Text("Tên đăng nhập",
+                                      style: AppTheme.profileTitle),
                                   Text(profile.userName ?? "",
                                       style: AppTheme.profileInfo),
                                   Container(
@@ -122,7 +123,11 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                           children: <Widget>[
                                             Text("Năm sinh",
                                                 style: AppTheme.profileTitle),
-                                            Text(profile!=null && !profile.hideDOB ? profile.dob : "**********",
+                                            Text(
+                                                profile != null &&
+                                                        !profile.hideDOB
+                                                    ? profile.dob
+                                                    : "**********",
                                                 style: AppTheme.profileInfo),
                                             Container(
                                               height: 0.5,
@@ -185,38 +190,42 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                   SizedBox(height: 8),
                                   profile.images != null &&
                                           profile.images.length > 0
-                                      ? Row(
-                                          children: profile.images
-                                              .map((image) => Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: 8),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              6),
-                                                      child: CachedNetworkImage(
-                                                        imageUrl:
-                                                            image.fileName,
-                                                        placeholder: (context,
-                                                                url) =>
-                                                            Image.asset(
-                                                                "assets/images/placeholder.png",
-                                                                width: 100,
-                                                                height: 100),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            Image.asset(
-                                                          "assets/images/error.png",
+                                      ? SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: profile.images
+                                                .map((image) => Container(
+                                                      margin: EdgeInsets.only(
+                                                          right: 8),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl:
+                                                              image.fileName,
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              Image.asset(
+                                                                  "assets/images/placeholder.png",
+                                                                  width: 100,
+                                                                  height: 100),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Image.asset(
+                                                            "assets/images/error.png",
+                                                            width: 100,
+                                                            height: 100,
+                                                          ),
+                                                          fit: BoxFit.cover,
                                                           width: 100,
                                                           height: 100,
                                                         ),
-                                                        fit: BoxFit.cover,
-                                                        width: 100,
-                                                        height: 100,
                                                       ),
-                                                    ),
-                                                  ))
-                                              .toList(),
+                                                    ))
+                                                .toList(),
+                                          ),
                                         )
                                       : Text("Chưa có ảnh nào"),
                                   Container(

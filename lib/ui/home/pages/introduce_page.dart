@@ -8,6 +8,7 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/page/hidden_response.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
+import 'package:conecapp/ui/chat/chat_list_page.dart';
 import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
@@ -662,7 +663,7 @@ class _IntroducePageState extends State<IntroducePage> {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.chat),
           onPressed: (){
-            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME);
+            Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);
           },
         ),
       ),

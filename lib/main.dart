@@ -1,7 +1,10 @@
 import 'dart:io';
 
+import 'package:conecapp/partner_module/ui/member/member_page.dart';
+import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_detail_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_page.dart';
+import 'package:conecapp/partner_module/ui/notify/update_notify_page.dart';
 import 'package:conecapp/partner_module/ui/partner_main.dart';
 import 'package:conecapp/ui/address/province_page.dart';
 import 'package:conecapp/ui/address/ward_page.dart';
@@ -9,6 +12,7 @@ import 'package:conecapp/ui/authen/pages/confirm_email_page.dart';
 import 'package:conecapp/ui/authen/pages/forgot_password_page.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/authen/pages/register_page.dart';
+import 'package:conecapp/ui/chat/chat_list_page.dart';
 import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/pages/google_map_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
@@ -102,7 +106,11 @@ class ConecApp extends StatelessWidget {
         ChatPage.ROUTE_NAME: (context) => ChatPage(),
         PartnerMain.ROUTE_NAME: (context) => PartnerMain(),
         NotifyPartnerPage.ROUTE_NAME: (context) => NotifyPartnerPage(),
-        NotifyPartnerDetailPage.ROUTE_NAME: (context) => NotifyPartnerDetailPage()
+        NotifyPartnerDetailPage.ROUTE_NAME: (context) => NotifyPartnerDetailPage(),
+        AddNotifyPage.ROUTE_NAME: (context) => AddNotifyPage(),
+        UpdateNotifyPage.ROUTE_NAME: (context) => UpdateNotifyPage(),
+        ChatListPage.ROUTE_NAME: (context) => ChatListPage(),
+        MemberPage.ROUTE_NAME: (context) => MemberPage(),
       },
     );
   }

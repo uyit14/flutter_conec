@@ -1,7 +1,9 @@
+import 'package:conecapp/partner_module/ui/member/member_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_page.dart';
+import 'package:conecapp/ui/chat/chat_list_page.dart';
 import 'package:flutter/material.dart';
 
-enum MANAGEMENT_TYPE { NOTIFY, MEMBER, ORDER }
+enum MANAGEMENT_TYPE { NOTIFY, MEMBER, CHAT }
 
 class PartnerMain extends StatefulWidget {
   static const ROUTE_NAME = '/partner-main';
@@ -25,7 +27,8 @@ class _PartnerMainState extends State<PartnerMain> {
                   MANAGEMENT_TYPE.MEMBER, Colors.green),
               gridItem("Thông báo", Icons.notifications, MANAGEMENT_TYPE.NOTIFY,
                   Colors.yellow),
-              gridItem("Khác", Icons.build, MANAGEMENT_TYPE.ORDER, Colors.red)
+              gridItem("Trò chuyện", Icons.chat_bubble, MANAGEMENT_TYPE.CHAT,
+                  Colors.blue)
             ],
           ),
         ),
@@ -44,8 +47,10 @@ Widget gridItem(String title, IconData iconData, MANAGEMENT_TYPE type,
             Navigator.of(context).pushNamed(NotifyPartnerPage.ROUTE_NAME);
             break;
           case MANAGEMENT_TYPE.MEMBER:
+            Navigator.of(context).pushNamed(MemberPage.ROUTE_NAME);
             break;
-          case MANAGEMENT_TYPE.ORDER:
+          case MANAGEMENT_TYPE.CHAT:
+            Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);
             break;
         }
       },
@@ -54,10 +59,10 @@ Widget gridItem(String title, IconData iconData, MANAGEMENT_TYPE type,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(iconData, color: color, size: 32),
+            Icon(iconData, color: color, size: 36),
             SizedBox(height: 8),
             Text(title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400))
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400))
           ],
         ),
       ),

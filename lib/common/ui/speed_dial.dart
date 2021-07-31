@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 class SpeedDial extends StatefulWidget {
   final Function() onOpenZalo;
   final Function() onOpenMess;
+  final Function() onOpenChat;
   final Function() onAddNew;
   final Function(bool) onFabAction;
 
   SpeedDial(
-      {this.onOpenZalo, this.onOpenMess, this.onAddNew, this.onFabAction});
+      {this.onOpenZalo, this.onOpenMess, this.onOpenChat, this.onAddNew, this.onFabAction});
 
   @override
   State<StatefulWidget> createState() => SpeedDialState();
@@ -159,6 +160,43 @@ class SpeedDialState extends State<SpeedDial>
     );
   }
 
+  Widget chatButton() {
+    return InkWell(
+      onTap: () {
+        animate();
+        widget.onOpenChat();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: Colors.white,
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        child: _isOpened
+            ? Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("Trò chuyện", style: TextStyle(fontSize: 16)),
+            FloatingActionButton(
+              onPressed: null,
+              backgroundColor: Colors.white,
+              tooltip: 'chat',
+              heroTag: 'chat',
+              child: Image.asset(
+                'assets/images/message.png',
+                width: 34,
+                height: 34,
+                fit: BoxFit.cover,
+              ),
+              elevation: 0,
+            ),
+          ],
+        )
+            : Container(),
+      ),
+    );
+  }
+
   Widget addNewButton() {
     return InkWell(
       onTap: () {
@@ -222,7 +260,7 @@ class SpeedDialState extends State<SpeedDial>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 2.0,
+            _translateButton.value * 3.0,
             0.0,
           ),
           child: messButton(),
@@ -230,19 +268,19 @@ class SpeedDialState extends State<SpeedDial>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 1.0,
+            _translateButton.value * 2.0,
             0.0,
           ),
           child: zaloButton(),
         ),
-        // Transform(
-        //   transform: Matrix4.translationValues(
-        //     0.0,
-        //     _translateButton.value,
-        //     0.0,
-        //   ),
-        //   child: addNewButton(),
-        // ),
+        Transform(
+          transform: Matrix4.translationValues(
+            0.0,
+            _translateButton.value * 1.0,
+            0.0,
+          ),
+          child: chatButton(),
+        ),
         fabButton(),
       ],
     );

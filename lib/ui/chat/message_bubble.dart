@@ -24,6 +24,7 @@ class MessageBubble extends StatelessWidget {
               isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: <Widget>[
             Container(
+              constraints: BoxConstraints(minWidth: 140, maxWidth: MediaQuery.of(context).size.width * 2 / 3),
               decoration: BoxDecoration(
                 color: isMe ? Colors.grey[300] : Theme.of(context).accentColor,
                 borderRadius: BorderRadius.only(
@@ -33,7 +34,6 @@ class MessageBubble extends StatelessWidget {
                   bottomRight: isMe ? Radius.circular(0) : Radius.circular(12),
                 ),
               ),
-              width: 140,
               padding: EdgeInsets.symmetric(
                 vertical: 10,
                 horizontal: 16,
@@ -47,15 +47,6 @@ class MessageBubble extends StatelessWidget {
                     isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    userName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isMe
-                          ? Colors.black
-                          : Theme.of(context).accentTextTheme.title.color,
-                    ),
-                  ),
-                  Text(
                     message,
                     style: TextStyle(
                       color: isMe
@@ -67,17 +58,8 @@ class MessageBubble extends StatelessWidget {
                 ],
               ),
             ),
+
           ],
-        ),
-        Positioned(
-          top: 0,
-          left: isMe ? null : 120,
-          right: isMe ? 120 : null,
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(
-              userImage,
-            ),
-          ),
         ),
       ],
       overflow: Overflow.visible,

@@ -22,6 +22,8 @@ class Helper {
 
   //static String baseURL = "https://test.conec.vn";
 
+  static String tempAvatar = "https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.6435-1/p240x240/106685600_1590606004441341_3881513665591966142_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=7206a8&_nc_ohc=ttuLyfPOPkQAX-YnjtR&_nc_oc=AQloWrJhjFxgLCg0gkz3k01e1y8BVfpBUufqfgdLEbDdZe3lZNYzb2MiOkaGNBzKo5M&_nc_ht=scontent.fsgn2-5.fna&oh=2b030d45a0e74d2a16164a58484e1088&oe=612BE9B3";
+
   static String formatData(String approvedDate) {
     return approvedDate != null
         ? DateFormat("dd-MM-yyyy").format(DateTime.parse(approvedDate))
@@ -141,6 +143,32 @@ class Helper {
                   child: Text("OK"),
                   onPressed: onOK,
                 )
+              ],
+            ));
+  }
+
+  static void showFailDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: Text("Lỗi nhập thiếu"),
+              content: Text("Bạn vui lòng điền đầy đủ thông tin bắt buộc"),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                    child: Text("OK"),
+                    onPressed: () => Navigator.of(context).pop())
+              ],
+            ));
+  }
+
+  static void showOKDialog(BuildContext context, Function onOK, String content) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => CupertinoAlertDialog(
+              title: Text("Thành công"),
+              content: Text(content),
+              actions: <Widget>[
+                CupertinoDialogAction(child: Text("OK"), onPressed: onOK)
               ],
             ));
   }
@@ -380,13 +408,16 @@ class Helper {
     return token;
   }
 
-  static void setAppVersion(String appVersion) async{
-    appLog(className: "Helper", functionName: "setAppVersion", message: "set $appVersion to stored");
+  static void setAppVersion(String appVersion) async {
+    appLog(
+        className: "Helper",
+        functionName: "setAppVersion",
+        message: "set $appVersion to stored");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('app_ver', appVersion);
   }
 
-  static Future<String> getAppVersion() async{
+  static Future<String> getAppVersion() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var appVersion = prefs.getString('app_ver');
     return appVersion;
@@ -482,7 +513,7 @@ class Helper {
   //       ));
   // }
 
-  void createPort() async{
+  void createPort() async {
     var receivePort = new ReceivePort();
     await Isolate.spawn(entryPoint, receivePort.sendPort);
     // Receive the SendPort from the Isolate
@@ -491,9 +522,9 @@ class Helper {
     // Send a message to the Isolate
     sendPort.send("hello");
   }
+
   // Entry point for your Isolate
   entryPoint(SendPort sendPort) async {
-
     // Open the ReceivePort to listen for incoming messages (optional)
     var port = new ReceivePort();
 
