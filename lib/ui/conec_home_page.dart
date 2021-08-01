@@ -48,6 +48,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   String _token;
   bool _isTokenExpired = true;
   String _deviceToken = "";
+  String _numberMessage = "";
 
   //For one signal
   String _debugLabelString = "";
@@ -68,6 +69,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
     if (!_isTokenExpired && _token != null) {
       _profileBloc.requestGetProfile();
       _homeBloc.requestGetNumberNotify();
+      String numberMessage = await _homeBloc.requestGetConversationCounter();
+      setState(() {
+        _numberMessage = numberMessage;
+      });
       _profileBloc.profileStream.listen((event) {
         if (event.status == Status.COMPLETED) {
           final profile = event.data;
@@ -377,41 +382,54 @@ class _ConecHomePageState extends State<ConecHomePage> {
             Positioned(
               bottom: 60,
               right: 16,
-              child: mySpeedDial.SpeedDial(
-                onOpenZalo: () =>
-                    launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
-                onOpenMess: () =>
-                    launch("https://messenger.com/t/www.conec.vn"),
-                onAddNew: () {
-                  if (_token == null || _token.length == 0) {
-                    Helper.showAuthenticationDialog(context);
-                  } else {
-                    if (_isTokenExpired) {
-                      Helper.showTokenExpiredDialog(context);
+              child: Badge(
+                padding: const EdgeInsets.all(8),
+                position: BadgePosition.topEnd(top: -10, end: -7),
+                badgeContent: Text(
+                  _numberMessage,
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                badgeColor: Colors.red,
+                showBadge: _isSpeedOpen ||  _numberMessage.length == 0  ? false : true,
+                child: mySpeedDial.SpeedDial(
+                  onOpenZalo: () =>
+                      launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
+                  onOpenMess: () =>
+                      launch("https://messenger.com/t/www.conec.vn"),
+                  onAddNew: () {
+                    if (_token == null || _token.length == 0) {
+                      Helper.showAuthenticationDialog(context);
                     } else {
-                      if (_isMissingData) {
-                        Helper.showMissingDataDialog(context, () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context)
-                              .pushNamed(EditProfilePage.ROUTE_NAME,
-                                  arguments: _profile)
-                              .then((value) {
-                            if (value == 0) {
-                              _profileBloc.requestGetProfile();
-                            }
-                          });
-                        });
+                      if (_isTokenExpired) {
+                        Helper.showTokenExpiredDialog(context);
                       } else {
-                        Navigator.of(context)
-                            .pushNamed(PostActionPage.ROUTE_NAME);
+                        if (_isMissingData) {
+                          Helper.showMissingDataDialog(context, () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context)
+                                .pushNamed(EditProfilePage.ROUTE_NAME,
+                                    arguments: _profile)
+                                .then((value) {
+                              if (value == 0) {
+                                _profileBloc.requestGetProfile();
+                              }
+                            });
+                          });
+                        } else {
+                          Navigator.of(context)
+                              .pushNamed(PostActionPage.ROUTE_NAME);
+                        }
                       }
                     }
-                  }
-                },
-                onOpenChat: (){
-                  Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);
-                },
-                onFabAction: onFabAction,
+                  },
+                  onOpenChat: (){
+                    Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);
+                  },
+                  onFabAction: onFabAction,
+                ),
               ),
             ),
           ],

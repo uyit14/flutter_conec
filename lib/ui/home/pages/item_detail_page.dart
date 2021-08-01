@@ -10,7 +10,9 @@ import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/page/hidden_response.dart';
-import 'package:conecapp/models/response/profile/GiftReponse.dart';
+import 'package:conecapp/models/response/profile/gift_response.dart';
+import 'package:conecapp/ui/chat/chat_list_page.dart';
+import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
@@ -35,21 +37,17 @@ class ItemDetailPage extends StatefulWidget {
 }
 
 class _ItemDetailPageState extends State<ItemDetailPage> {
-  bool _isFavorite = false;
   bool _isCallApi;
 
-  //String phoneNumber;
-  //bool _shouldShow = false;
   String linkShare;
   bool isApprove = false;
   int _currentIndex = 0;
-  bool _setBanners = true;
   String postId;
+  String ownerId;
   String owner;
   String title;
   double lat = 10.8483258;
   double lng = 106.7686185;
-  bool _firstCalculate = true;
   ItemsByCategoryBloc _itemsByCategoryBloc = ItemsByCategoryBloc();
   PostActionBloc _postActionBloc = PostActionBloc();
   PageController _pageController = PageController(initialPage: 0);
@@ -286,6 +284,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   case Status.COMPLETED:
                     ItemDetail itemDetail = snapshot.data.data;
                     isApprove = itemDetail.status == "APPROVED";
+                    ownerId = itemDetail.ownerId;
                     // if (itemDetail.images.length > 0 && _setBanners) {
                     //   autoPlayBanners(itemDetail.images);
                     //   _setBanners = false;
@@ -312,33 +311,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                               child: itemDetail.images.length > 0
                                   ? Stack(
                                       children: [
-                                        // Container(
-                                        //   height: 225,
-                                        //   child: PageView.builder(
-                                        //       itemCount: itemDetail.images.length,
-                                        //       controller: _pageController,
-                                        //       onPageChanged: (currentPage) {
-                                        //         setState(() {
-                                        //           _currentIndex = currentPage;
-                                        //         });
-                                        //       },
-                                        //       itemBuilder: (context, index) {
-                                        //         return CachedNetworkImage(
-                                        //           imageUrl: itemDetail
-                                        //               .images[index].fileName,
-                                        //           placeholder: (context, url) =>
-                                        //               Image.asset(
-                                        //                   "assets/images/placeholder.png"),
-                                        //           errorWidget: (context, url,
-                                        //                   error) =>
-                                        //               Image.asset(
-                                        //                   "assets/images/error.png"),
-                                        //           fit: BoxFit.cover,
-                                        //           width: double.infinity,
-                                        //           height: 225,
-                                        //         );
-                                        //       }),
-                                        // ),
                                         CarouselSlider(
                                           options: CarouselOptions(
                                             onPageChanged:
@@ -484,67 +456,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     ),
                             ),
                           ),
-//                          if (itemDetail.images.length > 0)
-//                            Container(
-//                              height: 55,
-//                              margin: EdgeInsets.only(top: 4),
-//                              child: Center(
-//                                child: ListView.builder(
-//                                    shrinkWrap: true,
-//                                    scrollDirection: Axis.horizontal,
-//                                    itemCount: itemDetail.images.length,
-//                                    itemBuilder: (context, index) {
-//                                      return InkWell(
-//                                        onTap: () {
-//                                          setState(() {
-//                                            _currentIndex = index;
-//                                          });
-//                                          if (_pageController.hasClients) {
-//                                            _pageController.animateToPage(
-//                                              index,
-//                                              duration:
-//                                                  Duration(milliseconds: 350),
-//                                              curve: Curves.easeIn,
-//                                            );
-//                                          }
-//                                        },
-//                                        child: Container(
-//                                          decoration: _currentIndex == index
-//                                              ? BoxDecoration(
-//                                                  border: Border.all(
-//                                                      width: 2,
-//                                                      color: Colors.green),
-//                                                  borderRadius:
-//                                                      BorderRadius.all(
-//                                                          Radius.circular(8)),
-//                                                )
-//                                              : null,
-//                                          margin: EdgeInsets.only(right: 2),
-//                                          child: ClipRRect(
-//                                            borderRadius: BorderRadius.all(
-//                                                Radius.circular(6)),
-//                                            child: CachedNetworkImage(
-//                                              imageUrl: itemDetail
-//                                                  .images[index].fileName,
-//                                              placeholder: (context, url) =>
-//                                                  Image.asset(
-//                                                      "assets/images/placeholder.png"),
-//                                              errorWidget: (context, url,
-//                                                      error) =>
-//                                                  Image.asset(
-//                                                      "assets/images/error.png"),
-//                                              fit: BoxFit.cover,
-//                                              width: 55,
-//                                              height: 55,
-//                                            ),
-//                                          ),
-//                                        ),
-//                                      );
-//                                    }),
-//                              ),
-//                            )
-//                          else
-//                            Container(),
                           Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 8),
@@ -707,58 +618,6 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     height: 1,
                                     color: Colors.black12,
                                     margin: EdgeInsets.symmetric(vertical: 8)),
-                                // _shouldShow
-                                //     ? Row(
-                                //         children: <Widget>[
-                                //           Icon(
-                                //             Icons.location_on,
-                                //             color: Colors.green,
-                                //           ),
-                                //           SizedBox(width: 8),
-                                //           Text("Địa chỉ",
-                                //               style: AppTheme.commonDetail),
-                                //         ],
-                                //       )
-                                //     : Container(),
-                                // _shouldShow
-                                //     ? Padding(
-                                //         padding: const EdgeInsets.all(8.0),
-                                //         child: Text(itemDetail.getAddress ?? "",
-                                //             style: TextStyle(fontSize: 14)),
-                                //       )
-                                //     : Container(),
-                                // InkWell(
-                                //   onTap: () {
-                                //     Navigator.of(context).pushNamed(
-                                //         GoogleMapPage.ROUTE_NAME,
-                                //         arguments: {
-                                //           'lat': lat,
-                                //           'lng': lng,
-                                //           'postId': itemDetail.postId,
-                                //           'title': itemDetail.title,
-                                //           'address': '${itemDetail.getAddress}'
-                                //         });
-                                //   },
-                                //   child: Image.network(
-                                //     Helper.generateLocationPreviewImage(
-                                //         lat: itemDetail.lat != 0
-                                //             ? itemDetail.lat
-                                //             : lat,
-                                //         lng: itemDetail.long != 0
-                                //             ? itemDetail.long
-                                //             : lng),
-                                //     fit: BoxFit.cover,
-                                //     width: double.infinity,
-                                //   ),
-                                // ),
-                                // _shouldShow
-                                //     ? Container(
-                                //         width: double.infinity,
-                                //         height: 1,
-                                //         color: Colors.black12,
-                                //         margin:
-                                //             EdgeInsets.symmetric(vertical: 8))
-                                //     : Container(),
                                 Row(
                                   children: <Widget>[
                                     Icon(
@@ -776,49 +635,11 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                             data: itemDetail.content ?? "",
                                           )
                                         : Text(itemDetail.content)),
-                                // Container(
-                                //     width: double.infinity,
-                                //     height: 1,
-                                //     color: Colors.black12,
-                                //     margin: EdgeInsets.symmetric(vertical: 8)),
-                                // Row(
-                                //   children: <Widget>[
-                                //     Icon(
-                                //       Icons.verified_user,
-                                //       color: Colors.green,
-                                //     ),
-                                //     SizedBox(width: 8),
-                                //     Text("Kiểm duyệt",
-                                //         style: AppTheme.commonDetail),
-                                //   ],
-                                // ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(
-                                //       left: 8, right: 8, top: 8),
-                                //   child: Text(
-                                //     "Tin đăng đã được kiểm duyệt. Nếu gặp vấn đề, vui lòng báo cáo tin đăng hoặc liên hệ CSKH để được trợ giúp.",
-                                //     style: TextStyle(fontSize: 15),
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),
-                          CommentWidget(postId, itemDetail, doReload)
-//                          FlatButton.icon(
-//                              shape: RoundedRectangleBorder(
-//                                  side: BorderSide(
-//                                      width: 0.5, color: Colors.orangeAccent),
-//                                  borderRadius: BorderRadius.circular(8)),
-//                              onPressed: () {
-//                                //TODO - send report
-//                              },
-//                              color: Colors.white,
-//                              textColor: Colors.orangeAccent,
-//                              icon: Icon(Icons.report),
-//                              label: Text("Báo cáo vi phạm",
-//                                  style: TextStyle(
-//                                      fontSize: 14,
-//                                      fontWeight: FontWeight.w400))),
+                          CommentWidget(postId, itemDetail, doReload),
+                          SizedBox(height: 45)
                         ],
                       ),
                     );
@@ -833,31 +654,13 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                   child: Text(
                       "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
-//        floatingActionButton: owner!=null ? FloatingActionButton.extended(
-//          onPressed: () {
-//            _postActionBloc
-//                .requestPushMyPost(postId);
-//            _postActionBloc.pushMyPostStream.listen((event) {
-//              switch (event.status) {
-//                case Status.LOADING:
-//                  break;
-//                case Status.COMPLETED:
-//                  Helper.showMissingDialog(context, "Đẩy tin thành công",
-//                      "Tin của bạn sẽ được hiện lên trang đầu");
-//                  break;
-//                case Status.ERROR:
-//                  Fluttertoast.showToast(
-//                      msg: event.message,
-//                      textColor: Colors.black87);
-//                  Navigator.pop(context);
-//                  break;
-//              }
-//            });
-//          },
-//          backgroundColor: Colors.orange,
-//          label: Text("Đẩy tin"),
-//          icon: Icon(Icons.publish),
-//        ) : Container(),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text("Nhắn tin"),
+          icon: Icon(Icons.chat),
+          onPressed: () {
+            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME, arguments: {"memberId" : ownerId, "postId" : postId});
+          },
+        ),
       ),
     );
   }

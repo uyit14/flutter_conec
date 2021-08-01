@@ -22,7 +22,8 @@ class Helper {
 
   //static String baseURL = "https://test.conec.vn";
 
-  static String tempAvatar = "https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.6435-1/p240x240/106685600_1590606004441341_3881513665591966142_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=7206a8&_nc_ohc=ttuLyfPOPkQAX-YnjtR&_nc_oc=AQloWrJhjFxgLCg0gkz3k01e1y8BVfpBUufqfgdLEbDdZe3lZNYzb2MiOkaGNBzKo5M&_nc_ht=scontent.fsgn2-5.fna&oh=2b030d45a0e74d2a16164a58484e1088&oe=612BE9B3";
+  static String tempAvatar =
+      "https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.6435-1/p240x240/106685600_1590606004441341_3881513665591966142_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=7206a8&_nc_ohc=ttuLyfPOPkQAX-YnjtR&_nc_oc=AQloWrJhjFxgLCg0gkz3k01e1y8BVfpBUufqfgdLEbDdZe3lZNYzb2MiOkaGNBzKo5M&_nc_ht=scontent.fsgn2-5.fna&oh=2b030d45a0e74d2a16164a58484e1088&oe=612BE9B3";
 
   static String formatData(String approvedDate) {
     return approvedDate != null
@@ -127,6 +128,55 @@ class Helper {
     return MediaQuery.of(context).size.width;
   }
 
+  static void showRemindDialog(BuildContext context, content, Function onOK) {
+    TextEditingController _controller = TextEditingController(text: content);
+
+    Widget cancelButton = TextButton(
+      child: Text("Đóng"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+    Widget continueButton = TextButton(
+      child: Text("Gửi thông báo"),
+      onPressed: () =>  onOK(_controller.text),
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Nhắc nhỡ đóng tiền"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Một thông báo sẽ được gửi đến thành viên này"),
+          SizedBox(height: 12),
+          Text(
+            "Vui lòng nhập thông báo",
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            child: TextField(
+              controller: _controller,
+              maxLines: 4,
+            ),
+          )
+        ],
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   static void showDeleteDialog(
       BuildContext context, String title, String content, VoidCallback onOK) {
     showDialog(
@@ -161,7 +211,8 @@ class Helper {
             ));
   }
 
-  static void showOKDialog(BuildContext context, Function onOK, String content) {
+  static void showOKDialog(
+      BuildContext context, Function onOK, String content) {
     showDialog(
         context: context,
         builder: (BuildContext context) => CupertinoAlertDialog(

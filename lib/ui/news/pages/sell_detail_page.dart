@@ -9,7 +9,8 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/ads_detail.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
-import 'package:conecapp/models/response/profile/GiftReponse.dart';
+import 'package:conecapp/models/response/profile/gift_response.dart';
+import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/pages/image_viewer_page.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
@@ -33,6 +34,7 @@ class SellDetailPage extends StatefulWidget {
 
 class _SellDetailPageState extends State<SellDetailPage> {
   String postId;
+  String ownerId;
   String owner;
   NewsBloc _newsBloc = NewsBloc();
   PostActionBloc _postActionBloc = PostActionBloc();
@@ -97,7 +99,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
       postId = routeArgs['postId'];
       owner = routeArgs['owner'];
       _newsBloc.requestAdsDetail(postId);
-      if(owner != null){
+      if (owner != null) {
         giftCheck();
       }
       _isCallApi = false;
@@ -280,6 +282,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                     AdsDetail adsDetail = snapshot.data.data;
                     linkShare = adsDetail.shareLink;
                     isApprove = adsDetail.status == "APPROVED";
+                    ownerId =  adsDetail.ownerId;
                     // if (adsDetail.images.length > 0 && _setBanners) {
                     //   autoPlayBanners(adsDetail.images);
                     //   _setBanners = false;
@@ -297,7 +300,8 @@ class _SellDetailPageState extends State<SellDetailPage> {
                               Navigator.of(context).push(PageRouteBuilder(
                                   opaque: false,
                                   pageBuilder: (BuildContext context, _, __) =>
-                                      ImageViewerPage(adsDetail.images, _currentIndex)));
+                                      ImageViewerPage(
+                                          adsDetail.images, _currentIndex)));
                             },
                             child: Hero(
                               tag: postId,
@@ -306,7 +310,8 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                       children: [
                                         CarouselSlider(
                                           options: CarouselOptions(
-                                            onPageChanged: (currentPage, reason) {
+                                            onPageChanged:
+                                                (currentPage, reason) {
                                               setState(() {
                                                 _currentIndex = currentPage;
                                               });
@@ -339,8 +344,8 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                                                       error) =>
                                                                   Image.asset(
                                                                       "assets/images/error.png"),
-                                                              width:
-                                                                  double.infinity,
+                                                              width: double
+                                                                  .infinity,
                                                               fit: BoxFit.cover,
                                                             ),
                                                             Positioned(
@@ -353,12 +358,11 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                                                   gradient:
                                                                       LinearGradient(
                                                                     colors: [
-                                                                      Color
-                                                                          .fromARGB(
-                                                                              200,
-                                                                              0,
-                                                                              0,
-                                                                              0),
+                                                                      Color.fromARGB(
+                                                                          200,
+                                                                          0,
+                                                                          0,
+                                                                          0),
                                                                       Color
                                                                           .fromARGB(
                                                                               0,
@@ -397,8 +401,9 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                           bottom: 24,
                                           child: Container(
                                             height: 24,
-                                            width:
-                                                MediaQuery.of(context).size.width,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
                                             child: Center(
                                               child: ListView.builder(
                                                   scrollDirection:
@@ -406,7 +411,8 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                                   shrinkWrap: true,
                                                   itemCount:
                                                       adsDetail.images.length,
-                                                  itemBuilder: (context, index) {
+                                                  itemBuilder:
+                                                      (context, index) {
                                                     return Container(
                                                       width: 16,
                                                       height: 16,
@@ -414,7 +420,8 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                                           right: 6),
                                                       decoration: BoxDecoration(
                                                           //borderRadius: BorderRadius.all(Radius.circular(16)),
-                                                          shape: BoxShape.circle,
+                                                          shape:
+                                                              BoxShape.circle,
                                                           border: Border.all(
                                                               width: 1,
                                                               color:
@@ -433,10 +440,12 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                     )
                                   : CachedNetworkImage(
                                       imageUrl: adsDetail.thumbnail,
-                                      placeholder: (context, url) => Image.asset(
-                                          "assets/images/placeholder.png"),
+                                      placeholder: (context, url) =>
+                                          Image.asset(
+                                              "assets/images/placeholder.png"),
                                       errorWidget: (context, url, error) =>
-                                          Image.asset("assets/images/error.png"),
+                                          Image.asset(
+                                              "assets/images/error.png"),
                                       fit: BoxFit.cover,
                                       width: double.infinity,
                                       height: 225,
@@ -760,26 +769,8 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                 //     style: TextStyle(fontSize: 15),
                                 //   ),
                                 // ),
-                                AdsCommentWidget(postId, adsDetail, doReload)
-//                                Center(
-//                                  child: FlatButton.icon(
-//                                      shape: RoundedRectangleBorder(
-//                                          side: BorderSide(
-//                                              width: 0.5,
-//                                              color: Colors.orangeAccent),
-//                                          borderRadius:
-//                                              BorderRadius.circular(8)),
-//                                      onPressed: () {
-//                                        //
-//                                      },
-//                                      color: Colors.white,
-//                                      textColor: Colors.orangeAccent,
-//                                      icon: Icon(Icons.report),
-//                                      label: Text("Báo cáo vi phạm",
-//                                          style: TextStyle(
-//                                              fontSize: 14,
-//                                              fontWeight: FontWeight.w400))),
-//                                ),
+                                AdsCommentWidget(postId, adsDetail, doReload),
+                                SizedBox(height: 40)
                               ],
                             ),
                           )
@@ -797,31 +788,13 @@ class _SellDetailPageState extends State<SellDetailPage> {
                   child: Text(
                       "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
-//        floatingActionButton: owner!=null ? FloatingActionButton.extended(
-//          onPressed: () {
-//            _postActionBloc
-//                .requestPushMyPost(postId);
-//            _postActionBloc.pushMyPostStream.listen((event) {
-//              switch (event.status) {
-//                case Status.LOADING:
-//                  break;
-//                case Status.COMPLETED:
-//                  Helper.showMissingDialog(context, "Đẩy tin thành công",
-//                      "Tin của bạn đã được đẩy thành công");
-//                  break;
-//                case Status.ERROR:
-//                  Fluttertoast.showToast(
-//                      msg: event.message,
-//                      textColor: Colors.black87);
-//                  Navigator.pop(context);
-//                  break;
-//              }
-//            });
-//          },
-//          backgroundColor: Colors.orange,
-//          label: Text("Đẩy tin"),
-//          icon: Icon(Icons.publish),
-//        ) : Container(),
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text("Nhắn tin"),
+          icon: Icon(Icons.chat),
+          onPressed: () {
+            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME, arguments: {"memberId" : ownerId, "postId" : postId});
+          },
+        ),
       ),
     );
   }

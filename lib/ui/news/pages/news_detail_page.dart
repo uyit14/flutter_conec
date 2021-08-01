@@ -9,7 +9,7 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/news_detail.dart';
-import 'package:conecapp/models/response/profile/GiftReponse.dart';
+import 'package:conecapp/models/response/profile/gift_response.dart';
 import 'package:conecapp/ui/home/pages/image_viewer_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';

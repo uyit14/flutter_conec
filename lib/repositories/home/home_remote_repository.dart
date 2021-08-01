@@ -266,4 +266,13 @@ class HomeRemoteRepository {
     print("getFollower: " + response.toString());
     return FollowResponse.fromJson(response);
   }
+
+  //for chat
+  Future<String> getConversationCounter() async {
+    final response = await _helper.get(
+        '/api/Conversation/loadConversationCounter',
+        headers: await Helper.header());
+    print(response);
+    return response['conversation_counter'];
+  }
 }

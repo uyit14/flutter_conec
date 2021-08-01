@@ -178,12 +178,12 @@ class _AddNotifyPageState extends State<AddNotifyPage> {
                             doAddAction();
                           }
                         },
-                        color: Colors.orange,
+                        color: Colors.green,
                         textColor: Colors.white,
                         icon: Icon(Icons.check),
                         padding: EdgeInsets.symmetric(
                             horizontal: MediaQuery.of(context).size.width / 5),
-                        label: Text("Thêm thông báo",
+                        label: Text("Lưu lại",
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w500))),
                   )

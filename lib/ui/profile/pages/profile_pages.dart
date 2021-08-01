@@ -3,7 +3,7 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
-import 'package:conecapp/models/response/profile/GiftReponse.dart';
+import 'package:conecapp/models/response/profile/gift_response.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/partner_module/ui/partner_main.dart';

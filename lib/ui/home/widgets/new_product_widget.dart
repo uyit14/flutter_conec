@@ -87,14 +87,17 @@ class _NewProductWidgetState extends State<NewProductWidget> {
                                           flex: 4,
                                           child: Hero(
                                             tag: news[index].postId,
-                                            child: CachedNetworkImage(
-                                              imageUrl: news[index].thumbnail,
-                                              fit: BoxFit.cover,
-                                              placeholder: (context, url) =>
-                                                  Image.asset(
-                                                      "assets/images/placeholder.png",
-                                                      width: 100,
-                                                      height: 100),
+                                            child: Container(
+                                              constraints: BoxConstraints(maxHeight: 110, minWidth: 250),
+                                              child: CachedNetworkImage(
+                                                imageUrl: news[index].thumbnail,
+                                                fit: BoxFit.cover,
+                                                placeholder: (context, url) =>
+                                                    Image.asset(
+                                                        "assets/images/placeholder.png",
+                                                        width: 100,
+                                                        height: 100),
+                                              ),
                                             ),
                                           ),
                                         ),

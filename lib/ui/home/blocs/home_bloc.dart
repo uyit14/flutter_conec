@@ -201,6 +201,11 @@ class HomeBloc {
     return response;
   }
 
+  Future<String> requestGetConversationCounter() async {
+    final response = await _repository.getConversationCounter();
+    return response;
+  }
+
   void dispose() {
     _topicController.close();
     _sliderController.close();

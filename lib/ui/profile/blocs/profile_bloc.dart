@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:conecapp/common/api/api_response.dart';
-import 'package:conecapp/models/response/profile/GiftReponse.dart';
+import 'package:conecapp/models/response/profile/gift_response.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/repositories/profile/profile_repository.dart';

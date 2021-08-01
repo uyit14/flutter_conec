@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:conecapp/partner_module/ui/member/add_member_page.dart';
+import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_page.dart';
+import 'package:conecapp/partner_module/ui/member/search_member_page.dart';
+import 'package:conecapp/partner_module/ui/member/update_member_page.dart';
 import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_detail_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_page.dart';
@@ -111,6 +115,10 @@ class ConecApp extends StatelessWidget {
         UpdateNotifyPage.ROUTE_NAME: (context) => UpdateNotifyPage(),
         ChatListPage.ROUTE_NAME: (context) => ChatListPage(),
         MemberPage.ROUTE_NAME: (context) => MemberPage(),
+        AddMemberPage.ROUTE_NAME: (context) => AddMemberPage(),
+        SearchMemberPage.ROUTE_NAME: (context) => SearchMemberPage(),
+        UpdateMemberPage.ROUTE_NAME: (context) => UpdateMemberPage(),
+        MemberDetailPage.ROUTE_NAME: (context) => MemberDetailPage(),
       },
     );
   }
