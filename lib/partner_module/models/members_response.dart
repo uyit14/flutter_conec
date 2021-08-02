@@ -109,7 +109,7 @@ class Payment {
     paymentAmount = json['paymentAmount'];
     paymentDate = json['paymentDate'] == null ? null : Helper.formatDob(json['paymentDate']);
     paymentBy = json['paymentBy'];
-    created = json['created'];
+    created = json['created'] == null ? null : Helper.formatDob(json['created']);
     createdBy = json['createdBy'];
     notes = json['notes'];
   }

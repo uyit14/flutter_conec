@@ -6,6 +6,7 @@ import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/models/p_notify_detail.dart';
 import 'package:conecapp/partner_module/models/p_notify_reponse.dart';
 import 'package:conecapp/partner_module/models/search_m_response.dart';
+import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
 
 class PartnerRepository {
   ApiBaseHelper _helper = ApiBaseHelper();
@@ -106,5 +107,13 @@ class PartnerRepository {
         headers: await Helper.header());
     print(response);
     return MemberDetailResponse.fromJson(response);
+  }
+
+  Future<bool> completePayment(dynamic body, PAYMENT_TYPE type) async {
+    String urlType = type == PAYMENT_TYPE.COMPLETE ? "CompletePayment" : "UpdatePayment";
+    final response = await _helper.post('/api/Member/$urlType',
+        body: body, headers: await Helper.header());
+    print(response);
+    return response['status'];
   }
 }

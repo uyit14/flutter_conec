@@ -4,6 +4,7 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/models/search_m_response.dart';
 import 'package:conecapp/partner_module/repository/partner_repository.dart';
+import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
 import 'package:flutter/foundation.dart';
 
 class MemberBloc {
@@ -106,6 +107,11 @@ class MemberBloc {
 
   Future<bool> requestNotifyPayment(dynamic body) async {
     final response = await _repository.notifyPayment(body);
+    return response;
+  }
+
+  Future<bool> requestCompletePayment(dynamic body, PAYMENT_TYPE type) async {
+    final response = await _repository.completePayment(body, type);
     return response;
   }
 
