@@ -1,10 +1,12 @@
-import 'package:conecapp/ui/chat/chat_doc.dart';
 import 'package:flutter/material.dart';
+
+import 'chat_bloc.dart';
 
 class NewMessage extends StatefulWidget {
   final Function(String messs) onSend;
+  final String conversationId;
 
-  NewMessage({this.onSend});
+  NewMessage({this.onSend, this.conversationId});
 
   @override
   _NewMessageState createState() => _NewMessageState();
@@ -12,12 +14,19 @@ class NewMessage extends StatefulWidget {
 
 class _NewMessageState extends State<NewMessage> {
   final _controller = new TextEditingController();
+  ChatBloc _chatBloc = ChatBloc();
   var _enteredMessage = '';
 
   void _sendMessage() async {
     FocusScope.of(context).unfocus();
     widget.onSend(_enteredMessage);
     _controller.clear();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _chatBloc.dispose();
   }
 
   @override
@@ -29,6 +38,10 @@ class _NewMessageState extends State<NewMessage> {
         children: <Widget>[
           Expanded(
             child: TextField(
+              onTap: (){
+                if(widget.conversationId != null)
+                _chatBloc.requestSeenMessage(widget.conversationId);
+              },
               controller: _controller,
               textCapitalization: TextCapitalization.sentences,
               autocorrect: true,

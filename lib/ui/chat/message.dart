@@ -1,25 +1,25 @@
-import 'package:conecapp/ui/chat/chat_doc.dart';
+import 'package:conecapp/models/response/chat/message_response.dart';
 import 'package:flutter/material.dart';
 
 import 'message_bubble.dart';
 
 class Messages extends StatelessWidget {
-  final List<ChatDoc> chatDocs;
+  final List<MessageChat> messages;
 
 
-  Messages(this.chatDocs);
+  Messages(this.messages);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       reverse: true,
-      itemCount: chatDocs.length,
+      itemCount: messages.length,
       itemBuilder: (ctx, index) => MessageBubble(
-        chatDocs[index].text,
-        chatDocs[index].userName,
-        chatDocs[index].userImage,
-        chatDocs[index].userId,
-        key: ValueKey(chatDocs[index].docId),
+        messages[index].content,
+        messages[index].ownerName,
+        messages[index].ownerAvatar,
+        messages[index].createdByCurrentUser,
+        key: ValueKey(messages[index].id),
       ),
     );
   }

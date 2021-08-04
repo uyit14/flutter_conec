@@ -25,6 +25,8 @@ class Helper {
   static String tempAvatar =
       "https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.6435-1/p240x240/106685600_1590606004441341_3881513665591966142_n.jpg?_nc_cat=104&ccb=1-3&_nc_sid=7206a8&_nc_ohc=ttuLyfPOPkQAX-YnjtR&_nc_oc=AQloWrJhjFxgLCg0gkz3k01e1y8BVfpBUufqfgdLEbDdZe3lZNYzb2MiOkaGNBzKo5M&_nc_ht=scontent.fsgn2-5.fna&oh=2b030d45a0e74d2a16164a58484e1088&oe=612BE9B3";
 
+  static String hardCodeConversationId = "9c967bad-d499-4aa4-acfa-d79893df4118";
+
   static String formatData(String approvedDate) {
     return approvedDate != null
         ? DateFormat("dd-MM-yyyy").format(DateTime.parse(approvedDate))

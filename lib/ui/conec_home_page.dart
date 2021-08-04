@@ -38,6 +38,7 @@ class ConecHomePage extends StatefulWidget {
 class _ConecHomePageState extends State<ConecHomePage> {
   PageController _pageController = PageController(initialPage: 0);
   int _selectedPageIndex = 0;
+  bool isCallApi = false;
   int _initIndex = 0;
   bool _isMissingData = true;
   var _profile;
@@ -126,6 +127,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   @override
   void initState() {
     super.initState();
+    isCallApi = true;
     //getLocation();
     // NewVersion(
     //     context: context,
@@ -207,7 +209,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    giftCheck(context);
+    if(isCallApi){
+      giftCheck(context);
+      isCallApi = false;
+    }
   }
 
   void giftCheck(BuildContext context) async {

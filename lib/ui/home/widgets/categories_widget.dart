@@ -18,9 +18,9 @@ class CategoriesWidget extends StatefulWidget {
 class _CategoriesWidgetState extends State<CategoriesWidget> {
   HomeBloc _homeBloc = HomeBloc();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+ @override
+  void initState() {
+    super.initState();
     _homeBloc.requestGetTopic();
   }
 

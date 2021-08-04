@@ -19,8 +19,8 @@ class _NewSportWidgetState extends State<NewSportWidget> {
   HomeBloc _homeBloc = HomeBloc();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     _homeBloc.requestGetSport();
   }
 

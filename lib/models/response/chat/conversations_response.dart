@@ -1,5 +1,7 @@
 import 'package:conecapp/common/helper.dart';
 
+import 'message_response.dart';
+
 class ConversationsResponse {
   List<Conversation> conversations;
 
@@ -20,7 +22,7 @@ class Conversation {
   String lastMessage;
   String lastMessageDate;
   Member member;
-  List<Message> messages;
+  List<MessageChat> messages;
   bool seen;
   Post post;
 
@@ -40,9 +42,9 @@ class Conversation {
     member =
     json['member'] != null ? new Member.fromJson(json['member']) : null;
     if (json['messages'] != null) {
-      messages = new List<Null>();
+      messages = new List<MessageChat>();
       json['messages'].forEach((v) {
-        messages.add(new Message.fromJson(v));
+        messages.add(new MessageChat.fromJson(v));
       });
     }
     seen = json['seen'];
@@ -88,13 +90,9 @@ class Post {
 
   Post.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    image = json['image'];
+    image = json['image'] !=null && !json['image'].contains("http") ? Helper.baseURL + json['image'] : json['image'];
     joinFee = json['joinFee'];
     title = json['title'];
     link = json['link'];
   }
-}
-
-class Message {
-  Message.fromJson(Map<String, dynamic> json) {}
 }
