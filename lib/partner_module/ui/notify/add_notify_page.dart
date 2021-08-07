@@ -20,6 +20,7 @@ class AddNotifyPage extends StatefulWidget {
 class _AddNotifyPageState extends State<AddNotifyPage> {
   PNotifyBloc _notifyBloc = PNotifyBloc();
   bool _isLoading = false;
+  String selectedStatus = Helper.statusList[0];
   String _title;
   int _orderNo = 1;
   ZefyrController _controller;
@@ -27,23 +28,6 @@ class _AddNotifyPageState extends State<AddNotifyPage> {
   String _postId;
 
   int tag = 0;
-  List<String> options = [
-    'Đỏ',
-    'Xanh lá',
-    'Xanh đậm',
-    'Xanh nhạt',
-    'Vàng',
-    'Xám'
-  ];
-
-  List<String> params = [
-    'alert alert-danger',
-    'alert alert-success',
-    'alert alert-primary',
-    'alert alert-info',
-    'alert alert-warning',
-    'alert alert-secondary'
-  ];
 
   Color getColorByTag(int mTag) {
     switch (mTag) {
@@ -129,7 +113,7 @@ class _AddNotifyPageState extends State<AddNotifyPage> {
                     wrapped: true,
                     onChanged: (val) => setState(() => tag = val),
                     choiceItems: C2Choice.listFrom<int, String>(
-                      source: options,
+                      source: Helper.options,
                       value: (i, v) => i,
                       label: (i, v) => v,
                       style: (i, v) {
@@ -142,6 +126,28 @@ class _AddNotifyPageState extends State<AddNotifyPage> {
                                     : FontWeight.w400));
                       },
                     ),
+                  ),
+                  SizedBox(height: 12),
+                  Text("Trạng thái"),
+                  Row(
+                    children: Helper.statusList
+                        .map((e) => Row(
+                              children: [
+                                Radio(
+                                  value: e,
+                                  groupValue: selectedStatus,
+                                  activeColor: Color.fromRGBO(220, 65, 50, 1),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedStatus = value;
+                                    });
+                                  },
+                                ),
+                                Text(e, style: TextStyle(fontSize: 18)),
+                                SizedBox(width: 12)
+                              ],
+                            ))
+                        .toList(),
                   ),
                   SizedBox(height: 12),
                   Text("Nội dung"),
@@ -211,12 +217,13 @@ class _AddNotifyPageState extends State<AddNotifyPage> {
     PNotifyRequest _pNotifyRequest = PNotifyRequest(
         postId: _postId,
         title: _title,
-        color: params[tag],
+        color: Helper.params[tag],
         content: _controller.document
             .toPlainText()
             .toString()
             .replaceAll("\n", "<br>"),
-        orderNo: _orderNo);
+        orderNo: _orderNo,
+        active: Helper.statusRequest(selectedStatus));
     //
     print("add_p_notify_request: " + jsonEncode(_pNotifyRequest.toJson()));
     _notifyBloc.requestAddPNotify(jsonEncode(_pNotifyRequest.toJson()));

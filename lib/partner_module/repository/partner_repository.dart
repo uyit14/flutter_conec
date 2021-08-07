@@ -5,6 +5,7 @@ import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/models/p_notify_detail.dart';
 import 'package:conecapp/partner_module/models/p_notify_reponse.dart';
+import 'package:conecapp/partner_module/models/push_notify_response.dart';
 import 'package:conecapp/partner_module/models/search_m_response.dart';
 import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
 
@@ -46,6 +47,13 @@ class PartnerRepository {
         body: body, headers: await Helper.header());
     print(response);
     return PNotifyDetailResponse.fromJson(response).notifyFull;
+  }
+
+  Future<PushNotifyResponse> pushNotify(String id) async {
+    final response = await _helper.get('/api/Notification/PushNotify?id=$id',
+        headers: await Helper.header());
+    print(response);
+    return PushNotifyResponse.fromJson(response);
   }
 
   //---------------------------member----------------------------------//
@@ -110,7 +118,8 @@ class PartnerRepository {
   }
 
   Future<bool> completePayment(dynamic body, PAYMENT_TYPE type) async {
-    String urlType = type == PAYMENT_TYPE.COMPLETE ? "CompletePayment" : "UpdatePayment";
+    String urlType =
+        type == PAYMENT_TYPE.COMPLETE ? "CompletePayment" : "UpdatePayment";
     final response = await _helper.post('/api/Member/$urlType',
         body: body, headers: await Helper.header());
     print(response);

@@ -22,6 +22,7 @@ class UpdateNotifyPage extends StatefulWidget {
 
 class _UpdateNotifyPageState extends State<UpdateNotifyPage> {
   PNotifyBloc _notifyBloc = PNotifyBloc();
+  String selectedStatus = Helper.statusList[0];
   bool _isLoading = false;
   bool _isCallApi;
   ZefyrController _controller;
@@ -32,23 +33,6 @@ class _UpdateNotifyPageState extends State<UpdateNotifyPage> {
   TextEditingController _orderNoController;
 
   int tag = 0;
-  List<String> options = [
-    'Đỏ',
-    'Xanh lá',
-    'Xanh đậm',
-    'Xanh nhạt',
-    'Vàng',
-    'Xám'
-  ];
-
-  List<String> params = [
-    'alert alert-danger',
-    'alert alert-success',
-    'alert alert-primary',
-    'alert alert-info',
-    'alert alert-warning',
-    'alert alert-secondary'
-  ];
 
   Color getColorByTag(int mTag) {
     switch (mTag) {
@@ -124,7 +108,8 @@ class _UpdateNotifyPageState extends State<UpdateNotifyPage> {
           TextEditingController(text: _notificationInDetail.title);
       _orderNoController =
           TextEditingController(text: _notificationInDetail.orderNo.toString());
-      tag = params.indexOf(_notificationInDetail.color);
+      tag = Helper.params.indexOf(_notificationInDetail.color);
+      selectedStatus = Helper.statusResponse(_notificationInDetail.active);
     });
   }
 
@@ -165,7 +150,7 @@ class _UpdateNotifyPageState extends State<UpdateNotifyPage> {
                     wrapped: true,
                     onChanged: (val) => setState(() => tag = val),
                     choiceItems: C2Choice.listFrom<int, String>(
-                      source: options,
+                      source: Helper.options,
                       value: (i, v) => i,
                       label: (i, v) => v,
                       style: (i, v) {
@@ -178,6 +163,28 @@ class _UpdateNotifyPageState extends State<UpdateNotifyPage> {
                                     : FontWeight.w400));
                       },
                     ),
+                  ),
+                  SizedBox(height: 12),
+                  Text("Trạng thái"),
+                  Row(
+                    children: Helper.statusList
+                        .map((e) => Row(
+                      children: [
+                        Radio(
+                          value: e,
+                          groupValue: selectedStatus,
+                          activeColor: Color.fromRGBO(220, 65, 50, 1),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedStatus = value;
+                            });
+                          },
+                        ),
+                        Text(e, style: TextStyle(fontSize: 18)),
+                        SizedBox(width: 12)
+                      ],
+                    ))
+                        .toList(),
                   ),
                   SizedBox(height: 12),
                   Text("Nội dung"),
@@ -248,14 +255,16 @@ class _UpdateNotifyPageState extends State<UpdateNotifyPage> {
         id: _notificationInDetail.id,
         postId: _postId,
         title: _titleController.text,
-        color: params[tag],
+        color: Helper.params[tag],
         content: _controller.document
             .toPlainText()
             .toString()
             .replaceAll("\n", "<br>"),
         orderNo: _orderNoController.text != null
             ? int.parse(_orderNoController.text)
-            : null);
+            : null,
+        active: Helper.statusRequest(selectedStatus)
+    );
     //
     print("update_p_notify_request: " + jsonEncode(_pNotifyRequest.toJson()));
     _notifyBloc.requestUpdatePNotify(jsonEncode(_pNotifyRequest.toJson()));

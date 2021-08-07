@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
@@ -26,17 +28,39 @@ class _ChatPageState extends State<ChatPage> {
   ChatBloc _chatBloc = ChatBloc();
   bool isCallApi;
   bool _isLoading = false;
-  List<MessageChat> _message;
+  List<MessageChat> _message = List();
   Conversation _conversation = Conversation();
+  int page = 0;
+  bool _shouldLoadMore = true;
+  MessageChat mess = new MessageChat(
+    content: "aaaaaa"
+  );
 
-  final serverUrl = Helper.baseURL + "/notifyHub";
+  final serverUrl = Helper.baseURL + "/appNotifyHub";
   HubConnection hubConnection;
+  HttpConnectionOptions connectionOptions;
+
+  ScrollController _scrollController;
+
+  void _scrollListener() {
+    if (_scrollController.offset ==
+        _scrollController.position.maxScrollExtent) {
+      if (_shouldLoadMore) {
+        _shouldLoadMore = false;
+        _chatBloc.requestGetMessages(_conversation.id, page);
+        setState(() {
+          page++;
+        });
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     isCallApi = true;
     initSignalR();
+    _scrollController = new ScrollController()..addListener(_scrollListener);
   }
 
   @override
@@ -62,9 +86,15 @@ class _ChatPageState extends State<ChatPage> {
             case Status.COMPLETED:
               setState(() {
                 _conversation = event.data.conversation;
-                //_message.addAll(_conversation.messages);
+                if (_conversation.messages != null) {
+                  setState(() {
+                    _message.addAll(_conversation.messages.reversed.toList());
+                  });
+                }
               });
-              _chatBloc.requestGetMessages(_conversation.id, 0);
+              _chatBloc.requestGetMessages(conversationId, page);
+              page = 1;
+
               break;
             case Status.ERROR:
               print("selectConversation: " + event.message);
@@ -89,7 +119,7 @@ class _ChatPageState extends State<ChatPage> {
                   _isLoading = false;
                 });
               } else {
-                _chatBloc.requestGetMessages(_conversation.id, 0);
+                //_chatBloc.requestGetMessages(_conversation.id, 0);
               }
               break;
             case Status.ERROR:
@@ -97,20 +127,43 @@ class _ChatPageState extends State<ChatPage> {
           }
         });
       }
+      startConnection();
       isCallApi = false;
     }
   }
 
-  void initSignalR() {
-    hubConnection = HubConnectionBuilder().withUrl(serverUrl).build();
-    hubConnection.onclose((error) {
-      print("error: " + error.toString());
-    });
-    hubConnection.on("ReceiveNotify", _handleNewMessage);
+  String send = "SendMessage";
+  String rev = "ReceiveMessage";
+  void initSignalR() async{
+    connectionOptions = HttpConnectionOptions(accessTokenFactory: () async => await Helper.token());
+    hubConnection = HubConnectionBuilder().withUrl(serverUrl, options: connectionOptions).build();
+    hubConnection.on(rev, _handleNewMessage);
+
   }
 
   void _handleNewMessage(dynamic mess) {
     print("mess: " + mess.toString());
+    var ms = MessageChat.fromJson(mess[0]);
+    setState(() {
+      _message.insert(0, ms);
+    });
+  }
+
+  void startConnection() async {
+    await hubConnection.start();
+    if (hubConnection.state == HubConnectionState.Connected) {
+      print("Connected");
+    }
+    if (hubConnection.state == HubConnectionState.Disconnected) {
+      print("Disconnected");
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _chatBloc.dispose();
+    _message.clear();
   }
 
   @override
@@ -146,7 +199,8 @@ class _ChatPageState extends State<ChatPage> {
                         Container(
                           width: MediaQuery.of(context).size.width - 160,
                           child: Text(
-                              _conversation.member != null
+                              _conversation.member != null &&
+                                      _conversation.member.memberName != null
                                   ? _conversation.member.memberName
                                   : "",
                               maxLines: 1,
@@ -226,7 +280,18 @@ class _ChatPageState extends State<ChatPage> {
                     stream: _chatBloc.messagesStream,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        _message = snapshot.data.data;
+                        if (_message != null && snapshot.data.data != null) {
+                          if (snapshot.data.data.length > 0) {
+                            if (page == 0) {
+                              _message = snapshot.data.data;
+                            } else {
+                              _message.addAll(snapshot.data.data);
+                            }
+                            _shouldLoadMore = true;
+                          } else {
+                            _shouldLoadMore = false;
+                          }
+                        }
                         switch (snapshot.data.status) {
                           case Status.LOADING:
                             return UILoading(
@@ -235,7 +300,7 @@ class _ChatPageState extends State<ChatPage> {
                             return UIError(errorMessage: snapshot.data.message);
                           case Status.COMPLETED:
                           default:
-                            return Messages(_message);
+                            return Messages(_message, _scrollController);
                         }
                       }
                       return Center(
@@ -246,13 +311,6 @@ class _ChatPageState extends State<ChatPage> {
               ),
               NewMessage(
                 onSend: (message) async {
-                  // setState(() {
-                  //   chatDocs.insert(
-                  //       0, ChatDoc("Me", message, ChatDoc.avatar, true, "1"));
-                  // });\
-                  // if (hubConnection.state == HubConnectionState.Connected)
-                  //   await hubConnection
-                  //       .invoke("SendNotify", args: ['Uy', message]);
                   if (_conversation.id != null) {
                     SendMessageResponse response = await _chatBloc
                         .requestSendMessage(_conversation.id, message);
@@ -270,14 +328,14 @@ class _ChatPageState extends State<ChatPage> {
             ],
           ),
         ),
-        // floatingActionButton: FloatingActionButton(
-        //   child: Icon(hubConnection.state == HubConnectionState.Connected
-        //       ? Icons.cast_connected
-        //       : Icons.cast_connected_outlined),
-        //   onPressed: () async {
-        //     await hubConnection.start();
-        //   },
-        // ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(hubConnection.state == HubConnectionState.Connected
+              ? Icons.cast_connected
+              : Icons.cast_connected_outlined),
+          onPressed: () async {
+            await hubConnection.invoke(send, args: ["835f0dba-3dce-419b-806a-be4678cb2b75", mess.toJson()]);
+          },
+        ),
         // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       ),
     );

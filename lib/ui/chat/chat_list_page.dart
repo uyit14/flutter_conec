@@ -58,6 +58,10 @@ class _ChatListPageState extends State<ChatListPage> {
                                   "postId": _conversations[index].post != null
                                       ? _conversations[index].post.id
                                       : null
+                                }).then((value) {
+                                  if(value == 1){
+                                    _chatBloc.requestGetConversations();
+                                  }
                                 });
                               },
                               child: Container(
@@ -93,7 +97,7 @@ class _ChatListPageState extends State<ChatListPage> {
                                               Text(
                                                   _conversations[index]
                                                       .member
-                                                      .memberName,
+                                                      .memberName ?? "Người dùng mới",
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:
@@ -101,7 +105,7 @@ class _ChatListPageState extends State<ChatListPage> {
                                               SizedBox(height: 2),
                                               Text(
                                                   _conversations[index]
-                                                      .lastMessage,
+                                                      .lastMessage ?? "",
                                                   maxLines: 1,
                                                   overflow:
                                                       TextOverflow.ellipsis,

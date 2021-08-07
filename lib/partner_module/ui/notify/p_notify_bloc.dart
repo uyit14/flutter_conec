@@ -80,6 +80,14 @@ class PNotifyBloc {
     }
   }
 
+  Future<String> requestPushNotify(String id) async {
+    final response = await _repository.pushNotify(id);
+    if(response.status){
+      return response.msg;
+    }
+    return "Vui lòng thử lại";
+  }
+
   void requestUpdatePNotify(dynamic body) async {
     _updatePNotifyController.sink.add(ApiResponse.loading());
     try {

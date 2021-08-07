@@ -55,11 +55,11 @@ class _CompleteUpdatePaymentState extends State<CompleteUpdatePayment> {
             TextEditingController(text: _payment.amount.toString());
         _noteController = TextEditingController(text: _payment.notes);
         //
-        if (_payment.paymentDate != null) {
+        if (_payment.created != null) {
           _paymentDate = DateTime(
-              int.parse(_payment.paymentDate.substring(6)),
-              int.parse(_payment.paymentDate.substring(3, 5)),
-              int.parse(_payment.paymentDate.substring(0, 2)));
+              int.parse(_payment.created.substring(6)),
+              int.parse(_payment.created.substring(3, 5)),
+              int.parse(_payment.created.substring(0, 2)));
         }
       }
       _isCallApi = false;
@@ -229,29 +229,41 @@ class _CompleteUpdatePaymentState extends State<CompleteUpdatePayment> {
     setState(() {
       _isLoading = true;
     });
-    PaymentRequest _paymentRequest = PaymentRequest(
-        id: _payment.id,
-        paymentAmount: _freeController.text.length > 0
-            ? int.parse(_freeController.text, onError: (source) => null)
-            : null,
-        paymentDate: myEncode(_paymentDate),
-        notes: _noteController.text);
+    var _paymentRequest;
+    if (_disableView) {
+      _paymentRequest = CompletePaymentRequest(
+          id: _payment.id,
+          paymentAmount: _freeController.text.length > 0
+              ? int.parse(_freeController.text, onError: (source) => null)
+              : null,
+          paymentDate: myEncode(_paymentDate),
+          notes: _noteController.text);
+    } else {
+      _paymentRequest = UpdatePaymentRequest(
+          id: _payment.id,
+          paymentAmount: _freeController.text.length > 0
+              ? int.parse(_freeController.text, onError: (source) => null)
+              : null,
+          paymentDate: myEncode(_paymentDate),
+          notes: _noteController.text);
+    }
 
     print("${_paymentType.toString()}_payment_request: " +
         jsonEncode(_paymentRequest.toJson()));
     bool isComplete = await _memberBloc.requestCompletePayment(
         jsonEncode(_paymentRequest.toJson()), _paymentType);
-    if(isComplete){
+    if (isComplete) {
       setState(() {
         _isLoading = false;
       });
       Navigator.of(context).pop(1);
       Fluttertoast.showToast(msg: "Thành công", textColor: Colors.black87);
-    }else{
+    } else {
       setState(() {
         _isLoading = false;
       });
-      Fluttertoast.showToast(msg: "Vui lòng thử lại", textColor: Colors.black87);
+      Fluttertoast.showToast(
+          msg: "Vui lòng thử lại", textColor: Colors.black87);
     }
   }
 }

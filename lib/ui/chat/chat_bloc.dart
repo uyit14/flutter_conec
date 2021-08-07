@@ -70,11 +70,13 @@ class ChatBloc {
   }
 
   void requestGetMessages(String conversationId, int page) async {
-    _messagesController.sink.add(ApiResponse.loading());
+    print('page $page');
+    _messagesController.sink.add(ApiResponse.completed([]));
     try {
       final result = await _repository.getMessages(conversationId, page);
       if (result != null) {
-        _messagesController.sink.add(ApiResponse.completed(result.messages));
+        _messagesController.sink.add(ApiResponse.completed(result.messages.reversed.toList()));
+        print("sink page $page ${result.messages.length}");
       } else {
         _messagesController.sink.addError(ApiResponse.error("Lỗi kết nối"));
       }
@@ -82,6 +84,21 @@ class ChatBloc {
       _messagesController.sink.add(ApiResponse.error(e.toString()));
     }
   }
+
+  /*
+  void requestGetNotify(int page) async {
+    print('page $page');
+    _notifyController.sink.add(ApiResponse.completed([]));
+    try {
+      final result = await _repository.getPartnerNotifies(page);
+      print("sink page $page ${result.pNotifyList.length}");
+      _notifyController.sink.add(ApiResponse.completed(result.pNotifyList));
+    } catch (e) {
+      _notifyController.sink.addError(ApiResponse.error(e.toString()));
+      debugPrint(e.toString());
+    }
+  }
+  */
 
   Future<int> requestSeenMessage(String conversationId) async {
     final response = await _repository.seenMessage(conversationId);

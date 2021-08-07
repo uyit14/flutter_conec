@@ -1,3 +1,5 @@
+import 'package:conecapp/common/helper.dart';
+
 class MessageResponse {
   int page;
   List<MessageChat> messages;
@@ -38,11 +40,22 @@ class MessageChat {
   MessageChat.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     conversationId = json['conversationId'];
-    createdDate = json['createdDate'];
+    createdDate = Helper.formatNotifyDate(json['createdDate']);
     content = json['content'];
     ownerId = json['ownerId'];
     ownerName = json['ownerName'];
     ownerAvatar = json['ownerAvatar'];
     createdByCurrentUser = json['createdByCurrentUser'];
   }
+
+  Map<String, dynamic> toJson() => {
+    if (id != null) 'id': id,
+    if (conversationId != null) 'conversationId': conversationId,
+    if (createdDate != null) 'createdDate': createdDate,
+    if (content != null) 'content': content,
+    if (ownerId != null) 'ownerId': ownerId,
+    if (ownerName != null) 'ownerName': ownerName,
+    if (ownerAvatar != null) 'ownerAvatar': ownerAvatar,
+    if (createdByCurrentUser != null) 'createdByCurrentUser': createdByCurrentUser,
+  };
 }

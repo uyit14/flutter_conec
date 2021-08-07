@@ -8,6 +8,7 @@ import 'package:conecapp/partner_module/ui/notify/p_notify_bloc.dart';
 import 'package:conecapp/partner_module/ui/notify/update_notify_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NotifyPartnerDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/notify-partner-detail';
@@ -29,6 +30,16 @@ class _NotifyPartnerDetailPageState extends State<NotifyPartnerDetailPage> {
     if (_postId != null) {
       _notifyBloc.requestGetPNotifyDetail(_postId);
     }
+  }
+
+  void sendNotify(String id) async {
+    Helper.showAlertDialog(context, "Đẩy thông báo",
+        "Thông báo này sẽ được gửi đến thành viên và những người theo dõi tin này",
+        () async {
+      String result = await _notifyBloc.requestPushNotify(id);
+      Fluttertoast.showToast(msg: result.replaceAll("<b>", "").replaceAll("</b>", ""), textColor: Colors.black87);
+      Navigator.of(context).pop();
+    });
   }
 
   void onUpdateNotify(NotificationInDetail notificationInDetail) {
@@ -170,6 +181,13 @@ class _NotifyPartnerDetailPageState extends State<NotifyPartnerDetailPage> {
                                       itemCount:
                                           _notify.notificationsInDetail.length,
                                       itemBuilder: (context, index) {
+                                        ColorNotify colorN =
+                                            Helper.getColorNotify(_notify
+                                                .notificationsInDetail[index]
+                                                .color);
+                                        String status = Helper.statusResponse(
+                                            _notify.notificationsInDetail[index]
+                                                .active);
                                         return Column(
                                           children: [
                                             Row(
@@ -190,6 +208,28 @@ class _NotifyPartnerDetailPageState extends State<NotifyPartnerDetailPage> {
                                                           fontSize: 16),
                                                     )),
                                                 Spacer(),
+                                                Text(colorN.text,
+                                                    style: TextStyle(
+                                                        color: colorN.color,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                                SizedBox(width: 16),
+                                                Text(status,
+                                                    style: TextStyle(
+                                                        color: _notify
+                                                                .notificationsInDetail[
+                                                                    index]
+                                                                .active
+                                                            ? Colors.green
+                                                            : Colors.red,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                                SizedBox(width: 12),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Spacer(),
                                                 IconButton(
                                                     icon: Icon(Icons.edit,
                                                         color: Colors.blue),
@@ -197,6 +237,16 @@ class _NotifyPartnerDetailPageState extends State<NotifyPartnerDetailPage> {
                                                         onUpdateNotify(_notify
                                                                 .notificationsInDetail[
                                                             index])),
+                                                IconButton(
+                                                    icon: Icon(
+                                                        Icons
+                                                            .notifications_active,
+                                                        color: Colors.yellow),
+                                                    onPressed: () => sendNotify(
+                                                        _notify
+                                                            .notificationsInDetail[
+                                                                index]
+                                                            .id)),
                                                 IconButton(
                                                     icon: Icon(
                                                       Icons.delete,

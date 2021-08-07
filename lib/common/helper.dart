@@ -130,6 +130,41 @@ class Helper {
     return MediaQuery.of(context).size.width;
   }
 
+  static void showAlertDialog(BuildContext context, title, content, Function onOK){
+    Widget cancelButton = TextButton(
+      child: Text("Đóng"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+    Widget continueButton = TextButton(
+      child: Text("Gửi thông báo"),
+      onPressed: onOK,
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(content),
+        ],
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   static void showRemindDialog(BuildContext context, content, Function onOK) {
     TextEditingController _controller = TextEditingController(text: content);
 
@@ -515,6 +550,66 @@ class Helper {
     "Trùng tin đăng"
   ];
 
+  static const List<String> statusList = [
+    "Hiện",
+    "Ẩn"
+  ];
+
+  static List<String> options = [
+    'Đỏ',
+    'Xanh lá',
+    'Xanh đậm',
+    'Xanh nhạt',
+    'Vàng',
+    'Xám'
+  ];
+
+  static List<String> params = [
+    'alert alert-danger',
+    'alert alert-success',
+    'alert alert-primary',
+    'alert alert-info',
+    'alert alert-warning',
+    'alert alert-secondary'
+  ];
+
+  static ColorNotify getColorNotify(String color){
+    if(color == null || color.length == 0){
+      color = params[1];
+    }
+    int index = params.indexOf(color);
+    return ColorNotify(text: options[index], color: getColorByTag(index));
+  }
+
+  static Color getColorByTag(int mTag) {
+    switch (mTag) {
+      case 0:
+        return Colors.red;
+      case 1:
+        return Colors.green;
+      case 2:
+        return Colors.blue;
+      case 3:
+        return Colors.blue[300];
+      case 4:
+        return Colors.yellow[700];
+      case 5:
+        return Colors.grey;
+      default:
+        return Colors.red;
+    }
+  }
+
+  static bool statusRequest(String value){
+    if(value == statusList[0]) return true;
+    return false;
+  }
+
+  static String statusResponse(bool status){
+    if(status) return statusList[0];
+    return statusList[1];
+  }
+
   // //report dialog
   // static void showReportDialog(BuildContext context, Function(int index) onReport){
   //   int selectedIndex = 0;
@@ -593,4 +688,12 @@ class Helper {
   static const String loadingMessage = "Đang tải...";
   static const String verifyMessage =
       "Nhập mã xác nhận bao gôm 5 ký tự chúng tôi đã gửi đến email của bạn!";
+}
+
+class ColorNotify{
+  final String text;
+  final Color color;
+
+  ColorNotify({this.text, this.color});
+
 }

@@ -220,6 +220,7 @@ class NotificationInDetail {
   String color;
   String postId;
   String created;
+  bool active;
 
   NotificationInDetail(
       {this.id,
@@ -228,7 +229,7 @@ class NotificationInDetail {
         this.content,
         this.color,
         this.postId,
-        this.created});
+        this.created, this.active});
 
   NotificationInDetail.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -238,17 +239,6 @@ class NotificationInDetail {
     color = json['color'];
     postId = json['postId'];
     created = json['created'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['orderNo'] = this.orderNo;
-    data['title'] = this.title;
-    data['content'] = this.content;
-    data['color'] = this.color;
-    data['postId'] = this.postId;
-    data['created'] = this.created;
-    return data;
+    active = json['active'];
   }
 }

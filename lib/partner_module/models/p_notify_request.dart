@@ -5,6 +5,7 @@ class PNotifyRequest {
   String content;
   String title;
   int orderNo;
+  bool active;
 
   PNotifyRequest(
       {this.id,
@@ -12,7 +13,8 @@ class PNotifyRequest {
       this.color,
       this.content,
       this.title,
-      this.orderNo});
+      this.orderNo,
+      this.active});
 
   Map<String, dynamic> toJson() => {
         if (id != null) 'id': id,
@@ -21,5 +23,6 @@ class PNotifyRequest {
         if (content != null) 'content': content,
         if (color != null) 'color': color,
         if (orderNo != null) 'orderNo': orderNo,
+        if (active != null) 'active': active
       };
 }

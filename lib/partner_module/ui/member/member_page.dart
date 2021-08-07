@@ -25,11 +25,28 @@ class MemberPage extends StatefulWidget {
 class _MemberPageState extends State<MemberPage> {
   List<Member> _members = List();
   MemberBloc _memberBloc = MemberBloc();
+  ScrollController _scrollController;
+  bool _shouldLoadMore = true;
+  int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _memberBloc.requestGetMembers(0);
+    _scrollController = new ScrollController()..addListener(_scrollListener);
+    _memberBloc.requestGetMembers(_currentPage);
+    _currentPage = 1;
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.extentAfter < 250) {
+      if (_shouldLoadMore) {
+        _shouldLoadMore = false;
+        _memberBloc.requestGetMembers(_currentPage);
+        setState(() {
+          _currentPage++;
+        });
+      }
+    }
   }
 
   @override
@@ -49,114 +66,122 @@ class _MemberPageState extends State<MemberPage> {
                     case Status.ERROR:
                       return UIError(errorMessage: snapshot.data.message);
                     case Status.COMPLETED:
-                      if (snapshot.data.data.length > 0) {
-                        _members = snapshot.data.data;
-                        return ListView.builder(
-                            itemCount: _members.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                elevation: 5,
-                                margin: EdgeInsets.all(8),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Tên thành viên",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16)),
-                                      SizedBox(height: 4),
-                                      Text(_members[index].name ?? "",
-                                          style: TextStyle(fontSize: 16)),
-                                      Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          width: double.infinity,
-                                          height: 0.5,
-                                          color: Colors.grey),
-                                      doubleRows(
-                                          "Số điện thoại", "Email", true),
-                                      SizedBox(height: 4),
-                                      doubleRows(
-                                          _members[index].phoneNumber ?? "",
-                                          _members[index].email ?? "",
-                                          false),
-                                      Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          width: double.infinity,
-                                          height: 0.5,
-                                          color: Colors.grey),
-                                      doubleRows("Ngày tham gia",
-                                          "Ngày đóng tiền", true),
-                                      SizedBox(height: 4),
-                                      doubleRows(
-                                          _members[index].joinedDate ?? "",
-                                          _members[index].paymentDate ?? "",
-                                          false),
-                                      Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          width: double.infinity,
-                                          height: 0.5,
-                                          color: Colors.grey),
-                                      Text("Số tiền",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16)),
-                                      SizedBox(height: 4),
-                                      Text(
-                                          '${_members[index].amount ?? ""} / ${_members[index].joiningFeePeriod ?? ""}',
-                                          style: TextStyle(fontSize: 16)),
-                                      Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          width: double.infinity,
-                                          height: 0.5,
-                                          color: Colors.grey),
-                                      Text("Ngày cập nhật",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16)),
-                                      SizedBox(height: 4),
-                                      Text(_members[index].modifiedDate ?? "",
-                                          style: TextStyle(fontSize: 16)),
-                                      Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          width: double.infinity,
-                                          height: 0.5,
-                                          color: Colors.grey),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          iconAction(ACTION_TYPE.MESSAGE,
-                                              index: index),
-                                          iconAction(ACTION_TYPE.EDIT,
-                                              index: index),
-                                          iconAction(ACTION_TYPE.REMIND,
-                                              index: index),
-                                          iconAction(ACTION_TYPE.DETAIL,
-                                              index: index),
-                                          iconAction(ACTION_TYPE.DELETE,
-                                              index: index),
-                                        ],
-                                      )
-                                    ],
+                        if (snapshot.data.data.length > 0) {
+                          print(
+                              "at UI: " + snapshot.data.data.length.toString());
+                          _members.addAll(snapshot.data.data);
+                          _shouldLoadMore = true;
+                        } else {
+                          _shouldLoadMore = false;
+                        }
+                        if(_members.length > 0){
+                          return ListView.builder(
+                              itemCount: _members.length,
+                              controller: _scrollController,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  elevation: 5,
+                                  margin: EdgeInsets.all(8),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Tên thành viên",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16)),
+                                        SizedBox(height: 4),
+                                        Text(_members[index].name ?? "",
+                                            style: TextStyle(fontSize: 16)),
+                                        Container(
+                                            margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                            width: double.infinity,
+                                            height: 0.5,
+                                            color: Colors.grey),
+                                        doubleRows(
+                                            "Số điện thoại", "Email", true),
+                                        SizedBox(height: 4),
+                                        doubleRows(
+                                            _members[index].phoneNumber ?? "",
+                                            _members[index].email ?? "",
+                                            false),
+                                        Container(
+                                            margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                            width: double.infinity,
+                                            height: 0.5,
+                                            color: Colors.grey),
+                                        doubleRows("Ngày tham gia",
+                                            "Ngày đóng tiền", true),
+                                        SizedBox(height: 4),
+                                        doubleRows(
+                                            _members[index].joinedDate ?? "",
+                                            _members[index].paymentDate ?? "",
+                                            false),
+                                        Container(
+                                            margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                            width: double.infinity,
+                                            height: 0.5,
+                                            color: Colors.grey),
+                                        Text("Số tiền",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16)),
+                                        SizedBox(height: 4),
+                                        Text(
+                                            '${_members[index].amount ?? ""} / ${_members[index].joiningFeePeriod ?? ""}',
+                                            style: TextStyle(fontSize: 16)),
+                                        Container(
+                                            margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                            width: double.infinity,
+                                            height: 0.5,
+                                            color: Colors.grey),
+                                        Text("Ngày cập nhật",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16)),
+                                        SizedBox(height: 4),
+                                        Text(_members[index].modifiedDate ?? "",
+                                            style: TextStyle(fontSize: 16)),
+                                        Container(
+                                            margin:
+                                            EdgeInsets.symmetric(vertical: 4),
+                                            width: double.infinity,
+                                            height: 0.5,
+                                            color: Colors.grey),
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            iconAction(ACTION_TYPE.MESSAGE,
+                                                index: index),
+                                            iconAction(ACTION_TYPE.EDIT,
+                                                index: index),
+                                            iconAction(ACTION_TYPE.REMIND,
+                                                index: index),
+                                            iconAction(ACTION_TYPE.DETAIL,
+                                                index: index),
+                                            iconAction(ACTION_TYPE.DELETE,
+                                                index: index),
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            });
-                      } else {
+                                );
+                              });
+                        }
                         return Center(
                             child: Text(
-                          "Chưa có thông báo",
-                          style: TextStyle(fontSize: 18),
-                        ));
-                      }
+                              "Chưa có thành viên nào",
+                              style: TextStyle(fontSize: 18),
+                            ));
+
                   }
                 }
                 return CircularProgressIndicator();

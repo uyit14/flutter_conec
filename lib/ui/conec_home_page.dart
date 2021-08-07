@@ -5,6 +5,7 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
 import 'package:conecapp/ui/chat/chat_list_page.dart';
+import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/pages/home_page.dart';
 import 'package:conecapp/ui/mypost/pages/post_action_page.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
@@ -69,11 +70,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
     });
     if (!_isTokenExpired && _token != null) {
       _profileBloc.requestGetProfile();
-      _homeBloc.requestGetNumberNotify();
-      String numberMessage = await _homeBloc.requestGetConversationCounter();
-      setState(() {
-        _numberMessage = numberMessage;
-      });
+      getNumberOfNotify();
       _profileBloc.profileStream.listen((event) {
         if (event.status == Status.COMPLETED) {
           final profile = event.data;
@@ -107,6 +104,14 @@ class _ConecHomePageState extends State<ConecHomePage> {
         }
       });
     }
+  }
+  
+  void getNumberOfNotify() async{
+    _homeBloc.requestGetNumberNotify();
+    String numberMessage = await _homeBloc.requestGetConversationCounter();
+    setState(() {
+      _numberMessage = numberMessage;
+    });
   }
 
   void _selectPage(int index) {
@@ -276,6 +281,9 @@ class _ConecHomePageState extends State<ConecHomePage> {
         String type = result.notification.payload.additionalData["type"];
         String title = result.notification.payload.title;
         print("Open: $type");
+        if(type == 'CONVERSATION'){
+          Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);
+        }
         if (type == "TOPIC") {
           Navigator.of(context)
               .pushNamed(ItemDetailPage.ROUTE_NAME, arguments: {
@@ -400,6 +408,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 badgeColor: Colors.red,
                 showBadge: _isSpeedOpen ||  _numberMessage.length == 0  ? false : true,
                 child: mySpeedDial.SpeedDial(
+                  number: _numberMessage,
                   onOpenZalo: () =>
                       launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
                   onOpenMess: () =>
@@ -431,7 +440,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     }
                   },
                   onOpenChat: (){
-                    Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);
+                    Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME).then((value) => getNumberOfNotify());
                   },
                   onFabAction: onFabAction,
                 ),

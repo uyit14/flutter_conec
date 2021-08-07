@@ -1,6 +1,8 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 
 class SpeedDial extends StatefulWidget {
+  final String number;
   final Function() onOpenZalo;
   final Function() onOpenMess;
   final Function() onOpenChat;
@@ -8,7 +10,12 @@ class SpeedDial extends StatefulWidget {
   final Function(bool) onFabAction;
 
   SpeedDial(
-      {this.onOpenZalo, this.onOpenMess, this.onOpenChat, this.onAddNew, this.onFabAction});
+      {this.number,
+      this.onOpenZalo,
+      this.onOpenMess,
+      this.onOpenChat,
+      this.onAddNew,
+      this.onFabAction});
 
   @override
   State<StatefulWidget> createState() => SpeedDialState();
@@ -174,24 +181,37 @@ class SpeedDialState extends State<SpeedDial>
         padding: EdgeInsets.symmetric(horizontal: 8),
         child: _isOpened
             ? Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text("Trò chuyện", style: TextStyle(fontSize: 16)),
-            FloatingActionButton(
-              onPressed: null,
-              backgroundColor: Colors.white,
-              tooltip: 'chat',
-              heroTag: 'chat',
-              child: Image.asset(
-                'assets/images/message.png',
-                width: 34,
-                height: 34,
-                fit: BoxFit.cover,
-              ),
-              elevation: 0,
-            ),
-          ],
-        )
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Trò chuyện", style: TextStyle(fontSize: 16)),
+                  Badge(
+                    padding: const EdgeInsets.all(8),
+                    position: BadgePosition.topEnd(top: -10, end: -7),
+                    badgeContent: Text(
+                      widget.number,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    badgeColor: Colors.red,
+                    showBadge: widget.number.length == 0 ? false : true,
+                    child: FloatingActionButton(
+                      onPressed: null,
+                      backgroundColor: Colors.white,
+                      tooltip: 'chat',
+                      heroTag: 'chat',
+                      child: Image.asset(
+                        'assets/images/message.png',
+                        width: 34,
+                        height: 34,
+                        fit: BoxFit.cover,
+                      ),
+                      elevation: 0,
+                    ),
+                  )
+                ],
+              )
             : Container(),
       ),
     );

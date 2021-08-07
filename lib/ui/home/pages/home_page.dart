@@ -33,6 +33,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedPageIndex = 0;
   HomeBloc _homeBloc = HomeBloc();
+  bool isCallApi = false;
 
   //ScrollController _scrollController = ScrollController();
   List<LatestItem> clubs = List<LatestItem>();
@@ -51,12 +52,17 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _homeBloc.requestGetSlider();
+    isCallApi = true;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    getLocation();
+    if(isCallApi){
+      getLocation();
+      isCallApi = false;
+    }
+
   }
 
   void getLocation() async {
