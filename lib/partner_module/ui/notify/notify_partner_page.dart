@@ -159,7 +159,7 @@ class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
                         }
                         return Center(
                             child: Text(
-                          "Chưa có thông báo",
+                          "Chưa có bài đăng nào",
                           style: TextStyle(fontSize: 18),
                         ));
                       case Status.ERROR:
@@ -168,7 +168,7 @@ class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
                   }
                   return Center(
                       child: Text(
-                    "Chưa có thông báo",
+                    "Chưa có bài đăng nào",
                     style: TextStyle(fontSize: 18),
                   ));
                 })),

@@ -16,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:new_version/new_version.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:signalr_client/http_connection_options.dart';
+import 'package:signalr_client/hub_connection.dart';
+import 'package:signalr_client/hub_connection_builder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../common/globals.dart' as globals;
@@ -61,6 +64,13 @@ class _ConecHomePageState extends State<ConecHomePage> {
   // CHANGE THIS parameter to true if you want to test GDPR privacy consent
   bool _requireConsent = false;
 
+  //
+  final serverUrl = Helper.baseURL + "/appNotifyHub";
+  HubConnection hubConnection;
+  HttpConnectionOptions connectionOptions;
+  String send = "SendMessage";
+  String rev = "ReceiveMessage";
+
   void getToken() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
@@ -105,13 +115,37 @@ class _ConecHomePageState extends State<ConecHomePage> {
       });
     }
   }
-  
-  void getNumberOfNotify() async{
+
+  void getNumberOfNotify() async {
     _homeBloc.requestGetNumberNotify();
     String numberMessage = await _homeBloc.requestGetConversationCounter();
     setState(() {
       _numberMessage = numberMessage;
     });
+  }
+
+  void initSignalR() async {
+    connectionOptions = HttpConnectionOptions(
+        accessTokenFactory: () async => await Helper.token());
+    hubConnection = HubConnectionBuilder()
+        .withUrl(serverUrl, options: connectionOptions)
+        .build();
+    hubConnection.on(rev, _handleNewMessage);
+  }
+
+  void startConnection() async {
+    await hubConnection.start();
+    if (hubConnection.state == HubConnectionState.Connected) {
+      print("Connected");
+    }
+    if (hubConnection.state == HubConnectionState.Disconnected) {
+      print("Disconnected");
+    }
+  }
+
+  void _handleNewMessage(dynamic mess) {
+    getNumberOfNotify();
+    setState(() {});
   }
 
   void _selectPage(int index) {
@@ -133,6 +167,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     isCallApi = true;
+    initSignalR();
+    startConnection();
     //getLocation();
     // NewVersion(
     //     context: context,
@@ -214,7 +250,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if(isCallApi){
+    if (isCallApi) {
       giftCheck(context);
       isCallApi = false;
     }
@@ -281,7 +317,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
         String type = result.notification.payload.additionalData["type"];
         String title = result.notification.payload.title;
         print("Open: $type");
-        if(type == 'CONVERSATION'){
+        if (type == 'CONVERSATION') {
           Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);
         }
         if (type == "TOPIC") {
@@ -393,7 +429,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                   )
                 : Container(),
             Positioned(
-              bottom: 60,
+              bottom: 55,
               right: 16,
               child: Badge(
                 padding: const EdgeInsets.all(8),
@@ -406,41 +442,18 @@ class _ConecHomePageState extends State<ConecHomePage> {
                       fontWeight: FontWeight.bold),
                 ),
                 badgeColor: Colors.red,
-                showBadge: _isSpeedOpen ||  _numberMessage.length == 0  ? false : true,
+                showBadge:
+                    _isSpeedOpen || _numberMessage.length == 0 ? false : true,
                 child: mySpeedDial.SpeedDial(
                   number: _numberMessage,
                   onOpenZalo: () =>
                       launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
                   onOpenMess: () =>
                       launch("https://messenger.com/t/www.conec.vn"),
-                  onAddNew: () {
-                    if (_token == null || _token.length == 0) {
-                      Helper.showAuthenticationDialog(context);
-                    } else {
-                      if (_isTokenExpired) {
-                        Helper.showTokenExpiredDialog(context);
-                      } else {
-                        if (_isMissingData) {
-                          Helper.showMissingDataDialog(context, () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context)
-                                .pushNamed(EditProfilePage.ROUTE_NAME,
-                                    arguments: _profile)
-                                .then((value) {
-                              if (value == 0) {
-                                _profileBloc.requestGetProfile();
-                              }
-                            });
-                          });
-                        } else {
-                          Navigator.of(context)
-                              .pushNamed(PostActionPage.ROUTE_NAME);
-                        }
-                      }
-                    }
-                  },
-                  onOpenChat: (){
-                    Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME).then((value) => getNumberOfNotify());
+                  onOpenChat: () {
+                    Navigator.of(context)
+                        .pushNamed(ChatListPage.ROUTE_NAME)
+                        .then((value) => getNumberOfNotify());
                   },
                   onFabAction: onFabAction,
                 ),

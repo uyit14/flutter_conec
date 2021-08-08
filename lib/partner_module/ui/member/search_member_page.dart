@@ -90,7 +90,7 @@ class _SearchMemberPageState extends State<SearchMemberPage> {
                                         CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            memberSearch[index].name,
+                                            memberSearch[index].name ?? "",
                                             style: TextStyle(fontSize: 16),
                                           ),
                                           SizedBox(height: 12),

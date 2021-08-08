@@ -154,6 +154,8 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                           Text("Ghi chú"),
                           SizedBox(height: 4),
                           Text(_member.notes ?? ""),
+                          SizedBox(height: 12),
+                          Text("Danh sách thanh toán"),
                           SizedBox(height: 4),
                           ListView.builder(
                               shrinkWrap: true,

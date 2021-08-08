@@ -93,6 +93,7 @@ class PartnerRepository {
   Future<bool> deleteMember(String id) async {
     final response = await _helper.post("/api/Member/DeleteMember?id=$id",
         headers: await Helper.header());
+    print(response);
     return response['status'];
   }
 

@@ -15,11 +15,28 @@ class ChatRepository {
     return ConversationsResponse.fromJson(response);
   }
 
+  Future<ConversationsResponse> searchConversation(String query) async {
+    final response = await _helper.get('/api/Conversation/loadConversations?p=$query',
+        headers: await Helper.header());
+    print(response);
+    return ConversationsResponse.fromJson(response);
+  }
+
   Future<ConversationResponse> createConversation(String memberId,
       {String postId}) async {
     String params = postId != null ? '&postId=$postId' : "";
     final response = await _helper.post(
         '/api/Conversation/createConversation?memberId=$memberId$params',
+        headers: await Helper.header());
+    print(response);
+    return ConversationResponse.fromJson(response);
+  }
+
+  Future<ConversationResponse> createConversationWithMessage(String memberId,
+      {String postId, String mess}) async {
+    String params = postId != null ? '&postId=$postId&message=$mess' : "";
+    final response = await _helper.post(
+        '/api/Conversation/createConversationWithMessage?memberId=$memberId$params',
         headers: await Helper.header());
     print(response);
     return ConversationResponse.fromJson(response);

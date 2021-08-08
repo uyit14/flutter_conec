@@ -40,6 +40,7 @@ import 'package:flutter/services.dart';
 import 'partner_module/ui/member/complete_update_payment.dart';
 import 'ui/address/district_page.dart';
 import 'ui/authen/pages/reset_pass_page.dart';
+import 'ui/chat/search_member_chat.dart';
 import 'ui/conec_home_page.dart';
 import 'ui/home/pages/items_by_category_page.dart';
 import 'ui/mypost/pages/post_action_page.dart';
@@ -121,6 +122,7 @@ class ConecApp extends StatelessWidget {
         UpdateMemberPage.ROUTE_NAME: (context) => UpdateMemberPage(),
         MemberDetailPage.ROUTE_NAME: (context) => MemberDetailPage(),
         CompleteUpdatePayment.ROUTE_NAME: (context) => CompleteUpdatePayment(),
+        SearchMemberChatPage.ROUTE_NAME: (context) => SearchMemberChatPage(),
       },
     );
   }

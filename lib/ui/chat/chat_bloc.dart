@@ -22,6 +22,13 @@ class ChatBloc {
       _conversationController.stream;
 
   //conversations
+  StreamController<ApiResponse<List<Conversation>>> _searchConversationController =
+  StreamController();
+
+  Stream<ApiResponse<List<Conversation>>> get searchConversationStream =>
+      _searchConversationController.stream;
+
+  //conversations
   StreamController<ApiResponse<List<MessageChat>>> _messagesController =
       StreamController();
 
@@ -34,6 +41,13 @@ class ChatBloc {
 
   Stream<ApiResponse<ConversationResponse>> get createConversationStream =>
       _createConversationController.stream;
+
+  //create conversations with mess
+  StreamController<ApiResponse<ConversationResponse>>
+  _createConversationWithMessageController = StreamController();
+
+  Stream<ApiResponse<ConversationResponse>> get createConversationWithMessageStream =>
+      _createConversationWithMessageController.stream;
 
   //select conversations
   StreamController<ApiResponse<ConversationResponse>>
@@ -53,6 +67,17 @@ class ChatBloc {
     }
   }
 
+  void requestSearchGetConversations(String query) async {
+    _searchConversationController.sink.add(ApiResponse.loading());
+    final result = await _repository.searchConversation(query);
+    if (result != null) {
+      _searchConversationController.sink
+          .add(ApiResponse.completed(result.conversations));
+    } else {
+      _searchConversationController.sink.addError(ApiResponse.error("Lỗi kết nối"));
+    }
+  }
+
   void requestCreateConversation(String memberId, {String postId}) async {
     _createConversationController.sink.add(ApiResponse.loading());
     try {
@@ -66,6 +91,22 @@ class ChatBloc {
       }
     } catch (e) {
       _createConversationController.sink.add(ApiResponse.error(e.toString()));
+    }
+  }
+
+  void requestCreateConversationWithMessage(String memberId, {String postId, String mess}) async {
+    _createConversationWithMessageController.sink.add(ApiResponse.loading());
+    try {
+      final result =
+      await _repository.createConversationWithMessage(memberId, postId: postId, mess: mess);
+      if (result != null) {
+        _createConversationWithMessageController.sink.add(ApiResponse.completed(result));
+      } else {
+        _createConversationWithMessageController.sink
+            .addError(ApiResponse.error("Lỗi kết nối"));
+      }
+    } catch (e) {
+      _createConversationWithMessageController.sink.add(ApiResponse.error(e.toString()));
     }
   }
 
@@ -131,5 +172,7 @@ class ChatBloc {
     _createConversationController?.close();
     _messagesController?.close();
     _selectConversationController?.close();
+    _createConversationWithMessageController?.close();
+    _searchConversationController?.close();
   }
 }

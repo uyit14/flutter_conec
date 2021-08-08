@@ -11,7 +11,6 @@ import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/page/hidden_response.dart';
 import 'package:conecapp/models/response/profile/gift_response.dart';
-import 'package:conecapp/ui/chat/chat_list_page.dart';
 import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
@@ -38,7 +37,7 @@ class ItemDetailPage extends StatefulWidget {
 
 class _ItemDetailPageState extends State<ItemDetailPage> {
   bool _isCallApi;
-
+  bool _showNotify = true;
   String linkShare;
   bool isApprove = false;
   int _currentIndex = 0;
@@ -613,6 +612,93 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     )
                                   ],
                                 ),
+                                itemDetail.notifications != null &&
+                                        itemDetail.notifications.length > 0 &&
+                                        _showNotify
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              width: double.infinity,
+                                              height: 1,
+                                              color: Colors.black12,
+                                              margin: EdgeInsets.symmetric(vertical: 8)),
+                                          Card(
+                                            elevation: 5,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .notifications_active,
+                                                      color: Colors.yellow,
+                                                    ),
+                                                    SizedBox(width: 8),
+                                                    Text("Thông báo",
+                                                        style: AppTheme
+                                                            .commonDetail),
+                                                    Spacer(),
+                                                    IconButton(
+                                                      icon: Icon(
+                                                          Icons.clear_outlined,
+                                                          size: 28),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _showNotify = false;
+                                                        });
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                                ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    shrinkWrap: true,
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    itemCount: itemDetail
+                                                        .notifications.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width -
+                                                            100,
+                                                        margin:
+                                                            EdgeInsets.all(8),
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 12,
+                                                                vertical: 8),
+                                                        color: Helper.getColorNotify(
+                                                                itemDetail
+                                                                    .notifications[
+                                                                        index]
+                                                                    .color)
+                                                            .color,
+                                                        child: Text(
+                                                            itemDetail
+                                                                .notifications[
+                                                                    index]
+                                                                .title,
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis),
+                                                      );
+                                                    }),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Container(),
                                 Container(
                                     width: double.infinity,
                                     height: 1,
@@ -635,6 +721,60 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                             data: itemDetail.content ?? "",
                                           )
                                         : Text(itemDetail.content)),
+                                Container(
+                                    width: double.infinity,
+                                    height: 1,
+                                    color: Colors.black12,
+                                    margin: EdgeInsets.symmetric(vertical: 8)),
+                                Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.question_answer,
+                                      color: Colors.green,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Trao đổi với CLB qua chat",
+                                        style: AppTheme.commonDetail),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  height: 40,
+                                  alignment: Alignment.center,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: Helper.hardCodeMPost
+                                        .map((e) => InkWell(
+                                              onTap: () {
+                                                Navigator.of(context).pushNamed(
+                                                    ChatPage.ROUTE_NAME,
+                                                    arguments: {
+                                                      "memberId": ownerId,
+                                                      "postId": postId,
+                                                      "mess": e
+                                                    });
+                                              },
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                margin: EdgeInsets.all(4),
+                                                padding: EdgeInsets.all(8),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.red,
+                                                        width: 1),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
+                                                child: Text(e,
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.red)),
+                                              ),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -658,7 +798,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
           label: Text("Nhắn tin"),
           icon: Icon(Icons.chat),
           onPressed: () {
-            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME, arguments: {"memberId" : ownerId, "postId" : postId});
+            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
+                arguments: {"memberId": ownerId, "postId": postId});
           },
         ),
       ),

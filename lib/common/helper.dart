@@ -3,6 +3,9 @@ import 'dart:isolate';
 
 import 'package:conecapp/models/request/latlong.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
+import 'package:conecapp/ui/home/pages/item_detail_page.dart';
+import 'package:conecapp/ui/news/pages/news_detail_page.dart';
+import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -41,7 +44,7 @@ class Helper {
 
   static String formatNotifyDate(String date) {
     return date != null
-        ? DateFormat("dd-MM-yyyy hh:mm").format(DateTime.parse(date))
+        ? DateFormat("dd-MM-yyyy kk:mm").format(DateTime.parse(date).toLocal())
         : "";
   }
 
@@ -60,6 +63,20 @@ class Helper {
   static bool isTablet(BuildContext context) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
     return shortestSide > 600 ? true : false;
+  }
+
+  static void navigatorToPost(
+      String postId, String topicId, String title, BuildContext context) {
+    if (topicId == "333f691d-6595-443d-bae3-9a2681025b53") {
+      Navigator.of(context).pushNamed(NewsDetailPage.ROUTE_NAME,
+          arguments: {'postId': postId});
+    } else if (topicId == "333f691d-6585-443a-bae3-9a2681025b53") {
+      Navigator.of(context).pushNamed(SellDetailPage.ROUTE_NAME,
+          arguments: {'postId': postId});
+    } else {
+      Navigator.of(context).pushNamed(ItemDetailPage.ROUTE_NAME,
+          arguments: {'postId': postId, 'title': title});
+    }
   }
 
   static String calculatorTime(String time) {
@@ -130,7 +147,8 @@ class Helper {
     return MediaQuery.of(context).size.width;
   }
 
-  static void showAlertDialog(BuildContext context, title, content, Function onOK){
+  static void showAlertDialog(
+      BuildContext context, title, content, Function onOK) {
     Widget cancelButton = TextButton(
       child: Text("Đóng"),
       onPressed: () => Navigator.of(context).pop(),
@@ -174,7 +192,7 @@ class Helper {
     );
     Widget continueButton = TextButton(
       child: Text("Gửi thông báo"),
-      onPressed: () =>  onOK(_controller.text),
+      onPressed: () => onOK(_controller.text),
     );
 
     // set up the AlertDialog
@@ -543,6 +561,20 @@ class Helper {
     return false;
   }
 
+  static const List<String> hardCodeMSell = [
+    "Sản phẩm này còn không ạ?",
+    "Bạn có ship hàng không?",
+    "Sản phẩm này đã qua sử dụng chưa ạ?",
+    "Bạn có các sản phẩm khác tương tự?",
+  ];
+
+  static const List<String> hardCodeMPost = [
+    "Hiện tại còn tuyển sinh không ạ?",
+    "Làm thế nào để tham gia?",
+    "Học phí để tham gia là bao nhiêu?",
+    "Đối tượng phù hợp để tham gia là ai?",
+  ];
+
   static const List<String> reportList = [
     "Thông tin không đúng thực tế",
     "Nội dung vi phạm",
@@ -550,10 +582,7 @@ class Helper {
     "Trùng tin đăng"
   ];
 
-  static const List<String> statusList = [
-    "Hiện",
-    "Ẩn"
-  ];
+  static const List<String> statusList = ["Hiện", "Ẩn"];
 
   static List<String> options = [
     'Đỏ',
@@ -573,8 +602,8 @@ class Helper {
     'alert alert-secondary'
   ];
 
-  static ColorNotify getColorNotify(String color){
-    if(color == null || color.length == 0){
+  static ColorNotify getColorNotify(String color) {
+    if (color == null || color.length == 0) {
       color = params[1];
     }
     int index = params.indexOf(color);
@@ -600,13 +629,13 @@ class Helper {
     }
   }
 
-  static bool statusRequest(String value){
-    if(value == statusList[0]) return true;
+  static bool statusRequest(String value) {
+    if (value == statusList[0]) return true;
     return false;
   }
 
-  static String statusResponse(bool status){
-    if(status) return statusList[0];
+  static String statusResponse(bool status) {
+    if (status) return statusList[0];
     return statusList[1];
   }
 
@@ -690,10 +719,9 @@ class Helper {
       "Nhập mã xác nhận bao gôm 5 ký tự chúng tôi đã gửi đến email của bạn!";
 }
 
-class ColorNotify{
+class ColorNotify {
   final String text;
   final Color color;
 
   ColorNotify({this.text, this.color});
-
 }

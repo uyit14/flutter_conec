@@ -1,14 +1,11 @@
-import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
-import 'package:conecapp/common/ui/ui_error.dart';
-import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/chat/conversations_response.dart';
 import 'package:conecapp/models/response/chat/message_response.dart';
 import 'package:conecapp/models/response/chat/send_message_response.dart';
 import 'package:conecapp/ui/chat/chat_bloc.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:flutter/material.dart';
 import 'package:signalr_client/signalr_client.dart';
 
@@ -30,15 +27,15 @@ class _ChatPageState extends State<ChatPage> {
   bool _isLoading = false;
   List<MessageChat> _message = List();
   Conversation _conversation = Conversation();
-  int page = 0;
+  int page = 1;
   bool _shouldLoadMore = true;
-  MessageChat mess = new MessageChat(
-    content: "aaaaaa"
-  );
+
 
   final serverUrl = Helper.baseURL + "/appNotifyHub";
   HubConnection hubConnection;
   HttpConnectionOptions connectionOptions;
+  String send = "SendMessage";
+  String rev = "ReceiveMessage";
 
   ScrollController _scrollController;
 
@@ -72,6 +69,7 @@ class _ChatPageState extends State<ChatPage> {
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
       String memberId = routeArgs['memberId'];
       String conversationId = routeArgs['conversationId'];
+      String messHardCode =  routeArgs['mess'];
       String postId;
       if (routeArgs['postId'] != null) {
         postId = routeArgs['postId'];
@@ -93,7 +91,7 @@ class _ChatPageState extends State<ChatPage> {
                 }
               });
               _chatBloc.requestGetMessages(conversationId, page);
-              page = 1;
+              page = 2;
 
               break;
             case Status.ERROR:
@@ -105,40 +103,71 @@ class _ChatPageState extends State<ChatPage> {
           });
         });
       } else {
-        _chatBloc.requestCreateConversation(memberId, postId: postId);
-        _chatBloc.createConversationStream.listen((event) {
-          switch (event.status) {
-            case Status.LOADING:
-              break;
-            case Status.COMPLETED:
-              setState(() {
-                _conversation = event.data.conversation;
-              });
-              if (event.data.isNew) {
+        if(messHardCode != null){
+          _chatBloc.requestCreateConversationWithMessage(memberId, postId: postId, mess: messHardCode);
+          _chatBloc.createConversationWithMessageStream.listen((event) {
+            switch (event.status) {
+              case Status.LOADING:
+                setState(() {
+                  _isLoading = true;
+                });
+                break;
+              case Status.COMPLETED:
+                setState(() {
+                  _conversation = event.data.conversation;
+                  if (_conversation.messages != null) {
+                    setState(() {
+                      _message.addAll(_conversation.messages.reversed.toList());
+                    });
+                  }
+                  _isLoading = false;
+                });
+                break;
+              case Status.ERROR:
                 setState(() {
                   _isLoading = false;
                 });
-              } else {
-                //_chatBloc.requestGetMessages(_conversation.id, 0);
-              }
-              break;
-            case Status.ERROR:
-              break;
-          }
-        });
+                break;
+            }
+          });
+        }else{
+          _chatBloc.requestCreateConversation(memberId, postId: postId);
+          _chatBloc.createConversationStream.listen((event) {
+            switch (event.status) {
+              case Status.LOADING:
+                setState(() {
+                  _isLoading = true;
+                });
+                break;
+              case Status.COMPLETED:
+                setState(() {
+                  _conversation = event.data.conversation;
+                  _message = _conversation.messages.reversed.toList();
+                  _isLoading = false;
+                });
+                break;
+              case Status.ERROR:
+                setState(() {
+                  _isLoading = false;
+                });
+                break;
+            }
+          });
+        }
+
       }
       startConnection();
       isCallApi = false;
     }
   }
 
-  String send = "SendMessage";
-  String rev = "ReceiveMessage";
-  void initSignalR() async{
-    connectionOptions = HttpConnectionOptions(accessTokenFactory: () async => await Helper.token());
-    hubConnection = HubConnectionBuilder().withUrl(serverUrl, options: connectionOptions).build();
+  void initSignalR() async {
+    connectionOptions = HttpConnectionOptions(
+        accessTokenFactory: () async => await Helper.token());
+    hubConnection = HubConnectionBuilder()
+        .withUrl(serverUrl, options: connectionOptions)
+        .build();
     hubConnection.on(rev, _handleNewMessage);
-
   }
 
   void _handleNewMessage(dynamic mess) {
@@ -183,45 +212,58 @@ class _ChatPageState extends State<ChatPage> {
                       },
                       icon: Icon(Icons.arrow_back_ios, color: Colors.white),
                     ),
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: _conversation.member != null &&
-                              _conversation.member.memberAvatar != null
-                          ? NetworkImage(_conversation.member.memberAvatar)
-                          : AssetImage("assets/images/avatar.png"),
-                    ),
-                    SizedBox(width: 6),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width - 160,
-                          child: Text(
-                              _conversation.member != null &&
-                                      _conversation.member.memberName != null
-                                  ? _conversation.member.memberName
-                                  : "",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                            _conversation.lastMessageDate != null
-                                ? Helper.calculatorTime(
-                                    _conversation.lastMessageDate)
-                                : "",
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white)),
-                      ],
-                    ),
+                   InkWell(
+                     onTap: (){
+                       Navigator.of(context).pushNamed(
+                           IntroducePage.ROUTE_NAME,
+                           arguments: {
+                             'clubId': _conversation.member.memberId
+                           });
+                     },
+                     child: Row(
+                       children: [
+                         CircleAvatar(
+                           radius: 20,
+                           backgroundColor: Colors.grey,
+                           backgroundImage: _conversation.member != null &&
+                               _conversation.member.memberAvatar != null
+                               ? NetworkImage(_conversation.member.memberAvatar)
+                               : AssetImage("assets/images/avatar.png"),
+                         ),
+                         SizedBox(width: 6),
+                         Column(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             Container(
+                               width: MediaQuery.of(context).size.width - 160,
+                               child: Text(
+                                   _conversation.member != null &&
+                                       _conversation.member.memberName != null
+                                       ? _conversation.member.memberName
+                                       : "",
+                                   maxLines: 1,
+                                   overflow: TextOverflow.ellipsis,
+                                   style: TextStyle(
+                                       fontSize: 14,
+                                       fontWeight: FontWeight.bold,
+                                       color: Colors.white)),
+                             ),
+                             SizedBox(height: 2),
+                             Text(
+                                 _conversation.lastMessageDate != null
+                                     ? Helper.calculatorTime(
+                                     _conversation.lastMessageDate)
+                                     : "",
+                                 style: TextStyle(
+                                     fontSize: 13,
+                                     fontWeight: FontWeight.w400,
+                                     color: Colors.white)),
+                           ],
+                         ),
+                       ],
+                     ),
+                   )
                   ],
                 ),
               ),
@@ -230,48 +272,56 @@ class _ChatPageState extends State<ChatPage> {
                       decoration: BoxDecoration(
                           border: Border.all(width: 0.5, color: Colors.grey)),
                       padding: EdgeInsets.all(4),
-                      child: Row(
-                        children: [
-                          CachedNetworkImage(
-                            imageUrl: _conversation.post != null
-                                ? _conversation.post.image
-                                : "",
-                            placeholder: (context, url) =>
-                                Image.asset("assets/images/placeholder.png"),
-                            errorWidget: (context, url, error) =>
-                                Image.asset("assets/images/error.png"),
-                            fit: BoxFit.cover,
-                            width: 80,
-                            height: 50,
-                          ),
-                          SizedBox(width: 6),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width - 160,
-                                child: Text(
+                      child: InkWell(
+                        onTap: () => Helper.navigatorToPost(
+                            _conversation.post.id,
+                            _conversation.post.topicId,
+                            _conversation.post.title,
+                            context),
+                        child: Row(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: _conversation.post != null
+                                  ? _conversation.post.image
+                                  : "",
+                              placeholder: (context, url) =>
+                                  Image.asset("assets/images/placeholder.png"),
+                              errorWidget: (context, url, error) =>
+                                  Image.asset("assets/images/error.png"),
+                              fit: BoxFit.cover,
+                              width: 80,
+                              height: 50,
+                            ),
+                            SizedBox(width: 6),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width - 160,
+                                  child: Text(
+                                      _conversation.post != null
+                                          ? _conversation.post.title
+                                          : "",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
                                     _conversation.post != null
-                                        ? _conversation.post.title
+                                        ? _conversation.post.joinFee
                                         : "",
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold)),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                  _conversation.post != null
-                                      ? _conversation.post.joinFee
-                                      : "",
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w400)),
-                            ],
-                          ),
-                        ],
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w400)),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   : Container(),
@@ -279,29 +329,25 @@ class _ChatPageState extends State<ChatPage> {
                 child: StreamBuilder<ApiResponse<List<MessageChat>>>(
                     stream: _chatBloc.messagesStream,
                     builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        if (_message != null && snapshot.data.data != null) {
-                          if (snapshot.data.data.length > 0) {
-                            if (page == 0) {
-                              _message = snapshot.data.data;
-                            } else {
-                              _message.addAll(snapshot.data.data);
-                            }
-                            _shouldLoadMore = true;
+                      if (snapshot.hasData || _message.length > 0) {
+                        if (snapshot.data != null) {
+                          if (page == 1) {
+                            _message = snapshot.data.data;
                           } else {
-                            _shouldLoadMore = false;
+                            _message.addAll(snapshot.data.data);
                           }
+                          _shouldLoadMore = true;
+                        } else {
+                          _shouldLoadMore = false;
                         }
-                        switch (snapshot.data.status) {
-                          case Status.LOADING:
-                            return UILoading(
-                                loadingMessage: snapshot.data.message);
-                          case Status.ERROR:
-                            return UIError(errorMessage: snapshot.data.message);
-                          case Status.COMPLETED:
-                          default:
-                            return Messages(_message, _scrollController);
-                        }
+                        // case Status.LOADING:
+                        //   return UILoading(
+                        //       loadingMessage: snapshot.data.message);
+                        // case Status.ERROR:
+                        //   return UIError(errorMessage: snapshot.data.message);
+                        // case Status.COMPLETED:
+                        // default:
+                        return Messages(_message, _scrollController);
                       }
                       return Center(
                           child: _isLoading
@@ -328,14 +374,14 @@ class _ChatPageState extends State<ChatPage> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(hubConnection.state == HubConnectionState.Connected
-              ? Icons.cast_connected
-              : Icons.cast_connected_outlined),
-          onPressed: () async {
-            await hubConnection.invoke(send, args: ["835f0dba-3dce-419b-806a-be4678cb2b75", mess.toJson()]);
-          },
-        ),
+        // floatingActionButton: FloatingActionButton(
+        //   child: Icon(hubConnection.state == HubConnectionState.Connected
+        //       ? Icons.cast_connected
+        //       : Icons.cast_connected_outlined),
+        //   onPressed: () async {
+        //     await hubConnection.invoke(send, args: ["40fcdb4a-6c82-4150-be23-4509a7d64ec6", mess.toJson()]);
+        //   },
+        // ),
         // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       ),
     );

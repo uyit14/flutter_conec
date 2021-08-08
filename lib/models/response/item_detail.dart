@@ -21,6 +21,7 @@ class ItemDetail {
   String content;
   String approvedDate;
   String owner;
+  bool isOwner;
   String ownerAvatar;
   String ownerId;
   num ratingCount;
@@ -52,6 +53,7 @@ class ItemDetail {
   int userViewPostCount;
   List<Topic> topics;
   List<Topic> subTopics;
+  List<Notification> notifications;
 
   ItemDetail(
       {this.postId,
@@ -59,6 +61,7 @@ class ItemDetail {
         this.content,
         this.approvedDate,
         this.owner,
+        this.isOwner,
         this.ownerAvatar,
         this.ownerId,
         this.ratingCount,
@@ -90,7 +93,8 @@ class ItemDetail {
         this.status,
         this.shareLink,
         this.topics,
-        this.subTopics
+        this.subTopics,
+        this.notifications
       });
 
   ItemDetail.fromJson(Map<String, dynamic> json) {
@@ -100,6 +104,7 @@ class ItemDetail {
     content = json['content'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
+    isOwner = json['isOwner'];
     ownerAvatar = json['ownerAvatar'] !=null && !json['ownerAvatar'].contains("http") ? Helper.baseURL + json['ownerAvatar'] : json['ownerAvatar'];
     ownerId = json['ownerId'] ?? null;
     ratingCount = json['ratingCount'];
@@ -146,8 +151,44 @@ class ItemDetail {
         subTopics.add(new Topic.fromJson(v));
       });
     }
+    if (json['notifications'] != null) {
+      notifications = new List<Notification>();
+      json['notifications'].forEach((v) {
+        notifications.add(new Notification.fromJson(v));
+      });
+    }
   }
 }
 
-//
+class Notification {
+  String id;
+  int orderNo;
+  String title;
+  String content;
+  String color;
+  String postId;
+  String created;
+  bool active;
+
+  Notification(
+      {this.id,
+        this.orderNo,
+        this.title,
+        this.content,
+        this.color,
+        this.postId,
+        this.created,
+        this.active});
+
+  Notification.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    orderNo = json['orderNo'];
+    title = json['title'];
+    content = json['content'];
+    color = json['color'];
+    postId = json['postId'];
+    created = json['created'];
+    active = json['active'];
+  }
+}
 

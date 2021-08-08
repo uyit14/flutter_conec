@@ -28,19 +28,19 @@ class Conversation {
 
   Conversation(
       {this.id,
-        this.lastMessage,
-        this.lastMessageDate,
-        this.member,
-        this.messages,
-        this.seen,
-        this.post});
+      this.lastMessage,
+      this.lastMessageDate,
+      this.member,
+      this.messages,
+      this.seen,
+      this.post});
 
   Conversation.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     lastMessage = json['lastMessage'];
     lastMessageDate = json['lastMessageDate'];
     member =
-    json['member'] != null ? new Member.fromJson(json['member']) : null;
+        json['member'] != null ? new Member.fromJson(json['member']) : null;
     if (json['messages'] != null) {
       messages = new List<MessageChat>();
       json['messages'].forEach((v) {
@@ -62,21 +62,23 @@ class Member {
 
   Member(
       {this.memberId,
-        this.memberName,
-        this.memberAvatar,
-        this.address,
-        this.phoneNumber,
-        this.email});
+      this.memberName,
+      this.memberAvatar,
+      this.address,
+      this.phoneNumber,
+      this.email});
 
   Member.fromJson(Map<String, dynamic> json) {
     memberId = json['memberId'];
     memberName = json['memberName'];
-    memberAvatar = json['memberAvatar'] !=null && !json['memberAvatar'].contains("http") ? Helper.baseURL + json['memberAvatar'] : json['memberAvatar'];
+    memberAvatar =
+        json['memberAvatar'] != null && !json['memberAvatar'].contains("http")
+            ? Helper.baseURL + json['memberAvatar']
+            : json['memberAvatar'];
     address = json['address'];
     phoneNumber = json['phoneNumber'];
     email = json['email'];
   }
-
 }
 
 class Post {
@@ -85,13 +87,18 @@ class Post {
   String joinFee;
   String title;
   String link;
+  String topicId;
 
-  Post({this.id, this.image, this.joinFee, this.title, this.link});
+  Post(
+      {this.id, this.image, this.joinFee, this.topicId, this.title, this.link});
 
   Post.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    image = json['image'] !=null && !json['image'].contains("http") ? Helper.baseURL + json['image'] : json['image'];
+    image = json['image'] != null && !json['image'].contains("http")
+        ? Helper.baseURL + json['image']
+        : json['image'];
     joinFee = json['joinFee'];
+    topicId = json['topicId'];
     title = json['title'];
     link = json['link'];
   }

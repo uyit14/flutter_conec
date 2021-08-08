@@ -19,6 +19,7 @@ class NewsDetail {
   String content;
   String approvedDate;
   String owner;
+  bool isOwner;
   String ownerAvatar;
   num ratingCount;
   int ratingAvg;
@@ -53,6 +54,7 @@ class NewsDetail {
       this.content,
       this.approvedDate,
       this.owner,
+      this.isOwner,
       this.ownerAvatar,
       this.ratingCount,
       this.ratingAvg,
@@ -76,7 +78,7 @@ class NewsDetail {
       this.address,
       this.shareLink,
       this.topics,
-        this.status,
+      this.status,
       this.subTopics,
       this.phoneNumber});
 
@@ -87,6 +89,7 @@ class NewsDetail {
     content = json['content'];
     approvedDate = Helper.formatData(json['approvedDate']);
     owner = json['owner'];
+    isOwner = json['isOwner'];
     ownerAvatar =
         json['ownerAvatar'] != null && !json['ownerAvatar'].contains("http")
             ? Helper.baseURL + json['ownerAvatar']

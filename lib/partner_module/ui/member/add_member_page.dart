@@ -485,10 +485,15 @@ class _AddMemberPageState extends State<AddMemberPage> {
           children: <Widget>[
             iconByType(type),
             SizedBox(width: 16),
-            Text(
-              info,
-              textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            Container(
+              width: MediaQuery.of(context).size.width - 100,
+              child: Text(
+                info,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
             )
           ],
         ),

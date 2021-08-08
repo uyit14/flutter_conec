@@ -35,6 +35,7 @@ class SellDetailPage extends StatefulWidget {
 class _SellDetailPageState extends State<SellDetailPage> {
   String postId;
   String ownerId;
+  bool _showNotify = true;
   String owner;
   NewsBloc _newsBloc = NewsBloc();
   PostActionBloc _postActionBloc = PostActionBloc();
@@ -671,6 +672,93 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                     )
                                   ],
                                 ),
+                                adsDetail.notifications != null &&
+                                    adsDetail.notifications.length > 0 &&
+                                    _showNotify
+                                    ? Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        width: double.infinity,
+                                        height: 1,
+                                        color: Colors.black12,
+                                        margin: EdgeInsets.symmetric(vertical: 8)),
+                                    Card(
+                                      elevation: 5,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons
+                                                    .notifications_active,
+                                                color: Colors.yellow,
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text("Thông báo",
+                                                  style: AppTheme
+                                                      .commonDetail),
+                                              Spacer(),
+                                              IconButton(
+                                                icon: Icon(
+                                                    Icons.clear_outlined,
+                                                    size: 28),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _showNotify = false;
+                                                  });
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          ListView.builder(
+                                              scrollDirection:
+                                              Axis.vertical,
+                                              shrinkWrap: true,
+                                              physics:
+                                              NeverScrollableScrollPhysics(),
+                                              itemCount: adsDetail
+                                                  .notifications.length,
+                                              itemBuilder:
+                                                  (context, index) {
+                                                return Container(
+                                                  width: MediaQuery.of(
+                                                      context)
+                                                      .size
+                                                      .width -
+                                                      100,
+                                                  margin:
+                                                  EdgeInsets.all(8),
+                                                  padding: EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 8),
+                                                  color: Helper.getColorNotify(
+                                                      adsDetail
+                                                          .notifications[
+                                                      index]
+                                                          .color)
+                                                      .color,
+                                                  child: Text(
+                                                      adsDetail
+                                                          .notifications[
+                                                      index]
+                                                          .title,
+                                                      maxLines: 2,
+                                                      overflow:
+                                                      TextOverflow
+                                                          .ellipsis),
+                                                );
+                                              }),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                    : Container(),
                                 Container(
                                     width: double.infinity,
                                     height: 1,
@@ -745,30 +833,61 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                         )
                                       : Text(adsDetail.content ?? ""),
                                 ),
-                                // Container(
-                                //     width: double.infinity,
-                                //     height: 1,
-                                //     color: Colors.black12,
-                                //     margin: EdgeInsets.symmetric(vertical: 8)),
-                                // Row(
-                                //   children: <Widget>[
-                                //     Icon(
-                                //       Icons.verified_user,
-                                //       color: Colors.green,
-                                //     ),
-                                //     SizedBox(width: 8),
-                                //     Text("Kiểm duyệt",
-                                //         style: AppTheme.commonDetail),
-                                //   ],
-                                // ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(
-                                //       left: 8, right: 8, top: 8),
-                                //   child: Text(
-                                //     "Tin đăng đã được kiểm duyệt. Nếu gặp vấn đề, vui lòng báo cáo tin đăng hoặc liên hệ CSKH để được trợ giúp.",
-                                //     style: TextStyle(fontSize: 15),
-                                //   ),
-                                // ),
+                                Container(
+                                    width: double.infinity,
+                                    height: 1,
+                                    color: Colors.black12,
+                                    margin: EdgeInsets.symmetric(vertical: 8)),
+                                Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.question_answer,
+                                      color: Colors.green,
+                                    ),
+                                    SizedBox(width: 8),
+                                    Text("Hỏi người bán qua chat",
+                                        style: AppTheme.commonDetail),
+                                  ],
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  height: 40,
+                                  alignment: Alignment.center,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: Helper.hardCodeMSell
+                                        .map((e) => InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).pushNamed(
+                                            ChatPage.ROUTE_NAME,
+                                            arguments: {
+                                              "memberId": ownerId,
+                                              "postId": postId,
+                                              "mess": e
+                                            });
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        margin: EdgeInsets.all(4),
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.red,
+                                                width: 1),
+                                            borderRadius:
+                                            BorderRadius.all(
+                                                Radius.circular(
+                                                    8))),
+                                        child: Text(e,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.red)),
+                                      ),
+                                    ))
+                                        .toList(),
+                                  ),
+                                ),
+                                SizedBox(height: 12),
                                 AdsCommentWidget(postId, adsDetail, doReload),
                                 SizedBox(height: 40)
                               ],

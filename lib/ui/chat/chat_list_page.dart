@@ -1,9 +1,17 @@
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/chat/conversations_response.dart';
+import 'package:conecapp/models/response/chat/message_response.dart';
+import 'package:conecapp/partner_module/models/search_m_response.dart';
+import 'package:conecapp/partner_module/ui/member/search_member_page.dart';
 import 'package:conecapp/ui/chat/chat_bloc.dart';
+import 'package:conecapp/ui/chat/search_member_chat.dart';
 import 'package:flutter/material.dart';
+import 'package:signalr_client/http_connection_options.dart';
+import 'package:signalr_client/hub_connection.dart';
+import 'package:signalr_client/hub_connection_builder.dart';
 
 import 'chat_page.dart';
 
@@ -17,11 +25,55 @@ class ChatListPage extends StatefulWidget {
 class _ChatListPageState extends State<ChatListPage> {
   ChatBloc _chatBloc = ChatBloc();
   List<Conversation> _conversations = List();
+  final serverUrl = Helper.baseURL + "/appNotifyHub";
+  HubConnection hubConnection;
+  HttpConnectionOptions connectionOptions;
+  String send = "SendMessage";
+  String rev = "ReceiveMessage";
+  Conversation _conversation = Conversation();
 
   @override
   void initState() {
     super.initState();
+    initSignalR();
     _chatBloc.requestGetConversations();
+    startConnection();
+  }
+
+  void initSignalR() async {
+    connectionOptions = HttpConnectionOptions(
+        accessTokenFactory: () async => await Helper.token());
+    hubConnection = HubConnectionBuilder()
+        .withUrl(serverUrl, options: connectionOptions)
+        .build();
+    hubConnection.on(rev, _handleNewMessage);
+  }
+
+  void startConnection() async {
+    await hubConnection.start();
+    if (hubConnection.state == HubConnectionState.Connected) {
+      print("Connected");
+    }
+    if (hubConnection.state == HubConnectionState.Disconnected) {
+      print("Disconnected");
+    }
+  }
+
+  void _handleNewMessage(dynamic mess) {
+    var ms = MessageChat.fromJson(mess[0]);
+    setState(() {
+      int pos = _conversations
+          .indexWhere((element) => element.id == ms.conversationId);
+      if (pos == -1) {
+        _chatBloc.requestGetConversations();
+      } else {
+        _conversations[pos].seen = false;
+        _conversations[pos].lastMessage = ms.content;
+        Conversation conversation = _conversations[pos];
+        _conversations.removeAt(pos);
+        _conversations.insert(0, conversation);
+      }
+    });
   }
 
   @override
@@ -30,6 +82,36 @@ class _ChatListPageState extends State<ChatListPage> {
         child: Scaffold(
       appBar: AppBar(
         title: Text("Trò chuyện"),
+        actions: [
+          IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Colors.white,
+                size: 30,
+              ),
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(SearchMemberChatPage.ROUTE_NAME)
+                    .then((value) {
+                  if (value != null) {
+                    _conversation = value;
+                    Navigator.of(context)
+                        .pushNamed(ChatPage.ROUTE_NAME, arguments: {
+                      'conversationId': _conversation.id,
+                      "memberId": _conversation.member.memberId,
+                      "postId": _conversation.post != null
+                          ? _conversation.post.id
+                          : null
+                    }).then((value) {
+                      if (value == 1) {
+                        _chatBloc.requestGetConversations();
+                      }
+                    });
+                  }
+                });
+              }),
+          SizedBox(width: 12)
+        ],
       ),
       body: StreamBuilder<ApiResponse<List<Conversation>>>(
           stream: _chatBloc.conversationStream,
@@ -59,7 +141,7 @@ class _ChatListPageState extends State<ChatListPage> {
                                       ? _conversations[index].post.id
                                       : null
                                 }).then((value) {
-                                  if(value == 1){
+                                  if (value == 1) {
                                     _chatBloc.requestGetConversations();
                                   }
                                 });
@@ -96,16 +178,36 @@ class _ChatListPageState extends State<ChatListPage> {
                                             children: [
                                               Text(
                                                   _conversations[index]
-                                                      .member
-                                                      .memberName ?? "Người dùng mới",
+                                                          .member
+                                                          .memberName ??
+                                                      "Người dùng mới",
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       fontWeight:
                                                           FontWeight.bold)),
+                                              _conversations[index].post != null
+                                                  ? SizedBox(height: 2)
+                                                  : Container(),
+                                              _conversations[index].post != null
+                                                  ? Text(
+                                                      _conversations[index]
+                                                              .post
+                                                              .title ??
+                                                          "",
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors.blue,
+                                                          fontWeight:
+                                                              FontWeight.w400))
+                                                  : Container(),
                                               SizedBox(height: 2),
                                               Text(
                                                   _conversations[index]
-                                                      .lastMessage ?? "",
+                                                          .lastMessage ??
+                                                      "",
                                                   maxLines: 1,
                                                   overflow:
                                                       TextOverflow.ellipsis,

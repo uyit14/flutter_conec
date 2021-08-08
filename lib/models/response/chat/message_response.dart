@@ -40,6 +40,8 @@ class MessageChat {
   MessageChat.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     conversationId = json['conversationId'];
+    //2021-08-08T16:18:17.9538464+07:00
+    //2021-08-08T16:18:17.9538464
     createdDate = Helper.formatNotifyDate(json['createdDate']);
     content = json['content'];
     ownerId = json['ownerId'];

@@ -6,7 +6,6 @@ class SpeedDial extends StatefulWidget {
   final Function() onOpenZalo;
   final Function() onOpenMess;
   final Function() onOpenChat;
-  final Function() onAddNew;
   final Function(bool) onFabAction;
 
   SpeedDial(
@@ -14,7 +13,6 @@ class SpeedDial extends StatefulWidget {
       this.onOpenZalo,
       this.onOpenMess,
       this.onOpenChat,
-      this.onAddNew,
       this.onFabAction});
 
   @override
@@ -39,9 +37,9 @@ class SpeedDialState extends State<SpeedDial>
 
   @override
   initState() {
-    // a bit faster animation, which looks better: 300
+    // a bit faster animation, which looks better: 320
     _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300))
+        AnimationController(vsync: this, duration: Duration(milliseconds: 320))
           ..addListener(() {
             setState(() {});
           });
@@ -95,6 +93,7 @@ class SpeedDialState extends State<SpeedDial>
   Widget zaloButton() {
     return InkWell(
       onTap: () {
+        print("aaa");
         animate();
         widget.onOpenZalo();
       },
@@ -108,7 +107,7 @@ class SpeedDialState extends State<SpeedDial>
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Hỗ trợ ngay qua Zalo", style: TextStyle(fontSize: 16)),
+                  Text("Hỗ trợ ngay qua Zalo", style: TextStyle(fontSize: 14)),
                   FloatingActionButton(
                     onPressed: null,
                     backgroundColor: Colors.white,
@@ -116,8 +115,8 @@ class SpeedDialState extends State<SpeedDial>
                     heroTag: 'zalo',
                     child: Image.asset(
                       'assets/images/zalo-logo.png',
-                      width: 34,
-                      height: 34,
+                      width: 32,
+                      height: 32,
                       fit: BoxFit.cover,
                     ),
                     elevation: 0,
@@ -132,6 +131,7 @@ class SpeedDialState extends State<SpeedDial>
   Widget messButton() {
     return InkWell(
       onTap: () {
+        print("aaa");
         animate();
         widget.onOpenMess();
       },
@@ -146,7 +146,7 @@ class SpeedDialState extends State<SpeedDial>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text("Hỗ trợ ngay qua Messenger",
-                      style: TextStyle(fontSize: 16)),
+                      style: TextStyle(fontSize: 14)),
                   FloatingActionButton(
                     onPressed: null,
                     tooltip: 'mess',
@@ -154,8 +154,8 @@ class SpeedDialState extends State<SpeedDial>
                     backgroundColor: Colors.white,
                     child: Image.asset(
                       'assets/images/messenger.png',
-                      width: 34,
-                      height: 34,
+                      width: 32,
+                      height: 32,
                       fit: BoxFit.cover,
                     ),
                     elevation: 0,
@@ -183,7 +183,7 @@ class SpeedDialState extends State<SpeedDial>
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Trò chuyện", style: TextStyle(fontSize: 16)),
+                  Text("Trò chuyện", style: TextStyle(fontSize: 14)),
                   Badge(
                     padding: const EdgeInsets.all(8),
                     position: BadgePosition.topEnd(top: -10, end: -7),
@@ -203,8 +203,8 @@ class SpeedDialState extends State<SpeedDial>
                       heroTag: 'chat',
                       child: Image.asset(
                         'assets/images/message.png',
-                        width: 34,
-                        height: 34,
+                        width: 32,
+                        height: 32,
                         fit: BoxFit.cover,
                       ),
                       elevation: 0,
@@ -221,7 +221,7 @@ class SpeedDialState extends State<SpeedDial>
     return InkWell(
       onTap: () {
         animate();
-        widget.onAddNew();
+
       },
       child: Container(
         decoration: BoxDecoration(
@@ -233,7 +233,7 @@ class SpeedDialState extends State<SpeedDial>
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("Đăng tin mới", style: TextStyle(fontSize: 16)),
+                  Text("Đăng tin mới", style: TextStyle(fontSize: 14)),
                   FloatingActionButton(
                     onPressed: null,
                     tooltip: 'addnew',
@@ -241,8 +241,8 @@ class SpeedDialState extends State<SpeedDial>
                     backgroundColor: Colors.white,
                     child: Image.asset(
                       'assets/images/add.png',
-                      width: 34,
-                      height: 34,
+                      width: 32,
+                      height: 32,
                       fit: BoxFit.cover,
                     ),
                     elevation: 0,
@@ -262,8 +262,8 @@ class SpeedDialState extends State<SpeedDial>
         tooltip: 'Toggle menu',
         child: Image.asset(
           _isOpened ? "assets/images/close.png" : 'assets/images/comments.png',
-          width: 34,
-          height: 34,
+          width: 32,
+          height: 32,
           color: _isOpened ? Colors.red : null,
         ),
         elevation: 6,
@@ -280,7 +280,7 @@ class SpeedDialState extends State<SpeedDial>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 3.0,
+            _translateButton.value * 1.5,
             0.0,
           ),
           child: messButton(),
@@ -288,7 +288,7 @@ class SpeedDialState extends State<SpeedDial>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 2.0,
+            _translateButton.value * 1.0,
             0.0,
           ),
           child: zaloButton(),
@@ -296,7 +296,7 @@ class SpeedDialState extends State<SpeedDial>
         Transform(
           transform: Matrix4.translationValues(
             0.0,
-            _translateButton.value * 1.0,
+            _translateButton.value * 0.5,
             0.0,
           ),
           child: chatButton(),
