@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/common/custom_icons.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
@@ -206,10 +207,10 @@ class _CommentWidgetState extends State<CommentWidget> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    Icon(
-                      Icons.thumb_up,
-                      size: 18,
-                      color: Colors.blue,
+                    Image.asset(
+                      "assets/images/heart_1.png",
+                      height: 18,
+                      width: 18,
                     ),
                     SizedBox(width: 8),
                     Text(
@@ -253,10 +254,20 @@ class _CommentWidgetState extends State<CommentWidget> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Icon(
-                          Icons.thumb_up,
-                          size: 18,
-                          color: _isLikeOwner ? Colors.blue : Colors.black87,
+                        IndexedStack(
+                          index: _isLikeOwner ? 0 : 1,
+                          children: [
+                            Image.asset(
+                              "assets/images/heart_1.png",
+                              height: 18,
+                              width: 18,
+                            ),
+                            Image.asset(
+                              "assets/images/heart_2.png",
+                              height: 18,
+                              width: 18,
+                            ),
+                          ],
                         ),
                         SizedBox(width: 8),
                         Text(

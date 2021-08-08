@@ -22,8 +22,11 @@ import 'package:flutter/widgets.dart';
 class MyFlutterApp {
   MyFlutterApp._();
 
+  static const _kFontFam = 'MyFlutterApp';
   static const _kFontPkg = null;
 
   static const IconData female = IconData(0xf182, fontFamily: 'Female', fontPackage: _kFontPkg);
   static const IconData male = IconData(0xf183, fontFamily: 'Male', fontPackage: _kFontPkg);
+  static const IconData like = IconData(0xf184, fontFamily: 'Like', fontPackage: _kFontPkg);
+  static const IconData unlike = IconData(0xf185, fontFamily: 'UnLike', fontPackage: _kFontPkg);
 }

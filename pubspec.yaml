@@ -119,6 +119,9 @@ flutter:
     - family: Female
       fonts:
         - asset: assets/fonts/Female.ttf
+    - family: Like
+      fonts:
+        - asset: assets/fonts/Like.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

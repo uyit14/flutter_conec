@@ -851,7 +851,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                 ),
                                 SizedBox(height: 8),
                                 Container(
-                                  height: 40,
+                                  height: 50,
                                   alignment: Alignment.center,
                                   child: ListView(
                                     scrollDirection: Axis.horizontal,
@@ -869,7 +869,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                       child: Container(
                                         alignment: Alignment.center,
                                         margin: EdgeInsets.all(4),
-                                        padding: EdgeInsets.all(8),
+                                        padding: EdgeInsets.symmetric(horizontal: 8),
                                         decoration: BoxDecoration(
                                             border: Border.all(
                                                 color: Colors.red,
