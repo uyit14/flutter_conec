@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
@@ -12,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+
+import 'add_custom_member.dart';
 
 enum TYPE { ACCOUNT, NAME, PHONE, EMAIL }
 
@@ -33,6 +36,12 @@ class _AddMemberPageState extends State<AddMemberPage> {
   TextEditingController _joiningFreeController = TextEditingController();
   TextEditingController _noteController = TextEditingController();
 
+  ImageProvider avatarImage(File local, String url) {
+    if (local != null) return FileImage(local);
+    if (url != null) return NetworkImage(url);
+    return AssetImage("assets/images/avatar.png");
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -46,45 +55,69 @@ class _AddMemberPageState extends State<AddMemberPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Stack(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Card(
-                        elevation: 4,
-                        margin: EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      FlatButton.icon(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(CustomMemberPage.ROUTE_NAME)
+                                .then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  _member = value;
+                                });
+                                print(_member.name);
+                              }
+                            });
+                          },
+                          icon: Icon(Icons.person_add, color: Colors.green),
+                          label: Text("Thêm mới")),
+                      FlatButton.icon(
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pushNamed(SearchMemberPage.ROUTE_NAME)
+                                .then((value) {
+                              if (value != null) {
+                                setState(() {
+                                  _member = value;
+                                });
+                                print(_member.name);
+                              }
+                            });
+                          },
+                          icon: Icon(Icons.search, color: Colors.blue),
+                          label: Text("Tìm kiếm")),
+                    ],
+                  ),
+                  Card(
+                    elevation: 4,
+                    margin: EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 12),
+                        Row(
                           children: [
-                            SizedBox(height: 12),
-                            infoCard(_member.userName ?? "Tên tài khoản", TYPE.ACCOUNT),
-                            SizedBox(height: 8),
-                            infoCard(_member.name ?? "Họ tên", TYPE.NAME),
-                            SizedBox(height: 8),
-                            infoCard(_member.phoneNumber ?? "Số điện thoại", TYPE.PHONE),
-                            SizedBox(height: 8),
-                            infoCard(_member.email ?? "Email", TYPE.EMAIL),
+                            infoCard(_member.userName ?? "Tên tài khoản",
+                                TYPE.ACCOUNT),
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.grey,
+                              backgroundImage: avatarImage(
+                                  _member.avatarSource, _member.avatar),
+                            )
                           ],
                         ),
-                      ),
-                      Positioned(
-                        right: 16,
-                        top: 12,
-                        child: IconButton(
-                            icon: Icon(Icons.search,
-                                color: Colors.blue, size: 36),
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(SearchMemberPage.ROUTE_NAME)
-                                  .then((value) {
-                                if (value != null) {
-                                  setState(() {
-                                    _member = value;
-                                  });
-                                  print(_member.name);
-                                }
-                              });
-                            }),
-                      )
-                    ],
+                        SizedBox(height: 8),
+                        infoCard(_member.name ?? "Họ tên", TYPE.NAME),
+                        SizedBox(height: 8),
+                        infoCard(
+                            _member.phoneNumber ?? "Số điện thoại", TYPE.PHONE),
+                        SizedBox(height: 8),
+                        infoCard(_member.email ?? "Email", TYPE.EMAIL),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 8),
                   Text("Ngày tham gia"),
@@ -402,13 +435,23 @@ class _AddMemberPageState extends State<AddMemberPage> {
 
   void doAddAction() async {
     MemberRequest _memberRequest = MemberRequest(
-        memberId: _member.userId,
+        memberId: _member.userId != null ? _member.userId : null,
         amount: _joiningFreeController.text.length > 0
             ? int.parse(_joiningFreeController.text, onError: (source) => null)
             : null,
         joinedDate: myEncode(_joinDate),
         paymentDate: myEncode(_paymentDate),
         joiningFeePeriod: _type,
+        avatarSource: _member.avatarSource != null
+            ? {
+                "fileName": _member.avatarSource.path.split("/").last,
+                "base64": base64Encode(_member.avatarSource.readAsBytesSync())
+              }
+            : null,
+        userName: _member.userName,
+        name: _member.name,
+        email: _member.email,
+        phoneNumber: _member.phoneNumber,
         notes: _noteController.text);
     //
     print("add_member_request: " + jsonEncode(_memberRequest.toJson()));
@@ -486,7 +529,9 @@ class _AddMemberPageState extends State<AddMemberPage> {
             iconByType(type),
             SizedBox(width: 16),
             Container(
-              width: MediaQuery.of(context).size.width - 100,
+              width: type == TYPE.ACCOUNT
+                  ? MediaQuery.of(context).size.width - 150
+                  : MediaQuery.of(context).size.width - 100,
               child: Text(
                 info,
                 textAlign: TextAlign.left,

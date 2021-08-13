@@ -37,6 +37,7 @@ import 'package:conecapp/ui/profile/pages/change_password_page.dart';
 import 'package:conecapp/ui/profile/pages/guide_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'partner_module/ui/member/add_custom_member.dart';
 import 'partner_module/ui/member/complete_update_payment.dart';
 import 'ui/address/district_page.dart';
 import 'ui/authen/pages/reset_pass_page.dart';
@@ -62,7 +63,7 @@ class ConecApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Connect',
+      title: 'Sports Connection',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
@@ -123,6 +124,7 @@ class ConecApp extends StatelessWidget {
         MemberDetailPage.ROUTE_NAME: (context) => MemberDetailPage(),
         CompleteUpdatePayment.ROUTE_NAME: (context) => CompleteUpdatePayment(),
         SearchMemberChatPage.ROUTE_NAME: (context) => SearchMemberChatPage(),
+        CustomMemberPage.ROUTE_NAME: (context) => CustomMemberPage(),
       },
     );
   }

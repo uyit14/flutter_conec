@@ -36,6 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String _name;
   String _address;
   String _province;
+  String _type;
   String _avatar;
   String _token;
   bool _isTokenExpired = true;
@@ -87,6 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
               _province = profile.province;
               _address = '${profile.district ?? ""} ${profile.province}';
               _avatar = profile.avatar;
+              _type = profile.type;
             });
             break;
           case Status.ERROR:
@@ -179,6 +181,10 @@ class _ProfilePageState extends State<ProfilePage> {
   void registerDeviceToken(String deviceToken, String userId) async{
     String result2 = await _homeBloc.requestRegisterDeviceToken(deviceToken, userId);
     print("registerDeviceToken: $result2");
+  }
+
+  bool isShowPartner(){
+    return _type == "Trainer" || _type == "Club";
   }
 
   @override
@@ -303,7 +309,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         fillColor: Colors.white,
                         child: Icon(
                           Icons.message,
-                          color: Colors.blue,
+                          color: Colors.red,
                           size: 30,
                         ),
                         padding: EdgeInsets.all(15.0),
@@ -318,33 +324,33 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 SizedBox(height: 8),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(PartnerMain.ROUTE_NAME);
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {},
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        child: Icon(
-                          Icons.account_tree,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                        shape: CircleBorder(),
-                      ),
-                      Text(
-                        "Đối tác",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
+                // isShowPartner() ? InkWell(
+                //   onTap: () {
+                //     Navigator.of(context).pushNamed(PartnerMain.ROUTE_NAME);
+                //   },
+                //   child: Row(
+                //     children: <Widget>[
+                //       RawMaterialButton(
+                //         onPressed: () {},
+                //         elevation: 2.0,
+                //         fillColor: Colors.white,
+                //         child: Icon(
+                //           Icons.account_tree,
+                //           color: Colors.red,
+                //           size: 30,
+                //         ),
+                //         padding: EdgeInsets.all(15.0),
+                //         shape: CircleBorder(),
+                //       ),
+                //       Text(
+                //         "Thành viên",
+                //         style: TextStyle(
+                //             fontSize: 20, fontWeight: FontWeight.w400),
+                //       )
+                //     ],
+                //   ),
+                // ) : Container(),
+                // isShowPartner() ? SizedBox(height: 8) : Container(),
                 InkWell(
                   onTap: () {
                     Navigator.of(context).pushNamed(GuidePage.ROUTE_NAME);
@@ -357,7 +363,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         fillColor: Colors.white,
                         child: Icon(
                           Icons.add_to_home_screen,
-                          color: Colors.green,
+                          color: Colors.red,
                           size: 30,
                         ),
                         padding: EdgeInsets.all(15.0),
@@ -385,7 +391,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         fillColor: Colors.white,
                         child: Icon(
                           Icons.verified_user,
-                          color: Colors.orange,
+                          color: Colors.red,
                           size: 30,
                         ),
                         padding: EdgeInsets.all(15.0),
@@ -439,7 +445,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         fillColor: Colors.white,
                         child: Icon(
                           Icons.help,
-                          color: Colors.cyan,
+                          color: Colors.red,
                           size: 30,
                         ),
                         padding: EdgeInsets.all(15.0),
@@ -478,7 +484,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               fillColor: Colors.white,
                               child: Icon(
                                 Icons.swap_horizontal_circle,
-                                color: Colors.purple,
+                                color: Colors.red,
                                 size: 30,
                               ),
                               padding: EdgeInsets.all(15.0),

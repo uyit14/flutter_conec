@@ -599,16 +599,23 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     ),
                                     Text("Phí tham gia",
                                         style: AppTheme.commonDetail),
-                                    Spacer(),
-                                    Text(
-                                      itemDetail.joiningFee != null &&
-                                              itemDetail.joiningFee != 0
-                                          ? '${Helper.formatCurrency(itemDetail.joiningFee)} VND ${itemDetail.joiningFeePeriod != null ? "/" : ""} ${itemDetail.joiningFeePeriod ?? ""}'
-                                          : "Liên hệ",
-                                      style: TextStyle(
-                                          color: Colors.red,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Container(
+                                        child: Text(
+                                          itemDetail.joiningFee != null &&
+                                                  itemDetail.joiningFee != 0
+                                              ? '${Helper.formatCurrency(itemDetail.joiningFee)} ${itemDetail.joiningFeePeriod != null ? "/" : ""} ${itemDetail.joiningFeePeriod ?? ""}'
+                                              : "Liên hệ",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.right,
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
                                     )
                                   ],
                                 ),
@@ -682,15 +689,16 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                                         index]
                                                                     .color)
                                                             .color,
-                                                        child: Text(
-                                                            itemDetail
-                                                                .notifications[
-                                                                    index]
-                                                                .title,
-                                                            maxLines: 2,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis),
+                                                        // child: Text(
+                                                        //     itemDetail
+                                                        //         .notifications[
+                                                        //             index]
+                                                        //         .content,
+                                                        //     maxLines: 2,
+                                                        //     overflow:
+                                                        //         TextOverflow
+                                                        //             .ellipsis),
+                                                        child: Html(data:itemDetail.notifications[index].content),
                                                       );
                                                     }),
                                               ],

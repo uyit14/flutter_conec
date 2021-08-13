@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
@@ -7,9 +8,11 @@ import 'package:conecapp/common/ui/ui_loading_opacity.dart';
 import 'package:conecapp/partner_module/models/member_request.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/ui/member/member_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 enum TYPE { ACCOUNT, NAME, PHONE, EMAIL }
@@ -23,12 +26,14 @@ class UpdateMemberPage extends StatefulWidget {
 
 class _UpdateMemberPageState extends State<UpdateMemberPage> {
   MemberBloc _memberBloc = MemberBloc();
+  final picker = ImagePicker();
   bool _isCallApi;
   var _paymentDate;
   var _joinDate;
   int _selectedType;
   bool _isLoading = false;
   String _type = "";
+  File _image;
   Member _member = Member();
   TextEditingController _joiningFreeController;
   TextEditingController _noteController;
@@ -37,6 +42,12 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
   void initState() {
     super.initState();
     _isCallApi = true;
+  }
+
+  ImageProvider avatarImage(File local, String url) {
+    if (local != null) return FileImage(local);
+    if (url != null) return NetworkImage(url);
+    return AssetImage("assets/images/avatar.png");
   }
 
   @override
@@ -82,6 +93,15 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
     }
   }
 
+  Future getImageAvatar(bool isCamera) async {
+    final pickedFile = await picker.getImage(
+        source: isCamera ? ImageSource.camera : ImageSource.gallery);
+    setState(() {
+      _image = File(pickedFile.path);
+    });
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -102,8 +122,66 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 12),
-                        infoCard(
-                            _member.userName ?? "Tên tài khoản", TYPE.ACCOUNT),
+                        Row(
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width - 100,
+                              child: infoCard(
+                                  _member.userName ?? "Tên tài khoản",
+                                  TYPE.ACCOUNT),
+                            ),
+                            InkWell(
+                              onTap: _member.memberId == null
+                                  ? null
+                                  : () {
+                                      final act = CupertinoActionSheet(
+                                          actions: <Widget>[
+                                            CupertinoActionSheetAction(
+                                              child: Text('Chụp ảnh',
+                                                  style: TextStyle(
+                                                      color: Colors.blue)),
+                                              onPressed: () =>
+                                                  getImageAvatar(true),
+                                            ),
+                                            CupertinoActionSheetAction(
+                                              child: Text('Chọn từ thư viện',
+                                                  style: TextStyle(
+                                                      color: Colors.blue)),
+                                              onPressed: () =>
+                                                  getImageAvatar(false),
+                                            )
+                                          ],
+                                          cancelButton:
+                                              CupertinoActionSheetAction(
+                                            child: Text('Hủy'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ));
+                                      showCupertinoModalPopup(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              act);
+                                    },
+                              child: Column(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Colors.grey,
+                                    backgroundImage:
+                                        avatarImage(_image, _member.avatar),
+                                  ),
+                                  _member.memberId == null
+                                      ? Text(
+                                          "Thay đổi",
+                                          style: TextStyle(color: Colors.blue),
+                                        )
+                                      : Container()
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                         SizedBox(height: 8),
                         infoCard(_member.name ?? "Họ tên", TYPE.NAME),
                         SizedBox(height: 8),
@@ -430,18 +508,28 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
 
   void doAddAction() async {
     MemberRequest _memberRequest = MemberRequest(
-        memberId: _member.memberId,
+        id: _member.id,
         amount: _joiningFreeController.text.length > 0
             ? int.parse(_joiningFreeController.text, onError: (source) => null)
             : null,
         joinedDate: myEncode(_joinDate),
         paymentDate: myEncode(_paymentDate),
         joiningFeePeriod: _type,
+        avatarSource: _image != null
+            ? {
+                "fileName": _image.path.split("/").last,
+                "base64": base64Encode(_image.readAsBytesSync())
+              }
+            : null,
+        userName: _member.userName,
+        name: _member.name,
+        email: _member.email,
+        phoneNumber: _member.phoneNumber,
         notes: _noteController.text);
     //
-    print("add_member_request: " + jsonEncode(_memberRequest.toJson()));
-    _memberBloc.requestAddMember(jsonEncode(_memberRequest.toJson()));
-    _memberBloc.addMemberStream.listen((event) {
+    print("update_member_request: " + jsonEncode(_memberRequest.toJson()));
+    _memberBloc.requestUpdateMember(jsonEncode(_memberRequest.toJson()));
+    _memberBloc.updateMemberStream.listen((event) {
       switch (event.status) {
         case Status.LOADING:
           setState(() {
@@ -504,20 +592,58 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
     }
   }
 
+  setMemberValue(TYPE type, String value) {
+    switch (type) {
+      case TYPE.ACCOUNT:
+        setState(() {
+          _member.userName = value;
+        });
+        break;
+      case TYPE.NAME:
+        setState(() {
+          _member.name = value;
+        });
+        break;
+      case TYPE.PHONE:
+        setState(() {
+          _member.phoneNumber = value;
+        });
+        break;
+      case TYPE.EMAIL:
+        setState(() {
+          _member.email = value;
+        });
+        break;
+      default:
+        return;
+    }
+  }
+
   Widget infoCard(String info, TYPE type) {
     return InkWell(
       onTap: () => onCardPress(type),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
           children: <Widget>[
             iconByType(type),
             SizedBox(width: 16),
-            Text(
-              info,
-              textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            Expanded(
+              child: TextFormField(
+                initialValue: info,
+                maxLines: 1,
+                style: TextStyle(fontSize: 18),
+                textInputAction: TextInputAction.done,
+                onChanged: (value) {
+                  setMemberValue(type, value);
+                },
+              ),
             )
+            // Text(
+            //   info,
+            //   textAlign: TextAlign.left,
+            //   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            // )
           ],
         ),
       ),

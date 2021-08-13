@@ -58,6 +58,14 @@ class ChatRepository {
     return response['status'];
   }
 
+  Future<bool> deleteConversation(String conversationId) async {
+    final response = await _helper.post(
+        '/api/Conversation/deleteConversation?id=$conversationId',
+        headers: await Helper.header());
+    print(response);
+    return response['status'];
+  }
+
   Future<ConversationResponse> selectConversation(String conversationId) async {
     final response = await _helper.get(
         '/api/Conversation/selectConversation?id=$conversationId',

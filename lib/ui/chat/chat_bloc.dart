@@ -146,6 +146,11 @@ class ChatBloc {
     return response;
   }
 
+  Future<bool> requestDeleteConversation(String conversationId) async {
+    final response = await _repository.deleteConversation(conversationId);
+    return response;
+  }
+
   void requestSelectConversation(String conversationId) async {
     print("enter");
     _selectConversationController.sink.add(ApiResponse.loading());

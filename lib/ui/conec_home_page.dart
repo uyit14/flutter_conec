@@ -1,9 +1,13 @@
 import 'dart:io' as pf;
 
 import 'package:badges/badges.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/partner_module/ui/member/add_member_page.dart';
+import 'package:conecapp/partner_module/ui/member/member_page.dart';
 import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
+import 'package:conecapp/partner_module/ui/notify/notify_partner_page.dart';
 import 'package:conecapp/ui/chat/chat_list_page.dart';
 import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/pages/home_page.dart';
@@ -348,12 +352,24 @@ class _ConecHomePageState extends State<ConecHomePage> {
     globals.longitude = position.longitude;
   }
 
+  bool isShowPartner() {
+    return _profile != null && (_profile.type == "Trainer" || _profile.type == "Club");
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: _selectedPageIndex == 0
             ? AppBar(
+                // leading: Builder(
+                //   builder: (context) {
+                //     return IconButton(
+                //       icon: Icon(Icons.group, size: 32),
+                //       onPressed: () => Scaffold.of(context).openEndDrawer(),
+                //     );
+                //   }
+                // ),
                 flexibleSpace: Container(
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -404,10 +420,134 @@ class _ConecHomePageState extends State<ConecHomePage> {
                         )
                       : Container(),
                   SizedBox(
-                    width: 16,
-                  )
+                    width: 8,
+                  ),
+                  _selectedPageIndex == 0 && isShowPartner() ? Builder(
+                      builder: (context) {
+                        return IconButton(
+                          icon: Icon(Icons.group, size: 32),
+                          onPressed: () => Scaffold.of(context).openEndDrawer(),
+                        );
+                      }
+                  ) : Container(),
                 ],
               )
+            : null,
+        endDrawer: _selectedPageIndex == 0 && isShowPartner()
+            ? Drawer(
+                child: Container(
+                color: Colors.white10,
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 8),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: _profile.avatar != null
+                            ? CachedNetworkImageProvider(_profile.avatar)
+                            : AssetImage("assets/images/avatar.png"),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        child: Text(_profile.name,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w400))),
+                    SizedBox(height: 24),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(MemberPage.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: [
+                          SizedBox(width: 4),
+                          Icon(Icons.group,
+                              color: Colors.red, size: 32),
+                          SizedBox(width: 32),
+                          Text("Thành viên",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w400))
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(NotifyPartnerPage.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.notifications,
+                              color: Colors.red, size: 32),
+                          SizedBox(width: 32),
+                          Text("Thông báo",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w400))
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(ChatListPage.ROUTE_NAME)
+                            .then((value) => getNumberOfNotify());
+                      },
+                      child: Row(
+                        children: [
+                          Badge(
+                            padding: const EdgeInsets.all(8),
+                            position: BadgePosition.topEnd(top: -12, end: -12),
+                            badgeContent: Text(
+                              _numberMessage ?? "",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            badgeColor: Colors.yellow,
+                            showBadge: _numberMessage != null &&
+                                    _numberMessage.length == 0
+                                ? false
+                                : true,
+                            child: Icon(Icons.chat_bubble,
+                                color: Colors.red, size: 32),
+                          ),
+                          SizedBox(width: 32),
+                          Text("Trò chuyện",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w400))
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(AddMemberPage.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.person_add, color: Colors.red, size: 32),
+                          SizedBox(width: 32),
+                          Text("Thêm thành viên",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w400))
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ))
             : null,
         body: Stack(
           children: [

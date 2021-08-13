@@ -87,10 +87,33 @@ class _MemberPageState extends State<MemberPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Tên thành viên",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16)),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width -
+                                                100,
+                                            child: Text("Tên thành viên",
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16)),
+                                          ),
+                                          CircleAvatar(
+                                            radius: 20,
+                                            backgroundColor: Colors.grey,
+                                            backgroundImage: _members[index]
+                                                        .avatar !=
+                                                    null
+                                                ? NetworkImage(
+                                                    _members[index].avatar)
+                                                : AssetImage(
+                                                    "assets/images/avatar.png"),
+                                          )
+                                        ],
+                                      ),
                                       SizedBox(height: 4),
                                       Text(_members[index].name ?? "",
                                           style: TextStyle(fontSize: 16)),
@@ -100,39 +123,12 @@ class _MemberPageState extends State<MemberPage> {
                                           width: double.infinity,
                                           height: 0.5,
                                           color: Colors.grey),
-                                      doubleRows(
-                                          "Số điện thoại", "Email", true),
-                                      SizedBox(height: 4),
-                                      doubleRows(
-                                          _members[index].phoneNumber ?? "",
-                                          _members[index].email ?? "",
-                                          false),
-                                      Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          width: double.infinity,
-                                          height: 0.5,
-                                          color: Colors.grey),
-                                      doubleRows("Ngày tham gia",
-                                          "Ngày đóng tiền", true),
-                                      SizedBox(height: 4),
-                                      doubleRows(
-                                          _members[index].joinedDate ?? "",
-                                          _members[index].paymentDate ?? "",
-                                          false),
-                                      Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          width: double.infinity,
-                                          height: 0.5,
-                                          color: Colors.grey),
-                                      Text("Số tiền",
+                                      Text("Ngày đóng tiền",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16)),
                                       SizedBox(height: 4),
-                                      Text(
-                                          '${_members[index].amount ?? ""} / ${_members[index].joiningFeePeriod ?? ""}',
+                                      Text(_members[index].paymentDate ?? "",
                                           style: TextStyle(fontSize: 16)),
                                       Container(
                                           margin:
@@ -140,32 +136,77 @@ class _MemberPageState extends State<MemberPage> {
                                           width: double.infinity,
                                           height: 0.5,
                                           color: Colors.grey),
-                                      Text("Ngày cập nhật",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16)),
-                                      SizedBox(height: 4),
-                                      Text(_members[index].modifiedDate ?? "",
-                                          style: TextStyle(fontSize: 16)),
-                                      Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          width: double.infinity,
-                                          height: 0.5,
-                                          color: Colors.grey),
+                                      // doubleRows(
+                                      //     "Số điện thoại", "Email", true),
+                                      // SizedBox(height: 4),
+                                      // doubleRows(
+                                      //     _members[index].phoneNumber ?? "",
+                                      //     _members[index].email ?? "",
+                                      //     false),
+                                      // Container(
+                                      //     margin:
+                                      //         EdgeInsets.symmetric(vertical: 4),
+                                      //     width: double.infinity,
+                                      //     height: 0.5,
+                                      //     color: Colors.grey),
+                                      // doubleRows("Ngày tham gia",
+                                      //     "Ngày đóng tiền", true),
+                                      // SizedBox(height: 4),
+                                      // doubleRows(
+                                      //     _members[index].joinedDate ?? "",
+                                      //     _members[index].paymentDate ?? "",
+                                      //     false),
+                                      // Container(
+                                      //     margin:
+                                      //         EdgeInsets.symmetric(vertical: 4),
+                                      //     width: double.infinity,
+                                      //     height: 0.5,
+                                      //     color: Colors.grey),
+                                      // Text("Số tiền",
+                                      //     style: TextStyle(
+                                      //         fontWeight: FontWeight.bold,
+                                      //         fontSize: 16)),
+                                      // SizedBox(height: 4),
+                                      // Text(
+                                      //     '${_members[index].amount ?? ""} / ${_members[index].joiningFeePeriod ?? ""}',
+                                      //     style: TextStyle(fontSize: 16)),
+                                      // Container(
+                                      //     margin:
+                                      //         EdgeInsets.symmetric(vertical: 4),
+                                      //     width: double.infinity,
+                                      //     height: 0.5,
+                                      //     color: Colors.grey),
+                                      // Text("Ngày cập nhật",
+                                      //     style: TextStyle(
+                                      //         fontWeight: FontWeight.bold,
+                                      //         fontSize: 16)),
+                                      // SizedBox(height: 4),
+                                      // Text(_members[index].modifiedDate ?? "",
+                                      //     style: TextStyle(fontSize: 16)),
+                                      // Container(
+                                      //     margin:
+                                      //         EdgeInsets.symmetric(vertical: 4),
+                                      //     width: double.infinity,
+                                      //     height: 0.5,
+                                      //     color: Colors.grey),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
                                         children: [
                                           iconAction(ACTION_TYPE.MESSAGE,
+                                              _members[index].memberId == null,
                                               index: index),
                                           iconAction(ACTION_TYPE.EDIT,
+                                              _members[index].memberId == null,
                                               index: index),
                                           iconAction(ACTION_TYPE.REMIND,
+                                              _members[index].memberId == null,
                                               index: index),
                                           iconAction(ACTION_TYPE.DETAIL,
+                                              _members[index].memberId == null,
                                               index: index),
                                           iconAction(ACTION_TYPE.DELETE,
+                                              _members[index].memberId == null,
                                               index: index),
                                         ],
                                       )
@@ -204,14 +245,16 @@ class _MemberPageState extends State<MemberPage> {
     );
   }
 
-  Icon iconByType(ACTION_TYPE type) {
+  Icon iconByType(ACTION_TYPE type, bool disable) {
     switch (type) {
       case ACTION_TYPE.MESSAGE:
-        return Icon(Icons.messenger, color: Colors.indigoAccent);
+        return Icon(Icons.messenger,
+            color: disable ? Colors.grey[300] : Colors.indigoAccent);
       case ACTION_TYPE.EDIT:
         return Icon(Icons.edit, color: Colors.green);
       case ACTION_TYPE.REMIND:
-        return Icon(Icons.notifications_active_rounded, color: Colors.yellow);
+        return Icon(Icons.notifications_active_rounded,
+            color: disable ? Colors.grey[300] : Colors.yellow);
       case ACTION_TYPE.DETAIL:
         return Icon(Icons.person_search, color: Colors.blue);
       case ACTION_TYPE.DELETE:
@@ -221,11 +264,13 @@ class _MemberPageState extends State<MemberPage> {
     }
   }
 
-  void onPress(ACTION_TYPE type, {int index}) {
+  void onPress(ACTION_TYPE type, bool disable, {int index}) {
     switch (type) {
       case ACTION_TYPE.MESSAGE:
-        Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
-            arguments: {"memberId": _members[index].memberId});
+        if(!disable){
+          Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
+              arguments: {"memberId": _members[index].memberId});
+        }
         break;
       case ACTION_TYPE.EDIT:
         Navigator.of(context)
@@ -238,7 +283,9 @@ class _MemberPageState extends State<MemberPage> {
         });
         break;
       case ACTION_TYPE.REMIND:
-        sendNotify(_members[index].id);
+        if(!disable){
+          sendNotify(_members[index].id);
+        }
         break;
       case ACTION_TYPE.DETAIL:
         Navigator.of(context).pushNamed(MemberDetailPage.ROUTE_NAME,
@@ -253,9 +300,7 @@ class _MemberPageState extends State<MemberPage> {
             //_members.removeWhere((element) => element.id == _members[index].id);
             _members.clear();
             _memberBloc.requestGetMembers(0);
-            setState(() {
-
-            });
+            setState(() {});
             Navigator.of(context).pop();
           } else {
             Fluttertoast.showToast(
@@ -279,9 +324,10 @@ class _MemberPageState extends State<MemberPage> {
     });
   }
 
-  Widget iconAction(ACTION_TYPE type, {int index}) {
+  Widget iconAction(ACTION_TYPE type, bool disable, {int index}) {
     return IconButton(
-        icon: iconByType(type), onPressed: () => onPress(type, index: index));
+        icon: iconByType(type, disable),
+        onPressed: () => onPress(type, disable, index: index));
   }
 
   Widget doubleRows(String strFirst, strSecond, bool bold) {

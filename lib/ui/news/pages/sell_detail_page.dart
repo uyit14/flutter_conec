@@ -742,15 +742,16 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                                       index]
                                                           .color)
                                                       .color,
-                                                  child: Text(
-                                                      adsDetail
-                                                          .notifications[
-                                                      index]
-                                                          .title,
-                                                      maxLines: 2,
-                                                      overflow:
-                                                      TextOverflow
-                                                          .ellipsis),
+                                                  // child: Text(
+                                                  //     adsDetail
+                                                  //         .notifications[
+                                                  //     index]
+                                                  //         .content,
+                                                  //     maxLines: 2,
+                                                  //     overflow:
+                                                  //     TextOverflow
+                                                  //         .ellipsis),
+                                                  child: Html(data: adsDetail.notifications[index].content),
                                                 );
                                               }),
                                         ],

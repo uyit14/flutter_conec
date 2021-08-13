@@ -1,3 +1,8 @@
+
+import 'dart:io';
+
+import 'package:conecapp/common/helper.dart';
+
 class SearchMResponse {
   bool status;
   List<MemberSearch> members;
@@ -30,8 +35,10 @@ class MemberSearch {
   String email;
   String phoneNumber;
   String name;
+  String avatar;
+  File avatarSource;
 
-  MemberSearch({this.userId, this.userName, this.email, this.phoneNumber, this.name});
+  MemberSearch({this.userId, this.userName, this.email, this.phoneNumber, this.name, this.avatarSource});
 
   MemberSearch.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
@@ -39,6 +46,10 @@ class MemberSearch {
     email = json['email'];
     phoneNumber = json['phoneNumber'];
     name = json['name'];
+    avatar =
+    json['avatar'] != null && !json['avatar'].contains("http")
+        ? Helper.baseURL + json['avatar']
+        : json['avatar'];
   }
 
   Map<String, dynamic> toJson() {

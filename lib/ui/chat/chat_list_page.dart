@@ -9,6 +9,7 @@ import 'package:conecapp/partner_module/ui/member/search_member_page.dart';
 import 'package:conecapp/ui/chat/chat_bloc.dart';
 import 'package:conecapp/ui/chat/search_member_chat.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:signalr_client/http_connection_options.dart';
 import 'package:signalr_client/hub_connection.dart';
 import 'package:signalr_client/hub_connection_builder.dart';
@@ -144,6 +145,24 @@ class _ChatListPageState extends State<ChatListPage> {
                                   if (value == 1) {
                                     _chatBloc.requestGetConversations();
                                   }
+                                });
+                              },
+                              onLongPress: () {
+                                Helper.showDeleteDialog(context, "Thông báo",
+                                    "Bạn muốn xóa cuộc trò chuyện này?",
+                                    () async {
+                                  final result =
+                                      await _chatBloc.requestDeleteConversation(
+                                          _conversations[index].id);
+                                  if (result) {
+                                    setState(() {
+                                      _conversations.removeAt(index);
+                                    });
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "Vui lòng thử lại");
+                                  }
+                                  Navigator.of(context).pop();
                                 });
                               },
                               child: Container(

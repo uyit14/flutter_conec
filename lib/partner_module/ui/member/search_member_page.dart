@@ -89,9 +89,25 @@ class _SearchMemberPageState extends State<SearchMemberPage> {
                                         crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            memberSearch[index].name ?? "",
-                                            style: TextStyle(fontSize: 16),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context).size.width - 70,
+                                                child: Text(
+                                                  memberSearch[index].name ?? "",
+                                                  style: TextStyle(fontSize: 16),
+                                                  maxLines: 2,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                              CircleAvatar(
+                                                radius: 18,
+                                                backgroundColor: Colors.grey,
+                                                backgroundImage: memberSearch[index].avatar != null
+                                                    ? NetworkImage(memberSearch[index].avatar)
+                                                    : AssetImage("assets/images/avatar.png"),
+                                              )
+                                            ],
                                           ),
                                           SizedBox(height: 12),
                                           Container(

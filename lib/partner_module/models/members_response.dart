@@ -34,6 +34,7 @@ class Member {
   String userName;
   String name;
   String phoneNumber;
+  String avatar;
   String email;
   String paymentDate;
   String joinedDate;
@@ -49,6 +50,7 @@ class Member {
       this.userName,
       this.name,
       this.phoneNumber,
+      this.avatar,
       this.email,
       this.paymentDate,
       this.joinedDate,
@@ -77,6 +79,10 @@ class Member {
         payments.add(new Payment.fromJson(v));
       });
     }
+    avatar =
+    json['avatar'] != null && !json['avatar'].contains("http")
+        ? Helper.baseURL + json['avatar']
+        : json['avatar'];
   }
 }
 
