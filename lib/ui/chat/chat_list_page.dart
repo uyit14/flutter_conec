@@ -131,140 +131,196 @@ class _ChatListPageState extends State<ChatListPage> {
                       child: ListView.builder(
                           itemCount: _conversations.length,
                           itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .pushNamed(ChatPage.ROUTE_NAME, arguments: {
-                                  'conversationId': _conversations[index].id,
-                                  "memberId":
-                                      _conversations[index].member.memberId,
-                                  "postId": _conversations[index].post != null
-                                      ? _conversations[index].post.id
-                                      : null
-                                }).then((value) {
-                                  if (value == 1) {
-                                    _chatBloc.requestGetConversations();
-                                  }
-                                });
-                              },
-                              onLongPress: () {
-                                Helper.showDeleteDialog(context, "Thông báo",
-                                    "Bạn muốn xóa cuộc trò chuyện này?",
-                                    () async {
-                                  final result =
-                                      await _chatBloc.requestDeleteConversation(
-                                          _conversations[index].id);
-                                  if (result) {
-                                    setState(() {
-                                      _conversations.removeAt(index);
-                                    });
-                                  } else {
-                                    Fluttertoast.showToast(
-                                        msg: "Vui lòng thử lại");
-                                  }
-                                  Navigator.of(context).pop();
-                                });
-                              },
-                              child: Container(
-                                margin: EdgeInsets.symmetric(vertical: 8),
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 28,
-                                      backgroundColor: Colors.grey,
-                                      backgroundImage: _conversations[index]
-                                                      .member !=
-                                                  null &&
-                                              _conversations[index]
-                                                      .member
-                                                      .memberAvatar !=
-                                                  null
-                                          ? NetworkImage(_conversations[index]
+                            return Stack(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(
+                                        ChatPage.ROUTE_NAME,
+                                        arguments: {
+                                          'conversationId':
+                                              _conversations[index].id,
+                                          "memberId": _conversations[index]
                                               .member
-                                              .memberAvatar)
-                                          : AssetImage(
-                                              "assets/images/avatar.png"),
-                                    ),
-                                    SizedBox(width: 4),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width -
-                                          100,
-                                      child: Stack(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
+                                              .memberId,
+                                          "postId":
+                                              _conversations[index].post != null
+                                                  ? _conversations[index]
+                                                      .post
+                                                      .id
+                                                  : null
+                                        }).then((value) {
+                                      if (value == 1) {
+                                        _chatBloc.requestGetConversations();
+                                      }
+                                    });
+                                  },
+                                  onLongPress: () {
+                                    Helper.showDeleteDialog(
+                                        context,
+                                        "Thông báo",
+                                        "Bạn muốn xóa cuộc trò chuyện này?",
+                                        () async {
+                                      final result = await _chatBloc
+                                          .requestDeleteConversation(
+                                              _conversations[index].id);
+                                      if (result) {
+                                        setState(() {
+                                          _conversations.removeAt(index);
+                                        });
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg: "Vui lòng thử lại");
+                                      }
+                                      Navigator.of(context).pop();
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(vertical: 8),
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 28,
+                                          backgroundColor: Colors.grey,
+                                          backgroundImage: _conversations[index]
+                                                          .member !=
+                                                      null &&
                                                   _conversations[index]
                                                           .member
-                                                          .memberName ??
-                                                      "Người dùng mới",
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                              _conversations[index].post != null
-                                                  ? SizedBox(height: 2)
-                                                  : Container(),
-                                              _conversations[index].post != null
-                                                  ? Text(
+                                                          .memberAvatar !=
+                                                      null
+                                              ? NetworkImage(
+                                                  _conversations[index]
+                                                      .member
+                                                      .memberAvatar)
+                                              : AssetImage(
+                                                  "assets/images/avatar.png"),
+                                        ),
+                                        SizedBox(width: 4),
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              100,
+                                          child: Stack(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
                                                       _conversations[index]
-                                                              .post
-                                                              .title ??
+                                                              .member
+                                                              .memberName ??
+                                                          "Người dùng mới",
+                                                      style: TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  _conversations[index].post !=
+                                                          null
+                                                      ? SizedBox(height: 2)
+                                                      : Container(),
+                                                  _conversations[index].post !=
+                                                          null
+                                                      ? Text(
+                                                          _conversations[index]
+                                                                  .post
+                                                                  .title ??
+                                                              "",
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: TextStyle(
+                                                              fontSize: 14,
+                                                              color:
+                                                                  Colors.blue,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400))
+                                                      : Container(),
+                                                  SizedBox(height: 2),
+                                                  Text(
+                                                      _conversations[index]
+                                                              .lastMessage ??
                                                           "",
                                                       maxLines: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                           fontSize: 14,
-                                                          color: Colors.blue,
                                                           fontWeight:
-                                                              FontWeight.w400))
-                                                  : Container(),
-                                              SizedBox(height: 2),
-                                              Text(
-                                                  _conversations[index]
-                                                          .lastMessage ??
-                                                      "",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
+                                                              _conversations[
+                                                                          index]
+                                                                      .seen
+                                                                  ? FontWeight
+                                                                      .w400
+                                                                  : FontWeight
+                                                                      .bold)),
+                                                ],
+                                              ),
+                                              Positioned(
+                                                right: 0,
+                                                bottom: 0,
+                                                child: Container(
+                                                  width: 10,
+                                                  height: 10,
+                                                  margin:
+                                                      EdgeInsets.only(right: 6),
+                                                  decoration: BoxDecoration(
+                                                      //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                          width: 1,
+                                                          color: Colors.white),
+                                                      color:
                                                           _conversations[index]
                                                                   .seen
-                                                              ? FontWeight.w400
-                                                              : FontWeight
-                                                                  .bold)),
+                                                              ? Colors
+                                                                  .transparent
+                                                              : Colors.blue),
+                                                ),
+                                              )
                                             ],
                                           ),
-                                          Positioned(
-                                            right: 0,
-                                            bottom: 0,
-                                            child: Container(
-                                              width: 10,
-                                              height: 10,
-                                              margin: EdgeInsets.only(right: 6),
-                                              decoration: BoxDecoration(
-                                                  //borderRadius: BorderRadius.all(Radius.circular(16)),
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color: Colors.white),
-                                                  color:
-                                                      _conversations[index].seen
-                                                          ? Colors.transparent
-                                                          : Colors.blue),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Positioned(
+                                    right: -16,
+                                    child: PopupMenuButton(
+                                      itemBuilder: (context) {
+                                        return [
+                                          PopupMenuItem(
+                                            value: 'delete',
+                                            child: Text('Xóa cuộc trò chuyện'),
+                                          )
+                                        ];
+                                      },
+                                      onSelected: (String value) {
+                                        Helper.showDeleteDialog(
+                                            context,
+                                            "Thông báo",
+                                            "Bạn muốn xóa cuộc trò chuyện này?",
+                                            () async {
+                                          final result = await _chatBloc
+                                              .requestDeleteConversation(
+                                                  _conversations[index].id);
+                                          if (result) {
+                                            setState(() {
+                                              _conversations.removeAt(index);
+                                            });
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg: "Vui lòng thử lại");
+                                          }
+                                          Navigator.of(context).pop();
+                                        });
+                                      },
+                                    ))
+                              ],
                             );
                           }),
                     );

@@ -7,6 +7,7 @@ import 'package:conecapp/models/response/chat/send_message_response.dart';
 import 'package:conecapp/ui/chat/chat_bloc.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:signalr_client/signalr_client.dart';
 
 import 'message.dart';
@@ -29,7 +30,6 @@ class _ChatPageState extends State<ChatPage> {
   Conversation _conversation = Conversation();
   int page = 1;
   bool _shouldLoadMore = true;
-
 
   final serverUrl = Helper.baseURL + "/appNotifyHub";
   HubConnection hubConnection;
@@ -69,7 +69,7 @@ class _ChatPageState extends State<ChatPage> {
           ModalRoute.of(context).settings.arguments as Map<String, Object>;
       String memberId = routeArgs['memberId'];
       String conversationId = routeArgs['conversationId'];
-      String messHardCode =  routeArgs['mess'];
+      String messHardCode = routeArgs['mess'];
       String postId;
       if (routeArgs['postId'] != null) {
         postId = routeArgs['postId'];
@@ -103,8 +103,9 @@ class _ChatPageState extends State<ChatPage> {
           });
         });
       } else {
-        if(messHardCode != null){
-          _chatBloc.requestCreateConversationWithMessage(memberId, postId: postId, mess: messHardCode);
+        if (messHardCode != null) {
+          _chatBloc.requestCreateConversationWithMessage(memberId,
+              postId: postId, mess: messHardCode);
           _chatBloc.createConversationWithMessageStream.listen((event) {
             switch (event.status) {
               case Status.LOADING:
@@ -130,7 +131,7 @@ class _ChatPageState extends State<ChatPage> {
                 break;
             }
           });
-        }else{
+        } else {
           _chatBloc.requestCreateConversation(memberId, postId: postId);
           _chatBloc.createConversationStream.listen((event) {
             switch (event.status) {
@@ -154,7 +155,6 @@ class _ChatPageState extends State<ChatPage> {
             }
           });
         }
-
       }
       startConnection();
       isCallApi = false;
@@ -212,58 +212,83 @@ class _ChatPageState extends State<ChatPage> {
                       },
                       icon: Icon(Icons.arrow_back_ios, color: Colors.white),
                     ),
-                   InkWell(
-                     onTap: (){
-                       Navigator.of(context).pushNamed(
-                           IntroducePage.ROUTE_NAME,
-                           arguments: {
-                             'clubId': _conversation.member.memberId
-                           });
-                     },
-                     child: Row(
-                       children: [
-                         CircleAvatar(
-                           radius: 20,
-                           backgroundColor: Colors.grey,
-                           backgroundImage: _conversation.member != null &&
-                               _conversation.member.memberAvatar != null
-                               ? NetworkImage(_conversation.member.memberAvatar)
-                               : AssetImage("assets/images/avatar.png"),
-                         ),
-                         SizedBox(width: 6),
-                         Column(
-                           mainAxisAlignment: MainAxisAlignment.center,
-                           crossAxisAlignment: CrossAxisAlignment.start,
-                           children: [
-                             Container(
-                               width: MediaQuery.of(context).size.width - 160,
-                               child: Text(
-                                   _conversation.member != null &&
-                                       _conversation.member.memberName != null
-                                       ? _conversation.member.memberName
-                                       : "",
-                                   maxLines: 1,
-                                   overflow: TextOverflow.ellipsis,
-                                   style: TextStyle(
-                                       fontSize: 14,
-                                       fontWeight: FontWeight.bold,
-                                       color: Colors.white)),
-                             ),
-                             SizedBox(height: 2),
-                             Text(
-                                 _conversation.lastMessageDate != null
-                                     ? Helper.calculatorTime(
-                                     _conversation.lastMessageDate)
-                                     : "",
-                                 style: TextStyle(
-                                     fontSize: 13,
-                                     fontWeight: FontWeight.w400,
-                                     color: Colors.white)),
-                           ],
-                         ),
-                       ],
-                     ),
-                   )
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(IntroducePage.ROUTE_NAME, arguments: {
+                          'clubId': _conversation.member.memberId
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.grey,
+                            backgroundImage: _conversation.member != null &&
+                                    _conversation.member.memberAvatar != null
+                                ? NetworkImage(
+                                    _conversation.member.memberAvatar)
+                                : AssetImage("assets/images/avatar.png"),
+                          ),
+                          SizedBox(width: 6),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width - 160,
+                                child: Text(
+                                    _conversation.member != null &&
+                                            _conversation.member.memberName !=
+                                                null
+                                        ? _conversation.member.memberName
+                                        : "",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white)),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                  _conversation.lastMessageDate != null
+                                      ? Helper.calculatorTime(
+                                          _conversation.lastMessageDate)
+                                      : "",
+                                  style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.white)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Spacer(),
+                    PopupMenuButton(
+                      color: Colors.white,
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text('Xóa cuộc trò chuyện'),
+                          )
+                        ];
+                      },
+                      onSelected: (String value) {
+                        Helper.showDeleteDialog(context, "Thông báo",
+                            "Bạn muốn xóa cuộc trò chuyện này?", () async {
+                          final result = await _chatBloc
+                              .requestDeleteConversation(_conversation.id);
+                          if (!result) {
+                            Fluttertoast.showToast(msg: "Vui lòng thử lại");
+                          }
+                          Navigator.of(context).pop(1);
+                          Navigator.of(context).pop(1);
+                        });
+                      },
+                    )
                   ],
                 ),
               ),
