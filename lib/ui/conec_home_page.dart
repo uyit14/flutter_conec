@@ -468,10 +468,9 @@ class _ConecHomePageState extends State<ConecHomePage> {
                       },
                       child: Row(
                         children: [
-                          SizedBox(width: 4),
                           Icon(Icons.group,
                               color: Colors.red, size: 32),
-                          SizedBox(width: 32),
+                          SizedBox(width: 28),
                           Text("Thành viên",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w400))

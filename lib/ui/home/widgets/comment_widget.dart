@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:conecapp/common/api/api_response.dart';
-import 'package:conecapp/common/custom_icons.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
@@ -8,6 +7,7 @@ import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/models/response/comment/follow_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/widgets/item_comment_parent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -138,27 +138,41 @@ class _CommentWidgetState extends State<CommentWidget> {
   Widget _itemPerson(Follower fl) {
     return Container(
       margin: EdgeInsets.all(8),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.grey,
-                backgroundImage: fl.avatar != null
-                    ? NetworkImage(fl.avatar)
-                    : AssetImage("assets/images/avatar.png"),
-              ),
-              SizedBox(width: 8),
-              Text(fl.owner ?? "", style: TextStyle(fontSize: 18)),
-            ],
-          ),
-          SizedBox(height: 8),
-          Container(
-              height: 0.5,
-              color: Colors.grey,
-              margin: EdgeInsets.only(left: 50)),
-        ],
+      child: InkWell(
+        onTap: (){
+          Navigator.of(context).pushNamed(
+              IntroducePage.ROUTE_NAME,
+              arguments: {
+                'clubId': fl.id
+              });
+        },
+        child: Column(
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.grey,
+                  backgroundImage: fl.avatar != null
+                      ? NetworkImage(fl.avatar)
+                      : AssetImage("assets/images/avatar.png"),
+                ),
+                SizedBox(width: 8),
+                Container(
+                    width: MediaQuery.of(context).size.width - 85,
+                    child: Text(fl.owner ?? "",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 18))),
+              ],
+            ),
+            SizedBox(height: 8),
+            Container(
+                height: 0.5,
+                color: Colors.grey,
+                margin: EdgeInsets.only(left: 50)),
+          ],
+        ),
       ),
     );
   }

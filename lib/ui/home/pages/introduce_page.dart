@@ -121,7 +121,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                     Text(
                                         "(${profile.ratingCount ?? "0"} đánh giá)"),
                                     SizedBox(
-                                      width: 32,
+                                      width: 28,
                                     ),
                                     FlatButton.icon(
                                         padding: EdgeInsets.all(0),
