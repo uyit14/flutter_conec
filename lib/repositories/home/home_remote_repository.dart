@@ -10,6 +10,9 @@ import 'package:conecapp/models/response/delete_response.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/latest_response.dart';
+import 'package:conecapp/models/response/member2/follower2_response.dart';
+import 'package:conecapp/models/response/member2/member2_detail_response.dart';
+import 'package:conecapp/models/response/member2/member2_response.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
 import 'package:conecapp/models/response/news.dart';
 import 'package:conecapp/models/response/news_reponse.dart';
@@ -274,5 +277,28 @@ class HomeRemoteRepository {
         headers: await Helper.header());
     print(response);
     return response['conversation_counter'];
+  }
+
+  Future<Member2Response> getMember2s(int page) async {
+    final response = await _helper.get(
+        '/api/MemberJoined/LoadMembers?page=$page',
+        headers: await Helper.header());
+    print(response);
+    return Member2Response.fromJson(response);
+  }
+
+  Future<Follower2Response> getFollower2s(int page) async {
+    final response = await _helper.get(
+        '/api/MemberJoined/LoadFollows?page=$page',
+        headers: await Helper.header());
+    print(response);
+    return Follower2Response.fromJson(response);
+  }
+
+  Future<Member2DetailResponse> fetMember2Detail(String id) async {
+    final response = await _helper.get("/api/MemberJoined/ViewMember?id=$id",
+        headers: await Helper.header());
+    print(response.toString());
+    return Member2DetailResponse.fromJson(response);
   }
 }

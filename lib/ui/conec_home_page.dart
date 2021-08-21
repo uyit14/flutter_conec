@@ -29,6 +29,7 @@ import '../common/globals.dart' as globals;
 import 'home/blocs/home_bloc.dart';
 import 'home/pages/item_detail_page.dart';
 import 'home/pages/items_by_category_page.dart';
+import 'member2/fl_main_page.dart';
 import 'mypost/pages/mypost_page.dart';
 import 'news/pages/news_detail_page.dart';
 import 'news/pages/news_page.dart';
@@ -422,11 +423,17 @@ class _ConecHomePageState extends State<ConecHomePage> {
                   SizedBox(
                     width: 8,
                   ),
-                  _selectedPageIndex == 0 && isShowPartner() ? Builder(
+                  _selectedPageIndex == 0 ? Builder(
                       builder: (context) {
                         return IconButton(
                           icon: Icon(Icons.group, size: 32),
-                          onPressed: () => Scaffold.of(context).openEndDrawer(),
+                          onPressed: (){
+                            if(!isShowPartner()){
+                              Scaffold.of(context).openEndDrawer();
+                            }else{
+                              Navigator.of(context).pushNamed(FlMainPage.ROUTE_NAME);
+                            }
+                          },
                         );
                       }
                   ) : Container(),

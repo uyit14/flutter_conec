@@ -24,6 +24,7 @@ import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/home/pages/nearby_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/home/widgets/scroll_behavior.dart';
+import 'package:conecapp/ui/member2/member2_detail_page.dart';
 import 'package:conecapp/ui/mypost/pages/category_page.dart';
 import 'package:conecapp/ui/mypost/pages/edit_mypost_page.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
@@ -44,6 +45,7 @@ import 'ui/authen/pages/reset_pass_page.dart';
 import 'ui/chat/search_member_chat.dart';
 import 'ui/conec_home_page.dart';
 import 'ui/home/pages/items_by_category_page.dart';
+import 'ui/member2/fl_main_page.dart';
 import 'ui/mypost/pages/post_action_page.dart';
 import 'ui/mypost/pages/sub_category_page.dart';
 import 'ui/notify/pages/notify_detail_page.dart';
@@ -125,6 +127,8 @@ class ConecApp extends StatelessWidget {
         CompleteUpdatePayment.ROUTE_NAME: (context) => CompleteUpdatePayment(),
         SearchMemberChatPage.ROUTE_NAME: (context) => SearchMemberChatPage(),
         CustomMemberPage.ROUTE_NAME: (context) => CustomMemberPage(),
+        FlMainPage.ROUTE_NAME: (context) => FlMainPage(),
+        Member2DetailPage.ROUTE_NAME: (context) => Member2DetailPage(),
       },
     );
   }
