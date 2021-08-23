@@ -46,6 +46,13 @@ class _AddMemberPageState extends State<AddMemberPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final routeArgs = ModalRoute.of(context).settings.arguments;
+    _group = routeArgs;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(

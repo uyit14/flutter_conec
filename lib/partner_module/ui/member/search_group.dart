@@ -104,7 +104,7 @@ class _SearchGroupPageState extends State<SearchGroupPage> {
                                                 ),
                                                 Text(
                                                     _groups[index]
-                                                        .orderNo
+                                                        .memberCount
                                                         .toString(),
                                                     style: TextStyle(
                                                         fontWeight:

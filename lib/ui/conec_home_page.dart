@@ -472,6 +472,22 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     SizedBox(height: 24),
                     InkWell(
                       onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(AddMemberPage.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.person_add, color: Colors.red, size: 32),
+                          SizedBox(width: 32),
+                          Text("Thêm thành viên",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w400))
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    InkWell(
+                      onTap: () {
                         Navigator.of(context).pushNamed(MemberGroupPage.ROUTE_NAME);
                       },
                       child: Row(
@@ -531,22 +547,6 @@ class _ConecHomePageState extends State<ConecHomePage> {
                           ),
                           SizedBox(width: 32),
                           Text("Trò chuyện",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400))
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(AddMemberPage.ROUTE_NAME);
-                      },
-                      child: Row(
-                        children: [
-                          Icon(Icons.person_add, color: Colors.red, size: 32),
-                          SizedBox(width: 32),
-                          Text("Thêm thành viên",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w400))
                         ],

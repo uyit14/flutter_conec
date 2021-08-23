@@ -8,6 +8,7 @@ import 'package:conecapp/partner_module/ui/member/member_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_page.dart';
 import 'package:conecapp/partner_module/ui/member/search_group.dart';
 import 'package:conecapp/partner_module/ui/member/search_member_page.dart';
+import 'package:conecapp/partner_module/ui/member/swap_group.dart';
 import 'package:conecapp/partner_module/ui/member/update_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/update_member_page.dart';
 import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
@@ -139,6 +140,7 @@ class ConecApp extends StatelessWidget {
         AddGroupPage.ROUTE_NAME: (context) => AddGroupPage(),
         UpdateGroupPage.ROUTE_NAME: (context) => UpdateGroupPage(),
         SearchGroupPage.ROUTE_NAME: (context) => SearchGroupPage(),
+        SwapGroup.ROUTE_NAME: (context) => SwapGroup(),
       },
     );
   }

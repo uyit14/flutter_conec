@@ -41,7 +41,7 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      FlatButton.icon(
+                      FlatButton(
                           shape: RoundedRectangleBorder(
                               side: BorderSide(
                                   color: Colors.blue,
@@ -59,8 +59,7 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                               }
                             });
                           },
-                          icon: Icon(Icons.add, color: Colors.white),
-                          label: Text("Thêm nhóm",
+                          child: Text("Thêm nhóm / lớp",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -116,147 +115,157 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                                         _groups[index].active);
                                     return Stack(
                                       children: [
-                                        Container(
-                                          margin: EdgeInsets.only(bottom: 6),
-                                          child: Card(
-                                            elevation: 5,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text("Tên nhóm",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: 12)),
-                                                  SizedBox(
-                                                    height: 4,
-                                                  ),
-                                                  Text(_groups[index].name,
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16)),
-                                                  Container(
-                                                      margin:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 4),
-                                                      width: double.infinity,
-                                                      height: 0.5,
-                                                      color: Colors.grey),
-                                                  Text("Số lượng thành viên",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: 12)),
-                                                  SizedBox(
-                                                    height: 4,
-                                                  ),
-                                                  Text(
-                                                      _groups[index]
-                                                          .orderNo
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 15)),
-                                                  Container(
-                                                      margin:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 4),
-                                                      width: double.infinity,
-                                                      height: 0.5,
-                                                      color: Colors.grey),
-                                                  Text("Thời gian tập luyện: ",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          fontSize: 12)),
-                                                  SizedBox(
-                                                    height: 4,
-                                                  ),
-                                                  Text(_groups[index].times ?? "",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 15)),
-                                                  Container(
-                                                      margin:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 4),
-                                                      width: double.infinity,
-                                                      height: 0.5,
-                                                      color: Colors.grey),
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text("Màu",
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                fontSize: 12)),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                            "Trạng thái",
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                                fontSize: 12)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 4),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                            _colorN.text,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: _colorN
-                                                                    .color,
-                                                                fontSize: 14)),
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(_status,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: _groups[
-                                                                            index]
-                                                                        .active
-                                                                    ? Colors
-                                                                        .green
-                                                                    : Colors
-                                                                        .red,
-                                                                fontSize: 15)),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                        InkWell(
+                                          onTap: (){
+                                            Navigator.of(context)
+                                                .pushNamed(
+                                                GroupDetailPage
+                                                    .ROUTE_NAME,
+                                                arguments:
+                                                _groups[index]);
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.only(bottom: 6),
+                                            child: Card(
+                                              elevation: 5,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Text("Tên nhóm",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 12)),
+                                                    SizedBox(
+                                                      height: 2,
+                                                    ),
+                                                    Text(_groups[index].name,
+                                                        maxLines: 1,
+                                                        overflow:
+                                                            TextOverflow.ellipsis,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 14)),
+                                                    Container(
+                                                        margin:
+                                                            EdgeInsets.symmetric(
+                                                                vertical: 4),
+                                                        width: double.infinity,
+                                                        height: 0.5,
+                                                        color: Colors.grey),
+                                                    Text("Số lượng thành viên",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 12)),
+                                                    SizedBox(
+                                                      height: 2,
+                                                    ),
+                                                    Text(
+                                                        _groups[index]
+                                                            .memberCount
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontSize: 14)),
+                                                    Container(
+                                                        margin:
+                                                            EdgeInsets.symmetric(
+                                                                vertical: 4),
+                                                        width: double.infinity,
+                                                        height: 0.5,
+                                                        color: Colors.grey),
+                                                    Text("Thời gian tập luyện: ",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            fontSize: 12)),
+                                                    SizedBox(
+                                                      height: 2,
+                                                    ),
+                                                    Text(_groups[index].times ?? "",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            fontSize: 14)),
+                                                    // Container(
+                                                    //     margin:
+                                                    //         EdgeInsets.symmetric(
+                                                    //             vertical: 4),
+                                                    //     width: double.infinity,
+                                                    //     height: 0.5,
+                                                    //     color: Colors.grey),
+                                                    // Row(
+                                                    //   children: [
+                                                    //     Expanded(
+                                                    //       child: Text("Màu",
+                                                    //           textAlign: TextAlign
+                                                    //               .center,
+                                                    //           style: TextStyle(
+                                                    //               fontWeight:
+                                                    //                   FontWeight
+                                                    //                       .w400,
+                                                    //               fontSize: 12)),
+                                                    //     ),
+                                                    //     Expanded(
+                                                    //       child: Text(
+                                                    //           "Trạng thái",
+                                                    //           textAlign: TextAlign
+                                                    //               .center,
+                                                    //           style: TextStyle(
+                                                    //               fontWeight:
+                                                    //                   FontWeight
+                                                    //                       .w400,
+                                                    //               fontSize: 12)),
+                                                    //     ),
+                                                    //   ],
+                                                    // ),
+                                                    // SizedBox(height: 4),
+                                                    // Row(
+                                                    //   mainAxisAlignment:
+                                                    //       MainAxisAlignment
+                                                    //           .center,
+                                                    //   children: [
+                                                    //     Expanded(
+                                                    //       child: Text(
+                                                    //           _colorN.text,
+                                                    //           textAlign: TextAlign
+                                                    //               .center,
+                                                    //           style: TextStyle(
+                                                    //               fontWeight:
+                                                    //                   FontWeight
+                                                    //                       .w500,
+                                                    //               color: _colorN
+                                                    //                   .color,
+                                                    //               fontSize: 14)),
+                                                    //     ),
+                                                    //     Expanded(
+                                                    //       child: Text(_status,
+                                                    //           textAlign: TextAlign
+                                                    //               .center,
+                                                    //           style: TextStyle(
+                                                    //               fontWeight:
+                                                    //                   FontWeight
+                                                    //                       .w500,
+                                                    //               color: _groups[
+                                                    //                           index]
+                                                    //                       .active
+                                                    //                   ? Colors
+                                                    //                       .green
+                                                    //                   : Colors
+                                                    //                       .red,
+                                                    //               fontSize: 15)),
+                                                    //     ),
+                                                    //   ],
+                                                    // ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -267,17 +276,17 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                                             child: PopupMenuButton(
                                               itemBuilder: (context) {
                                                 return [
-                                                  PopupMenuItem(
-                                                    value: 'detail',
-                                                    child: Text('Chi tiết'),
-                                                  ),
+                                                  // PopupMenuItem(
+                                                  //   value: 'detail',
+                                                  //   child: Text('Chi tiết'),
+                                                  // ),
                                                   PopupMenuItem(
                                                     value: 'edit',
                                                     child: Text('Chỉnh sửa'),
                                                   ),
                                                   PopupMenuItem(
                                                     value: 'delete',
-                                                    child: Text('Xóa lớp'),
+                                                    child: Text('Xóa lớp', style: TextStyle(color: Colors.red),),
                                                   )
                                                 ];
                                               },
@@ -324,14 +333,15 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                                                           .requestGetGroup();
                                                     }
                                                   });
-                                                } else if (value == "detail") {
-                                                  Navigator.of(context)
-                                                      .pushNamed(
-                                                          GroupDetailPage
-                                                              .ROUTE_NAME,
-                                                          arguments:
-                                                              _groups[index]);
                                                 }
+                                                // else if (value == "detail") {
+                                                //   Navigator.of(context)
+                                                //       .pushNamed(
+                                                //           GroupDetailPage
+                                                //               .ROUTE_NAME,
+                                                //           arguments:
+                                                //               _groups[index]);
+                                                // }
                                               },
                                             ))
                                       ],
@@ -343,6 +353,21 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                       }),
                 ],
               )),
-        ));
+        ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     Navigator.of(context)
+      //         .pushNamed(AddGroupPage.ROUTE_NAME)
+      //         .then((value) {
+      //       if (value == 1) {
+      //         _memberBloc.requestGetGroup();
+      //       }
+      //     });
+      //   },
+      //   label: Text('Thêm nhóm / lớp'),
+      //   icon: Icon(Icons.add),
+      //   backgroundColor: Colors.green,
+      // ),
+    );
   }
 }

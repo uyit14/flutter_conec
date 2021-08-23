@@ -22,6 +22,7 @@ class Group {
   int orderNo;
   bool active;
   String times;
+  int memberCount;
   String notes;
 
   Group(
@@ -38,6 +39,7 @@ class Group {
     name = json['name'];
     color = json['color'];
     orderNo = json['orderNo'];
+    memberCount = json['memberCount'];
     active = json['active'];
     times = json['times'];
     notes = json['notes'];

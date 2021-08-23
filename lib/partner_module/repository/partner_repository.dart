@@ -141,22 +141,30 @@ class PartnerRepository {
   }
 
   Future<GroupResponse> fetchGroup() async {
-    final response = await _helper.get(
-        '/api/MemberGroup/GetAllUserGroups',
+    final response = await _helper.get('/api/MemberGroup/GetAllUserGroups',
         headers: await Helper.header());
     print(response);
     return GroupResponse.fromJson(response);
   }
 
   Future<bool> deleteGroup(String id) async {
-    final response = await _helper.post("/api/MemberGroup/DeleteUserGroup?id=$id",
+    final response = await _helper.post(
+        "/api/MemberGroup/DeleteUserGroup?id=$id",
         headers: await Helper.header());
     print(response);
     return response['status'];
   }
 
-  Future<Group> fetchGroupDetail(
-      String groupId) async {
+  Future<bool> swapGroup(String userMemberId, String userGroupId) async {
+    final response = await _helper.post("/api/MemberGroup/ChangeGroup",
+        body: jsonEncode(
+            {'userMemberId': userMemberId, 'userGroupId': userGroupId}),
+        headers: await Helper.header());
+    print(response);
+    return response['status'];
+  }
+
+  Future<Group> fetchGroupDetail(String groupId) async {
     final response = await _helper.get(
         "/api/MemberGroup/GetUserGroup?id=$groupId",
         headers: await Helper.header());

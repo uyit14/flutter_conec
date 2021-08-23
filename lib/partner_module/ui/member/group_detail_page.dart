@@ -6,6 +6,9 @@ import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/ui/member/member_bloc.dart';
 import 'package:flutter/material.dart';
 
+import 'add_member_page.dart';
+import 'member_detail_page.dart';
+
 class GroupDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/group-detail';
 
@@ -26,7 +29,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     super.didChangeDependencies();
     final routeArgs = ModalRoute.of(context).settings.arguments;
     _group = routeArgs;
-    _memberBloc.requestGetMembers(_currentPage, userGroupId: _group.userGroupId);
+    _memberBloc.requestGetMembers(_currentPage,
+        userGroupId: _group.userGroupId);
     _currentPage = 1;
   }
 
@@ -40,7 +44,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     if (_scrollController.position.extentAfter < 250) {
       if (_shouldLoadMore) {
         _shouldLoadMore = false;
-        _memberBloc.requestGetMembers(_currentPage, userGroupId: _group.userGroupId);
+        _memberBloc.requestGetMembers(_currentPage,
+            userGroupId: _group.userGroupId);
         setState(() {
           _currentPage++;
         });
@@ -92,7 +97,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                       SizedBox(
                         height: 4,
                       ),
-                      Text(_group.orderNo.toString(),
+                      Text(_group.memberCount.toString(),
                           style: TextStyle(
                               fontWeight: FontWeight.w500, fontSize: 15)),
                       Container(
@@ -157,115 +162,142 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                   itemBuilder: (context, index) {
                                     return Stack(
                                       children: [
-                                        Card(
-                                          elevation: 5,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Container(
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width -
-                                                              100,
-                                                      child: Text(
-                                                          "Tên thành viên",
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight.bold,
-                                                              fontSize: 16)),
-                                                    ),
-                                                    CircleAvatar(
-                                                      radius: 20,
-                                                      backgroundColor:
-                                                          Colors.grey,
-                                                      backgroundImage: _members[
-                                                                      index]
-                                                                  .avatar !=
-                                                              null
-                                                          ? NetworkImage(
-                                                              _members[index]
-                                                                  .avatar)
-                                                          : AssetImage(
-                                                              "assets/images/avatar.png"),
-                                                    )
-                                                  ],
-                                                ),
-                                                SizedBox(height: 4),
-                                                Text(_members[index].name ?? "",
-                                                    style:
-                                                        TextStyle(fontSize: 16)),
-                                                Container(
-                                                    margin: EdgeInsets.symmetric(
-                                                        vertical: 4),
-                                                    width: double.infinity,
-                                                    height: 0.5,
-                                                    color: Colors.grey),
-                                                Text("Ngày đóng tiền",
-                                                    style: TextStyle(
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.of(context)
+                                                .pushNamed(
+                                                    MemberDetailPage.ROUTE_NAME,
+                                                    arguments:
+                                                        _members[index].id)
+                                                .then((value) {
+                                              _members.clear();
+                                              _memberBloc.requestGetMembers(0,
+                                                  userGroupId:
+                                                      _group.userGroupId);
+                                            });
+                                          },
+                                          child: Card(
+                                            elevation: 5,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width -
+                                                            100,
+                                                        child: Text(
+                                                            _members[index]
+                                                                    .name ??
+                                                                "",
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 16)),
+                                                      ),
+                                                      CircleAvatar(
+                                                        radius: 20,
+                                                        backgroundColor:
+                                                            Colors.grey,
+                                                        backgroundImage: _members[
+                                                                        index]
+                                                                    .avatar !=
+                                                                null
+                                                            ? NetworkImage(
+                                                                _members[index]
+                                                                    .avatar)
+                                                            : AssetImage(
+                                                                "assets/images/avatar.png"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  // SizedBox(height: 4),
+                                                  // Text(_members[index].name ?? "",
+                                                  //     style:
+                                                  //         TextStyle(fontSize: 16)),
+                                                  Container(
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 4),
+                                                      width: double.infinity,
+                                                      height: 0.5,
+                                                      color: Colors.grey),
+                                                  Text("Ngày đóng tiền",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 12)),
+                                                  SizedBox(height: 4),
+                                                  Text(
+                                                      _members[index]
+                                                              .paymentDate ??
+                                                          "",
+                                                      style: TextStyle(
+                                                        fontSize: 14,
                                                         fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16)),
-                                                SizedBox(height: 4),
-                                                Text(
-                                                    _members[index].paymentDate ??
-                                                        "",
-                                                    style:
-                                                        TextStyle(fontSize: 16)),
-                                                Container(
-                                                    margin: EdgeInsets.symmetric(
-                                                        vertical: 4),
-                                                    width: double.infinity,
-                                                    height: 0.5,
-                                                    color: Colors.grey),
-                                                doubleRows("Số điện thoại",
-                                                    "Email", true),
-                                                SizedBox(height: 4),
-                                                doubleRows(
-                                                    _members[index].phoneNumber ??
-                                                        "",
-                                                    _members[index].email ?? "",
-                                                    false),
-                                                Container(
-                                                    margin: EdgeInsets.symmetric(
-                                                        vertical: 4),
-                                                    width: double.infinity,
-                                                    height: 0.5,
-                                                    color: Colors.grey),
-                                                doubleRows("Ngày tham gia",
-                                                    "Ngày đóng tiền", true),
-                                                SizedBox(height: 4),
-                                                doubleRows(
-                                                    _members[index].joinedDate ??
-                                                        "",
-                                                    _members[index].paymentDate ??
-                                                        "",
-                                                    false),
-                                                Container(
-                                                    margin: EdgeInsets.symmetric(
-                                                        vertical: 4),
-                                                    width: double.infinity,
-                                                    height: 0.5,
-                                                    color: Colors.grey),
-                                                Text("Số tiền",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 16)),
-                                                SizedBox(height: 4),
-                                                Text(
-                                                    '${_members[index].amount ?? ""} / ${_members[index].joiningFeePeriod ?? ""}',
-                                                    style:
-                                                        TextStyle(fontSize: 16)),
-                                              ],
+                                                            FontWeight.w500,
+                                                      )),
+                                                  Container(
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 4),
+                                                      width: double.infinity,
+                                                      height: 0.5,
+                                                      color: Colors.grey),
+                                                  // doubleRows("Số điện thoại",
+                                                  //     "Email", true),
+                                                  // SizedBox(height: 4),
+                                                  // doubleRows(
+                                                  //     _members[index].phoneNumber ??
+                                                  //         "",
+                                                  //     _members[index].email ?? "",
+                                                  //     false),
+                                                  // Container(
+                                                  //     margin: EdgeInsets.symmetric(
+                                                  //         vertical: 4),
+                                                  //     width: double.infinity,
+                                                  //     height: 0.5,
+                                                  //     color: Colors.grey),
+                                                  // doubleRows("Ngày tham gia",
+                                                  //     "Ngày đóng tiền", true),
+                                                  // SizedBox(height: 4),
+                                                  // doubleRows(
+                                                  //     _members[index].joinedDate ??
+                                                  //         "",
+                                                  //     _members[index].paymentDate ??
+                                                  //         "",
+                                                  //     false),
+                                                  // Container(
+                                                  //     margin: EdgeInsets.symmetric(
+                                                  //         vertical: 4),
+                                                  //     width: double.infinity,
+                                                  //     height: 0.5,
+                                                  //     color: Colors.grey),
+                                                  // Text("Số tiền",
+                                                  //     style: TextStyle(
+                                                  //         fontWeight:
+                                                  //             FontWeight.w400,
+                                                  //         fontSize: 12)),
+                                                  // SizedBox(height: 4),
+                                                  // Text(
+                                                  //     '${_members[index].amount ?? ""} / ${_members[index].joiningFeePeriod ?? ""}',
+                                                  //     style:
+                                                  //         TextStyle(fontSize: 14, fontWeight:
+                                                  //         FontWeight.w500,)),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -275,7 +307,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                 right: 8,
                                                 child: Icon(
                                                   Icons.warning_amber_rounded,
-                                                  color: Colors.deepOrangeAccent,
+                                                  color:
+                                                      Colors.deepOrangeAccent,
                                                   size: 24,
                                                 ))
                                             : Container()
@@ -296,6 +329,21 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.of(context)
+              .pushNamed(AddMemberPage.ROUTE_NAME, arguments: _group)
+              .then((value) {
+            if (value == 1) {
+              _members.clear();
+              _memberBloc.requestGetMembers(0, userGroupId: _group.userGroupId);
+            }
+          });
+        },
+        label: Text('Thêm thành viên'),
+        icon: Icon(Icons.add),
+        backgroundColor: Colors.green,
       ),
     );
   }

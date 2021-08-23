@@ -17,7 +17,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-enum TYPE { ACCOUNT, NAME, PHONE, EMAIL }
+enum TYPE_UPDATE { ACCOUNT, NAME, PHONE, EMAIL }
 
 class UpdateMemberPage extends StatefulWidget {
   static const ROUTE_NAME = '/update-member';
@@ -55,7 +55,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
 
   String group(){
     if(_group != null) return _group.name;
-    return _member.groupName;
+    return _member.groupName ?? "Chưa phân nhóm";
   }
 
   @override
@@ -114,7 +114,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(title: Text("Thêm thành viên")),
+      appBar: AppBar(title: Text("Chỉnh sửa")),
       body: Stack(
         children: [
           Container(
@@ -136,7 +136,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
                               width: MediaQuery.of(context).size.width - 100,
                               child: infoCard(
                                   _member.userName ?? "Tên tài khoản",
-                                  TYPE.ACCOUNT),
+                                  TYPE_UPDATE.ACCOUNT),
                             ),
                             InkWell(
                               onTap: _member.memberId == null
@@ -191,12 +191,12 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
                           ],
                         ),
                         SizedBox(height: 8),
-                        infoCard(_member.name ?? "Họ tên", TYPE.NAME),
+                        infoCard(_member.name ?? "Họ tên", TYPE_UPDATE.NAME),
                         SizedBox(height: 8),
                         infoCard(
-                            _member.phoneNumber ?? "Số điện thoại", TYPE.PHONE),
+                            _member.phoneNumber ?? "Số điện thoại", TYPE_UPDATE.PHONE),
                         SizedBox(height: 8),
-                        infoCard(_member.email ?? "Email", TYPE.EMAIL),
+                        infoCard(_member.email ?? "Email", TYPE_UPDATE.EMAIL),
                       ],
                     ),
                   ),
@@ -612,52 +612,52 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
     return true;
   }
 
-  onCardPress(TYPE type) {
+  onCardPress(TYPE_UPDATE type) {
     switch (type) {
-      case TYPE.ACCOUNT:
+      case TYPE_UPDATE.ACCOUNT:
         break;
-      case TYPE.NAME:
+      case TYPE_UPDATE.NAME:
         break;
-      case TYPE.PHONE:
+      case TYPE_UPDATE.PHONE:
         break;
-      case TYPE.EMAIL:
+      case TYPE_UPDATE.EMAIL:
         break;
     }
   }
 
-  Icon iconByType(TYPE type) {
+  Icon iconByType(TYPE_UPDATE type) {
     switch (type) {
-      case TYPE.ACCOUNT:
+      case TYPE_UPDATE.ACCOUNT:
         return Icon(Icons.info);
-      case TYPE.NAME:
+      case TYPE_UPDATE.NAME:
         return Icon(Icons.perm_identity_rounded);
-      case TYPE.PHONE:
+      case TYPE_UPDATE.PHONE:
         return Icon(Icons.phone_android);
-      case TYPE.EMAIL:
+      case TYPE_UPDATE.EMAIL:
         return Icon(Icons.email);
       default:
         return Icon(Icons.email);
     }
   }
 
-  setMemberValue(TYPE type, String value) {
+  setMemberValue(TYPE_UPDATE type, String value) {
     switch (type) {
-      case TYPE.ACCOUNT:
+      case TYPE_UPDATE.ACCOUNT:
         setState(() {
           _member.userName = value;
         });
         break;
-      case TYPE.NAME:
+      case TYPE_UPDATE.NAME:
         setState(() {
           _member.name = value;
         });
         break;
-      case TYPE.PHONE:
+      case TYPE_UPDATE.PHONE:
         setState(() {
           _member.phoneNumber = value;
         });
         break;
-      case TYPE.EMAIL:
+      case TYPE_UPDATE.EMAIL:
         setState(() {
           _member.email = value;
         });
@@ -667,7 +667,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
     }
   }
 
-  Widget infoCard(String info, TYPE type) {
+  Widget infoCard(String info, TYPE_UPDATE type) {
     return InkWell(
       onTap: () => onCardPress(type),
       child: Container(

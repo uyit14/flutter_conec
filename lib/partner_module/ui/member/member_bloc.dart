@@ -131,6 +131,11 @@ class MemberBloc {
     return response;
   }
 
+  Future<bool> requestSwapGroup(String userMemberId, String userGroupId) async {
+    final response = await _repository.swapGroup(userMemberId, userGroupId);
+    return response;
+  }
+
   Future<String> requestGetNote(String id) async {
     final response = await _repository.getNote(id);
     return response;

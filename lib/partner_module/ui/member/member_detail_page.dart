@@ -1,11 +1,18 @@
+import 'dart:convert';
+
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
+import 'package:conecapp/partner_module/ui/member/swap_group.dart';
+import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'add_member_page.dart';
 import 'complete_update_payment.dart';
 import 'member_bloc.dart';
+import 'update_member_page.dart';
 
 enum PAYMENT_TYPE { UPDATE, COMPLETE }
 
@@ -28,11 +35,90 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     _memberBloc.requestGetMemberDetail(id);
   }
 
+  void sendNotify(String id) async {
+    String result = await _memberBloc.requestGetNote(id);
+    Helper.showRemindDialog(context, result, (message) {
+      var requestParam = jsonEncode({"id": id, "notes": message});
+      _memberBloc.requestNotifyPayment(requestParam);
+      Navigator.of(context).pop();
+      Fluttertoast.showToast(
+          msg: "Gửi thông báo thành công", textColor: Colors.black87);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(title: Text("Thông tin thành viên")),
+      appBar: AppBar(title: Text("Thông tin thành viên"), actions: [
+        PopupMenuButton(
+          itemBuilder: (context) {
+            return [
+              _member.memberId != null ? PopupMenuItem(
+                value: 'message',
+                child: Text('Gửi tin nhắn'),
+              ) : null,
+              PopupMenuItem(
+                value: 'edit',
+                child: Text('Chỉnh sửa'),
+              ),
+              _member.memberId != null ? PopupMenuItem(
+                value: 'notify',
+                child: Text('Nhắc nhỡ'),
+              ) : null,
+              PopupMenuItem(
+                value: 'swap',
+                child: Text('Chuyển lớp'),
+              ),
+              PopupMenuItem(
+                value: 'delete',
+                child: Text('Xóa lớp', style: TextStyle(color: Colors.red),),
+              )
+            ];
+          },
+          onSelected: (String value) {
+            switch(value){
+              case 'message':
+                Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
+                    arguments: {"memberId": _member.memberId});
+                break;
+              case 'edit':
+                Navigator.of(context)
+                    .pushNamed(UpdateMemberPage.ROUTE_NAME, arguments: _member)
+                    .then((value) {
+                  if (value == 1) {
+                    _memberBloc.requestGetMemberDetail(id);
+                  }
+                });
+                break;
+              case 'notify':
+                sendNotify(_member.id);
+                break;
+              case 'swap':
+                Navigator.of(context).pushNamed(SwapGroup.ROUTE_NAME, arguments: _member).then((value) {
+                  if(value == 1){
+                    _memberBloc.requestGetMemberDetail(id);
+                  }
+                });
+                break;
+              case 'delete':
+                Helper.showDeleteDialog(context, "Xóa thành viên",
+                    "Bạn có chắc chắn muốn xóa thành viên này?", () async {
+                      final result =
+                      await _memberBloc.requestDeleteMember(_member.id);
+                      if (result) {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      } else {
+                        Fluttertoast.showToast(
+                            msg: "Vui lòng thử lại", gravity: ToastGravity.CENTER);
+                      }
+                    });
+                break;
+            }
+          },
+        )
+      ],),
       body: Container(
         margin: EdgeInsets.all(12),
         child: SingleChildScrollView(
@@ -67,6 +153,31 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                                 SizedBox(height: 8),
                                 infoCard(_member.email ?? "Email", TYPE.EMAIL),
                               ],
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text("Nhóm / lớp"),
+                          Card(
+                            child: Card(
+                              margin: EdgeInsets.symmetric(horizontal: 0),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Icon(Icons.group, color: Colors.blue),
+                                    SizedBox(width: 16),
+                                    Text(
+                                      _member.groupName ?? "",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                           SizedBox(height: 8),
