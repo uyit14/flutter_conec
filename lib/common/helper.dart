@@ -602,6 +602,23 @@ class Helper {
     'alert alert-secondary'
   ];
 
+  static List<String> paramsGroup = [
+    'danger',
+    'success',
+    'primary',
+    'info',
+    'warning',
+    'secondary'
+  ];
+
+  static ColorNotify getColorGroup(String color) {
+    if (color == null || color.length == 0) {
+      color = paramsGroup[1];
+    }
+    int index = paramsGroup.indexOf(color);
+    return ColorNotify(text: options[index], color: getColorByTag(index));
+  }
+
   static ColorNotify getColorNotify(String color) {
     if (color == null || color.length == 0) {
       color = params[1];

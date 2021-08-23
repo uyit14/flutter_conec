@@ -5,9 +5,11 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
+import 'package:conecapp/partner_module/models/group_response.dart';
 import 'package:conecapp/partner_module/models/member_request.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/ui/member/member_bloc.dart';
+import 'package:conecapp/partner_module/ui/member/search_group.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -34,6 +36,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
   bool _isLoading = false;
   String _type = "";
   File _image;
+  Group _group;
   Member _member = Member();
   TextEditingController _joiningFreeController;
   TextEditingController _noteController;
@@ -48,6 +51,11 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
     if (local != null) return FileImage(local);
     if (url != null) return NetworkImage(url);
     return AssetImage("assets/images/avatar.png");
+  }
+
+  String group(){
+    if(_group != null) return _group.name;
+    return _member.groupName;
   }
 
   @override
@@ -190,6 +198,45 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
                         SizedBox(height: 8),
                         infoCard(_member.email ?? "Email", TYPE.EMAIL),
                       ],
+                    ),
+                  ),
+                  Text("Nhóm / Lớp"),
+                  Card(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(SearchGroupPage.ROUTE_NAME)
+                            .then((value) {
+                          if (value != null) {
+                            setState(() {
+                              _group = value;
+                            });
+                          }
+                        });
+                      },
+                      child: Card(
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Icon(Icons.group),
+                              SizedBox(width: 16),
+                              Text(
+                                group(),
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                              Spacer(),
+                              Text("Thay đổi",
+                                  style: AppTheme.changeTextStyle(true))
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(height: 8),
@@ -525,6 +572,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
         name: _member.name,
         email: _member.email,
         phoneNumber: _member.phoneNumber,
+        userGroupId: _group != null ? _group.userGroupId : null,
         notes: _noteController.text);
     //
     print("update_member_request: " + jsonEncode(_memberRequest.toJson()));

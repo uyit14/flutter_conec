@@ -5,9 +5,11 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
+import 'package:conecapp/partner_module/models/group_response.dart';
 import 'package:conecapp/partner_module/models/member_request.dart';
 import 'package:conecapp/partner_module/models/search_m_response.dart';
 import 'package:conecapp/partner_module/ui/member/member_bloc.dart';
+import 'package:conecapp/partner_module/ui/member/search_group.dart';
 import 'package:conecapp/partner_module/ui/member/search_member_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -30,6 +32,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
   var _paymentDate;
   var _joinDate;
   int _selectedType;
+  Group _group;
   bool _isLoading = false;
   String _type = "";
   MemberSearch _member = MemberSearch();
@@ -117,6 +120,47 @@ class _AddMemberPageState extends State<AddMemberPage> {
                         SizedBox(height: 8),
                         infoCard(_member.email ?? "Email", TYPE.EMAIL),
                       ],
+                    ),
+                  ),
+                  Text("Nhóm / Lớp"),
+                  Card(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(SearchGroupPage.ROUTE_NAME)
+                            .then((value) {
+                          if (value != null) {
+                            setState(() {
+                              _group = value;
+                            });
+                          }
+                        });
+                      },
+                      child: Card(
+                        margin: EdgeInsets.symmetric(horizontal: 0),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Icon(Icons.group),
+                              SizedBox(width: 16),
+                              Text(
+                                _group != null
+                                    ? _group.name
+                                    : "Chọn nhóm / lớp",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                              Spacer(),
+                              Text("Thay đổi",
+                                  style: AppTheme.changeTextStyle(true))
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(height: 8),
@@ -452,6 +496,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
         name: _member.name,
         email: _member.email,
         phoneNumber: _member.phoneNumber,
+        userGroupId: _group != null ? _group.userGroupId : null,
         notes: _noteController.text);
     //
     print("add_member_request: " + jsonEncode(_memberRequest.toJson()));

@@ -11,10 +11,11 @@ class MemberRequest {
   String name;
   String email;
   String phoneNumber;
+  String userGroupId;
 
   MemberRequest(
       {this.memberId,
-        this.id,
+      this.id,
       this.paymentDate,
       this.joiningFeePeriod,
       this.notes,
@@ -24,11 +25,12 @@ class MemberRequest {
       this.userName,
       this.name,
       this.email,
-      this.phoneNumber});
+      this.phoneNumber,
+      this.userGroupId});
 
   Map<String, dynamic> toJson() => {
         if (memberId != null) 'memberId': memberId,
-    if (id != null) 'id': id,
+        if (id != null) 'id': id,
         if (paymentDate != null) 'paymentDate': paymentDate,
         if (joinedDate != null) 'joinedDate': joinedDate,
         if (notes != null) 'notes': notes,
@@ -39,5 +41,6 @@ class MemberRequest {
         if (name != null) 'name': name,
         if (email != null) 'email': email,
         if (phoneNumber != null) 'phoneNumber': phoneNumber,
+        if (userGroupId != null) 'userGroupId': userGroupId,
       };
 }

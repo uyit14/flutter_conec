@@ -1,5 +1,6 @@
 import 'package:badges/badges.dart';
 import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/partner_module/ui/member/member_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_page.dart';
 import 'package:conecapp/ui/chat/chat_list_page.dart';
@@ -145,7 +146,7 @@ Widget gridItem(String title, IconData iconData, MANAGEMENT_TYPE type,
             Navigator.of(context).pushNamed(NotifyPartnerPage.ROUTE_NAME);
             break;
           case MANAGEMENT_TYPE.MEMBER:
-            Navigator.of(context).pushNamed(MemberPage.ROUTE_NAME);
+            Navigator.of(context).pushNamed(MemberGroupPage.ROUTE_NAME);
             break;
           case MANAGEMENT_TYPE.CHAT:
             Navigator.of(context).pushNamed(ChatListPage.ROUTE_NAME);

@@ -1,9 +1,14 @@
 import 'dart:io';
 
+import 'package:conecapp/partner_module/ui/member/add_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/add_member_page.dart';
+import 'package:conecapp/partner_module/ui/member/group_detail_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
+import 'package:conecapp/partner_module/ui/member/member_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_page.dart';
+import 'package:conecapp/partner_module/ui/member/search_group.dart';
 import 'package:conecapp/partner_module/ui/member/search_member_page.dart';
+import 'package:conecapp/partner_module/ui/member/update_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/update_member_page.dart';
 import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_detail_page.dart';
@@ -129,6 +134,11 @@ class ConecApp extends StatelessWidget {
         CustomMemberPage.ROUTE_NAME: (context) => CustomMemberPage(),
         FlMainPage.ROUTE_NAME: (context) => FlMainPage(),
         Member2DetailPage.ROUTE_NAME: (context) => Member2DetailPage(),
+        MemberGroupPage.ROUTE_NAME: (context) => MemberGroupPage(),
+        GroupDetailPage.ROUTE_NAME: (context) => GroupDetailPage(),
+        AddGroupPage.ROUTE_NAME: (context) => AddGroupPage(),
+        UpdateGroupPage.ROUTE_NAME: (context) => UpdateGroupPage(),
+        SearchGroupPage.ROUTE_NAME: (context) => SearchGroupPage(),
       },
     );
   }

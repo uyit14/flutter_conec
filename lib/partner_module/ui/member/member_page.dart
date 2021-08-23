@@ -4,10 +4,12 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/partner_module/models/group_response.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/ui/member/add_member_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_bloc.dart';
 import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
+import 'package:conecapp/partner_module/ui/member/search_group.dart';
 import 'package:conecapp/partner_module/ui/member/update_member_page.dart';
 import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,7 @@ class _MemberPageState extends State<MemberPage> {
   ScrollController _scrollController;
   bool _shouldLoadMore = true;
   int _currentPage = 0;
+  Group _group;
 
   @override
   void initState() {
@@ -53,190 +56,245 @@ class _MemberPageState extends State<MemberPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text("Thành viên")),
-        body: Container(
-          margin: EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 50),
-          child: StreamBuilder<ApiResponse<List<Member>>>(
-              stream: _memberBloc.membersStream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  switch (snapshot.data.status) {
-                    case Status.LOADING:
-                      return UILoading(loadingMessage: snapshot.data.message);
-                    case Status.ERROR:
-                      return UIError(errorMessage: snapshot.data.message);
-                    case Status.COMPLETED:
-                      if (snapshot.data.data.length > 0) {
-                        print("at UI: " + snapshot.data.data.length.toString());
-                        _members.addAll(snapshot.data.data);
-                        _shouldLoadMore = true;
-                      } else {
-                        _shouldLoadMore = false;
-                      }
-                      if (_members.length > 0) {
-                        return ListView.builder(
-                            itemCount: _members.length,
-                            controller: _scrollController,
-                            itemBuilder: (context, index) {
-                              return Stack(
-                                children: [
-                                  Card(
-                                    elevation: 5,
-                                    margin: EdgeInsets.all(8),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width -
-                                                    100,
-                                                child: Text("Tên thành viên",
-                                                    maxLines: 2,
-                                                    overflow: TextOverflow.ellipsis,
+        appBar: AppBar(
+          title: Text(_group != null ? _group.name : "Tất cả thành viên"),
+          actions: [
+            SizedBox(width: 8),
+            IconButton(
+                icon: Icon(
+                 Icons.filter_list,
+                  color: Colors.white,
+                  size: 28,
+                ),
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(SearchGroupPage.ROUTE_NAME)
+                      .then((value) {
+                    if (value != null) {
+                     setState(() {
+                       _group = value;
+                       _members.clear();
+                     });
+                      _memberBloc.requestGetMembers(0, userGroupId: _group.userGroupId);
+                      _currentPage = 1;
+                    }else{
+                      setState(() {
+                        _members.clear();
+                        _group = null;
+                      });
+                      _memberBloc.requestGetMembers(0);
+                      _currentPage = 1;
+                    }
+                  });
+                }),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 50),
+            child: Column(
+              children: [
+                StreamBuilder<ApiResponse<List<Member>>>(
+                    stream: _memberBloc.membersStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        switch (snapshot.data.status) {
+                          case Status.LOADING:
+                            return UILoading(loadingMessage: snapshot.data.message);
+                          case Status.ERROR:
+                            return UIError(errorMessage: snapshot.data.message);
+                          case Status.COMPLETED:
+                            if (snapshot.data.data.length > 0) {
+                              print("at UI: " + snapshot.data.data.length.toString());
+                              _members.addAll(snapshot.data.data);
+                              _shouldLoadMore = true;
+                            } else {
+                              _shouldLoadMore = false;
+                            }
+                            if (_members.length > 0) {
+                              return ListView.builder(
+                                  itemCount: _members.length,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  controller: _scrollController,
+                                  itemBuilder: (context, index) {
+                                    return Stack(
+                                      children: [
+                                        Card(
+                                          elevation: 5,
+                                          margin: EdgeInsets.all(8),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      width: MediaQuery.of(context)
+                                                              .size
+                                                              .width -
+                                                          100,
+                                                      child: Text("Tên thành viên",
+                                                          maxLines: 2,
+                                                          overflow:
+                                                              TextOverflow.ellipsis,
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              fontSize: 16)),
+                                                    ),
+                                                    CircleAvatar(
+                                                      radius: 20,
+                                                      backgroundColor: Colors.grey,
+                                                      backgroundImage: _members[index]
+                                                                  .avatar !=
+                                                              null
+                                                          ? NetworkImage(
+                                                              _members[index].avatar)
+                                                          : AssetImage(
+                                                              "assets/images/avatar.png"),
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(height: 4),
+                                                Text(_members[index].name ?? "",
+                                                    style: TextStyle(fontSize: 16)),
+                                                Container(
+                                                    margin: EdgeInsets.symmetric(
+                                                        vertical: 4),
+                                                    width: double.infinity,
+                                                    height: 0.5,
+                                                    color: Colors.grey),
+                                                Text("Ngày đóng tiền",
                                                     style: TextStyle(
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: 16)),
-                                              ),
-                                              CircleAvatar(
-                                                radius: 20,
-                                                backgroundColor: Colors.grey,
-                                                backgroundImage: _members[index]
-                                                            .avatar !=
-                                                        null
-                                                    ? NetworkImage(
-                                                        _members[index].avatar)
-                                                    : AssetImage(
-                                                        "assets/images/avatar.png"),
-                                              )
-                                            ],
+                                                SizedBox(height: 4),
+                                                Text(
+                                                    _members[index].paymentDate ?? "",
+                                                    style: TextStyle(fontSize: 16)),
+                                                Container(
+                                                    margin: EdgeInsets.symmetric(
+                                                        vertical: 4),
+                                                    width: double.infinity,
+                                                    height: 0.5,
+                                                    color: Colors.grey),
+                                                // doubleRows(
+                                                //     "Số điện thoại", "Email", true),
+                                                // SizedBox(height: 4),
+                                                // doubleRows(
+                                                //     _members[index].phoneNumber ?? "",
+                                                //     _members[index].email ?? "",
+                                                //     false),
+                                                // Container(
+                                                //     margin:
+                                                //         EdgeInsets.symmetric(vertical: 4),
+                                                //     width: double.infinity,
+                                                //     height: 0.5,
+                                                //     color: Colors.grey),
+                                                // doubleRows("Ngày tham gia",
+                                                //     "Ngày đóng tiền", true),
+                                                // SizedBox(height: 4),
+                                                // doubleRows(
+                                                //     _members[index].joinedDate ?? "",
+                                                //     _members[index].paymentDate ?? "",
+                                                //     false),
+                                                // Container(
+                                                //     margin:
+                                                //         EdgeInsets.symmetric(vertical: 4),
+                                                //     width: double.infinity,
+                                                //     height: 0.5,
+                                                //     color: Colors.grey),
+                                                // Text("Số tiền",
+                                                //     style: TextStyle(
+                                                //         fontWeight: FontWeight.bold,
+                                                //         fontSize: 16)),
+                                                // SizedBox(height: 4),
+                                                // Text(
+                                                //     '${_members[index].amount ?? ""} / ${_members[index].joiningFeePeriod ?? ""}',
+                                                //     style: TextStyle(fontSize: 16)),
+                                                // Container(
+                                                //     margin:
+                                                //         EdgeInsets.symmetric(vertical: 4),
+                                                //     width: double.infinity,
+                                                //     height: 0.5,
+                                                //     color: Colors.grey),
+                                                // Text("Ngày cập nhật",
+                                                //     style: TextStyle(
+                                                //         fontWeight: FontWeight.bold,
+                                                //         fontSize: 16)),
+                                                // SizedBox(height: 4),
+                                                // Text(_members[index].modifiedDate ?? "",
+                                                //     style: TextStyle(fontSize: 16)),
+                                                // Container(
+                                                //     margin:
+                                                //         EdgeInsets.symmetric(vertical: 4),
+                                                //     width: double.infinity,
+                                                //     height: 0.5,
+                                                //     color: Colors.grey),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    iconAction(
+                                                        ACTION_TYPE.MESSAGE,
+                                                        _members[index].memberId ==
+                                                            null,
+                                                        index: index),
+                                                    iconAction(
+                                                        ACTION_TYPE.EDIT,
+                                                        _members[index].memberId ==
+                                                            null,
+                                                        index: index),
+                                                    iconAction(
+                                                        ACTION_TYPE.REMIND,
+                                                        _members[index].memberId ==
+                                                            null,
+                                                        index: index),
+                                                    iconAction(
+                                                        ACTION_TYPE.DETAIL,
+                                                        _members[index].memberId ==
+                                                            null,
+                                                        index: index),
+                                                    iconAction(
+                                                        ACTION_TYPE.DELETE,
+                                                        _members[index].memberId ==
+                                                            null,
+                                                        index: index),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
                                           ),
-                                          SizedBox(height: 4),
-                                          Text(_members[index].name ?? "",
-                                              style: TextStyle(fontSize: 16)),
-                                          Container(
-                                              margin:
-                                                  EdgeInsets.symmetric(vertical: 4),
-                                              width: double.infinity,
-                                              height: 0.5,
-                                              color: Colors.grey),
-                                          Text("Ngày đóng tiền",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16)),
-                                          SizedBox(height: 4),
-                                          Text(_members[index].paymentDate ?? "",
-                                              style: TextStyle(fontSize: 16)),
-                                          Container(
-                                              margin:
-                                                  EdgeInsets.symmetric(vertical: 4),
-                                              width: double.infinity,
-                                              height: 0.5,
-                                              color: Colors.grey),
-                                          // doubleRows(
-                                          //     "Số điện thoại", "Email", true),
-                                          // SizedBox(height: 4),
-                                          // doubleRows(
-                                          //     _members[index].phoneNumber ?? "",
-                                          //     _members[index].email ?? "",
-                                          //     false),
-                                          // Container(
-                                          //     margin:
-                                          //         EdgeInsets.symmetric(vertical: 4),
-                                          //     width: double.infinity,
-                                          //     height: 0.5,
-                                          //     color: Colors.grey),
-                                          // doubleRows("Ngày tham gia",
-                                          //     "Ngày đóng tiền", true),
-                                          // SizedBox(height: 4),
-                                          // doubleRows(
-                                          //     _members[index].joinedDate ?? "",
-                                          //     _members[index].paymentDate ?? "",
-                                          //     false),
-                                          // Container(
-                                          //     margin:
-                                          //         EdgeInsets.symmetric(vertical: 4),
-                                          //     width: double.infinity,
-                                          //     height: 0.5,
-                                          //     color: Colors.grey),
-                                          // Text("Số tiền",
-                                          //     style: TextStyle(
-                                          //         fontWeight: FontWeight.bold,
-                                          //         fontSize: 16)),
-                                          // SizedBox(height: 4),
-                                          // Text(
-                                          //     '${_members[index].amount ?? ""} / ${_members[index].joiningFeePeriod ?? ""}',
-                                          //     style: TextStyle(fontSize: 16)),
-                                          // Container(
-                                          //     margin:
-                                          //         EdgeInsets.symmetric(vertical: 4),
-                                          //     width: double.infinity,
-                                          //     height: 0.5,
-                                          //     color: Colors.grey),
-                                          // Text("Ngày cập nhật",
-                                          //     style: TextStyle(
-                                          //         fontWeight: FontWeight.bold,
-                                          //         fontSize: 16)),
-                                          // SizedBox(height: 4),
-                                          // Text(_members[index].modifiedDate ?? "",
-                                          //     style: TextStyle(fontSize: 16)),
-                                          // Container(
-                                          //     margin:
-                                          //         EdgeInsets.symmetric(vertical: 4),
-                                          //     width: double.infinity,
-                                          //     height: 0.5,
-                                          //     color: Colors.grey),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              iconAction(ACTION_TYPE.MESSAGE,
-                                                  _members[index].memberId == null,
-                                                  index: index),
-                                              iconAction(ACTION_TYPE.EDIT,
-                                                  _members[index].memberId == null,
-                                                  index: index),
-                                              iconAction(ACTION_TYPE.REMIND,
-                                                  _members[index].memberId == null,
-                                                  index: index),
-                                              iconAction(ACTION_TYPE.DETAIL,
-                                                  _members[index].memberId == null,
-                                                  index: index),
-                                              iconAction(ACTION_TYPE.DELETE,
-                                                  _members[index].memberId == null,
-                                                  index: index),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  _members[index].memberId == null ? Positioned(
-                                      top: 8,
-                                      right: 8,
-                                      child: Icon(
-                                        Icons.warning_amber_rounded,
-                                        color: Colors.deepOrangeAccent,
-                                        size: 24,
-                                      )) : Container()
-                                ],
-                              );
-                            });
+                                        ),
+                                        _members[index].memberId == null
+                                            ? Positioned(
+                                                top: 8,
+                                                right: 8,
+                                                child: Icon(
+                                                  Icons.warning_amber_rounded,
+                                                  color: Colors.deepOrangeAccent,
+                                                  size: 24,
+                                                ))
+                                            : Container()
+                                      ],
+                                    );
+                                  });
+                            }
+                            return Center(
+                                child: Text(
+                              "Chưa có thành viên nào",
+                              style: TextStyle(fontSize: 18),
+                            ));
+                        }
                       }
-                      return Center(
-                          child: Text(
-                        "Chưa có thành viên nào",
-                        style: TextStyle(fontSize: 18),
-                      ));
-                  }
-                }
-                return CircularProgressIndicator();
-              }),
+                      return CircularProgressIndicator();
+                    }),
+              ],
+            ),
+          ),
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {

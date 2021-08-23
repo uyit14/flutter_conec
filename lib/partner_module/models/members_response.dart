@@ -42,6 +42,7 @@ class Member {
   int amount;
   String modifiedDate;
   String notes;
+  String groupName;
   List<Payment> payments;
 
   Member(
@@ -58,6 +59,7 @@ class Member {
       this.amount,
       this.modifiedDate,
       this.notes,
+        this.groupName,
       this.payments});
 
   Member.fromJson(Map<String, dynamic> json) {
@@ -73,6 +75,7 @@ class Member {
     amount = json['amount'];
     modifiedDate = json['modifiedDate'] == null ? null : Helper.formatDob(json['modifiedDate']);
     notes = json['notes'];
+    groupName = json['group'];
     if (json['payments'] != null) {
       payments = new List<Payment>();
       json['payments'].forEach((v) {

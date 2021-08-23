@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/partner_module/models/group_response.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/models/search_m_response.dart';
 import 'package:conecapp/partner_module/repository/partner_repository.dart';
@@ -42,23 +43,48 @@ class MemberBloc {
   Stream<ApiResponse<List<MemberSearch>>> get memberSearchStream =>
       _memberSearchController.stream;
 
+  //group
+  StreamController<ApiResponse<List<Group>>> _groupController =
+      StreamController();
+
+  Stream<ApiResponse<List<Group>>> get groupSearchStream =>
+      _groupController.stream;
+
   //member detail
   StreamController<ApiResponse<Member>> _memberDetailController =
-  StreamController();
+      StreamController();
 
   Stream<ApiResponse<Member>> get memberDetailStream =>
       _memberDetailController.stream;
 
-  void requestGetMembers(int page) async {
+  //gr detail
+  StreamController<ApiResponse<Group>> _groupDetailController =
+      StreamController();
+
+  Stream<ApiResponse<Group>> get groupDetailStream =>
+      _groupDetailController.stream;
+
+  void requestGetMembers(int page, { String userGroupId}) async {
     print('page $page');
     _membersController.sink.add(ApiResponse.completed([]));
     try {
-      final result = await _repository.getAllMember(page);
+      final result = await _repository.getAllMember(page, userGroupId: userGroupId);
       print("sink page $page ${result.members.length}");
       _membersController.sink.add(ApiResponse.completed(result.members));
     } catch (e) {
       _membersController.sink.addError(ApiResponse.error(e.toString()));
       debugPrint(e.toString());
+    }
+  }
+
+  void requestGetGroup() async {
+    _groupController.sink.add(ApiResponse.loading());
+    try {
+      final result = await _repository.fetchGroup();
+      _groupController.sink.add(ApiResponse.completed(result.groups));
+    } catch (e) {
+      _groupController.sink.add(ApiResponse.error(e.toString()));
+      print("requestGetGroup ERROR: " + e.toString());
     }
   }
 
@@ -100,6 +126,11 @@ class MemberBloc {
     return response;
   }
 
+  Future<bool> requestDeleteGroup(String id) async {
+    final response = await _repository.deleteGroup(id);
+    return response;
+  }
+
   Future<String> requestGetNote(String id) async {
     final response = await _repository.getNote(id);
     return response;
@@ -115,6 +146,16 @@ class MemberBloc {
     return response;
   }
 
+  Future<bool> addGroup(dynamic body) async {
+    final response = await _repository.addGroup(body);
+    return response;
+  }
+
+  Future<bool> updateGroup(dynamic body) async {
+    final response = await _repository.updateGroup(body);
+    return response;
+  }
+
   void requestGetMemberDetail(String id) async {
     _memberDetailController.sink.add(ApiResponse.loading());
     try {
@@ -126,11 +167,23 @@ class MemberBloc {
     }
   }
 
+  void requestGetGroupDetail(String groupId) async {
+    _groupDetailController.sink.add(ApiResponse.loading());
+    try {
+      final result = await _repository.fetchGroupDetail(groupId);
+      _groupDetailController.sink.add(ApiResponse.completed(result));
+    } catch (e) {
+      _groupDetailController.sink.addError(ApiResponse.error(e.toString()));
+    }
+  }
+
   void dispose() {
     _membersController?.close();
     _addMemberController?.close();
     _updateMemberController?.close();
     _memberSearchController?.close();
     _memberDetailController?.close();
+    _groupController?.close();
+    _groupDetailController?.close();
   }
 }

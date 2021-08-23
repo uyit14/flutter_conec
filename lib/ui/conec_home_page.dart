@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/partner_module/ui/member/add_member_page.dart';
+import 'package:conecapp/partner_module/ui/member/member_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_page.dart';
 import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_page.dart';
@@ -428,7 +429,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                         return IconButton(
                           icon: Icon(Icons.group, size: 32),
                           onPressed: (){
-                            if(!isShowPartner()){
+                            if(isShowPartner()){
                               Scaffold.of(context).openEndDrawer();
                             }else{
                               Navigator.of(context).pushNamed(FlMainPage.ROUTE_NAME);
@@ -471,7 +472,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     SizedBox(height: 24),
                     InkWell(
                       onTap: () {
-                        Navigator.of(context).pushNamed(MemberPage.ROUTE_NAME);
+                        Navigator.of(context).pushNamed(MemberGroupPage.ROUTE_NAME);
                       },
                       child: Row(
                         children: [

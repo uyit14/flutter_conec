@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/partner_module/models/group_response.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/models/p_notify_detail.dart';
 import 'package:conecapp/partner_module/models/p_notify_reponse.dart';
@@ -42,6 +43,20 @@ class PartnerRepository {
     return PNotifyDetailResponse.fromJson(response).notifyFull;
   }
 
+  Future<bool> addGroup(dynamic body) async {
+    final response = await _helper.post('/api/MemberGroup/AddUserGroup',
+        body: body, headers: await Helper.header());
+    print(response);
+    return response['status'];
+  }
+
+  Future<bool> updateGroup(dynamic body) async {
+    final response = await _helper.post('/api/MemberGroup/UpdateUserGroup',
+        body: body, headers: await Helper.header());
+    print(response);
+    return response['status'];
+  }
+
   Future<PNotifyFull> updatePNotify(dynamic body) async {
     final response = await _helper.post('/api/Notification/UpdateNotification',
         body: body, headers: await Helper.header());
@@ -57,12 +72,10 @@ class PartnerRepository {
   }
 
   //---------------------------member----------------------------------//
-  Future<MembersResponse> getAllMember(int page,
-      {String phoneNumber, String userName}) async {
-    String param1 = phoneNumber != null ? '&phoneNumber=$phoneNumber' : "";
-    String param2 = userName != null ? '&userName=$userName' : "";
+  Future<MembersResponse> getAllMember(int page, {String userGroupId}) async {
+    String param = userGroupId != null ? '&userGroupId=$userGroupId' : '';
     final response = await _helper.get(
-        '/api/Member/GetAllMembers?page=$page$param1$param2',
+        '/api/Member/GetAllMembers?page=$page$param',
         headers: await Helper.header());
     print(response);
     return MembersResponse.fromJson(response);
@@ -125,5 +138,29 @@ class PartnerRepository {
         body: body, headers: await Helper.header());
     print(response);
     return response['status'];
+  }
+
+  Future<GroupResponse> fetchGroup() async {
+    final response = await _helper.get(
+        '/api/MemberGroup/GetAllUserGroups',
+        headers: await Helper.header());
+    print(response);
+    return GroupResponse.fromJson(response);
+  }
+
+  Future<bool> deleteGroup(String id) async {
+    final response = await _helper.post("/api/MemberGroup/DeleteUserGroup?id=$id",
+        headers: await Helper.header());
+    print(response);
+    return response['status'];
+  }
+
+  Future<Group> fetchGroupDetail(
+      String groupId) async {
+    final response = await _helper.get(
+        "/api/MemberGroup/GetUserGroup?id=$groupId",
+        headers: await Helper.header());
+    print(response);
+    return Group.fromJson(response['group']);
   }
 }
