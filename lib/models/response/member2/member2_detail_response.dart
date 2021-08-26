@@ -15,6 +15,7 @@ class Member2DetailResponse {
 }
 
 class Member2Detail {
+  String userId;
   String userAvatar;
   String userName;
   String userPhoneNumber;
@@ -25,7 +26,8 @@ class Member2Detail {
   List<Payment2> payment2s;
 
   Member2Detail(
-      {this.userAvatar,
+      {this.userId,
+        this.userAvatar,
       this.userName,
       this.userPhoneNumber,
       this.userEmail,
@@ -35,6 +37,7 @@ class Member2Detail {
       this.payment2s});
 
   Member2Detail.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
     userAvatar = json['userAvatar']!=null && !json['userAvatar'].contains("http") ? Helper.baseURL + json['userAvatar'] : json['userAvatar'];
     userName = json['userName'];
     userPhoneNumber = json['userPhoneNumber'];

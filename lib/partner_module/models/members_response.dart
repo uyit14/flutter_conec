@@ -98,6 +98,7 @@ class Payment {
   String paymentBy;
   String created;
   String createdBy;
+  String joiningFeePeriod;
   String notes;
 
   Payment(
@@ -109,6 +110,7 @@ class Payment {
         this.paymentBy,
         this.created,
         this.createdBy,
+        this.joiningFeePeriod,
         this.notes});
 
   Payment.fromJson(Map<String, dynamic> json) {
@@ -120,6 +122,7 @@ class Payment {
     paymentBy = json['paymentBy'];
     created = json['created'] == null ? null : Helper.formatDob(json['created']);
     createdBy = json['createdBy'];
+    joiningFeePeriod = json['joiningFeePeriod'];
     notes = json['notes'];
   }
 }

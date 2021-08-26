@@ -78,7 +78,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
       _nameController = TextEditingController(text: _group.name);
       _orderNoController =
           TextEditingController(text: _group.orderNo.toString());
-      tag = Helper.paramsGroup.indexOf(_group.color);
+      //tag = Helper.paramsGroup.indexOf(_group.color);
       selectedStatus = Helper.statusResponse(_group.active);
       _timeController = TextEditingController(text: _group.times);
       _noteController = TextEditingController(text: _group.notes);
@@ -101,7 +101,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Tiêu đề *"),
+                  Text("Tên nhóm *"),
                   TextFormField(
                       maxLines: 1,
                       style: TextStyle(fontSize: 18),
@@ -117,27 +117,27 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
                     controller: _orderNoController,
                   ),
                   SizedBox(height: 12),
-                  Text("Màu sắc"),
-                  ChipsChoice<int>.single(
-                    value: tag,
-                    wrapped: true,
-                    onChanged: (val) => setState(() => tag = val),
-                    choiceItems: C2Choice.listFrom<int, String>(
-                      source: Helper.options,
-                      value: (i, v) => i,
-                      label: (i, v) => v,
-                      style: (i, v) {
-                        return C2ChoiceStyle(
-                            color: getColorByTag(i),
-                            showCheckmark: i == tag,
-                            labelStyle: TextStyle(
-                                fontWeight: i == tag
-                                    ? FontWeight.bold
-                                    : FontWeight.w400));
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 12),
+                  // Text("Màu sắc"),
+                  // ChipsChoice<int>.single(
+                  //   value: tag,
+                  //   wrapped: true,
+                  //   onChanged: (val) => setState(() => tag = val),
+                  //   choiceItems: C2Choice.listFrom<int, String>(
+                  //     source: Helper.options,
+                  //     value: (i, v) => i,
+                  //     label: (i, v) => v,
+                  //     style: (i, v) {
+                  //       return C2ChoiceStyle(
+                  //           color: getColorByTag(i),
+                  //           showCheckmark: i == tag,
+                  //           labelStyle: TextStyle(
+                  //               fontWeight: i == tag
+                  //                   ? FontWeight.bold
+                  //                   : FontWeight.w400));
+                  //     },
+                  //   ),
+                  // ),
+                  // SizedBox(height: 12),
                   Text("Trạng thái"),
                   Row(
                     children: Helper.statusList
@@ -225,7 +225,7 @@ class _UpdateGroupPageState extends State<UpdateGroupPage> {
     GroupRequest _groupRequest = GroupRequest(
         userGroupId: _group.userGroupId,
         name: _nameController.text,
-        color: Helper.paramsGroup[tag],
+        //color: Helper.paramsGroup[tag],
         notes: _noteController.text,
         orderNo: _orderNoController.text != null
             ? int.parse(_orderNoController.text)

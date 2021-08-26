@@ -359,7 +359,7 @@ class _MemberPageState extends State<MemberPage> {
         break;
       case ACTION_TYPE.DETAIL:
         Navigator.of(context).pushNamed(MemberDetailPage.ROUTE_NAME,
-            arguments: _members[index].id);
+            arguments: _members[index]);
         break;
       case ACTION_TYPE.DELETE:
         Helper.showDeleteDialog(context, "Xóa thành viên",

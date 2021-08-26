@@ -69,7 +69,7 @@ class _Member2PageState extends State<Member2Page> {
                                 Navigator.of(context).pushNamed(Member2DetailPage.ROUTE_NAME,
                                     arguments: {
                                       'id': member2List[index].id,
-                                      'title': member2List[index].title,
+                                      'title': member2List[index].title
                                     });
                               },
                               child: Card(

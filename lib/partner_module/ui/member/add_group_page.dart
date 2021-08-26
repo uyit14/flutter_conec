@@ -68,7 +68,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Tiêu đề *"),
+                  Text("Tên nhóm *"),
                   TextFormField(
                       maxLines: 1,
                       style: TextStyle(fontSize: 18),
@@ -91,27 +91,27 @@ class _AddGroupPageState extends State<AddGroupPage> {
                         });
                       }),
                   SizedBox(height: 12),
-                  Text("Màu sắc"),
-                  ChipsChoice<int>.single(
-                    value: tag,
-                    wrapped: true,
-                    onChanged: (val) => setState(() => tag = val),
-                    choiceItems: C2Choice.listFrom<int, String>(
-                      source: Helper.options,
-                      value: (i, v) => i,
-                      label: (i, v) => v,
-                      style: (i, v) {
-                        return C2ChoiceStyle(
-                            color: getColorByTag(i),
-                            showCheckmark: i == tag,
-                            labelStyle: TextStyle(
-                                fontWeight: i == tag
-                                    ? FontWeight.bold
-                                    : FontWeight.w400));
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 12),
+                  // Text("Màu sắc"),
+                  // ChipsChoice<int>.single(
+                  //   value: tag,
+                  //   wrapped: true,
+                  //   onChanged: (val) => setState(() => tag = val),
+                  //   choiceItems: C2Choice.listFrom<int, String>(
+                  //     source: Helper.options,
+                  //     value: (i, v) => i,
+                  //     label: (i, v) => v,
+                  //     style: (i, v) {
+                  //       return C2ChoiceStyle(
+                  //           color: getColorByTag(i),
+                  //           showCheckmark: i == tag,
+                  //           labelStyle: TextStyle(
+                  //               fontWeight: i == tag
+                  //                   ? FontWeight.bold
+                  //                   : FontWeight.w400));
+                  //     },
+                  //   ),
+                  // ),
+                  // SizedBox(height: 12),
                   Text("Trạng thái"),
                   Row(
                     children: Helper.statusList
@@ -205,7 +205,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
   void doAddAction() async {
     GroupRequest _groupRequest = GroupRequest(
         name: _title,
-        color: Helper.paramsGroup[tag],
+        //color: Helper.paramsGroup[tag],
         notes: notes,
         orderNo: _orderNo,
         times: _time,

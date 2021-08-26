@@ -30,65 +30,66 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text("Thành viên")),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text("Nhóm/ Lớp")),
         body: SingleChildScrollView(
           child: Container(
               margin: EdgeInsets.all(8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      FlatButton(
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: Colors.blue,
-                                  width: 1,
-                                  style: BorderStyle.solid),
-                              borderRadius: BorderRadius.circular(50)),
-                          textColor: Colors.black,
-                          color: Colors.blue,
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(AddGroupPage.ROUTE_NAME)
-                                .then((value) {
-                              if (value == 1) {
-                                _memberBloc.requestGetGroup();
-                              }
-                            });
-                          },
-                          child: Text("Thêm nhóm / lớp",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white))),
-                      FlatButton(
-                          shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: Colors.green,
-                                  width: 1,
-                                  style: BorderStyle.solid),
-                              borderRadius: BorderRadius.circular(50)),
-                          textColor: Colors.black,
-                          color: Colors.green,
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(MemberPage.ROUTE_NAME, arguments: groupId);
-                          },
-                          child: Text("Tất cả thành viên",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white))),
-                    ],
-                  ),
-                  SizedBox(height: 12),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //   children: [
+                  //     FlatButton(
+                  //         shape: RoundedRectangleBorder(
+                  //             side: BorderSide(
+                  //                 color: Colors.blue,
+                  //                 width: 1,
+                  //                 style: BorderStyle.solid),
+                  //             borderRadius: BorderRadius.circular(50)),
+                  //         textColor: Colors.black,
+                  //         color: Colors.blue,
+                  //         onPressed: () {
+                  //           Navigator.of(context)
+                  //               .pushNamed(AddGroupPage.ROUTE_NAME)
+                  //               .then((value) {
+                  //             if (value == 1) {
+                  //               _memberBloc.requestGetGroup();
+                  //             }
+                  //           });
+                  //         },
+                  //         child: Text("Thêm nhóm / lớp",
+                  //             maxLines: 1,
+                  //             overflow: TextOverflow.ellipsis,
+                  //             style: TextStyle(
+                  //                 fontSize: 15,
+                  //                 fontWeight: FontWeight.w400,
+                  //                 color: Colors.white))),
+                  //     FlatButton(
+                  //         shape: RoundedRectangleBorder(
+                  //             side: BorderSide(
+                  //                 color: Colors.green,
+                  //                 width: 1,
+                  //                 style: BorderStyle.solid),
+                  //             borderRadius: BorderRadius.circular(50)),
+                  //         textColor: Colors.black,
+                  //         color: Colors.green,
+                  //         onPressed: () {
+                  //           Navigator.of(context)
+                  //               .pushNamed(MemberPage.ROUTE_NAME, arguments: groupId);
+                  //         },
+                  //         child: Text("Tất cả thành viên",
+                  //             maxLines: 1,
+                  //             overflow: TextOverflow.ellipsis,
+                  //             style: TextStyle(
+                  //                 fontSize: 15,
+                  //                 fontWeight: FontWeight.w400,
+                  //                 color: Colors.white))),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 12),
                   Text("Danh sách nhóm"),
                   SizedBox(height: 4),
                   StreamBuilder<ApiResponse<List<Group>>>(
@@ -116,13 +117,14 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                                     return Stack(
                                       children: [
                                         InkWell(
-                                          onTap: (){
+                                          onTap: () {
                                             Navigator.of(context)
                                                 .pushNamed(
-                                                GroupDetailPage
-                                                    .ROUTE_NAME,
-                                                arguments:
-                                                _groups[index]);
+                                                    GroupDetailPage.ROUTE_NAME,
+                                                    arguments: _groups[index])
+                                                .then((value) {
+                                              _memberBloc.requestGetGroup();
+                                            });
                                           },
                                           child: Container(
                                             margin: EdgeInsets.only(bottom: 6),
@@ -135,65 +137,78 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: <Widget>[
-                                                    Text("Tên nhóm",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 12)),
-                                                    SizedBox(
-                                                      height: 2,
-                                                    ),
+                                                    // Text("Tên nhóm",
+                                                    //     style: TextStyle(
+                                                    //         fontWeight:
+                                                    //             FontWeight.w400,
+                                                    //         fontSize: 12)),
+                                                    // SizedBox(
+                                                    //   height: 2,
+                                                    // ),
                                                     Text(_groups[index].name,
                                                         maxLines: 1,
-                                                        overflow:
-                                                            TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             fontSize: 14)),
                                                     Container(
-                                                        margin:
-                                                            EdgeInsets.symmetric(
+                                                        margin: EdgeInsets
+                                                            .symmetric(
                                                                 vertical: 4),
                                                         width: double.infinity,
                                                         height: 0.5,
-                                                        color: Colors.grey),
-                                                    Text("Số lượng thành viên",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 12)),
-                                                    SizedBox(
-                                                      height: 2,
+                                                        color: Colors.white),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                            _groups[index]
+                                                                .memberCount
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 14)),
+                                                        Text("  Thành viên",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                fontSize: 12)),
+                                                      ],
                                                     ),
-                                                    Text(
-                                                        _groups[index]
-                                                            .memberCount
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 14)),
                                                     Container(
-                                                        margin:
-                                                            EdgeInsets.symmetric(
+                                                        margin: EdgeInsets
+                                                            .symmetric(
                                                                 vertical: 4),
                                                         width: double.infinity,
                                                         height: 0.5,
-                                                        color: Colors.grey),
-                                                    Text("Thời gian tập luyện: ",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            fontSize: 12)),
+                                                        color: Colors.white),
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                            "Thời gian tập luyện: ",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                fontSize: 12)),
+                                                        Text(
+                                                            _groups[index]
+                                                                    .times ??
+                                                                "",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 14)),
+                                                      ],
+                                                    ),
                                                     SizedBox(
                                                       height: 2,
                                                     ),
-                                                    Text(_groups[index].times ?? "",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 14)),
                                                     // Container(
                                                     //     margin:
                                                     //         EdgeInsets.symmetric(
@@ -286,7 +301,11 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                                                   ),
                                                   PopupMenuItem(
                                                     value: 'delete',
-                                                    child: Text('Xóa lớp', style: TextStyle(color: Colors.red),),
+                                                    child: Text(
+                                                      'Xóa lớp',
+                                                      style: TextStyle(
+                                                          color: Colors.red),
+                                                    ),
                                                   )
                                                 ];
                                               },
@@ -294,7 +313,7 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                                                 if (value == "delete") {
                                                   Helper.showDeleteDialog(
                                                       context,
-                                                      "Xóa thành viên",
+                                                      "Xóa nhóm",
                                                       "Bạn có chắc chắn muốn xóa nhóm này?",
                                                       () async {
                                                     final result =
@@ -313,6 +332,8 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                                                       Navigator.of(context)
                                                           .pop();
                                                     } else {
+                                                      Navigator.of(context)
+                                                          .pop();
                                                       Fluttertoast.showToast(
                                                           msg:
                                                               "Vui lòng thử lại",
@@ -354,20 +375,21 @@ class _MemberGroupPageState extends State<MemberGroupPage> {
                 ],
               )),
         ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: () {
-      //     Navigator.of(context)
-      //         .pushNamed(AddGroupPage.ROUTE_NAME)
-      //         .then((value) {
-      //       if (value == 1) {
-      //         _memberBloc.requestGetGroup();
-      //       }
-      //     });
-      //   },
-      //   label: Text('Thêm nhóm / lớp'),
-      //   icon: Icon(Icons.add),
-      //   backgroundColor: Colors.green,
-      // ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.of(context)
+                .pushNamed(AddGroupPage.ROUTE_NAME)
+                .then((value) {
+              if (value == 1) {
+                _memberBloc.requestGetGroup();
+              }
+            });
+          },
+          label: Text('Thêm nhóm / lớp'),
+          icon: Icon(Icons.add),
+          backgroundColor: Colors.green,
+        ),
+      ),
     );
   }
 }

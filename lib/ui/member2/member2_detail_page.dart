@@ -3,8 +3,11 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/member2/member2_detail_response.dart';
+import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../../common/helper.dart';
 
 import 'member2_bloc.dart';
 
@@ -39,7 +42,7 @@ class _Member2DetailPageState extends State<Member2DetailPage> {
         child: Scaffold(
       appBar: AppBar(title: Text("Thông tin CLB/ HLV")),
       body: Container(
-        margin: EdgeInsets.all(12),
+        margin: EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 60),
         child: SingleChildScrollView(
           child: StreamBuilder<ApiResponse<Member2Detail>>(
               stream: _memberBloc.member2DetailStream,
@@ -144,63 +147,53 @@ class _Member2DetailPageState extends State<Member2DetailPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text("Ngày đóng",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            SizedBox(height: 4),
-                                            Text(
+                                            doubleRows2(
+                                                "Ngày đóng",
                                                 _payment[index].paymentDate ??
-                                                    "",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: _payment[index]
-                                                            .status
-                                                            .startsWith("C")
-                                                        ? Colors.red
-                                                        : Colors.green)),
+                                                    ""),
                                             Container(
                                                 margin: EdgeInsets.symmetric(
                                                     vertical: 4),
                                                 width: double.infinity,
                                                 height: 0.5,
-                                                color: Colors.grey),
-                                            Text("Số tiền",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            SizedBox(height: 4),
-                                            Text(
-                                                _payment[index]
-                                                        .amount
-                                                        .toString() ??
-                                                    "",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: _payment[index]
-                                                            .status
-                                                            .startsWith("C")
-                                                        ? Colors.red
-                                                        : Colors.green)),
+                                                color: Colors.white),
+                                            doubleRows2(
+                                                "Số tiền",
+                                                Helper.formatMoney(
+                                                    _payment[index].amount)),
                                             Container(
                                                 margin: EdgeInsets.symmetric(
                                                     vertical: 4),
                                                 width: double.infinity,
                                                 height: 0.5,
-                                                color: Colors.grey),
-                                            Text("Trạng thái",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            SizedBox(height: 4),
-                                            Text(_payment[index].status,
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: _payment[index]
-                                                            .status
-                                                            .startsWith("C")
-                                                        ? Colors.red
-                                                        : Colors.green)),
+                                                color: Colors.white),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text("Trạng thái",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          fontSize: 16)),
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                      _payment[index].status,
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: _payment[index]
+                                                                  .status
+                                                                  .startsWith(
+                                                                      "C")
+                                                              ? Colors.red
+                                                              : Colors.green)),
+                                                ),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -215,6 +208,14 @@ class _Member2DetailPageState extends State<Member2DetailPage> {
                 return Center(child: CircularProgressIndicator());
               }),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: Text("Nhắn tin"),
+        icon: Icon(Icons.chat),
+        onPressed: () {
+          Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
+              arguments: {"memberId": _member.userId});
+        },
       ),
     ));
   }
@@ -238,7 +239,11 @@ class _Member2DetailPageState extends State<Member2DetailPage> {
 
   Widget infoCard(String info, TYPE type) {
     return InkWell(
-      onTap: null,
+      onTap: type == TYPE.PHONE
+          ? () async {
+              await launch('tel:$info');
+            }
+          : null,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Row(
@@ -252,12 +257,32 @@ class _Member2DetailPageState extends State<Member2DetailPage> {
                 textAlign: TextAlign.left,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: type == TYPE.PHONE ? Colors.blue : Colors.black),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Widget doubleRows2(String strFirst, strSecond) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: Text(strFirst,
+              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+        ),
+        Expanded(
+          child: Text(strSecond,
+              textAlign: TextAlign.right,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        ),
+      ],
     );
   }
 }

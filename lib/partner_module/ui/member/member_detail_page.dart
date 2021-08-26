@@ -31,7 +31,8 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    id = ModalRoute.of(context).settings.arguments;
+    _member = ModalRoute.of(context).settings.arguments;
+    id = _member.id;
     _memberBloc.requestGetMemberDetail(id);
   }
 
@@ -50,75 +51,89 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: AppBar(title: Text("Thông tin thành viên"), actions: [
-        PopupMenuButton(
-          itemBuilder: (context) {
-            return [
-              _member.memberId != null ? PopupMenuItem(
-                value: 'message',
-                child: Text('Gửi tin nhắn'),
-              ) : null,
-              PopupMenuItem(
-                value: 'edit',
-                child: Text('Chỉnh sửa'),
-              ),
-              _member.memberId != null ? PopupMenuItem(
-                value: 'notify',
-                child: Text('Nhắc nhỡ'),
-              ) : null,
-              PopupMenuItem(
-                value: 'swap',
-                child: Text('Chuyển lớp'),
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                child: Text('Xóa lớp', style: TextStyle(color: Colors.red),),
-              )
-            ];
-          },
-          onSelected: (String value) {
-            switch(value){
-              case 'message':
-                Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
-                    arguments: {"memberId": _member.memberId});
-                break;
-              case 'edit':
-                Navigator.of(context)
-                    .pushNamed(UpdateMemberPage.ROUTE_NAME, arguments: _member)
-                    .then((value) {
-                  if (value == 1) {
-                    _memberBloc.requestGetMemberDetail(id);
-                  }
-                });
-                break;
-              case 'notify':
-                sendNotify(_member.id);
-                break;
-              case 'swap':
-                Navigator.of(context).pushNamed(SwapGroup.ROUTE_NAME, arguments: _member).then((value) {
-                  if(value == 1){
-                    _memberBloc.requestGetMemberDetail(id);
-                  }
-                });
-                break;
-              case 'delete':
-                Helper.showDeleteDialog(context, "Xóa thành viên",
-                    "Bạn có chắc chắn muốn xóa thành viên này?", () async {
-                      final result =
-                      await _memberBloc.requestDeleteMember(_member.id);
-                      if (result) {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      } else {
-                        Fluttertoast.showToast(
-                            msg: "Vui lòng thử lại", gravity: ToastGravity.CENTER);
-                      }
-                    });
-                break;
-            }
-          },
-        )
-      ],),
+      appBar: AppBar(
+        title: Text(_member.name ?? ""),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                // _member.memberId != null
+                //     ? PopupMenuItem(
+                //         value: 'message',
+                //         child: Text('Gửi tin nhắn'),
+                //       )
+                //     : null,
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Text('Chỉnh sửa'),
+                ),
+                _member.memberId != null
+                    ? PopupMenuItem(
+                        value: 'notify',
+                        child: Text('Nhắc nhỡ đóng tiền'),
+                      )
+                    : null,
+                PopupMenuItem(
+                  value: 'swap',
+                  child: Text('Chuyển lớp'),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Text(
+                    'Xóa thành viên',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                )
+              ];
+            },
+            onSelected: (String value) {
+              switch (value) {
+                case 'message':
+                  Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
+                      arguments: {"memberId": _member.memberId});
+                  break;
+                case 'edit':
+                  Navigator.of(context)
+                      .pushNamed(UpdateMemberPage.ROUTE_NAME,
+                          arguments: _member)
+                      .then((value) {
+                    if (value == 1) {
+                      _memberBloc.requestGetMemberDetail(id);
+                    }
+                  });
+                  break;
+                case 'notify':
+                  sendNotify(_member.id);
+                  break;
+                case 'swap':
+                  Navigator.of(context)
+                      .pushNamed(SwapGroup.ROUTE_NAME, arguments: _member)
+                      .then((value) {
+                    if (value == 1) {
+                      _memberBloc.requestGetMemberDetail(id);
+                    }
+                  });
+                  break;
+                case 'delete':
+                  Helper.showDeleteDialog(context, "Xóa thành viên",
+                      "Bạn có chắc chắn muốn xóa thành viên này?", () async {
+                    final result =
+                        await _memberBloc.requestDeleteMember(_member.id);
+                    if (result) {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "Vui lòng thử lại",
+                          gravity: ToastGravity.CENTER);
+                    }
+                  });
+                  break;
+              }
+            },
+          )
+        ],
+      ),
       body: Container(
         margin: EdgeInsets.all(12),
         child: SingleChildScrollView(
@@ -138,133 +153,78 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                         children: [
                           Card(
                             elevation: 4,
-                            margin: EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 6, horizontal: 12),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // infoCard(_member.userName ?? "Tên tài khoản",
+                                  //     TYPE.ACCOUNT),
+                                  // SizedBox(height: 8),
+                                  // infoCard(_member.name ?? "Họ tên", TYPE.NAME),
+                                  // SizedBox(height: 8),
+                                  // infoCard(_member.phoneNumber ?? "Số điện thoại",
+                                  //     TYPE.PHONE),
+                                  // SizedBox(height: 8),
+                                  // infoCard(_member.email ?? "Email", TYPE.EMAIL),
+                                  doubleRowsWithFlex("Email", _member.email ?? ""),
+                                  SizedBox(height: 8),
+                                  doubleRows2("Số điện thoại",
+                                      _member.phoneNumber ?? ""),
+                                  SizedBox(height: 8),
+                                  doubleRows2(
+                                      "Nhóm / lớp", _member.groupName ?? ""),
+                                  SizedBox(height: 8),
+                                  doubleRows2("Ngày tham gia",
+                                      _member.joinedDate ?? ""),
+                                  SizedBox(height: 8),
+                                  doubleRowsWithFlex("Ngày thanh toán kế tiếp",
+                                      _member.paymentDate ?? ""),
+                                  SizedBox(height: 8),
+                                  doubleRows2("Phí tham gia",
+                                      '${Helper.formatMoney(_member.amount)} / ${_member.joiningFeePeriod}'),
+                                  SizedBox(height: 8),
+                                  doubleRows2("Ghi chú", _member.notes ?? ""),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Card(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                SizedBox(height: 12),
-                                infoCard(_member.userName ?? "Tên tài khoản",
-                                    TYPE.ACCOUNT),
-                                SizedBox(height: 8),
-                                infoCard(_member.name ?? "Họ tên", TYPE.NAME),
-                                SizedBox(height: 8),
-                                infoCard(_member.phoneNumber ?? "Số điện thoại",
-                                    TYPE.PHONE),
-                                SizedBox(height: 8),
-                                infoCard(_member.email ?? "Email", TYPE.EMAIL),
+                                FlatButton.icon(
+                                    onPressed: _member.memberId != null
+                                        ? () {
+                                            Navigator.of(context).pushNamed(
+                                                ChatPage.ROUTE_NAME,
+                                                arguments: {
+                                                  "memberId": _member.memberId
+                                                });
+                                          }
+                                        : null,
+                                    icon: Icon(Icons.messenger,
+                                        color: _member.memberId == null
+                                            ? Colors.grey[300]
+                                            : Colors.indigoAccent),
+                                    label: Text("Nhắn tin")),
+                                FlatButton.icon(
+                                    onPressed: _member.memberId != null
+                                        ? () {
+                                            sendNotify(_member.id);
+                                          }
+                                        : null,
+                                    icon: Icon(Icons.notifications,
+                                        color: _member.memberId == null
+                                            ? Colors.grey[300]
+                                            : Colors.yellow),
+                                    label: Text("Nhắc nhỡ đóng tiền"))
                               ],
                             ),
                           ),
-                          SizedBox(height: 8),
-                          Text("Nhóm / lớp"),
-                          Card(
-                            child: Card(
-                              margin: EdgeInsets.symmetric(horizontal: 0),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Icon(Icons.group, color: Colors.blue),
-                                    SizedBox(width: 16),
-                                    Text(
-                                      _member.groupName ?? "",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text("Ngày tham gia"),
-                          Card(
-                            child: Card(
-                              margin: EdgeInsets.symmetric(horizontal: 0),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Icon(Icons.date_range, color: Colors.blue),
-                                    SizedBox(width: 16),
-                                    Text(
-                                      _member.joinedDate ?? "",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text("Ngày thanh toán kế tiếp"),
-                          Card(
-                            child: Card(
-                              margin: EdgeInsets.symmetric(horizontal: 0),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 12, horizontal: 8),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Icon(Icons.monetization_on, color: Colors.blue),
-                                    SizedBox(width: 16),
-                                    Text(
-                                      _member.paymentDate ?? "",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Phí tham gia"),
-                              SizedBox(height: 4),
-                              TextFormField(
-                                maxLines: 1,
-                                enabled: false,
-                                keyboardType: TextInputType.number,
-                                textInputAction: TextInputAction.done,
-                                style: TextStyle(fontSize: 18),
-                                decoration: InputDecoration(
-                                    labelText:
-                                        '${_member.amount} / ${_member.joiningFeePeriod}',
-                                    hintText: 'Nhập phí tham gia',
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.green, width: 1)),
-                                    contentPadding: EdgeInsets.only(left: 8),
-                                    prefixIcon: Icon(
-                                      Icons.attach_money,
-                                      color: Colors.blue,
-                                    ),
-                                    border: const OutlineInputBorder()),
-                              ),
-                              SizedBox(
-                                height: 12,
-                              )
-                            ],
-                          ),
-                          SizedBox(height: 8),
-                          Text("Ghi chú"),
-                          SizedBox(height: 4),
-                          Text(_member.notes ?? ""),
                           SizedBox(height: 12),
                           Text("Danh sách thanh toán"),
                           SizedBox(height: 4),
@@ -278,123 +238,102 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                                   children: [
                                     Card(
                                       elevation: 5,
+                                      color: _payment[index].paymentDate != null
+                                          ? Colors.green[300]
+                                          : Colors.red[300],
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text("Ngày đóng dự kiến",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            SizedBox(height: 4),
-                                            Text(_payment[index].created ?? "",
-                                                style: TextStyle(fontSize: 16)),
+                                            doubleRows("Ngày đóng dự kiến",
+                                                _payment[index].created ?? ""),
+                                            SizedBox(height: 6),
+                                            doubleRows(
+                                                "Số tiền dự kiến",
+                                                Helper.formatMoney(
+                                                    _payment[index].amount)),
                                             Container(
                                                 margin: EdgeInsets.symmetric(
                                                     vertical: 4),
                                                 width: double.infinity,
                                                 height: 0.5,
                                                 color: Colors.grey),
-                                            Text("Số tiền dự kiến",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            SizedBox(height: 4),
-                                            Text(
-                                                _payment[index]
-                                                        .amount
-                                                        .toString() ??
-                                                    "",
-                                                style: TextStyle(fontSize: 16)),
-                                            Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    vertical: 4),
-                                                width: double.infinity,
-                                                height: 0.5,
-                                                color: Colors.grey),
-                                            Text("Ngày đóng",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            SizedBox(height: 4),
-                                            Text(
+                                            doubleRows(
+                                                "Ngày đóng",
                                                 _payment[index].paymentDate ??
-                                                    "",
-                                                style: TextStyle(fontSize: 16)),
-                                            Container(
-                                                margin: EdgeInsets.symmetric(
-                                                    vertical: 4),
-                                                width: double.infinity,
-                                                height: 0.5,
-                                                color: Colors.grey),
-                                            Text("Số tiền",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            SizedBox(height: 4),
-                                            Text(
-                                                _payment[index].paymentAmount !=
-                                                        null
-                                                    ? _payment[index]
-                                                        .paymentAmount
-                                                        .toString()
-                                                    : "",
-                                                style: TextStyle(fontSize: 16)),
+                                                    ""),
+                                            SizedBox(height: 6),
+                                            doubleRows(
+                                              "Số tiền",
+                                              Helper.formatMoney(_payment[index]
+                                                  .paymentAmount),
+                                            ),
                                           ],
                                         ),
                                       ),
                                     ),
-                                    Positioned(
-                                      right: 10,
-                                      top: 6,
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                              icon: Icon(Icons.edit,
-                                                  color: Colors.blue, size: 30),
-                                              onPressed: () {
-                                                Navigator.of(context).pushNamed(
-                                                    CompleteUpdatePayment
-                                                        .ROUTE_NAME,
-                                                    arguments: {
-                                                      "payment": _member
-                                                          .payments[index],
-                                                      "type":
-                                                          PAYMENT_TYPE.UPDATE
-                                                    }).then((value) {
-                                                  if (value == 1) {
-                                                    _memberBloc
-                                                        .requestGetMemberDetail(
-                                                            id);
-                                                  }
-                                                });
-                                              }),
-                                          IconButton(
-                                              icon: Icon(Icons.check_box,
-                                                  color: Colors.green,
-                                                  size: 30),
-                                              onPressed: () {
-                                                Navigator.of(context).pushNamed(
-                                                    CompleteUpdatePayment
-                                                        .ROUTE_NAME,
-                                                    arguments: {
-                                                      "payment": _member
-                                                          .payments[index],
-                                                      "type":
-                                                          PAYMENT_TYPE.COMPLETE
-                                                    }).then((value) {
-                                                  if (value == 1) {
-                                                    _memberBloc
-                                                        .requestGetMemberDetail(
-                                                            id);
-                                                  }
-                                                });
-                                              })
-                                        ],
-                                      ),
-                                    )
+                                    _payment[index].paymentDate == null
+                                        ? Positioned(
+                                            right: -8,
+                                            top: -4,
+                                            child: PopupMenuButton(
+                                              itemBuilder: (context) {
+                                                return [
+                                                  PopupMenuItem(
+                                                    value: 'complete',
+                                                    child: Text('Thanh toán'),
+                                                  ),
+                                                  PopupMenuItem(
+                                                    value: 'update',
+                                                    child: Text('Chỉnh sửa'),
+                                                  ),
+                                                ];
+                                              },
+                                              onSelected: (String value) {
+                                                switch (value) {
+                                                  case 'complete':
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                            CompleteUpdatePayment
+                                                                .ROUTE_NAME,
+                                                            arguments: {
+                                                          "payment": _member
+                                                              .payments[index],
+                                                          "type": PAYMENT_TYPE
+                                                              .COMPLETE
+                                                        }).then((value) {
+                                                      if (value == 1) {
+                                                        _memberBloc
+                                                            .requestGetMemberDetail(
+                                                                id);
+                                                      }
+                                                    });
+                                                    break;
+                                                  case 'update':
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                            CompleteUpdatePayment
+                                                                .ROUTE_NAME,
+                                                            arguments: {
+                                                          "payment": _member
+                                                              .payments[index],
+                                                          "type": PAYMENT_TYPE
+                                                              .UPDATE
+                                                        }).then((value) {
+                                                      if (value == 1) {
+                                                        _memberBloc
+                                                            .requestGetMemberDetail(
+                                                                id);
+                                                      }
+                                                    });
+                                                    break;
+                                                }
+                                              },
+                                            ),
+                                          )
+                                        : Container()
                                   ],
                                 );
                               })
@@ -441,6 +380,56 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget doubleRows(String strFirst, strSecond) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: Text(strFirst,
+              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+        ),
+        Expanded(
+          child: Text(strSecond,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        ),
+      ],
+    );
+  }
+
+  Widget doubleRows2(String strFirst, strSecond) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: Text(strFirst,
+              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+        ),
+        Expanded(
+          child: Text(strSecond,
+              textAlign: TextAlign.right,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        ),
+      ],
+    );
+  }
+
+  Widget doubleRowsWithFlex(String strFirst, strSecond) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(strFirst,
+            style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+        Spacer(),
+        Container(
+          alignment: Alignment.centerRight,
+          child: Text(strSecond,
+              textAlign: TextAlign.right,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        ),
+      ],
     );
   }
 }

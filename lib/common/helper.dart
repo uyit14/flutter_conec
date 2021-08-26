@@ -36,6 +36,12 @@ class Helper {
         : "";
   }
 
+  static String formatMoney(int data){
+    var formatter = NumberFormat('#,###');
+    if(data == 0 || data == null) return "";
+    return '${formatter.format(data)} VND';
+  }
+
   static String formatDob(String dob) {
     return dob != null
         ? DateFormat("dd-MM-yyyy").format(DateTime.parse(dob))

@@ -456,7 +456,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                       child: CircleAvatar(
                         radius: 50,
                         backgroundColor: Colors.grey,
-                        backgroundImage: _profile.avatar != null
+                        backgroundImage: _profile!= null && _profile.avatar != null
                             ? CachedNetworkImageProvider(_profile.avatar)
                             : AssetImage("assets/images/avatar.png"),
                       ),
@@ -477,8 +477,18 @@ class _ConecHomePageState extends State<ConecHomePage> {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.person_add, color: Colors.red, size: 32),
-                          SizedBox(width: 32),
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.person_add,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(8),
+                            shape: CircleBorder(),
+                          ),
                           Text("Thêm thành viên",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w400))
@@ -492,9 +502,18 @@ class _ConecHomePageState extends State<ConecHomePage> {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.group,
-                              color: Colors.red, size: 32),
-                          SizedBox(width: 28),
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.group,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(8),
+                            shape: CircleBorder(),
+                          ),
                           Text("Thành viên",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w400))
@@ -509,9 +528,18 @@ class _ConecHomePageState extends State<ConecHomePage> {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.notifications,
-                              color: Colors.red, size: 32),
-                          SizedBox(width: 32),
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.notifications,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(8),
+                            shape: CircleBorder(),
+                          ),
                           Text("Thông báo",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w400))
@@ -542,10 +570,19 @@ class _ConecHomePageState extends State<ConecHomePage> {
                                     _numberMessage.length == 0
                                 ? false
                                 : true,
-                            child: Icon(Icons.chat_bubble,
-                                color: Colors.red, size: 32),
+                            child: RawMaterialButton(
+                              onPressed: () {},
+                              elevation: 2.0,
+                              fillColor: Colors.white,
+                              child: Icon(
+                                Icons.chat_bubble,
+                                color: Colors.red,
+                                size: 30,
+                              ),
+                              padding: EdgeInsets.all(8),
+                              shape: CircleBorder(),
+                            ),
                           ),
-                          SizedBox(width: 32),
                           Text("Trò chuyện",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w400))

@@ -31,7 +31,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
   final picker = ImagePicker();
   bool _isCallApi;
   var _paymentDate;
-  var _joinDate;
+  //var _joinDate;
   int _selectedType;
   bool _isLoading = false;
   String _type = "";
@@ -73,12 +73,12 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
             int.parse(_member.paymentDate.substring(6)),
             int.parse(_member.paymentDate.substring(3, 5)),
             int.parse(_member.paymentDate.substring(0, 2)));
-        if (_member.joinedDate != null) {
-          _joinDate = DateTime(
-              int.parse(_member.joinedDate.substring(6)),
-              int.parse(_member.joinedDate.substring(3, 5)),
-              int.parse(_member.joinedDate.substring(0, 2)));
-        }
+        // if (_member.joinedDate != null) {
+        //   _joinDate = DateTime(
+        //       int.parse(_member.joinedDate.substring(6)),
+        //       int.parse(_member.joinedDate.substring(3, 5)),
+        //       int.parse(_member.joinedDate.substring(0, 2)));
+        // }
       });
       _isCallApi = false;
     }
@@ -240,66 +240,66 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text("Ngày tham gia"),
-                  Card(
-                    child: InkWell(
-                      onTap: () {
-                        DatePicker.showDatePicker(context,
-                            showTitleActions: true,
-                            minTime: DateTime(1945, 1, 1),
-                            maxTime: DateTime(2030, 31, 12),
-                            theme: DatePickerTheme(
-                                headerColor: Colors.orange,
-                                backgroundColor: Colors.blue,
-                                itemStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18),
-                                doneStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16)), onChanged: (date) {
-                          setState(() {
-                            _joinDate = date != null ? date : null;
-                          });
-                        }, onConfirm: (date) {
-                          setState(() {
-                            _joinDate = date != null ? date : null;
-                          });
-                        },
-                            currentTime: _joinDate.toString().contains("0001")
-                                ? DateTime(2000, 6, 16)
-                                : _joinDate,
-                            locale: LocaleType.vi);
-                      },
-                      child: Card(
-                        margin: EdgeInsets.symmetric(horizontal: 0),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Icon(Icons.date_range),
-                              SizedBox(width: 16),
-                              Text(
-                                _joinDate != null
-                                    ? DateFormat('dd-MM-yyyy').format(
-                                        _joinDate ?? DateTime(2000, 6, 16))
-                                    : "Chọn ngày",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              ),
-                              Spacer(),
-                              Text("Thay đổi",
-                                  style: AppTheme.changeTextStyle(true))
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8),
+                  // Text("Ngày tham gia"),
+                  // Card(
+                  //   child: InkWell(
+                  //     onTap: () {
+                  //       DatePicker.showDatePicker(context,
+                  //           showTitleActions: true,
+                  //           minTime: DateTime(1945, 1, 1),
+                  //           maxTime: DateTime(2030, 31, 12),
+                  //           theme: DatePickerTheme(
+                  //               headerColor: Colors.orange,
+                  //               backgroundColor: Colors.blue,
+                  //               itemStyle: TextStyle(
+                  //                   color: Colors.white,
+                  //                   fontWeight: FontWeight.bold,
+                  //                   fontSize: 18),
+                  //               doneStyle: TextStyle(
+                  //                   color: Colors.white,
+                  //                   fontSize: 16)), onChanged: (date) {
+                  //         setState(() {
+                  //           _joinDate = date != null ? date : null;
+                  //         });
+                  //       }, onConfirm: (date) {
+                  //         setState(() {
+                  //           _joinDate = date != null ? date : null;
+                  //         });
+                  //       },
+                  //           currentTime: _joinDate.toString().contains("0001")
+                  //               ? DateTime(2000, 6, 16)
+                  //               : _joinDate,
+                  //           locale: LocaleType.vi);
+                  //     },
+                  //     child: Card(
+                  //       margin: EdgeInsets.symmetric(horizontal: 0),
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.symmetric(
+                  //             vertical: 12, horizontal: 8),
+                  //         child: Row(
+                  //           mainAxisAlignment: MainAxisAlignment.start,
+                  //           children: <Widget>[
+                  //             Icon(Icons.date_range),
+                  //             SizedBox(width: 16),
+                  //             Text(
+                  //               _joinDate != null
+                  //                   ? DateFormat('dd-MM-yyyy').format(
+                  //                       _joinDate ?? DateTime(2000, 6, 16))
+                  //                   : "Chọn ngày",
+                  //               textAlign: TextAlign.left,
+                  //               style: TextStyle(
+                  //                   fontSize: 16, fontWeight: FontWeight.w500),
+                  //             ),
+                  //             Spacer(),
+                  //             Text("Thay đổi",
+                  //                 style: AppTheme.changeTextStyle(true))
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 8),
                   Text("Ngày thanh toán kế tiếp"),
                   Card(
                     child: InkWell(
@@ -559,7 +559,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
         amount: _joiningFreeController.text.length > 0
             ? int.parse(_joiningFreeController.text, onError: (source) => null)
             : null,
-        joinedDate: myEncode(_joinDate),
+        //joinedDate: myEncode(_joinDate),
         paymentDate: myEncode(_paymentDate),
         joiningFeePeriod: _type,
         avatarSource: _image != null
@@ -604,7 +604,7 @@ class _UpdateMemberPageState extends State<UpdateMemberPage> {
   }
 
   bool _isPostButtonEnable() {
-    if (_joinDate == null ||
+    if (
         _paymentDate == null ||
         _joiningFreeController.text.length == 0) {
       return false;
