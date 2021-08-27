@@ -116,7 +116,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                       .toString());
               print("with content ui: " + comments[0].content);
               int deleteAt =
-              comments.indexWhere((element) => element.id == parentId);
+                  comments.indexWhere((element) => element.id == parentId);
               if (deleteAt == -1) {
                 _itemsByCategoryBloc.allComments
                     .removeWhere((element) => element.id == parentId);
@@ -125,7 +125,6 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
               setState(() {
                 _addDataToList = true;
               });
-
             });
             comments.clear();
             Navigator.pop(context);
@@ -177,7 +176,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
           child: Column(
             children: <Widget>[
               InkWell(
-                onTap: () {
+                onTap: Helper.isNews(widget.itemDetail.topicId) ? null : () {
                   showModalBottomSheet(
                       isScrollControlled: true,
                       context: context,
@@ -211,11 +210,17 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    Image.asset(
-                      "assets/images/heart_1.png",
-                      height: 18,
-                      width: 18,
-                    ),
+                    Helper.isNews(widget.itemDetail.topicId)
+                        ? Icon(
+                            Icons.thumb_up,
+                            size: 18,
+                            color: Colors.blue,
+                          )
+                        : Image.asset(
+                            "assets/images/heart_1.png",
+                            height: 18,
+                            width: 18,
+                          ),
                     SizedBox(width: 8),
                     Text(
                       _likeCount.toString() ?? "0",
@@ -258,24 +263,31 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        IndexedStack(
-                          index: _isLikeOwner ? 0 : 1,
-                          children: [
-                            Image.asset(
-                              "assets/images/heart_1.png",
-                              height: 18,
-                              width: 18,
-                            ),
-                            Image.asset(
-                              "assets/images/heart_2.png",
-                              height: 18,
-                              width: 18,
-                            ),
-                          ],
-                        ),
+                        Helper.isNews(widget.itemDetail.topicId)
+                            ? Icon(
+                                Icons.thumb_up,
+                                size: 18,
+                                color:
+                                    _isLikeOwner ? Colors.blue : Colors.black87,
+                              )
+                            : IndexedStack(
+                                index: _isLikeOwner ? 0 : 1,
+                                children: [
+                                  Image.asset(
+                                    "assets/images/heart_1.png",
+                                    height: 18,
+                                    width: 18,
+                                  ),
+                                  Image.asset(
+                                    "assets/images/heart_2.png",
+                                    height: 18,
+                                    width: 18,
+                                  ),
+                                ],
+                              ),
                         SizedBox(width: 8),
                         Text(
-                          "Theo dõi",
+                          Helper.isNews(widget.itemDetail.topicId) ? "Thích" : "Theo dõi",
                           style: TextStyle(
                             fontSize: 16,
                             color: _isLikeOwner ? Colors.blue : Colors.black87,

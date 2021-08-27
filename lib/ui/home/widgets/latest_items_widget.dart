@@ -45,7 +45,6 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       itemCount: items.length,
-                      padding: EdgeInsets.all(4),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3),
                       itemBuilder: (_, index) {
@@ -103,7 +102,7 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                                   alignment: Alignment.bottomCenter,
                                   child: Container(
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 16),
+                                        EdgeInsets.symmetric(horizontal: 6),
                                     decoration: BoxDecoration(
                                         color:
                                             Color(0xFF0E3311).withOpacity(0.5),
@@ -121,10 +120,10 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                                         Text(
                                           items[index].title,
                                           style: TextStyle(
-                                              fontSize: 18,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.w600,
                                               color: Colors.white),
-                                          maxLines: 1,
+                                          maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         // Html(
@@ -137,7 +136,7 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                                         Text(
                                           parsedString ?? "",
                                           style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 12,
                                               color: Colors.white),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,

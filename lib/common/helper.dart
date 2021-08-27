@@ -71,6 +71,13 @@ class Helper {
     return shortestSide > 600 ? true : false;
   }
 
+  static String topicNews = "333f691d-6595-443d-bae3-9a2681025b53";
+  static String topicAds = "333f691d-6585-443a-bae3-9a2681025b53";
+
+  static bool isNews(String topicId){
+    return topicId == topicNews;
+  }
+
   static void navigatorToPost(
       String postId, String topicId, String title, BuildContext context) {
     if (topicId == "333f691d-6595-443d-bae3-9a2681025b53") {
