@@ -355,7 +355,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
   }
 
   bool isShowPartner() {
-    return _profile != null && (_profile.type == "Trainer" || _profile.type == "Club");
+    return _profile != null &&
+        (_profile.type == "Trainer" || _profile.type == "Club");
   }
 
   @override
@@ -380,7 +381,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 ),
                 title: Text(
                   "Conec Sport",
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
                 elevation: 0,
                 iconTheme: IconThemeData(color: Colors.black, size: 26),
@@ -392,6 +393,28 @@ class _ConecHomePageState extends State<ConecHomePage> {
                         ItemByCategory.ROUTE_NAME,
                         arguments: {'id': null, 'title': null}),
                   ),
+                  Badge(
+                    padding: const EdgeInsets.all(3.0),
+                    position: BadgePosition.topEnd(top: 4, end: -2),
+                    badgeContent: Text(
+                      _numberMessage,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    badgeColor: Colors.yellowAccent,
+                    showBadge: _numberMessage.length == 0 ? false : true,
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(ChatListPage.ROUTE_NAME)
+                            .then((value) => getNumberOfNotify());
+                      },
+                      icon: Icon(Icons.chat_bubble, size: 28),
+                    ),
+                  ),
+                  SizedBox(width: 8),
                   _token != null && !_isTokenExpired
                       ? Badge(
                           padding: const EdgeInsets.all(3.0),
@@ -424,20 +447,21 @@ class _ConecHomePageState extends State<ConecHomePage> {
                   SizedBox(
                     width: 8,
                   ),
-                  _selectedPageIndex == 0 ? Builder(
-                      builder: (context) {
-                        return IconButton(
-                          icon: Icon(Icons.group, size: 32),
-                          onPressed: (){
-                            if(isShowPartner()){
-                              Scaffold.of(context).openEndDrawer();
-                            }else{
-                              Navigator.of(context).pushNamed(FlMainPage.ROUTE_NAME);
-                            }
-                          },
-                        );
-                      }
-                  ) : Container(),
+                  _selectedPageIndex == 0
+                      ? Builder(builder: (context) {
+                          return IconButton(
+                            icon: Icon(Icons.group, size: 32),
+                            onPressed: () {
+                              if (isShowPartner()) {
+                                Scaffold.of(context).openEndDrawer();
+                              } else {
+                                Navigator.of(context)
+                                    .pushNamed(FlMainPage.ROUTE_NAME);
+                              }
+                            },
+                          );
+                        })
+                      : Container(),
                 ],
               )
             : null,
@@ -456,9 +480,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
                       child: CircleAvatar(
                         radius: 50,
                         backgroundColor: Colors.grey,
-                        backgroundImage: _profile!= null && _profile.avatar != null
-                            ? CachedNetworkImageProvider(_profile.avatar)
-                            : AssetImage("assets/images/avatar.png"),
+                        backgroundImage:
+                            _profile != null && _profile.avatar != null
+                                ? CachedNetworkImageProvider(_profile.avatar)
+                                : AssetImage("assets/images/avatar.png"),
                       ),
                     ),
                     SizedBox(height: 8),
@@ -498,7 +523,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     SizedBox(height: 16),
                     InkWell(
                       onTap: () {
-                        Navigator.of(context).pushNamed(MemberGroupPage.ROUTE_NAME);
+                        Navigator.of(context)
+                            .pushNamed(MemberGroupPage.ROUTE_NAME);
                       },
                       child: Row(
                         children: [
@@ -612,37 +638,37 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     width: double.infinity,
                   )
                 : Container(),
-            Positioned(
-              bottom: 55,
-              right: 16,
-              child: Badge(
-                padding: const EdgeInsets.all(8),
-                position: BadgePosition.topEnd(top: -10, end: -7),
-                badgeContent: Text(
-                  _numberMessage,
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                ),
-                badgeColor: Colors.red,
-                showBadge:
-                    _isSpeedOpen || _numberMessage.length == 0 ? false : true,
-                child: mySpeedDial.SpeedDial(
-                  number: _numberMessage,
-                  onOpenZalo: () =>
-                      launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
-                  onOpenMess: () =>
-                      launch("https://messenger.com/t/www.conec.vn"),
-                  onOpenChat: () {
-                    Navigator.of(context)
-                        .pushNamed(ChatListPage.ROUTE_NAME)
-                        .then((value) => getNumberOfNotify());
-                  },
-                  onFabAction: onFabAction,
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 55,
+            //   right: 16,
+            //   child: Badge(
+            //     padding: const EdgeInsets.all(8),
+            //     position: BadgePosition.topEnd(top: -10, end: -7),
+            //     badgeContent: Text(
+            //       _numberMessage,
+            //       style: TextStyle(
+            //           fontSize: 14,
+            //           color: Colors.white,
+            //           fontWeight: FontWeight.bold),
+            //     ),
+            //     badgeColor: Colors.red,
+            //     showBadge:
+            //         _isSpeedOpen || _numberMessage.length == 0 ? false : true,
+            //     child: mySpeedDial.SpeedDial(
+            //       number: _numberMessage,
+            //       onOpenZalo: () =>
+            //           launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
+            //       onOpenMess: () =>
+            //           launch("https://messenger.com/t/www.conec.vn"),
+            //       onOpenChat: () {
+            //         Navigator.of(context)
+            //             .pushNamed(ChatListPage.ROUTE_NAME)
+            //             .then((value) => getNumberOfNotify());
+            //       },
+            //       onFabAction: onFabAction,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
         floatingActionButton: Container(

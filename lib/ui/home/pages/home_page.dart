@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                                   .toList(),
                             ),
                             Positioned(
-                              bottom: 24,
+                              bottom: 8,
                               child: Container(
                                 height: 24,
                                 width:
@@ -207,8 +207,8 @@ class _HomePageState extends State<HomePage> {
                                       slider.length,
                                       itemBuilder: (context, index) {
                                         return Container(
-                                          width: 16,
-                                          height: 16,
+                                          width: 12,
+                                          height: 12,
                                           margin: EdgeInsets.only(
                                               right: 6),
                                           decoration: BoxDecoration(

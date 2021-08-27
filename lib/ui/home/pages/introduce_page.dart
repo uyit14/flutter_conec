@@ -18,6 +18,8 @@ import 'package:html/parser.dart';
 
 import '../../../common/globals.dart' as globals;
 import '../../chat/chat_page.dart';
+import 'image_viewer_intropage.dart';
+import 'image_viewer_page.dart';
 import 'item_detail_page.dart';
 
 class IntroducePage extends StatefulWidget {
@@ -412,33 +414,50 @@ class _IntroducePageState extends State<IntroducePage> {
                                         scrollDirection: Axis.horizontal,
                                         child: Row(
                                           children: profile.images
-                                              .map((image) => Container(
-                                                    height: 100,
-                                                    margin: EdgeInsets.only(
-                                                        right: 8),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              6),
-                                                      child: CachedNetworkImage(
-                                                        imageUrl:
-                                                            image.fileName,
-                                                        placeholder: (context,
-                                                                url) =>
-                                                            Image.asset(
-                                                                "assets/images/placeholder.png",
-                                                                width: 100,
-                                                                height: 100),
-                                                        errorWidget: (context,
-                                                                url, error) =>
-                                                            Image.asset(
-                                                          "assets/images/error.png",
+                                              .map((image) => InkWell(
+                                                    onTap: () {
+                                                      Navigator.of(context).push(
+                                                          PageRouteBuilder(
+                                                              opaque: false,
+                                                              pageBuilder: (BuildContext
+                                                                          context,
+                                                                      _,
+                                                                      __) =>
+                                                                  ImageViewerIntroPage(
+                                                                      profile
+                                                                          .images,
+                                                                      image
+                                                                          .id)));
+                                                    },
+                                                    child: Container(
+                                                      height: 100,
+                                                      margin: EdgeInsets.only(
+                                                          right: 8),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl:
+                                                              image.fileName,
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              Image.asset(
+                                                                  "assets/images/placeholder.png",
+                                                                  width: 100,
+                                                                  height: 100),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Image.asset(
+                                                            "assets/images/error.png",
+                                                            width: 100,
+                                                            height: 100,
+                                                          ),
+                                                          fit: BoxFit.cover,
                                                           width: 100,
                                                           height: 100,
                                                         ),
-                                                        fit: BoxFit.cover,
-                                                        width: 100,
-                                                        height: 100,
                                                       ),
                                                     ),
                                                   ))
@@ -662,7 +681,8 @@ class _IntroducePageState extends State<IntroducePage> {
           label: Text("Nhắn tin"),
           icon: Icon(Icons.chat),
           onPressed: () {
-            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME, arguments: {"memberId" : clubId});
+            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
+                arguments: {"memberId": clubId});
           },
         ),
       ),
