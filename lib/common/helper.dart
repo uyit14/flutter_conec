@@ -590,7 +590,7 @@ class Helper {
 
   static const List<String> reportList = [
     "Thông tin không đúng thực tế",
-    "Nội dung vi phạm",
+    "Đã đóng cửa",
     "Lừa đảo",
     "Trùng tin đăng"
   ];

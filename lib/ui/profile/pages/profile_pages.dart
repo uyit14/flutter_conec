@@ -502,12 +502,16 @@ class _ProfilePageState extends State<ProfilePage> {
                 SizedBox(height: 8),
                 InkWell(
                   onTap: () async {
-                    registerDeviceToken(globals.deviceToken, "");
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setString('token', null);
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        LoginPage.ROUTE_NAME, (Route<dynamic> route) => false);
+                    Helper.showDeleteDialog(context, "Đăng xuất",
+                        "Bạn có chắc chắn muốn đăng xuất?", () async {
+                      registerDeviceToken(globals.deviceToken, "");
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setString('token', null);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          LoginPage.ROUTE_NAME,
+                          (Route<dynamic> route) => false);
+                    });
                   },
                   child: _token != null && !_isTokenExpired
                       ? Row(
