@@ -26,7 +26,7 @@ class _FlMainPageState extends State<FlMainPage> {
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
-            title: Text("Thành viên"),
+            title: Text(_selectedPageIndex == 0 ? "Đã tham gia" : "Theo dõi"),
           ),
           body: Column(
             children: [
@@ -48,7 +48,7 @@ class _FlMainPageState extends State<FlMainPage> {
                         onPressed: () => _selectPage(0),
                         textColor:
                             _selectedPageIndex == 0 ? Colors.red : Colors.grey,
-                        child: Text("Thành viên",
+                        child: Text("Đã tham gia",
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold))),
                   ),

@@ -381,18 +381,25 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 ),
                 title: Text(
                   "Conec Sport",
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 elevation: 0,
-                iconTheme: IconThemeData(color: Colors.black, size: 26),
+                iconTheme: IconThemeData(color: Colors.black, size: 24),
                 backgroundColor: Colors.redAccent[200],
                 actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.search, size: 32),
-                    onPressed: () => Navigator.of(context).pushNamed(
+                  // IconButton(
+                  //   icon: Icon(Icons.search, size: 28),
+                  //   onPressed: () => Navigator.of(context).pushNamed(
+                  //       ItemByCategory.ROUTE_NAME,
+                  //       arguments: {'id': null, 'title': null}),
+                  // ),
+                  InkWell(
+                    onTap: () => Navigator.of(context).pushNamed(
                         ItemByCategory.ROUTE_NAME,
                         arguments: {'id': null, 'title': null}),
+                    child: Icon(Icons.search, size: 28),
                   ),
+                  SizedBox(width: 8),
                   Badge(
                     padding: const EdgeInsets.all(3.0),
                     position: BadgePosition.topEnd(top: 4, end: -2),
@@ -405,13 +412,13 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     ),
                     badgeColor: Colors.yellowAccent,
                     showBadge: _numberMessage.length == 0 ? false : true,
-                    child: IconButton(
-                      onPressed: () {
+                    child: InkWell(
+                      onTap: () {
                         Navigator.of(context)
                             .pushNamed(ChatListPage.ROUTE_NAME)
                             .then((value) => getNumberOfNotify());
                       },
-                      icon: Icon(Icons.chat_bubble, size: 28),
+                      child: Icon(Icons.chat_bubble, size: 24),
                     ),
                   ),
                   SizedBox(width: 8),
@@ -422,7 +429,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                           badgeContent: Text(
                             _number.toString(),
                             style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 10,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -431,7 +438,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                           child: InkWell(
                             child: Icon(
                               Icons.notifications,
-                              size: 32,
+                              size: 26,
                               color: Colors.black87.withOpacity(0.8),
                             ),
                             onTap: () => Navigator.of(context)
@@ -445,13 +452,13 @@ class _ConecHomePageState extends State<ConecHomePage> {
                         )
                       : Container(),
                   SizedBox(
-                    width: 8,
+                    width: 8  ,
                   ),
                   _selectedPageIndex == 0
                       ? Builder(builder: (context) {
-                          return IconButton(
-                            icon: Icon(Icons.group, size: 32),
-                            onPressed: () {
+                          return InkWell(
+                            child: Icon(Icons.group, size: 28),
+                            onTap: () {
                               if (isShowPartner()) {
                                 Scaffold.of(context).openEndDrawer();
                               } else {
@@ -462,6 +469,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                           );
                         })
                       : Container(),
+                  SizedBox(width: 4)
                 ],
               )
             : null,

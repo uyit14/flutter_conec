@@ -97,105 +97,111 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     style:
                         TextStyle(fontWeight: FontWeight.w400, fontSize: 12)),
                 SizedBox(height: 4),
-                Card(
-                  elevation: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        // Text("Tên nhóm",
-                        //     style: TextStyle(
-                        //         fontWeight: FontWeight.w400, fontSize: 12)),
-                        // SizedBox(
-                        //   height: 4,
-                        // ),
-                        // Text(_group.name,
-                        //     maxLines: 1,
-                        //     overflow: TextOverflow.ellipsis,
-                        //     style: TextStyle(
-                        //         fontWeight: FontWeight.bold, fontSize: 16)),
-                        // Container(
-                        //     margin: EdgeInsets.symmetric(vertical: 4),
-                        //     width: double.infinity,
-                        //     height: 0.5,
-                        //     color: Colors.grey),
-                        // Text("Số lượng thành viên",
-                        //     style: TextStyle(
-                        //         fontWeight: FontWeight.w400, fontSize: 12)),
-                        // SizedBox(
-                        //   height: 4,
-                        // ),
-                        // Text(_group.memberCount.toString(),
-                        //     style: TextStyle(
-                        //         fontWeight: FontWeight.w500, fontSize: 15)),
-                        // Container(
-                        //     margin: EdgeInsets.symmetric(vertical: 4),
-                        //     width: double.infinity,
-                        //     height: 0.5,
-                        //     color: Colors.grey),
-                        Row(
-                          children: [
-                            Text("Thời gian tập luyện: ",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400, fontSize: 12)),
-                            Text(_group.times ?? "",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15)),
+                Stack(
+                  children: [
+                    Card(
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            // Text("Tên nhóm",
+                            //     style: TextStyle(
+                            //         fontWeight: FontWeight.w400, fontSize: 12)),
+                            // SizedBox(
+                            //   height: 4,
+                            // ),
+                            // Text(_group.name,
+                            //     maxLines: 1,
+                            //     overflow: TextOverflow.ellipsis,
+                            //     style: TextStyle(
+                            //         fontWeight: FontWeight.bold, fontSize: 16)),
+                            // Container(
+                            //     margin: EdgeInsets.symmetric(vertical: 4),
+                            //     width: double.infinity,
+                            //     height: 0.5,
+                            //     color: Colors.grey),
+                            // Text("Số lượng thành viên",
+                            //     style: TextStyle(
+                            //         fontWeight: FontWeight.w400, fontSize: 12)),
+                            // SizedBox(
+                            //   height: 4,
+                            // ),
+                            // Text(_group.memberCount.toString(),
+                            //     style: TextStyle(
+                            //         fontWeight: FontWeight.w500, fontSize: 15)),
+                            // Container(
+                            //     margin: EdgeInsets.symmetric(vertical: 4),
+                            //     width: double.infinity,
+                            //     height: 0.5,
+                            //     color: Colors.grey),
+                            Row(
+                              children: [
+                                Text("Thời gian tập luyện: ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12)),
+                                Text(_group.times ?? "",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15)),
+                              ],
+                            ),
+                            //doubleRows("Thời gian tập luyện", _group.times.toString()),
+                            // Container(
+                            //     margin: EdgeInsets.symmetric(vertical: 4),
+                            //     width: double.infinity,
+                            //     height: 0.5,
+                            //     color: Colors.grey),
+                            Row(
+                              children: [
+                                Text("Ghi chú:  ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 12)),
+                                Text(_group.notes ?? "",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15)),
+                              ],
+                            ),
                           ],
                         ),
-                        //doubleRows("Thời gian tập luyện", _group.times.toString()),
-                        // Container(
-                        //     margin: EdgeInsets.symmetric(vertical: 4),
-                        //     width: double.infinity,
-                        //     height: 0.5,
-                        //     color: Colors.grey),
-                        Row(
-                          children: [
-                            Text("Ghi chú:  ",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w400, fontSize: 12)),
-                            Text(_group.notes ?? "",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 15)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: FlatButton.icon(
-                      onPressed: () {
-                        Helper.showDeleteDialog(context, "Xóa nhóm",
-                            "Bạn có chắc chắn muốn xóa nhóm này?", () async {
-                          final result = await _memberBloc
-                              .requestDeleteGroup(_group.userGroupId);
-                          if (result) {
-                            Fluttertoast.showToast(
-                                msg: "Xóa thành công",
-                                gravity: ToastGravity.CENTER);
-                            Navigator.of(context).pop(1);
-                            Navigator.of(context).pop(1);
-                          } else {
-                            Navigator.of(context)
-                                .pop();
-                            Fluttertoast.showToast(
-                                msg: "Vui lòng thử lại",
-                                gravity: ToastGravity.CENTER);
-                          }
-                        });
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
                       ),
-                      label: Text(
-                        "Xóa nhóm",
-                        style: TextStyle(color: Colors.red),
-                      )),
+                    ),
+                    Positioned(
+                        bottom: -6,
+                        right: -28,
+                        child: FlatButton(
+                          onPressed: () {
+                            Helper.showDeleteDialog(context, "Xóa nhóm",
+                                "Bạn có chắc chắn muốn xóa nhóm này?",
+                                () async {
+                              final result = await _memberBloc
+                                  .requestDeleteGroup(_group.userGroupId);
+                              if (result) {
+                                Fluttertoast.showToast(
+                                    msg: "Xóa thành công",
+                                    gravity: ToastGravity.CENTER);
+                                Navigator.of(context).pop(1);
+                                Navigator.of(context).pop(1);
+                              } else {
+                                Navigator.of(context).pop();
+                                Fluttertoast.showToast(
+                                    msg: "Vui lòng thử lại",
+                                    gravity: ToastGravity.CENTER);
+                              }
+                            });
+                          },
+                          child: Icon(
+                            Icons.delete,
+                            size: 24,
+                            color: Colors.red,
+                          ),
+                        ))
+                  ],
                 ),
                 SizedBox(height: 12),
                 Text("    Danh sách thành viên",
@@ -395,20 +401,24 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                             child: PopupMenuButton(
                                               itemBuilder: (context) {
                                                 return [
-                                                  _members[index].memberId != null
+                                                  _members[index].memberId !=
+                                                          null
                                                       ? PopupMenuItem(
                                                           value: 'message',
-                                                          child: Text('Gửi tin nhắn'),
+                                                          child: Text(
+                                                              'Gửi tin nhắn'),
                                                         )
                                                       : null,
                                                   PopupMenuItem(
                                                     value: 'edit',
                                                     child: Text('Chỉnh sửa'),
                                                   ),
-                                                  _members[index].memberId != null
+                                                  _members[index].memberId !=
+                                                          null
                                                       ? PopupMenuItem(
                                                           value: 'notify',
-                                                          child: Text('Nhắc nhỡ đóng tiền'),
+                                                          child: Text(
+                                                              'Nhắc nhỡ đóng tiền'),
                                                         )
                                                       : null,
                                                   PopupMenuItem(
@@ -563,15 +573,11 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
       children: [
         Expanded(
           child: Text(strFirst,
-              style: TextStyle(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16)),
+              style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
         ),
         Expanded(
           child: Text(strSecond,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16)),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         ),
       ],
     );

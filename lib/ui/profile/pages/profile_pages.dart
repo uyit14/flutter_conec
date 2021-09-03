@@ -202,353 +202,358 @@ class _ProfilePageState extends State<ProfilePage> {
           ? Container(
               height: Helper.getScreenHeight(context),
               child: UILoadingOpacity())
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Stack(
+          : Stack(
+            children: [
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    ClipPath(
-                      clipper: CustomProfileClipper(),
-                      child: Container(
-                        height: 120,
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                          colors: [Colors.red, Colors.red[200]],
-                        )),
+                    Stack(
+                      children: <Widget>[
+                        ClipPath(
+                          clipper: CustomProfileClipper(),
+                          child: Container(
+                            height: 120,
+                            decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                              colors: [Colors.red, Colors.red[200]],
+                            )),
+                          ),
+                        ),
+                        Positioned(
+                          left: 18,
+                          top: 18,
+                          child: _token != null && !_isTokenExpired
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(_name ?? "Chưa cập nhật họ tên",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w500)),
+                                    Text(
+                                        _province == null
+                                            ? "Chưa cập nhật địa chỉ"
+                                            : _address,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400)),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .pushNamed(DetailProfilePage.ROUTE_NAME)
+                                            .then((value) =>
+                                                _profileBloc.requestGetProfile());
+                                      },
+                                      child: Text("Xem trang cá nhân",
+                                          style: TextStyle(
+                                              color: Colors.white54,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w400)),
+                                    )
+                                  ],
+                                )
+                              : Column(
+                                  children: <Widget>[
+                                    Text(
+                                        _isTokenExpired
+                                            ? "Phiên đăng nhập hết hạn"
+                                            : "Bạn chưa đăng nhập",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w500)),
+                                    FlatButton.icon(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8)),
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pushReplacementNamed(
+                                                  LoginPage.ROUTE_NAME);
+                                        },
+                                        color: Colors.white,
+                                        textColor: Colors.red,
+                                        icon: Icon(Icons.assignment_ind),
+                                        label: Text(
+                                            _isTokenExpired
+                                                ? "Đăng nhập lại"
+                                                : 'Đăng nhập ngay',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500))),
+                                  ],
+                                ),
+                        ),
+
+                      ],
+                    ),
+                    SizedBox(height: 32),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(OpenLetterPage.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.message,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: CircleBorder(),
+                          ),
+                          Text(
+                            "Thư ngỏ",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w400),
+                          )
+                        ],
                       ),
                     ),
-                    Positioned(
-                      left: 18,
-                      top: 18,
-                      child: _token != null && !_isTokenExpired
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    SizedBox(height: 8),
+                    // isShowPartner() ? InkWell(
+                    //   onTap: () {
+                    //     Navigator.of(context).pushNamed(PartnerMain.ROUTE_NAME);
+                    //   },
+                    //   child: Row(
+                    //     children: <Widget>[
+                    //       RawMaterialButton(
+                    //         onPressed: () {},
+                    //         elevation: 2.0,
+                    //         fillColor: Colors.white,
+                    //         child: Icon(
+                    //           Icons.account_tree,
+                    //           color: Colors.red,
+                    //           size: 30,
+                    //         ),
+                    //         padding: EdgeInsets.all(15.0),
+                    //         shape: CircleBorder(),
+                    //       ),
+                    //       Text(
+                    //         "Thành viên",
+                    //         style: TextStyle(
+                    //             fontSize: 20, fontWeight: FontWeight.w400),
+                    //       )
+                    //     ],
+                    //   ),
+                    // ) : Container(),
+                    // isShowPartner() ? SizedBox(height: 8) : Container(),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(GuidePage.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.add_to_home_screen,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: CircleBorder(),
+                          ),
+                          Text(
+                            "Hướng dẫn sử dụng",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w400),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(TermConditionPage.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.verified_user,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: CircleBorder(),
+                          ),
+                          Text(
+                            "Chính sách & điều khoản",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w400),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    InkWell(
+                      onTap: () {
+                        showRemindDialog(context);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.card_giftcard,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: CircleBorder(),
+                          ),
+                          Text(
+                            "Quà của tôi",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w400),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(HelpPage.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.help,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: CircleBorder(),
+                          ),
+                          Text(
+                            "Trợ giúp",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w400),
+                          )
+                        ],
+                      ),
+                    ),
+                    _token != null && !_isTokenExpired
+                        ? SizedBox(height: 8)
+                        : Container(),
+                    _token != null && !_isTokenExpired && !_isSocial
+                        ? InkWell(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .pushNamed(ChangePassWordPage.ROUTE_NAME)
+                                  .then((value) {
+                                if (value != null) {
+                                  ChangePassWordResponse changePassWordResponse =
+                                      value;
+                                  updateToken(changePassWordResponse.token,
+                                      changePassWordResponse.expires);
+                                }
+                              });
+                            },
+                            child: Row(
                               children: <Widget>[
-                                Text(_name ?? "Chưa cập nhật họ tên",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w500)),
+                                RawMaterialButton(
+                                  onPressed: () {},
+                                  elevation: 2.0,
+                                  fillColor: Colors.white,
+                                  child: Icon(
+                                    Icons.swap_horizontal_circle,
+                                    color: Colors.red,
+                                    size: 30,
+                                  ),
+                                  padding: EdgeInsets.all(15.0),
+                                  shape: CircleBorder(),
+                                ),
                                 Text(
-                                    _province == null
-                                        ? "Chưa cập nhật địa chỉ"
-                                        : _address,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400)),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .pushNamed(DetailProfilePage.ROUTE_NAME)
-                                        .then((value) =>
-                                            _profileBloc.requestGetProfile());
-                                  },
-                                  child: Text("Xem trang cá nhân",
-                                      style: TextStyle(
-                                          color: Colors.white54,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400)),
+                                  "Đổi mật khẩu",
+                                  style: TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.w400),
+                                )
+                              ],
+                            ),
+                          )
+                        : Container(),
+                    SizedBox(height: 8),
+                    InkWell(
+                      onTap: () async {
+                        Helper.showDeleteDialog(context, "Đăng xuất",
+                            "Bạn có chắc chắn muốn đăng xuất?", () async {
+                          registerDeviceToken(globals.deviceToken, "");
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setString('token', null);
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              LoginPage.ROUTE_NAME,
+                              (Route<dynamic> route) => false);
+                        });
+                      },
+                      child: _token != null && !_isTokenExpired
+                          ? Row(
+                              children: <Widget>[
+                                RawMaterialButton(
+                                  onPressed: () {},
+                                  elevation: 2.0,
+                                  fillColor: Colors.white,
+                                  child: Icon(
+                                    Icons.exit_to_app,
+                                    color: Colors.red,
+                                    size: 30,
+                                  ),
+                                  padding: EdgeInsets.all(15.0),
+                                  shape: CircleBorder(),
+                                ),
+                                Text(
+                                  "Đăng xuất",
+                                  style: TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.w400),
                                 )
                               ],
                             )
-                          : Column(
-                              children: <Widget>[
-                                Text(
-                                    _isTokenExpired
-                                        ? "Phiên đăng nhập hết hạn"
-                                        : "Bạn chưa đăng nhập",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w500)),
-                                FlatButton.icon(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8)),
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pushReplacementNamed(
-                                              LoginPage.ROUTE_NAME);
-                                    },
-                                    color: Colors.white,
-                                    textColor: Colors.red,
-                                    icon: Icon(Icons.assignment_ind),
-                                    label: Text(
-                                        _isTokenExpired
-                                            ? "Đăng nhập lại"
-                                            : 'Đăng nhập ngay',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500))),
-                              ],
-                            ),
+                          : Container(),
                     ),
-                    Positioned(
-                      right: 22,
-                      top: 18,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey,
-                        backgroundImage: _avatar != null
-                            ? CachedNetworkImageProvider(_avatar)
-                            : AssetImage("assets/images/avatar.png"),
+                    SizedBox(height: 20),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Version 1.0.11",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
                       ),
                     ),
+                    SizedBox(height: 24),
                   ],
                 ),
-                SizedBox(height: 32),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(OpenLetterPage.ROUTE_NAME);
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {},
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        child: Icon(
-                          Icons.message,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                        shape: CircleBorder(),
-                      ),
-                      Text(
-                        "Thư ngỏ",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400),
-                      )
-                    ],
-                  ),
+              Positioned(
+                right: 22,
+                top: MediaQuery.of(context).size.height / 8,
+                child: CircleAvatar(
+                  radius: 58,
+                  backgroundColor: Colors.grey,
+                  backgroundImage: _avatar != null
+                      ? CachedNetworkImageProvider(_avatar)
+                      : AssetImage("assets/images/avatar.png"),
                 ),
-                SizedBox(height: 8),
-                // isShowPartner() ? InkWell(
-                //   onTap: () {
-                //     Navigator.of(context).pushNamed(PartnerMain.ROUTE_NAME);
-                //   },
-                //   child: Row(
-                //     children: <Widget>[
-                //       RawMaterialButton(
-                //         onPressed: () {},
-                //         elevation: 2.0,
-                //         fillColor: Colors.white,
-                //         child: Icon(
-                //           Icons.account_tree,
-                //           color: Colors.red,
-                //           size: 30,
-                //         ),
-                //         padding: EdgeInsets.all(15.0),
-                //         shape: CircleBorder(),
-                //       ),
-                //       Text(
-                //         "Thành viên",
-                //         style: TextStyle(
-                //             fontSize: 20, fontWeight: FontWeight.w400),
-                //       )
-                //     ],
-                //   ),
-                // ) : Container(),
-                // isShowPartner() ? SizedBox(height: 8) : Container(),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(GuidePage.ROUTE_NAME);
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {},
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        child: Icon(
-                          Icons.add_to_home_screen,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                        shape: CircleBorder(),
-                      ),
-                      Text(
-                        "Hướng dẫn sử dụng",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context)
-                        .pushNamed(TermConditionPage.ROUTE_NAME);
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {},
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        child: Icon(
-                          Icons.verified_user,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                        shape: CircleBorder(),
-                      ),
-                      Text(
-                        "Chính sách & điều khoản",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
-                InkWell(
-                  onTap: () {
-                    showRemindDialog(context);
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {},
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        child: Icon(
-                          Icons.card_giftcard,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                        shape: CircleBorder(),
-                      ),
-                      Text(
-                        "Quà của tôi",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400),
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).pushNamed(HelpPage.ROUTE_NAME);
-                  },
-                  child: Row(
-                    children: <Widget>[
-                      RawMaterialButton(
-                        onPressed: () {},
-                        elevation: 2.0,
-                        fillColor: Colors.white,
-                        child: Icon(
-                          Icons.help,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                        padding: EdgeInsets.all(15.0),
-                        shape: CircleBorder(),
-                      ),
-                      Text(
-                        "Trợ giúp",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w400),
-                      )
-                    ],
-                  ),
-                ),
-                _token != null && !_isTokenExpired
-                    ? SizedBox(height: 8)
-                    : Container(),
-                _token != null && !_isTokenExpired && !_isSocial
-                    ? InkWell(
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(ChangePassWordPage.ROUTE_NAME)
-                              .then((value) {
-                            if (value != null) {
-                              ChangePassWordResponse changePassWordResponse =
-                                  value;
-                              updateToken(changePassWordResponse.token,
-                                  changePassWordResponse.expires);
-                            }
-                          });
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            RawMaterialButton(
-                              onPressed: () {},
-                              elevation: 2.0,
-                              fillColor: Colors.white,
-                              child: Icon(
-                                Icons.swap_horizontal_circle,
-                                color: Colors.red,
-                                size: 30,
-                              ),
-                              padding: EdgeInsets.all(15.0),
-                              shape: CircleBorder(),
-                            ),
-                            Text(
-                              "Đổi mật khẩu",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w400),
-                            )
-                          ],
-                        ),
-                      )
-                    : Container(),
-                SizedBox(height: 8),
-                InkWell(
-                  onTap: () async {
-                    Helper.showDeleteDialog(context, "Đăng xuất",
-                        "Bạn có chắc chắn muốn đăng xuất?", () async {
-                      registerDeviceToken(globals.deviceToken, "");
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      prefs.setString('token', null);
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                          LoginPage.ROUTE_NAME,
-                          (Route<dynamic> route) => false);
-                    });
-                  },
-                  child: _token != null && !_isTokenExpired
-                      ? Row(
-                          children: <Widget>[
-                            RawMaterialButton(
-                              onPressed: () {},
-                              elevation: 2.0,
-                              fillColor: Colors.white,
-                              child: Icon(
-                                Icons.exit_to_app,
-                                color: Colors.red,
-                                size: 30,
-                              ),
-                              padding: EdgeInsets.all(15.0),
-                              shape: CircleBorder(),
-                            ),
-                            Text(
-                              "Đăng xuất",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w400),
-                            )
-                          ],
-                        )
-                      : Container(),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Version 1.0.11",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
-                  ),
-                ),
-                SizedBox(height: 24),
-              ],
-            ),
+              ),
+            ],
+          ),
     );
   }
 }
