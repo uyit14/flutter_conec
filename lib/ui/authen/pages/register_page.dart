@@ -234,9 +234,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         _emailFocusNode.requestFocus();
                       },
                       decoration: InputDecoration(
-                          hintText: 'Tên đăng nhập / Số điện thoại',
+                          hintText: 'Số điện thoại',
                           errorText: _userNameValidate
-                              ? "Tên đăng nhập không hợp lệ"
+                              ? "Số điện thoại không hợp lệ"
                               : null,
                           focusedBorder: const OutlineInputBorder(
                               borderSide:

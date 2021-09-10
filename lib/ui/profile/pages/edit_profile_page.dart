@@ -60,6 +60,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   List<Images> _urlImages = List();
   ZefyrController _controller;
   bool _hidden = false;
+  String noteForUser = "";
 
   Future getImageAvatar(bool isCamera) async {
     final pickedFile = await picker.getImage(
@@ -119,12 +120,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _avatar = profile.avatar;
       if (profile.type != null && profile.type == "Club") {
         _selectedType = 0;
+        noteForUser = Helper.clubNote;
         _type = "Club";
       } else if (profile.type == "Personal") {
         _type = "Personal";
         _selectedType = 1;
       } else {
         _type = "Trainer";
+        noteForUser = Helper.trainerNote;
         _selectedType = 2;
       }
       _isApiCall = false;
@@ -314,6 +317,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     onPressed: () {
                                       setState(() {
                                         _type = "Club";
+                                        noteForUser = Helper.clubNote;
                                         _selectedType = 0;
                                       });
                                     },
@@ -343,7 +347,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         _selectedType = 1;
                                       });
                                     },
-                                    child: Text("Cá nhân",
+                                    child: Text("Khách hàng",
                                         style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold))),
@@ -363,10 +367,35 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     onPressed: () {
                                       setState(() {
                                         _type = "Trainer";
+                                        noteForUser = Helper.trainerNote;
                                         _selectedType = 2;
                                       });
                                     },
                                     child: Text("Huấn luyện viên",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold))),
+                                FlatButton(
+                                    shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                            color: _selectedType == 3
+                                                ? Colors.red
+                                                : Colors.grey,
+                                            width: 1,
+                                            style: BorderStyle.solid),
+                                        borderRadius:
+                                        BorderRadius.circular(50)),
+                                    textColor: _selectedType == 3
+                                        ? Colors.red
+                                        : Colors.grey,
+                                    onPressed: () {
+                                      setState(() {
+                                        _type = "Personal";
+                                        noteForUser = Helper.storeNote;
+                                        _selectedType = 3;
+                                      });
+                                    },
+                                    child: Text("Cửa hàng",
                                         style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.bold)))
@@ -733,131 +762,140 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 ),
                                 border: const OutlineInputBorder()),
                           ),
-                          SizedBox(height: 8),
-                          Text("Giới thiệu", style: AppTheme.profileTitle),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          // HtmlEditor(
-                          //     hint: profile.about == null ? "Nhập thông tin giới thiệu" : "",
-                          //     value: profile.about ?? "",
-                          //     key: keyEditor,
-                          //     showBottomToolbar: false),
-                          Container(
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(width: 1, color: Colors.grey),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    topRight: Radius.circular(8))),
-                            height: 200,
-                            child: ZefyrScaffold(
-                              child: ZefyrEditor(
-                                autofocus: false,
-                                controller: _controller,
-                                focusNode: _focusNode,
+                          _selectedType == 1 ? Container() : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 8),
+                              Text("Giới thiệu", style: AppTheme.profileTitle),
+                              SizedBox(
+                                height: 8,
                               ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text("Thư viện ảnh", style: AppTheme.profileTitle),
-                          _images.length == 0 && _urlImages.length == 0
-                              ? Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: _cameraHolder(),
-                                )
-                              : Container(
-                                  height: 100,
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: List.from(_urlImages
-                                        .map((e) => Stack(
-                                              children: [
-                                                Container(
-                                                  margin:
-                                                      EdgeInsets.only(right: 4),
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6),
-                                                    child: e != null
-                                                        ? Image.network(
-                                                            e.fileName,
-                                                            fit: BoxFit.cover,
-                                                            width: 100,
-                                                            height: 100,
-                                                          )
-                                                        : Container(),
-                                                  ),
-                                                ),
-                                                Positioned(
-                                                  top: -14,
-                                                  right: -10,
-                                                  child: IconButton(
-                                                    onPressed: () {
-                                                      //TODO - call api
-                                                      _urlImages.removeWhere(
-                                                          (element) =>
-                                                              element.id ==
-                                                              e.id);
-                                                      _postActionBloc
-                                                          .requestDeleteImage(
-                                                              e.id, "Account");
-                                                      setState(() {});
-                                                    },
-                                                    icon: Icon(
-                                                      Icons.remove_circle,
-                                                      color: Colors.red,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ))
-                                        .toList())
-                                      ..addAll(List.from(_images
-                                          .map((e) => Stack(
-                                                children: [
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: 4),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              6),
-                                                      child: e != null
-                                                          ? Image.file(
-                                                              e,
-                                                              fit: BoxFit.cover,
-                                                              width: 100,
-                                                              height: 100,
-                                                            )
-                                                          : Container(),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    top: -14,
-                                                    right: -10,
-                                                    child: IconButton(
-                                                      onPressed: () {
-                                                        _images.removeWhere(
-                                                            (element) =>
-                                                                element == e);
-                                                        setState(() {});
-                                                      },
-                                                      icon: Icon(
-                                                        Icons.remove_circle,
-                                                        color: Colors.red,
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ))
-                                          .toList()))
-                                      ..add(_cameraHolder()),
+                              // HtmlEditor(
+                              //     hint: profile.about == null ? "Nhập thông tin giới thiệu" : "",
+                              //     value: profile.about ?? "",
+                              //     key: keyEditor,
+                              //     showBottomToolbar: false),
+                              Container(
+                                decoration: BoxDecoration(
+                                    border:
+                                    Border.all(width: 1, color: Colors.grey),
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(8),
+                                        topRight: Radius.circular(8))),
+                                height: 200,
+                                child: ZefyrScaffold(
+                                  child: ZefyrEditor(
+                                    autofocus: false,
+                                    controller: _controller,
+                                    focusNode: _focusNode,
                                   ),
                                 ),
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Text("Thư viện ảnh", style: AppTheme.profileTitle),
+                              Text(noteForUser ?? "", style: AppTheme.noteType),
+                              SizedBox(
+                                height: 4,
+                              ),
+                              _images.length == 0 && _urlImages.length == 0
+                                  ? Align(
+                                alignment: Alignment.centerLeft,
+                                child: _cameraHolder(),
+                              )
+                                  : Container(
+                                height: 100,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: List.from(_urlImages
+                                      .map((e) => Stack(
+                                    children: [
+                                      Container(
+                                        margin:
+                                        EdgeInsets.only(right: 4),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              6),
+                                          child: e != null
+                                              ? Image.network(
+                                            e.fileName,
+                                            fit: BoxFit.cover,
+                                            width: 100,
+                                            height: 100,
+                                          )
+                                              : Container(),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: -14,
+                                        right: -10,
+                                        child: IconButton(
+                                          onPressed: () {
+                                            //TODO - call api
+                                            _urlImages.removeWhere(
+                                                    (element) =>
+                                                element.id ==
+                                                    e.id);
+                                            _postActionBloc
+                                                .requestDeleteImage(
+                                                e.id, "Account");
+                                            setState(() {});
+                                          },
+                                          icon: Icon(
+                                            Icons.remove_circle,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ))
+                                      .toList())
+                                    ..addAll(List.from(_images
+                                        .map((e) => Stack(
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              right: 4),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                6),
+                                            child: e != null
+                                                ? Image.file(
+                                              e,
+                                              fit: BoxFit.cover,
+                                              width: 100,
+                                              height: 100,
+                                            )
+                                                : Container(),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          top: -14,
+                                          right: -10,
+                                          child: IconButton(
+                                            onPressed: () {
+                                              _images.removeWhere(
+                                                      (element) =>
+                                                  element == e);
+                                              setState(() {});
+                                            },
+                                            icon: Icon(
+                                              Icons.remove_circle,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ))
+                                        .toList()))
+                                    ..add(_cameraHolder()),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),

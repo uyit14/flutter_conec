@@ -271,7 +271,7 @@ class _LoginPageState extends State<LoginPage> {
                       keyboardType: TextInputType.emailAddress,
                       style: TextStyle(fontSize: 18),
                       decoration: InputDecoration(
-                          hintText: 'Nhập tài khoản / số điện thoại của bạn',
+                          hintText: 'Nhập số điện thoại',
                           errorText:
                               _emailValidate ? "Tài khoản không hợp lệ" : null,
                           enabledBorder: const OutlineInputBorder(
@@ -282,7 +282,7 @@ class _LoginPageState extends State<LoginPage> {
                                   BorderSide(color: Colors.green, width: 1)),
                           contentPadding: EdgeInsets.only(left: 8),
                           suffixIcon: Icon(
-                            Icons.email,
+                            Icons.phone_android,
                             color: Colors.black,
                           ),
                           border: const OutlineInputBorder()),
@@ -298,7 +298,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle(fontSize: 18),
                       obscureText: _showPass ? false : true,
                       decoration: InputDecoration(
-                          hintText: 'Nhập mật khẩu của bạn',
+                          hintText: 'Nhập mật khẩu',
                           errorText: _passWordValidate
                               ? "Mật khẩu phải lớn hơn 5 kí tự"
                               : null,

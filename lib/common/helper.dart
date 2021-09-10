@@ -659,6 +659,10 @@ class Helper {
     }
   }
 
+  static String storeNote = "Bạn nên đăng ảnh đa dạng sản phẩm để có nhiều khách hàng hơn";
+  static String trainerNote = "Bạn đăng ảnh CMND/CCCD, Bằng cấp, Thành tích và ít nhất 03 ảnh huấn luyện cùng học viên của bạn";
+  static String clubNote = "Bạn đăng ảnh giấy phép kinh doanh, giấy phép hoạt động hoặc các giấy phép có liên quan và hình ảnh thực câu lạc bộ của bạn";
+
   static bool statusRequest(String value) {
     if (value == statusList[0]) return true;
     return false;

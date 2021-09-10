@@ -593,7 +593,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                             children: [
                               Text(_currentSelectedIndex == 7
                                   ? "Giá"
-                                  : "Phí tham gia"),
+                                  : "Lệ phí (thu từ khách hàng)"),
                               TextFormField(
                                 maxLines: 1,
                                 keyboardType: TextInputType.number,
@@ -603,7 +603,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
                                 decoration: InputDecoration(
                                     hintText: _currentSelectedIndex == 7
                                         ? "Nhập giá"
-                                        : 'Nhập phí tham gia',
+                                        : 'Nhập lệ phí',
                                     focusedBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Colors.green, width: 1)),

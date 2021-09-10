@@ -468,7 +468,7 @@ class _PostActionPageState extends State<PostActionPage> {
                             children: [
                               Text(_currentSelectedIndex == 7
                                   ? "Giá"
-                                  : "Phí tham gia"),
+                                  : "Lệ phí (thu từ khách hàng)"),
                               SizedBox(height: 4),
                               TextFormField(
                                 maxLines: 1,
@@ -479,7 +479,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                 decoration: InputDecoration(
                                     hintText: _currentSelectedIndex == 7
                                         ? "Nhập giá"
-                                        : 'Nhập phí tham gia',
+                                        : 'Nhập lệ phí',
                                     focusedBorder: const OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: Colors.green, width: 1)),

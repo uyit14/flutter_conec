@@ -10,6 +10,8 @@ class AppTheme {
       TextStyle(color: Colors.blue, fontSize: 14, fontWeight: FontWeight.w300);
   static final TextStyle profileInfo =
       TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w400);
+  static final TextStyle noteType =
+  TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.w400);
 //  static TextStyle changeTextStyle =
 //      TextStyle(fontWeight: FontWeight.w500, fontSize: 16, color: Colors.blue);
 

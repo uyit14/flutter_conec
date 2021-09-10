@@ -18,6 +18,7 @@ import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:new_version/new_version.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -358,470 +359,493 @@ class _ConecHomePageState extends State<ConecHomePage> {
     return _profile != null &&
         (_profile.type == "Trainer" || _profile.type == "Club");
   }
+  DateTime currentBackPressTime;
+
+  Future<bool> onWillPop() {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null ||
+        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      Fluttertoast.showToast(msg: "Nhấp một lần nữa để thoát");
+      return Future.value(false);
+    }
+    return Future.value(true);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: _selectedPageIndex == 0
-            ? AppBar(
-                // leading: Builder(
-                //   builder: (context) {
-                //     return IconButton(
-                //       icon: Icon(Icons.group, size: 32),
-                //       onPressed: () => Scaffold.of(context).openEndDrawer(),
-                //     );
-                //   }
-                // ),
-                flexibleSpace: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                    colors: [Colors.red, Colors.redAccent[200]],
-                  )),
-                ),
-                title: Text(
-                  "Conec Sport",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                elevation: 0,
-                iconTheme: IconThemeData(color: Colors.black, size: 24),
-                backgroundColor: Colors.redAccent[200],
-                actions: <Widget>[
-                  // IconButton(
-                  //   icon: Icon(Icons.search, size: 28),
-                  //   onPressed: () => Navigator.of(context).pushNamed(
-                  //       ItemByCategory.ROUTE_NAME,
-                  //       arguments: {'id': null, 'title': null}),
+    return WillPopScope(
+      onWillPop: onWillPop,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: _selectedPageIndex == 0
+              ? AppBar(
+                  // leading: Builder(
+                  //   builder: (context) {
+                  //     return IconButton(
+                  //       icon: Icon(Icons.group, size: 32),
+                  //       onPressed: () => Scaffold.of(context).openEndDrawer(),
+                  //     );
+                  //   }
                   // ),
-                  InkWell(
-                    onTap: () => Navigator.of(context).pushNamed(
-                        ItemByCategory.ROUTE_NAME,
-                        arguments: {'id': null, 'title': null}),
-                    child: Icon(Icons.search, size: 28),
+                  flexibleSpace: Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                      colors: [Colors.red, Colors.redAccent[200]],
+                    )),
                   ),
-                  SizedBox(width: 8),
-                  Badge(
-                    padding: const EdgeInsets.all(3.0),
-                    position: BadgePosition.topEnd(top: 4, end: -2),
-                    badgeContent: Text(
-                      _numberMessage,
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    badgeColor: Colors.yellowAccent,
-                    showBadge: _numberMessage.length == 0 ? false : true,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(ChatListPage.ROUTE_NAME)
-                            .then((value) => getNumberOfNotify());
-                      },
-                      child: Icon(Icons.chat_bubble, size: 24),
-                    ),
+                  title: Text(
+                    "Conec Sport",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(width: 8),
-                  _token != null && !_isTokenExpired
-                      ? Badge(
-                          padding: const EdgeInsets.all(3.0),
-                          position: BadgePosition.topEnd(top: 5, end: -7),
-                          badgeContent: Text(
-                            _number.toString(),
-                            style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          badgeColor: Colors.yellowAccent,
-                          showBadge: _number > 0 ? true : false,
-                          child: InkWell(
-                            child: Icon(
-                              Icons.notifications,
-                              size: 26,
-                              color: Colors.black87.withOpacity(0.8),
-                            ),
-                            onTap: () => Navigator.of(context)
-                                .pushNamed(NotifyPage.ROUTE_NAME)
-                                .then((value) {
-                              if (value == 1) {
-                                _homeBloc.requestGetNumberNotify();
-                              }
-                            }),
-                          ),
-                        )
-                      : Container(),
-                  SizedBox(
-                    width: 8  ,
-                  ),
-                  _selectedPageIndex == 0
-                      ? Builder(builder: (context) {
-                          return InkWell(
-                            child: Icon(Icons.group, size: 28),
-                            onTap: () {
-                              if (isShowPartner()) {
-                                Scaffold.of(context).openEndDrawer();
-                              } else {
-                                Navigator.of(context)
-                                    .pushNamed(FlMainPage.ROUTE_NAME);
-                              }
-                            },
-                          );
-                        })
-                      : Container(),
-                  SizedBox(width: 4)
-                ],
-              )
-            : null,
-        endDrawer: _selectedPageIndex == 0 && isShowPartner()
-            ? Drawer(
-                child: Container(
-                color: Colors.white10,
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 8),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey,
-                        backgroundImage:
-                            _profile != null && _profile.avatar != null
-                                ? CachedNetworkImageProvider(_profile.avatar)
-                                : AssetImage("assets/images/avatar.png"),
+                  elevation: 0,
+                  iconTheme: IconThemeData(color: Colors.black, size: 24),
+                  backgroundColor: Colors.redAccent[200],
+                  actions: <Widget>[
+                    // IconButton(
+                    //   icon: Icon(Icons.search, size: 28),
+                    //   onPressed: () => Navigator.of(context).pushNamed(
+                    //       ItemByCategory.ROUTE_NAME,
+                    //       arguments: {'id': null, 'title': null}),
+                    // ),
+                    InkWell(
+                      onTap: () => Navigator.of(context).pushNamed(
+                          ItemByCategory.ROUTE_NAME,
+                          arguments: {'id': null, 'title': null}),
+                      child: Icon(Icons.search, size: 28),
+                    ),
+                    SizedBox(width: 8),
+                    Badge(
+                      padding: const EdgeInsets.all(3.0),
+                      position: BadgePosition.topEnd(top: 4, end: -2),
+                      badgeContent: Text(
+                        _numberMessage,
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      badgeColor: Colors.yellowAccent,
+                      showBadge: _numberMessage.length == 0 ? false : true,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(ChatListPage.ROUTE_NAME)
+                              .then((value) => getNumberOfNotify());
+                        },
+                        child: Icon(Icons.chat_bubble, size: 24),
                       ),
                     ),
-                    SizedBox(height: 8),
-                    Container(
-                        width: double.infinity,
-                        alignment: Alignment.center,
-                        child: Text(_profile.name,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w400))),
-                    SizedBox(height: 24),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(AddMemberPage.ROUTE_NAME);
-                      },
-                      child: Row(
-                        children: [
-                          RawMaterialButton(
-                            onPressed: () {},
-                            elevation: 2.0,
-                            fillColor: Colors.white,
-                            child: Icon(
-                              Icons.person_add,
-                              color: Colors.red,
-                              size: 30,
-                            ),
-                            padding: EdgeInsets.all(8),
-                            shape: CircleBorder(),
-                          ),
-                          Text("Thêm thành viên",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400))
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(MemberGroupPage.ROUTE_NAME);
-                      },
-                      child: Row(
-                        children: [
-                          RawMaterialButton(
-                            onPressed: () {},
-                            elevation: 2.0,
-                            fillColor: Colors.white,
-                            child: Icon(
-                              Icons.group,
-                              color: Colors.red,
-                              size: 30,
-                            ),
-                            padding: EdgeInsets.all(8),
-                            shape: CircleBorder(),
-                          ),
-                          Text("Thành viên",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400))
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(NotifyPartnerPage.ROUTE_NAME);
-                      },
-                      child: Row(
-                        children: [
-                          RawMaterialButton(
-                            onPressed: () {},
-                            elevation: 2.0,
-                            fillColor: Colors.white,
-                            child: Icon(
-                              Icons.notifications,
-                              color: Colors.red,
-                              size: 30,
-                            ),
-                            padding: EdgeInsets.all(8),
-                            shape: CircleBorder(),
-                          ),
-                          Text("Thông báo",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400))
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(ChatListPage.ROUTE_NAME)
-                            .then((value) => getNumberOfNotify());
-                      },
-                      child: Row(
-                        children: [
-                          Badge(
-                            padding: const EdgeInsets.all(8),
-                            position: BadgePosition.topEnd(top: -12, end: -12),
+                    SizedBox(width: 8),
+                    _token != null && !_isTokenExpired
+                        ? Badge(
+                            padding: const EdgeInsets.all(3.0),
+                            position: BadgePosition.topEnd(top: 5, end: -7),
                             badgeContent: Text(
-                              _numberMessage ?? "",
+                              _number.toString(),
                               style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 10,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
-                            badgeColor: Colors.yellow,
-                            showBadge: _numberMessage != null &&
-                                    _numberMessage.length == 0
-                                ? false
-                                : true,
-                            child: RawMaterialButton(
-                              onPressed: () {},
-                              elevation: 2.0,
-                              fillColor: Colors.white,
+                            badgeColor: Colors.yellowAccent,
+                            showBadge: _number > 0 ? true : false,
+                            child: InkWell(
                               child: Icon(
-                                Icons.chat_bubble,
-                                color: Colors.red,
-                                size: 30,
+                                Icons.notifications,
+                                size: 26,
+                                color: Colors.black87.withOpacity(0.8),
                               ),
-                              padding: EdgeInsets.all(8),
-                              shape: CircleBorder(),
+                              onTap: () => Navigator.of(context)
+                                  .pushNamed(NotifyPage.ROUTE_NAME)
+                                  .then((value) {
+                                if (value == 1) {
+                                  _homeBloc.requestGetNumberNotify();
+                                }
+                              }),
                             ),
-                          ),
-                          Text("Trò chuyện",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w400))
-                        ],
-                      ),
+                          )
+                        : Container(),
+                    SizedBox(
+                      width: 8,
                     ),
+                    _selectedPageIndex == 0
+                        ? Builder(builder: (context) {
+                            return InkWell(
+                              child: Icon(Icons.group, size: 28),
+                              onTap: () {
+                                if (isShowPartner()) {
+                                  Scaffold.of(context).openEndDrawer();
+                                } else {
+                                  Navigator.of(context)
+                                      .pushNamed(FlMainPage.ROUTE_NAME);
+                                }
+                              },
+                            );
+                          })
+                        : Container(),
+                    SizedBox(width: 4)
                   ],
+                )
+              : null,
+          endDrawer: _selectedPageIndex == 0 && isShowPartner()
+              ? Drawer(
+                  child: SingleChildScrollView(
+                    child: Container(
+                    color: Colors.white10,
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 8),
+                        Container(
+                          width: double.infinity,
+                          alignment: Alignment.center,
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundColor: Colors.grey,
+                            backgroundImage:
+                                _profile != null && _profile.avatar != null
+                                    ? CachedNetworkImageProvider(_profile.avatar)
+                                    : AssetImage("assets/images/avatar.png"),
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            child: Text(_profile.name,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w400))),
+                        SizedBox(height: 24),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed(AddMemberPage.ROUTE_NAME);
+                          },
+                          child: Row(
+                            children: [
+                              RawMaterialButton(
+                                onPressed: () {},
+                                elevation: 2.0,
+                                fillColor: Colors.white,
+                                child: Icon(
+                                  Icons.person_add,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                                padding: EdgeInsets.all(8),
+                                shape: CircleBorder(),
+                              ),
+                              Text("Thêm thành viên",
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed(MemberGroupPage.ROUTE_NAME);
+                          },
+                          child: Row(
+                            children: [
+                              RawMaterialButton(
+                                onPressed: () {},
+                                elevation: 2.0,
+                                fillColor: Colors.white,
+                                child: Icon(
+                                  Icons.group,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                                padding: EdgeInsets.all(8),
+                                shape: CircleBorder(),
+                              ),
+                              Text("Thành viên",
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed(NotifyPartnerPage.ROUTE_NAME);
+                          },
+                          child: Row(
+                            children: [
+                              RawMaterialButton(
+                                onPressed: () {},
+                                elevation: 2.0,
+                                fillColor: Colors.white,
+                                child: Icon(
+                                  Icons.notifications,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                                padding: EdgeInsets.all(8),
+                                shape: CircleBorder(),
+                              ),
+                              Text("Thông báo",
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed(ChatListPage.ROUTE_NAME)
+                                .then((value) => getNumberOfNotify());
+                          },
+                          child: Row(
+                            children: [
+                              Badge(
+                                padding: const EdgeInsets.all(8),
+                                position:
+                                    BadgePosition.topEnd(top: -12, end: -12),
+                                badgeContent: Text(
+                                  _numberMessage ?? "",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                badgeColor: Colors.yellow,
+                                showBadge: _numberMessage != null &&
+                                        _numberMessage.length == 0
+                                    ? false
+                                    : true,
+                                child: RawMaterialButton(
+                                  onPressed: () {},
+                                  elevation: 2.0,
+                                  fillColor: Colors.white,
+                                  child: Icon(
+                                    Icons.chat_bubble,
+                                    color: Colors.red,
+                                    size: 30,
+                                  ),
+                                  padding: EdgeInsets.all(8),
+                                  shape: CircleBorder(),
+                                ),
+                              ),
+                              Text("Trò chuyện",
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                 ),
-              ))
-            : null,
-        body: Stack(
-          children: [
-            PageView(
-              controller: _pageController,
-              physics: NeverScrollableScrollPhysics(),
-              children: <Widget>[
-                HomePage(callback: _initTab1Page),
-                NewsPage(_initIndex),
-                MyPost(),
-                ProfilePage()
-              ],
-            ),
-            _isSpeedOpen
-                ? Container(
-                    color: Color(0xff0c0c0c).withOpacity(0.4),
-                    height: double.infinity,
-                    width: double.infinity,
-                  )
-                : Container(),
-            // Positioned(
-            //   bottom: 55,
-            //   right: 16,
-            //   child: Badge(
-            //     padding: const EdgeInsets.all(8),
-            //     position: BadgePosition.topEnd(top: -10, end: -7),
-            //     badgeContent: Text(
-            //       _numberMessage,
-            //       style: TextStyle(
-            //           fontSize: 14,
-            //           color: Colors.white,
-            //           fontWeight: FontWeight.bold),
-            //     ),
-            //     badgeColor: Colors.red,
-            //     showBadge:
-            //         _isSpeedOpen || _numberMessage.length == 0 ? false : true,
-            //     child: mySpeedDial.SpeedDial(
-            //       number: _numberMessage,
-            //       onOpenZalo: () =>
-            //           launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
-            //       onOpenMess: () =>
-            //           launch("https://messenger.com/t/www.conec.vn"),
-            //       onOpenChat: () {
-            //         Navigator.of(context)
-            //             .pushNamed(ChatListPage.ROUTE_NAME)
-            //             .then((value) => getNumberOfNotify());
-            //       },
-            //       onFabAction: onFabAction,
-            //     ),
-            //   ),
-            // ),
-          ],
-        ),
-        floatingActionButton: Container(
-            child: FloatingActionButton(
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
+                  ))
+              : null,
+          body: Stack(
+            children: [
+              PageView(
+                controller: _pageController,
+                physics: NeverScrollableScrollPhysics(),
+                children: <Widget>[
+                  HomePage(callback: _initTab1Page),
+                  NewsPage(_initIndex),
+                  MyPost(),
+                  ProfilePage()
+                ],
+              ),
+              _isSpeedOpen
+                  ? Container(
+                      color: Color(0xff0c0c0c).withOpacity(0.4),
+                      height: double.infinity,
+                      width: double.infinity,
+                    )
+                  : Container(),
+              // Positioned(
+              //   bottom: 55,
+              //   right: 16,
+              //   child: Badge(
+              //     padding: const EdgeInsets.all(8),
+              //     position: BadgePosition.topEnd(top: -10, end: -7),
+              //     badgeContent: Text(
+              //       _numberMessage,
+              //       style: TextStyle(
+              //           fontSize: 14,
+              //           color: Colors.white,
+              //           fontWeight: FontWeight.bold),
+              //     ),
+              //     badgeColor: Colors.red,
+              //     showBadge:
+              //         _isSpeedOpen || _numberMessage.length == 0 ? false : true,
+              //     child: mySpeedDial.SpeedDial(
+              //       number: _numberMessage,
+              //       onOpenZalo: () =>
+              //           launch("http://zaloapp.com/qr/p/19h7p5ajy28dc"),
+              //       onOpenMess: () =>
+              //           launch("https://messenger.com/t/www.conec.vn"),
+              //       onOpenChat: () {
+              //         Navigator.of(context)
+              //             .pushNamed(ChatListPage.ROUTE_NAME)
+              //             .then((value) => getNumberOfNotify());
+              //       },
+              //       onFabAction: onFabAction,
+              //     ),
+              //   ),
+              // ),
+            ],
           ),
-          heroTag: 'add',
-          onPressed: () {
-            if (_token == null || _token.length == 0) {
-              Helper.showAuthenticationDialog(context);
-            } else {
-              if (_isTokenExpired) {
-                Helper.showTokenExpiredDialog(context);
+          floatingActionButton: Container(
+              child: FloatingActionButton(
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+            heroTag: 'add',
+            onPressed: () {
+              if (_token == null || _token.length == 0) {
+                Helper.showAuthenticationDialog(context);
               } else {
-                if (_isMissingData) {
-                  Helper.showMissingDataDialog(context, () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context)
-                        .pushNamed(EditProfilePage.ROUTE_NAME,
-                            arguments: _profile)
-                        .then((value) {
-                      if (value == 0) {
-                        _profileBloc.requestGetProfile();
-                      }
-                    });
-                  });
+                if (_isTokenExpired) {
+                  Helper.showTokenExpiredDialog(context);
                 } else {
-                  Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
+                  if (_isMissingData) {
+                    Helper.showMissingDataDialog(context, () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context)
+                          .pushNamed(EditProfilePage.ROUTE_NAME,
+                              arguments: _profile)
+                          .then((value) {
+                        if (value == 0) {
+                          _profileBloc.requestGetProfile();
+                        }
+                      });
+                    });
+                  } else {
+                    Navigator.of(context).pushNamed(PostActionPage.ROUTE_NAME);
+                  }
                 }
               }
-            }
-          },
-        )),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        extendBody: true,
-        bottomNavigationBar: BottomAppBar(
-          shape: CircularNotchedRectangle(),
-          child: Container(
-            margin: EdgeInsets.only(
-                left: Helper.isTablet(context) ? 24 : 12,
-                right: Helper.isTablet(context) ? 32 : 16),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                InkWell(
-                  onTap: () => _selectPage(0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.home,
-                        size: 30,
-                        color:
-                            _selectedPageIndex == 0 ? Colors.red : Colors.grey,
-                      ),
-                      Text("Trang chủ",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: _selectedPageIndex == 0
-                                ? Colors.red
-                                : Colors.grey,
-                          )),
-                      SizedBox(height: 2)
-                    ],
+            },
+          )),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          extendBody: true,
+          bottomNavigationBar: BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            child: Container(
+              margin: EdgeInsets.only(
+                  left: Helper.isTablet(context) ? 24 : 12,
+                  right: Helper.isTablet(context) ? 32 : 16),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () => _selectPage(0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.home,
+                          size: 30,
+                          color: _selectedPageIndex == 0
+                              ? Colors.red
+                              : Colors.grey,
+                        ),
+                        Text("Trang chủ",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _selectedPageIndex == 0
+                                  ? Colors.red
+                                  : Colors.grey,
+                            )),
+                        SizedBox(height: 2)
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                    width: Helper.isTablet(context)
-                        ? Helper.getScreenWidth(context) / 7
-                        : Helper.getScreenWidth(context) / 14),
-                InkWell(
-                  onTap: () => _selectPage(1),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.explore,
-                        size: 30,
-                        color:
-                            _selectedPageIndex == 1 ? Colors.red : Colors.grey,
-                      ),
-                      Text(" Dụng cụ  ",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: _selectedPageIndex == 1
-                                ? Colors.red
-                                : Colors.grey,
-                          )),
-                      SizedBox(height: 2)
-                    ],
+                  SizedBox(
+                      width: Helper.isTablet(context)
+                          ? Helper.getScreenWidth(context) / 7
+                          : Helper.getScreenWidth(context) / 14),
+                  InkWell(
+                    onTap: () => _selectPage(1),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.explore,
+                          size: 30,
+                          color: _selectedPageIndex == 1
+                              ? Colors.red
+                              : Colors.grey,
+                        ),
+                        Text(" Dụng cụ  ",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _selectedPageIndex == 1
+                                  ? Colors.red
+                                  : Colors.grey,
+                            )),
+                        SizedBox(height: 2)
+                      ],
+                    ),
                   ),
-                ),
-                Spacer(),
-                InkWell(
-                  onTap: () => _selectPage(2),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.list,
-                        size: 30,
-                        color:
-                            _selectedPageIndex == 2 ? Colors.red : Colors.grey,
-                      ),
-                      Text("Tin đăng",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: _selectedPageIndex == 2
-                                ? Colors.red
-                                : Colors.grey,
-                          )),
-                      SizedBox(height: 2)
-                    ],
+                  Spacer(),
+                  InkWell(
+                    onTap: () => _selectPage(2),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.list,
+                          size: 30,
+                          color: _selectedPageIndex == 2
+                              ? Colors.red
+                              : Colors.grey,
+                        ),
+                        Text("Tin đăng",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _selectedPageIndex == 2
+                                  ? Colors.red
+                                  : Colors.grey,
+                            )),
+                        SizedBox(height: 2)
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                    width: Helper.isTablet(context)
-                        ? Helper.getScreenWidth(context) / 7
-                        : Helper.getScreenWidth(context) / 10),
-                InkWell(
-                  onTap: () => _selectPage(3),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.more_horiz,
-                        size: 30,
-                        color:
-                            _selectedPageIndex == 3 ? Colors.red : Colors.grey,
-                      ),
-                      Text("  Thêm  ",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: _selectedPageIndex == 3
-                                ? Colors.red
-                                : Colors.grey,
-                          )),
-                      SizedBox(height: 2)
-                    ],
+                  SizedBox(
+                      width: Helper.isTablet(context)
+                          ? Helper.getScreenWidth(context) / 7
+                          : Helper.getScreenWidth(context) / 10),
+                  InkWell(
+                    onTap: () => _selectPage(3),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.more_horiz,
+                          size: 30,
+                          color: _selectedPageIndex == 3
+                              ? Colors.red
+                              : Colors.grey,
+                        ),
+                        Text("  Thêm  ",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: _selectedPageIndex == 3
+                                  ? Colors.red
+                                  : Colors.grey,
+                            )),
+                        SizedBox(height: 2)
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

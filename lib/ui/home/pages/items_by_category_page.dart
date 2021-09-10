@@ -325,40 +325,40 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                     ),
                   ),
                 ),
-                SizedBox(width: 4),
-                Flexible(
-                  flex: 1,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(CategoryPage.ROUTE_NAME,
-                          arguments: {'category': topic}).then((value) {
-                        if (value != null) {
-                          setState(() {
-                            topic = value;
-                          });
-                        }
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-                      decoration: BoxDecoration(
-                          border: Border.all(width: 0.5, color: Colors.grey),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              topic != null ? topic.title : "Chuyên mục",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Icon(Icons.keyboard_arrow_down)
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // SizedBox(width: 4),
+                // Flexible(
+                //   flex: 1,
+                //   child: InkWell(
+                //     onTap: () {
+                //       Navigator.of(context).pushNamed(CategoryPage.ROUTE_NAME,
+                //           arguments: {'category': topic}).then((value) {
+                //         if (value != null) {
+                //           setState(() {
+                //             topic = value;
+                //           });
+                //         }
+                //       });
+                //     },
+                //     child: Container(
+                //       padding: EdgeInsets.symmetric(vertical: 4, horizontal: 6),
+                //       decoration: BoxDecoration(
+                //           border: Border.all(width: 0.5, color: Colors.grey),
+                //           borderRadius: BorderRadius.circular(8)),
+                //       child: Row(
+                //         children: <Widget>[
+                //           Expanded(
+                //             child: Text(
+                //               topic != null ? topic.title : "Chuyên mục",
+                //               maxLines: 1,
+                //               overflow: TextOverflow.ellipsis,
+                //             ),
+                //           ),
+                //           Icon(Icons.keyboard_arrow_down)
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),

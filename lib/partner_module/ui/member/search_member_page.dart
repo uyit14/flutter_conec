@@ -36,10 +36,9 @@ class _SearchMemberPageState extends State<SearchMemberPage> {
                 child: TextFormField(
                   maxLines: 1,
                   onChanged: (value) {
-                    Timer(const Duration(seconds: 1), () {
+                    Timer(const Duration(milliseconds: 1000), () {
                       _memberBloc.requestSearchMember(value);
                     });
-
                   },
                   onFieldSubmitted: (value) {
                     //_memberBloc.requestSearchMember(value);
