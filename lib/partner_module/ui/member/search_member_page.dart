@@ -16,6 +16,7 @@ class SearchMemberPage extends StatefulWidget {
 
 class _SearchMemberPageState extends State<SearchMemberPage> {
   MemberBloc _memberBloc = MemberBloc();
+  String _keyword = "";
 
   @override
   Widget build(BuildContext context) {
@@ -26,36 +27,51 @@ class _SearchMemberPageState extends State<SearchMemberPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.black12,
-                ),
-                height: 40,
-                child: TextFormField(
-                  maxLines: 1,
-                  onChanged: (value) {
-                    Timer(const Duration(milliseconds: 1000), () {
-                      _memberBloc.requestSearchMember(value);
-                    });
-                  },
-                  onFieldSubmitted: (value) {
-                    //_memberBloc.requestSearchMember(value);
-                  },
-                  textInputAction: TextInputAction.done,
-                  style: TextStyle(fontSize: 18),
-                  decoration: InputDecoration(
-                      hintText: 'Tìm thành viên',
-                      prefixIcon: Icon(Icons.search),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: Colors.white, width: 1)),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 1),
-                          borderRadius: BorderRadius.circular(10)),
-                      contentPadding: EdgeInsets.only(left: 8)),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.black12,
+                    ),
+                    height: 40,
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    child: TextFormField(
+                      maxLines: 1,
+                      onChanged: (value) {
+                        // Timer(const Duration(milliseconds: 1000), () {
+                        //   _memberBloc.requestSearchMember(value);
+                        // });
+                        setState(() {
+                          _keyword = value;
+                        });
+                      },
+                      onFieldSubmitted: (value) {
+                        _memberBloc.requestSearchMember(value);
+                      },
+                      textInputAction: TextInputAction.done,
+                      style: TextStyle(fontSize: 18),
+                      decoration: InputDecoration(
+                          hintText: 'Tìm thành viên',
+                          //prefixIcon: Icon(Icons.search),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.white, width: 1)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.white, width: 1),
+                              borderRadius: BorderRadius.circular(10)),
+                          contentPadding: EdgeInsets.only(left: 8)),
+                    ),
+                  ),
+                  InkWell(
+                    child: Icon(Icons.search),
+                    onTap: () {
+                      _memberBloc.requestSearchMember(_keyword);
+                    },
+                  ),
+                ],
               ),
               Container(
                 color: Colors.black12,

@@ -597,7 +597,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                     SizedBox(
                                       width: 8,
                                     ),
-                                    Text("Phí tham gia",
+                                    Text("Lệ phí",
                                         style: AppTheme.commonDetail),
                                     SizedBox(width: 12),
                                     Expanded(

@@ -120,7 +120,7 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                                         Text(
                                           items[index].title,
                                           style: TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.w600,
                                               color: Colors.white),
                                           maxLines: 2,
@@ -133,13 +133,17 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                                         //         color: Colors.white),
                                         //   },
                                         // )
-                                        Text(
-                                          parsedString ?? "",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.white),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
+                                        Container(
+                                          width: double.infinity,
+                                          height: 30,
+                                          child: Text(
+                                            parsedString ?? "",
+                                            style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.white),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         )
                                       ],
                                     ),

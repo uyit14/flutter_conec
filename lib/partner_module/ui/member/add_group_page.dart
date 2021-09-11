@@ -139,7 +139,6 @@ class _AddGroupPageState extends State<AddGroupPage> {
                       maxLines: 1,
                       style: TextStyle(fontSize: 18),
                       textInputAction: TextInputAction.done,
-                      keyboardType: TextInputType.number,
                       onChanged: (value) {
                         setState(() {
                           _time = value;

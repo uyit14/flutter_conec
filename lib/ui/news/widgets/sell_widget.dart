@@ -338,7 +338,7 @@ class _SellWidgetState extends State<SellWidget> {
                             itemBuilder: (context, index) {
                               return ConstrainedBox(
                                 constraints: BoxConstraints(
-                                    minHeight: 130, maxHeight: 130),
+                                    minHeight: 130, maxHeight: 150),
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
@@ -411,7 +411,7 @@ class _SellWidgetState extends State<SellWidget> {
                                                 SizedBox(height: 6),
                                                 //TODO - add address
                                                 Text(
-                                                  '${totalItemList[index].address ?? ""} ${totalItemList[index].ward ?? ""} ${totalItemList[index].district ?? ""} ${totalItemList[index].province ?? ""}',
+                                                  '${totalItemList[index].district ?? ""}' ?? "",
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       color: Colors.grey),
@@ -440,7 +440,7 @@ class _SellWidgetState extends State<SellWidget> {
                                               ],
                                             ),
                                           )),
-                                          SizedBox(width: 10),
+                                          SizedBox(width: 2),
                                           Container(
                                               child: Center(
                                                   child: Icon(
