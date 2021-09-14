@@ -205,6 +205,12 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                     totalItemList.clear();
                     _itemsByCategoryBloc.requestGetAllItem(
                         _currentPage, getTopicsString(),
+                        province: provinceData != null
+                            ? provinceData.name
+                            : "",
+                        district: districtData != null
+                            ? districtData.name
+                            : "",
                         keyword: _keyword);
                     _currentPage = 2;
                     FocusScope.of(context).requestFocus(FocusNode());
@@ -465,7 +471,7 @@ class _ItemByCategoryState extends State<ItemByCategory> {
                                       borderRadius: BorderRadius.circular(8)),
                                   child: Row(
                                     children: <Widget>[
-                                      Text("Chọn danh mục"),
+                                      Text("Chọn môn võ"),
                                       Icon(Icons.keyboard_arrow_down)
                                     ],
                                   ),

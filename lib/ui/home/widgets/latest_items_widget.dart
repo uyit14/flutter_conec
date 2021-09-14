@@ -109,7 +109,7 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                                         borderRadius: BorderRadius.only(
                                             bottomLeft: Radius.circular(15),
                                             bottomRight: Radius.circular(15))),
-                                    height: 70,
+                                    height: 75,
                                     width: double.infinity,
                                     child: Column(
                                       mainAxisAlignment:
