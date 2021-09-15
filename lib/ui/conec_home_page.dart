@@ -342,6 +342,16 @@ class _ConecHomePageState extends State<ConecHomePage> {
           Navigator.of(context).pushNamed(NewsDetailPage.ROUTE_NAME,
               arguments: {'postId': postId});
         }
+
+        if (type == 'USER') {
+          Navigator.of(context)
+              .pushNamed(NotifyPage.ROUTE_NAME, arguments: 'open_notify')
+              .then((value) {
+            if (value == 1) {
+              _homeBloc.requestGetNumberNotify();
+            }
+          });
+        }
       }
     });
   }

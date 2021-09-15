@@ -45,6 +45,27 @@ class _NotifyPageState extends State<NotifyPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final data = ModalRoute.of(context).settings.arguments;
+    // if (data != null &&
+    //     data == "open_notify" &&
+    //     notifyList != null &&
+    //     notifyList.length > 0) {
+    //   print('at index 0 :' + notifyList[0].read.toString());
+    //   notifyList[0].read = true;
+    //   Navigator.of(context)
+    //       .pushNamed(NotifyDetailPage.ROUTE_NAME, arguments: notifyList[0])
+    //       .then((value) {
+    //     if (value == 1) {
+    //       _notifyBloc.requestGetNotify(1);
+    //       notifyList.clear();
+    //     }
+    //   });
+    // }
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _notifyBloc.dispose();
@@ -94,19 +115,25 @@ class _NotifyPageState extends State<NotifyPage> {
                               controller: _scrollController,
                               itemCount: notifyList.length,
                               itemBuilder: (context, index) {
-                                final document = parse(notifyList[index].content ?? "");
-                                final String parsedString = parse(document.body.text).documentElement.text;
+                                final document =
+                                    parse(notifyList[index].content ?? "");
+                                final String parsedString =
+                                    parse(document.body.text)
+                                        .documentElement
+                                        .text;
                                 return InkWell(
                                   onTap: () {
-                                    print('at index $index :' + notifyList[index].read.toString());
+                                    print('at index $index :' +
+                                        notifyList[index].read.toString());
                                     notifyList[index].read = true;
-                                    Navigator.of(context).pushNamed(
-                                        NotifyDetailPage.ROUTE_NAME,
-                                        arguments: notifyList[index]).then((value) {
-                                          if(value==1){
-                                            _notifyBloc.requestGetNotify(1);
-                                            notifyList.clear();
-                                          }
+                                    Navigator.of(context)
+                                        .pushNamed(NotifyDetailPage.ROUTE_NAME,
+                                            arguments: notifyList[index])
+                                        .then((value) {
+                                      if (value == 1) {
+                                        _notifyBloc.requestGetNotify(1);
+                                        notifyList.clear();
+                                      }
                                     });
                                   },
                                   child: Card(
@@ -127,8 +154,11 @@ class _NotifyPageState extends State<NotifyPage> {
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 16)),
                                           SizedBox(height: 4),
-                                          Text(parsedString ?? "", maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,),
+                                          Text(
+                                            parsedString ?? "",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                           SizedBox(height: 4),
                                           Text(notifyList[index].createdDate,
                                               style: TextStyle(
