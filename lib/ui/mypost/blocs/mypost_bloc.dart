@@ -42,7 +42,7 @@ class MyPostBloc{
       _rejectController.stream;
 
   void requestGetPending(int page) async{
-    _pendingController.sink.add(ApiResponse.loading());
+    _pendingController.sink.add(ApiResponse.completed([]));
     try{
       final result = await _repository.getMyPostByType(page, "Pending");
       _pendingController.sink.add(ApiResponse.completed(result));
@@ -88,7 +88,7 @@ class MyPostBloc{
   }
   //approve
   void requestApprove(int page) async{
-    _approveController.sink.add(ApiResponse.loading());
+    _approveController.sink.add(ApiResponse.completed([]));
     try{
       final result = await _repository.getMyPostByType(page, "Approve");
       _approveController.sink.add(ApiResponse.completed(result));

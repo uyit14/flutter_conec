@@ -751,6 +751,7 @@ class Helper {
   static const String loadingMessage = "Đang tải...";
   static const String verifyMessage =
       "Nhập mã xác nhận bao gôm 5 ký tự chúng tôi đã gửi đến email của bạn!";
+
 }
 
 class ColorNotify {
@@ -759,3 +760,5 @@ class ColorNotify {
 
   ColorNotify({this.text, this.color});
 }
+
+

@@ -14,12 +14,30 @@ class ApproveMyPost extends StatefulWidget {
 
 class _ApproveMyPostState extends State<ApproveMyPost> {
   MyPostBloc _myPostBloc;
+  List<MyPost> myPosts = List();
+  ScrollController _scrollController;
+  bool _shouldLoadMore = true;
+  int _currentPage = 0;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     _myPostBloc = MyPostBloc();
+    _scrollController = new ScrollController()..addListener(_scrollListener);
     _myPostBloc.requestApprove(0);
+    _currentPage = 1;
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.extentAfter < 250) {
+      if (_shouldLoadMore) {
+        _shouldLoadMore = false;
+        _myPostBloc.requestApprove(_currentPage);
+        setState(() {
+          _currentPage++;
+        });
+      }
+    }
   }
 
   @override
@@ -34,32 +52,48 @@ class _ApproveMyPostState extends State<ApproveMyPost> {
                 case Status.LOADING:
                   return UILoading(loadingMessage: snapshot.data.message);
                 case Status.COMPLETED:
-                  List<MyPost> myPosts = snapshot.data.data;
-                  if(myPosts.length > 0){
+                  if (snapshot.data.data.length > 0) {
+                    print("at UI: " + snapshot.data.data.length.toString());
+                    myPosts.addAll(snapshot.data.data);
+                    _shouldLoadMore = true;
+                  } else {
+                    _shouldLoadMore = false;
+                  }
+                  if (myPosts.length > 0) {
                     return ListView.builder(
                         itemCount: myPosts.length,
+                        controller: _scrollController,
                         itemBuilder: (context, index) {
                           return ItemMyPost(
                             myPost: myPosts[index],
                             key: ValueKey("approve"),
                             index: index,
-                            status: MyPostStatus.Approve, callback: (id){
-                            myPosts.removeWhere((element) => element.postId == id);
-                            setState(() {
-                            });
-                          }, refresh: (value){
-                            if(value!=null && value){
-                              _myPostBloc.requestApprove(0);
-                            }
-                          },);
+                            status: MyPostStatus.Approve,
+                            callback: (id) {
+                              myPosts.removeWhere(
+                                  (element) => element.postId == id);
+                              setState(() {});
+                            },
+                            refresh: (value) {
+                              if (value != null && value) {
+                                _myPostBloc.requestApprove(0);
+                                _currentPage = 1;
+                              }
+                            },
+                          );
                         });
                   }
-                  return Container(child: Center(child: Text("Không có dữ liệu")));
+                  return Container(
+                      child: Center(child: Text("Không có dữ liệu")));
                 case Status.ERROR:
                   return UIError(errorMessage: snapshot.data.message);
               }
             }
-            return Container(child: Center(child: Text("Không có dữ liệu"),),);
+            return Container(
+              child: Center(
+                child: Text("Không có dữ liệu"),
+              ),
+            );
           }),
     );
   }

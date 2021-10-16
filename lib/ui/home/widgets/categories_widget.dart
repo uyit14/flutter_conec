@@ -45,54 +45,54 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                 case Status.COMPLETED:
                   List<Topic> topics = snapshot.data.data;
                   return ListView.builder(
-                      itemCount: topics.length + 1,
+                      itemCount: topics.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
-                        if (index == 0) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                  NearByPage.ROUTE_NAME);
-                            },
-                            child: Container(
-                                height: sizeImage,
-                                width: sizeImage,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(6),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      offset: Offset(
-                                          2, 2), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                margin: EdgeInsets.all(4),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    SizedBox(height: 4,),
-                                    Expanded(
-                                      child: Image.asset(
-                                        "assets/images/GoogleMap_Icon.png",
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      "Gần tôi",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    SizedBox(height: 4),
-                                  ],
-                                )),
-                          );
-                        }
+                        // if (index == 0) {
+                        //   return InkWell(
+                        //     onTap: () {
+                        //       Navigator.of(context).pushNamed(
+                        //           NearByPage.ROUTE_NAME);
+                        //     },
+                        //     child: Container(
+                        //         height: sizeImage,
+                        //         width: sizeImage,
+                        //         decoration: BoxDecoration(
+                        //           color: Colors.white,
+                        //           borderRadius: BorderRadius.circular(6),
+                        //           boxShadow: [
+                        //             BoxShadow(
+                        //               color: Colors.grey.withOpacity(0.5),
+                        //               offset: Offset(
+                        //                   2, 2), // changes position of shadow
+                        //             ),
+                        //           ],
+                        //         ),
+                        //         margin: EdgeInsets.all(4),
+                        //         child: Column(
+                        //           mainAxisAlignment: MainAxisAlignment.start,
+                        //           children: <Widget>[
+                        //             SizedBox(height: 4,),
+                        //             Expanded(
+                        //               child: Image.asset(
+                        //                 "assets/images/GoogleMap_Icon.png",
+                        //                 fit: BoxFit.fill,
+                        //               ),
+                        //             ),
+                        //             SizedBox(height: 4),
+                        //             Text(
+                        //               "Gần tôi",
+                        //               textAlign: TextAlign.center,
+                        //               style: TextStyle(
+                        //                   fontSize: 16,
+                        //                   color: Colors.blue,
+                        //                   fontWeight: FontWeight.w500),
+                        //             ),
+                        //             SizedBox(height: 4),
+                        //           ],
+                        //         )),
+                        //   );
+                        // }
                         return InkWell(
                           onTap: () {
                             Navigator.of(context).pushNamed(
@@ -125,7 +125,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                           topLeft: Radius.circular(6),
                                           topRight: Radius.circular(6)),
                                       child: CachedNetworkImage(
-                                        imageUrl: topics[index-1].thumbnail,
+                                        imageUrl: topics[index].thumbnail,
                                         placeholder: (context, url) =>
                                             Image.asset(
                                                 "assets/images/placeholder.png"),
@@ -138,7 +138,7 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                                   ),
                                   SizedBox(height: 4),
                                   Text(
-                                    topics[index-1].title,
+                                    topics[index].title,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 16,
