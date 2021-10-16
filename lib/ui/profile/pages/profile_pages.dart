@@ -9,6 +9,7 @@ import 'package:conecapp/models/response/profile/profile_response.dart';
 import 'package:conecapp/partner_module/ui/partner_main.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
+import 'package:conecapp/ui/mypost/pages/mypost_page.dart';
 import 'package:conecapp/ui/others/open_letter_page.dart';
 import 'package:conecapp/ui/others/terms_condition_page.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
@@ -391,6 +392,34 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           Text(
                             "Chính sách & điều khoản",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w400),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context)
+                            .pushNamed(MyPost.ROUTE_NAME);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.list,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: CircleBorder(),
+                          ),
+                          Text(
+                            "Tin đăng của tôi",
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.w400),
                           )

@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SellWidget extends StatefulWidget {
+  static const ROUTE_NAME = '/sell-page';
   @override
   _SellWidgetState createState() => _SellWidgetState();
 }
@@ -78,6 +79,7 @@ class _SellWidgetState extends State<SellWidget> {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black12,
+      margin: EdgeInsets.only(top: 12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -136,10 +138,10 @@ class _SellWidgetState extends State<SellWidget> {
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide:
-                                  BorderSide(color: Colors.white, width: 1)),
+                              BorderSide(color: Colors.white, width: 1)),
                           focusedBorder: OutlineInputBorder(
                               borderSide:
-                                  BorderSide(color: Colors.white, width: 1),
+                              BorderSide(color: Colors.white, width: 1),
                               borderRadius: BorderRadius.circular(10)),
                           contentPadding: EdgeInsets.only(left: 8)),
                     ),
@@ -205,57 +207,57 @@ class _SellWidgetState extends State<SellWidget> {
                     },
                     child: _topics.length > 0
                         ? Row(
-                            children: [
-                              Container(
-                                height: 30,
-                                width: MediaQuery.of(context).size.width - 70,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: _topics
-                                      .map((e) => Container(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 4, horizontal: 6),
-                                            margin: EdgeInsets.only(right: 8),
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    width: 0.5,
-                                                    color: Colors.grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(8)),
-                                            child: Center(
-                                                child: Text(e.title ?? "")),
-                                          ))
-                                      .toList(),
-                                ),
-                              ),
-                              IconButton(
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: Colors.black,
-                                    size: 28,
-                                  ),
-                                  onPressed: () {
-                                    _newsBloc.requestGetAllAds(0);
-                                    setState(() {
-                                      _topics.clear();
-                                    });
-                                  })
-                            ],
-                          )
-                        : Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 6),
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(width: 0.5, color: Colors.grey),
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Row(
-                              children: <Widget>[
-                                Text("Chọn danh mục"),
-                                Icon(Icons.keyboard_arrow_down)
-                              ],
-                            ),
+                      children: [
+                        Container(
+                          height: 30,
+                          width: MediaQuery.of(context).size.width - 70,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: _topics
+                                .map((e) => Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 6),
+                              margin: EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 0.5,
+                                      color: Colors.grey),
+                                  borderRadius:
+                                  BorderRadius.circular(8)),
+                              child: Center(
+                                  child: Text(e.title ?? "")),
+                            ))
+                                .toList(),
                           ),
+                        ),
+                        IconButton(
+                            icon: Icon(
+                              Icons.refresh,
+                              color: Colors.black,
+                              size: 28,
+                            ),
+                            onPressed: () {
+                              _newsBloc.requestGetAllAds(0);
+                              setState(() {
+                                _topics.clear();
+                              });
+                            })
+                      ],
+                    )
+                        : Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 6),
+                      decoration: BoxDecoration(
+                          border:
+                          Border.all(width: 0.5, color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Row(
+                        children: <Widget>[
+                          Text("Chọn danh mục"),
+                          Icon(Icons.keyboard_arrow_down)
+                        ],
+                      ),
+                    ),
                   ),
 //                  SizedBox(width: 4),
 //                  InkWell(
@@ -321,7 +323,7 @@ class _SellWidgetState extends State<SellWidget> {
                       case Status.LOADING:
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
-                        //List<Sport> sports = snapshot.data.data;
+                      //List<Sport> sports = snapshot.data.data;
                         if (snapshot.data.data.length > 0 && _needAddUI) {
                           print(
                               "at UI: " + snapshot.data.data.length.toString());
@@ -356,7 +358,7 @@ class _SellWidgetState extends State<SellWidget> {
                                         children: <Widget>[
                                           ClipRRect(
                                             borderRadius:
-                                                BorderRadius.circular(6),
+                                            BorderRadius.circular(6),
                                             child: Hero(
                                               tag: totalItemList[index].postId,
                                               child: CachedNetworkImage(
@@ -376,78 +378,78 @@ class _SellWidgetState extends State<SellWidget> {
                                           SizedBox(width: 8),
                                           Expanded(
                                               child: Container(
-                                            height: 100,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.max,
-                                              crossAxisAlignment:
+                                                height: 100,
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.max,
+                                                  crossAxisAlignment:
                                                   CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  totalItemList[index].title,
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
+                                                  children: <Widget>[
+                                                    Text(
+                                                      totalItemList[index].title,
+                                                      style: TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight:
                                                           FontWeight.w600),
-                                                  maxLines: 1,
-                                                  overflow:
+                                                      maxLines: 1,
+                                                      overflow:
                                                       TextOverflow.ellipsis,
-                                                ),
-                                                SizedBox(height: 6),
-                                                Text(
-                                                  totalItemList[index].price !=
-                                                              null &&
+                                                    ),
+                                                    SizedBox(height: 6),
+                                                    Text(
+                                                      totalItemList[index].price !=
+                                                          null &&
                                                           totalItemList[index]
-                                                                  .price !=
+                                                              .price !=
                                                               0
-                                                      ? '${Helper.formatCurrency(totalItemList[index].price)} VND'
-                                                      : "Liên hệ",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.red),
-                                                  maxLines: 1,
-                                                  overflow:
+                                                          ? '${Helper.formatCurrency(totalItemList[index].price)} VND'
+                                                          : "Liên hệ",
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.red),
+                                                      maxLines: 1,
+                                                      overflow:
                                                       TextOverflow.ellipsis,
-                                                ),
-                                                SizedBox(height: 6),
-                                                //TODO - add address
-                                                Text(
-                                                  '${totalItemList[index].district ?? ""}' ?? "",
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.grey),
-                                                  maxLines: 1,
-                                                  overflow:
+                                                    ),
+                                                    SizedBox(height: 6),
+                                                    //TODO - add address
+                                                    Text(
+                                                      '${totalItemList[index].district ?? ""}' ?? "",
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.grey),
+                                                      maxLines: 1,
+                                                      overflow:
                                                       TextOverflow.ellipsis,
-                                                ),
-                                                Expanded(
-                                                  child: Container(),
-                                                ),
-                                                Text(
-                                                  totalItemList[index]
-                                                      .approvedDate,
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.grey,
-                                                    fontStyle: FontStyle.italic,
-                                                  ),
-                                                  textAlign: TextAlign.end,
-                                                  textDirection:
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(),
+                                                    ),
+                                                    Text(
+                                                      totalItemList[index]
+                                                          .approvedDate,
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.grey,
+                                                        fontStyle: FontStyle.italic,
+                                                      ),
+                                                      textAlign: TextAlign.end,
+                                                      textDirection:
                                                       TextDirection.rtl,
-                                                  maxLines: 1,
-                                                  overflow:
+                                                      maxLines: 1,
+                                                      overflow:
                                                       TextOverflow.ellipsis,
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
-                                            ),
-                                          )),
+                                              )),
                                           SizedBox(width: 2),
                                           Container(
                                               child: Center(
                                                   child: Icon(
-                                                Icons.navigate_next,
-                                                size: 30,
-                                                color: Colors.red,
-                                              )),
+                                                    Icons.navigate_next,
+                                                    size: 30,
+                                                    color: Colors.red,
+                                                  )),
                                               height: 70)
                                         ],
                                       ),

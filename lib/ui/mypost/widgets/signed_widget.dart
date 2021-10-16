@@ -38,15 +38,16 @@ class _SignedState extends State<Signed> {
           right: 16,
           child: Column(
             children: <Widget>[
-              Container(
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    "Tin đã đăng",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                  )),
+              SizedBox(height: 16),
+              // Container(
+              //     margin: EdgeInsets.symmetric(vertical: 8),
+              //     child: Text(
+              //       "Tin đã đăng",
+              //       style: TextStyle(
+              //           color: Colors.white,
+              //           fontSize: 24,
+              //           fontWeight: FontWeight.bold),
+              //     )),
 //              Row(
 //                children: <Widget>[
 //                  Expanded(

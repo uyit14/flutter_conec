@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
 
 class NewsWidget extends StatefulWidget {
+  static const ROUTE_NAME = '/news-page';
   @override
   _NewsWidgetState createState() => _NewsWidgetState();
 }
@@ -53,8 +54,9 @@ class _NewsWidgetState extends State<NewsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return  Container(
       color: Colors.black12,
+      margin: EdgeInsets.only(top: 12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
@@ -96,10 +98,10 @@ class _NewsWidgetState extends State<NewsWidget> {
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                               borderSide:
-                                  BorderSide(color: Colors.white, width: 1)),
+                              BorderSide(color: Colors.white, width: 1)),
                           focusedBorder: OutlineInputBorder(
                               borderSide:
-                                  BorderSide(color: Colors.white, width: 1),
+                              BorderSide(color: Colors.white, width: 1),
                               borderRadius: BorderRadius.circular(10)),
                           contentPadding: EdgeInsets.only(left: 8)),
                     ),
@@ -163,7 +165,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Text(
                                             news[index].title,
@@ -176,7 +178,7 @@ class _NewsWidgetState extends State<NewsWidget> {
                                           SizedBox(height: 8),
                                           Row(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                             children: <Widget>[
                                               Flexible(
                                                 flex: 4,
@@ -191,9 +193,9 @@ class _NewsWidgetState extends State<NewsWidget> {
                                                             width: 100,
                                                             height: 120),
                                                     errorWidget: (context, url,
-                                                            error) =>
+                                                        error) =>
                                                         Image.asset(
-                                                            "assets/images/error.png", height: 100, width: 120,),
+                                                          "assets/images/error.png", height: 100, width: 120,),
                                                     fit: BoxFit.cover,
                                                     height: 100,
                                                     width: 120,
@@ -207,9 +209,9 @@ class _NewsWidgetState extends State<NewsWidget> {
                                                   parsedString ?? "",
                                                   maxLines: 3,
                                                   style:
-                                                      TextStyle(fontSize: 16),
+                                                  TextStyle(fontSize: 16),
                                                   overflow:
-                                                      TextOverflow.ellipsis,
+                                                  TextOverflow.ellipsis,
                                                 ),
                                               )
                                             ],

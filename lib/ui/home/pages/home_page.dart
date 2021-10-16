@@ -497,7 +497,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          "Tin mới nhất",
+                          "Đề xuất cho bạn",
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w500),
                         ),

@@ -5,6 +5,7 @@ import '../widgets/signed_widget.dart';
 import 'package:flutter/material.dart';
 
 class MyPost extends StatefulWidget {
+  static const ROUTE_NAME = '/mypost-page';
   @override
   _MyPostState createState() => _MyPostState();
 }
@@ -30,9 +31,17 @@ class _MyPostState extends State<MyPost> {
 
   @override
   Widget build(BuildContext context) {
-    return _token == null || _isTokenExpired
-        ? NotSigned(_isTokenExpired)
-        : Signed();
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text("Tin đăng")),
+        body: Container(
+          height: double.infinity,
+          child:  _token == null || _isTokenExpired
+              ? NotSigned(_isTokenExpired)
+              : Signed(),
+        ),
+      ),
+    );
   }
 }
 

@@ -13,6 +13,8 @@ import 'package:conecapp/ui/chat/chat_list_page.dart';
 import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/pages/home_page.dart';
 import 'package:conecapp/ui/mypost/pages/post_action_page.dart';
+import 'package:conecapp/ui/news/widgets/news_widget.dart';
+import 'package:conecapp/ui/news/widgets/sell_widget.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
@@ -662,8 +664,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
                 physics: NeverScrollableScrollPhysics(),
                 children: <Widget>[
                   HomePage(callback: _initTab1Page),
-                  NewsPage(_initIndex),
-                  MyPost(),
+                  SellWidget(),
+                  NewsWidget(),
                   ProfilePage()
                 ],
               ),
@@ -816,7 +818,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                               ? Colors.red
                               : Colors.grey,
                         ),
-                        Text("Tin đăng",
+                        Text("Bản tin",
                             style: TextStyle(
                               fontSize: 13,
                               color: _selectedPageIndex == 2

@@ -33,8 +33,12 @@ import 'package:conecapp/ui/home/widgets/scroll_behavior.dart';
 import 'package:conecapp/ui/member2/member2_detail_page.dart';
 import 'package:conecapp/ui/mypost/pages/category_page.dart';
 import 'package:conecapp/ui/mypost/pages/edit_mypost_page.dart';
+import 'package:conecapp/ui/mypost/pages/mypost_page.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
+import 'package:conecapp/ui/news/pages/news_page.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
+import 'package:conecapp/ui/news/widgets/news_widget.dart';
+import 'package:conecapp/ui/news/widgets/sell_widget.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
 import 'package:conecapp/ui/others/open_letter_page.dart';
 import 'package:conecapp/ui/others/terms_condition_page.dart';
@@ -141,6 +145,9 @@ class ConecApp extends StatelessWidget {
         UpdateGroupPage.ROUTE_NAME: (context) => UpdateGroupPage(),
         SearchGroupPage.ROUTE_NAME: (context) => SearchGroupPage(),
         SwapGroup.ROUTE_NAME: (context) => SwapGroup(),
+        MyPost.ROUTE_NAME: (context) => MyPost(),
+        NewsWidget.ROUTE_NAME: (context) => NewsWidget(),
+        SellWidget.ROUTE_NAME: (context) => SellWidget(),
       },
     );
   }
