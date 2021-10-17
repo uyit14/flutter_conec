@@ -2,7 +2,10 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/notify/notify_response.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
+import 'package:conecapp/ui/member2/member2_detail_page.dart';
+import 'package:conecapp/ui/member2/member3_detail_page.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
 import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:conecapp/ui/notify/blocs/notify_bloc.dart';
@@ -126,15 +129,28 @@ class _NotifyPageState extends State<NotifyPage> {
                                     print('at index $index :' +
                                         notifyList[index].read.toString());
                                     notifyList[index].read = true;
-                                    Navigator.of(context)
-                                        .pushNamed(NotifyDetailPage.ROUTE_NAME,
-                                            arguments: notifyList[index])
-                                        .then((value) {
-                                      if (value == 1) {
-                                        _notifyBloc.requestGetNotify(1);
-                                        notifyList.clear();
-                                      }
-                                    });
+                                    if (notifyList[index].openType ==
+                                            "DETAIL" &&
+                                        notifyList[index].type ==
+                                            "USER_MEMBER") {
+                                      Navigator.of(context).pushNamed(
+                                          Member3DetailPage.ROUTE_NAME,
+                                          arguments: {
+                                            'id': notifyList[index].typeId,
+                                            'title': ""
+                                          });
+                                    } else {
+                                      Navigator.of(context)
+                                          .pushNamed(
+                                              NotifyDetailPage.ROUTE_NAME,
+                                              arguments: notifyList[index])
+                                          .then((value) {
+                                        if (value == 1) {
+                                          _notifyBloc.requestGetNotify(1);
+                                          notifyList.clear();
+                                        }
+                                      });
+                                    }
                                   },
                                   child: Card(
                                     color: notifyList[index].read

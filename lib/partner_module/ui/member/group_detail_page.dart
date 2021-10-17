@@ -31,6 +31,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   ScrollController _scrollController;
   bool _shouldLoadMore = true;
   int _currentPage = 0;
+  int _memberType = 0;
+  List<int> _numberMember = [0, 0];
 
   @override
   void didChangeDependencies() {
@@ -38,8 +40,13 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     final routeArgs = ModalRoute.of(context).settings.arguments;
     _group = routeArgs;
     _memberBloc.requestGetMembers(_currentPage,
-        userGroupId: _group.userGroupId);
+        memberType: _memberType, userGroupId: _group.userGroupId);
     _currentPage = 1;
+    _memberBloc.numberOfMembersStream.listen((event) {
+      setState(() {
+        _numberMember = event;
+      });
+    });
   }
 
   @override
@@ -53,7 +60,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
       if (_shouldLoadMore) {
         _shouldLoadMore = false;
         _memberBloc.requestGetMembers(_currentPage,
-            userGroupId: _group.userGroupId);
+            memberType: _memberType, userGroupId: _group.userGroupId);
         setState(() {
           _currentPage++;
         });
@@ -204,9 +211,44 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   ],
                 ),
                 SizedBox(height: 12),
-                Text("    Danh sách thành viên",
-                    style:
-                        TextStyle(fontWeight: FontWeight.w400, fontSize: 12)),
+                Row(
+                  children: [
+                    FlatButton(
+                      onPressed: () {
+                        _memberBloc.requestGetMembers(0,
+                            memberType: 0, userGroupId: _group.userGroupId);
+                        setState(() {
+                          _memberType = 0;
+                          _currentPage = 1;
+                          _members.clear();
+                        });
+                      },
+                      //icon: Icon(Icons.person, color: _memberType == 0 ? Colors.red : null),
+                      child: Text("Danh sách thành viên (${_numberMember[0]})",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: _memberType == 0 ? Colors.red : null)),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        _memberBloc.requestGetMembers(0,
+                            memberType: 1, userGroupId: _group.userGroupId);
+                        setState(() {
+                          _memberType = 1;
+                          _currentPage = 1;
+                          _members.clear();
+                        });
+                      },
+                      //icon: Icon(Icons.pending_actions, color: _memberType == 1 ? Colors.red : null),
+                      child: Text("Chờ xác nhận (${_numberMember[1]})",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: _memberType == 1 ? Colors.red : null)),
+                    )
+                  ],
+                ),
                 Container(
                   margin:
                       EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 50),
@@ -241,15 +283,15 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                         children: [
                                           InkWell(
                                             onTap: () {
-                                              Navigator.of(context)
-                                                  .pushNamed(
-                                                      MemberDetailPage
-                                                          .ROUTE_NAME,
-                                                      arguments:
-                                                          _members[index])
-                                                  .then((value) {
+                                              Navigator.of(context).pushNamed(
+                                                  MemberDetailPage.ROUTE_NAME,
+                                                  arguments: {
+                                                    "member": _members[index],
+                                                    "type": _memberType
+                                                  }).then((value) {
                                                 _members.clear();
                                                 _memberBloc.requestGetMembers(0,
+                                                    memberType: _memberType,
                                                     userGroupId:
                                                         _group.userGroupId);
                                               });
@@ -402,7 +444,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                               itemBuilder: (context) {
                                                 return [
                                                   _members[index].memberId !=
-                                                          null
+                                                              null &&
+                                                          _memberType == 0
                                                       ? PopupMenuItem(
                                                           value: 'message',
                                                           child: Text(
@@ -417,14 +460,19 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                           null
                                                       ? PopupMenuItem(
                                                           value: 'notify',
-                                                          child: Text(
-                                                              'Nhắc nhỡ đóng tiền'),
+                                                          child: Text(_memberType ==
+                                                                  0
+                                                              ? 'Nhắc nhỡ đóng tiền'
+                                                              : "Nhắc nhỡ xác nhận thành viên"),
                                                         )
                                                       : null,
-                                                  PopupMenuItem(
-                                                    value: 'swap',
-                                                    child: Text('Chuyển lớp'),
-                                                  ),
+                                                  _memberType == 0
+                                                      ? PopupMenuItem(
+                                                          value: 'swap',
+                                                          child: Text(
+                                                              'Chuyển lớp'),
+                                                        )
+                                                      : null,
                                                   PopupMenuItem(
                                                     value: 'delete',
                                                     child: Text(
@@ -460,6 +508,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                         _memberBloc
                                                             .requestGetMembers(
                                                                 0,
+                                                                memberType:
+                                                                    _memberType,
                                                                 userGroupId: _group
                                                                     .userGroupId);
                                                       }
@@ -482,6 +532,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                         _memberBloc
                                                             .requestGetMembers(
                                                                 0,
+                                                                memberType:
+                                                                    _memberType,
                                                                 userGroupId: _group
                                                                     .userGroupId);
                                                       }
@@ -544,7 +596,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
               if (value == 1) {
                 _members.clear();
                 _memberBloc.requestGetMembers(0,
-                    userGroupId: _group.userGroupId);
+                    memberType: _memberType, userGroupId: _group.userGroupId);
               }
             });
           },
@@ -557,14 +609,26 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   }
 
   void sendNotify(String id) async {
-    String result = await _memberBloc.requestGetNote(id);
-    Helper.showRemindDialog(context, result, (message) {
-      var requestParam = jsonEncode({"id": id, "notes": message});
-      _memberBloc.requestNotifyPayment(requestParam);
-      Navigator.of(context).pop();
-      Fluttertoast.showToast(
-          msg: "Gửi thông báo thành công", textColor: Colors.black87);
-    });
+    if (_memberType == 0) {
+      String result = await _memberBloc.requestGetNote(id);
+      Helper.showRemindDialog(context, result, (message) {
+        var requestParam = jsonEncode({"id": id, "notes": message});
+        _memberBloc.requestNotifyPayment(requestParam);
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: "Gửi thông báo thành công", textColor: Colors.black87);
+      });
+    } else {
+      Helper.showAlertDialog(context, "Nhắc nhỡ xác nhận thành viên",
+          "Một thông báo nhắc nhỡ xác nhận thành viên sẽ được gửi đến người dùng này",
+          () async {
+        var requestParam = jsonEncode({"id": id});
+        _memberBloc.requestNotifyMemberConfirm(requestParam);
+        Fluttertoast.showToast(
+            msg: "Gửi thông báo thành công", textColor: Colors.black87);
+        Navigator.of(context).pop();
+      });
+    }
   }
 
   Widget doubleRows(String strFirst, strSecond) {

@@ -2,6 +2,7 @@ import 'package:conecapp/common/helper.dart';
 
 class MembersResponse {
   List<Member> members;
+  List<Member> pendingMembers;
 
   MembersResponse({this.members});
 
@@ -10,6 +11,12 @@ class MembersResponse {
       members = new List<Member>();
       json['members'].forEach((v) {
         members.add(new Member.fromJson(v));
+      });
+    }
+    if (json['pendingMembers'] != null) {
+      pendingMembers = new List<Member>();
+      json['pendingMembers'].forEach((v) {
+        pendingMembers.add(new Member.fromJson(v));
       });
     }
   }

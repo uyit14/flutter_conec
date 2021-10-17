@@ -31,6 +31,7 @@ import 'package:conecapp/ui/home/pages/nearby_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/home/widgets/scroll_behavior.dart';
 import 'package:conecapp/ui/member2/member2_detail_page.dart';
+import 'package:conecapp/ui/member2/member3_detail_page.dart';
 import 'package:conecapp/ui/mypost/pages/category_page.dart';
 import 'package:conecapp/ui/mypost/pages/edit_mypost_page.dart';
 import 'package:conecapp/ui/mypost/pages/mypost_page.dart';
@@ -139,6 +140,7 @@ class ConecApp extends StatelessWidget {
         CustomMemberPage.ROUTE_NAME: (context) => CustomMemberPage(),
         FlMainPage.ROUTE_NAME: (context) => FlMainPage(),
         Member2DetailPage.ROUTE_NAME: (context) => Member2DetailPage(),
+        Member3DetailPage.ROUTE_NAME: (context) => Member3DetailPage(),
         MemberGroupPage.ROUTE_NAME: (context) => MemberGroupPage(),
         GroupDetailPage.ROUTE_NAME: (context) => GroupDetailPage(),
         AddGroupPage.ROUTE_NAME: (context) => AddGroupPage(),

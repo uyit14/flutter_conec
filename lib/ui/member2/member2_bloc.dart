@@ -32,6 +32,12 @@ class Member2Bloc {
   Stream<ApiResponse<Member2Detail>> get member2DetailStream =>
       _member2DetailController.stream;
 
+  StreamController<ApiResponse<Member2Detail>> _member3DetailController =
+  StreamController();
+
+  Stream<ApiResponse<Member2Detail>> get member3DetailStream =>
+      _member3DetailController.stream;
+
   void requestGetMember2(int page) async {
     print('page $page');
     _member2Controller.sink.add(ApiResponse.completed([]));
@@ -70,9 +76,32 @@ class Member2Bloc {
     }
   }
 
+  void requestGetMember3Detail(String id) async {
+    _member3DetailController.sink.add(ApiResponse.loading());
+    final result = await _repository.fetMember3Detail(id);
+    if (result.status) {
+      _member3DetailController.sink
+          .add(ApiResponse.completed(result.member2Detail));
+    } else {
+      _member3DetailController.sink
+          .addError(ApiResponse.error("Vui lòng thử lại"));
+    }
+  }
+
+  Future<bool> requestAcceptInvite(String id) async {
+    final response = await _repository.acceptInvite(id);
+    return response;
+  }
+
+  Future<bool> requestRejectInvite(String id) async {
+    final response = await _repository.rejectInvite(id);
+    return response;
+  }
+
   void dispose() {
     _member2Controller?.close();
     _follower2Controller?.close();
+    _member3DetailController?.close();
     _member2DetailController?.close();
   }
 }

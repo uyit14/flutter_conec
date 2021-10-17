@@ -301,4 +301,27 @@ class HomeRemoteRepository {
     print(response.toString());
     return Member2DetailResponse.fromJson(response);
   }
+
+  Future<Member2DetailResponse> fetMember3Detail(String id) async {
+    final response = await _helper.get("/api/MemberJoined/ViewRequest?id=$id",
+        headers: await Helper.header());
+    print(response.toString());
+    return Member2DetailResponse.fromJson(response);
+  }
+
+  Future<bool> acceptInvite(String id) async {
+    final response = await _helper.post(
+        "/api/MemberJoined/AcceptedRequest?id=$id",
+        headers: await Helper.header());
+    print("acceptInvite" + response.toString());
+    return response['status'];
+  }
+
+  Future<bool> rejectInvite(String id) async {
+    final response = await _helper.post(
+        "/api/MemberJoined/CancelRequest?id=$id",
+        headers: await Helper.header());
+    print("acceptInvite" + response.toString());
+    return response['status'];
+  }
 }

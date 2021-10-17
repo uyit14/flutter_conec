@@ -124,6 +124,13 @@ class PartnerRepository {
     return response['status'];
   }
 
+  Future<bool> notifyMemberConfirm(dynamic body) async {
+    final response = await _helper.post('/api/Member/AcceptedReminder',
+        body: body, headers: await Helper.header());
+    print(response);
+    return response['status'];
+  }
+
   Future<MemberDetailResponse> getMemberDetail(String id) async {
     final response = await _helper.get("/api/Member/GetUserMember?id=$id",
         headers: await Helper.header());

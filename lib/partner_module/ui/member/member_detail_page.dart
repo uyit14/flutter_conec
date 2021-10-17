@@ -26,25 +26,42 @@ class MemberDetailPage extends StatefulWidget {
 class _MemberDetailPageState extends State<MemberDetailPage> {
   MemberBloc _memberBloc = MemberBloc();
   Member _member = Member();
+  int _memberType = 0;
   String id;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _member = ModalRoute.of(context).settings.arguments;
+    final routeArgs =
+        ModalRoute.of(context).settings.arguments as Map<String, Object>;
+    //
+    _member = routeArgs['member'];
+    _memberType = routeArgs['type'];
     id = _member.id;
     _memberBloc.requestGetMemberDetail(id);
   }
 
   void sendNotify(String id) async {
-    String result = await _memberBloc.requestGetNote(id);
-    Helper.showRemindDialog(context, result, (message) {
-      var requestParam = jsonEncode({"id": id, "notes": message});
-      _memberBloc.requestNotifyPayment(requestParam);
-      Navigator.of(context).pop();
-      Fluttertoast.showToast(
-          msg: "Gửi thông báo thành công", textColor: Colors.black87);
-    });
+    if (_memberType == 0) {
+      String result = await _memberBloc.requestGetNote(id);
+      Helper.showRemindDialog(context, result, (message) {
+        var requestParam = jsonEncode({"id": id, "notes": message});
+        _memberBloc.requestNotifyPayment(requestParam);
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: "Gửi thông báo thành công", textColor: Colors.black87);
+      });
+    } else {
+      Helper.showAlertDialog(context, "Nhắc nhỡ xác nhận thành viên",
+          "Một thông báo nhắc nhỡ xác nhận thành viên sẽ được gửi đến người dùng này",
+          () async {
+        var requestParam = jsonEncode({"id": id});
+        _memberBloc.requestNotifyMemberConfirm(requestParam);
+        Fluttertoast.showToast(
+            msg: "Gửi thông báo thành công", textColor: Colors.black87);
+        Navigator.of(context).pop();
+      });
+    }
   }
 
   @override
@@ -70,13 +87,17 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                 _member.memberId != null
                     ? PopupMenuItem(
                         value: 'notify',
-                        child: Text('Nhắc nhỡ đóng tiền'),
+                        child: Text(_memberType == 0
+                            ? 'Nhắc nhỡ đóng tiền'
+                            : "Nhắc nhỡ xác nhận thành viên"),
                       )
                     : null,
-                PopupMenuItem(
-                  value: 'swap',
-                  child: Text('Chuyển lớp'),
-                ),
+                _memberType == 0
+                    ? PopupMenuItem(
+                        value: 'swap',
+                        child: Text('Chuyển lớp'),
+                      )
+                    : null,
                 PopupMenuItem(
                   value: 'delete',
                   child: Text(
@@ -169,7 +190,8 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                                   //     TYPE.PHONE),
                                   // SizedBox(height: 8),
                                   // infoCard(_member.email ?? "Email", TYPE.EMAIL),
-                                  doubleRowsWithFlex("Email", _member.email ?? ""),
+                                  doubleRowsWithFlex(
+                                      "Email", _member.email ?? ""),
                                   SizedBox(height: 8),
                                   doubleRows2("Số điện thoại",
                                       _member.phoneNumber ?? ""),
@@ -221,7 +243,9 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                                         color: _member.memberId == null
                                             ? Colors.grey[300]
                                             : Colors.yellow),
-                                    label: Text("Nhắc nhỡ đóng tiền"))
+                                    label: Text(_memberType == 0
+                                        ? "Nhắc nhỡ đóng tiền"
+                                        : "Nhắc nhỡ xác nhận thành viên"))
                               ],
                             ),
                           ),

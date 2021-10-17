@@ -64,13 +64,28 @@ class MemberBloc {
   Stream<ApiResponse<Group>> get groupDetailStream =>
       _groupDetailController.stream;
 
-  void requestGetMembers(int page, { String userGroupId}) async {
+  //gr detail
+  StreamController<List<int>> _numberOfMembers =
+  StreamController();
+
+  Stream<List<int>> get numberOfMembersStream =>
+      _numberOfMembers.stream;
+
+  void requestGetMembers(int page, {String userGroupId, int memberType = 0}) async {
     print('page $page');
     _membersController.sink.add(ApiResponse.completed([]));
     try {
-      final result = await _repository.getAllMember(page, userGroupId: userGroupId);
-      print("sink page $page ${result.members.length}");
-      _membersController.sink.add(ApiResponse.completed(result.members));
+      final result =
+          await _repository.getAllMember(page, userGroupId: userGroupId);
+      _numberOfMembers.sink.add([result.members.length, result.pendingMembers.length]);
+      if (memberType == 0) {
+        print("sink members $page ${result.members.length}");
+        _membersController.sink.add(ApiResponse.completed(result.members));
+      } else {
+        print("sink pendingMembers $page ${result.pendingMembers.length}");
+        _membersController.sink
+            .add(ApiResponse.completed(result.pendingMembers));
+      }
     } catch (e) {
       _membersController.sink.addError(ApiResponse.error(e.toString()));
       debugPrint(e.toString());
@@ -146,6 +161,11 @@ class MemberBloc {
     return response;
   }
 
+  Future<bool> requestNotifyMemberConfirm(dynamic body) async {
+    final response = await _repository.notifyMemberConfirm(body);
+    return response;
+  }
+
   Future<bool> requestCompletePayment(dynamic body, PAYMENT_TYPE type) async {
     final response = await _repository.completePayment(body, type);
     return response;
@@ -190,5 +210,6 @@ class MemberBloc {
     _memberDetailController?.close();
     _groupController?.close();
     _groupDetailController?.close();
+    _numberOfMembers?.close();
   }
 }
