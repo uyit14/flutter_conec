@@ -29,7 +29,7 @@ class _MemberPageState extends State<MemberPage> {
   MemberBloc _memberBloc = MemberBloc();
   ScrollController _scrollController;
   bool _shouldLoadMore = true;
-  int _currentPage = 0;
+  int _currentPage = 1;
   Group _group;
 
   @override
@@ -37,7 +37,7 @@ class _MemberPageState extends State<MemberPage> {
     super.initState();
     _scrollController = new ScrollController()..addListener(_scrollListener);
     _memberBloc.requestGetMembers(_currentPage);
-    _currentPage = 1;
+    _currentPage = 2;
   }
 
   void _scrollListener() {
@@ -75,15 +75,15 @@ class _MemberPageState extends State<MemberPage> {
                        _group = value;
                        _members.clear();
                      });
-                      _memberBloc.requestGetMembers(0, userGroupId: _group.userGroupId);
-                      _currentPage = 1;
+                      _memberBloc.requestGetMembers(1, userGroupId: _group.userGroupId);
+                      _currentPage = 2;
                     }else{
                       setState(() {
                         _members.clear();
                         _group = null;
                       });
-                      _memberBloc.requestGetMembers(0);
-                      _currentPage = 1;
+                      _memberBloc.requestGetMembers(1);
+                      _currentPage = 2;
                     }
                   });
                 }),
@@ -303,7 +303,7 @@ class _MemberPageState extends State<MemberPage> {
                 .then((value) {
               if (value == 1) {
                 _members.clear();
-                _memberBloc.requestGetMembers(0);
+                _memberBloc.requestGetMembers(1);
               }
             });
           },
@@ -348,7 +348,7 @@ class _MemberPageState extends State<MemberPage> {
             .then((value) {
           if (value == 1) {
             _members.clear();
-            _memberBloc.requestGetMembers(0);
+            _memberBloc.requestGetMembers(1);
           }
         });
         break;
@@ -369,7 +369,7 @@ class _MemberPageState extends State<MemberPage> {
           if (result) {
             //_members.removeWhere((element) => element.id == _members[index].id);
             _members.clear();
-            _memberBloc.requestGetMembers(0);
+            _memberBloc.requestGetMembers(1);
             setState(() {});
             Navigator.of(context).pop();
           } else {

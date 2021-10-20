@@ -19,7 +19,7 @@ class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
   PNotifyBloc _notifyBloc = PNotifyBloc();
   ScrollController _scrollController;
   bool _shouldLoadMore = true;
-  int _currentPage = 0;
+  int _currentPage = 1;
   List<PNotifyLite> notifyList = List<PNotifyLite>();
 
   @override
@@ -27,7 +27,7 @@ class _NotifyPartnerPageState extends State<NotifyPartnerPage> {
     super.initState();
     _scrollController = new ScrollController()..addListener(_scrollListener);
     _notifyBloc.requestGetNotify(_currentPage);
-    _currentPage = 1;
+    _currentPage = 2;
   }
 
   void _scrollListener() {

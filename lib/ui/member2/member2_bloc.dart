@@ -83,6 +83,7 @@ class Member2Bloc {
       _member3DetailController.sink
           .add(ApiResponse.completed(result.member2Detail));
     } else {
+      print("status: " + result.status.toString());
       _member3DetailController.sink
           .addError(ApiResponse.error("Vui lòng thử lại"));
     }

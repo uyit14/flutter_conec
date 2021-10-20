@@ -30,7 +30,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
   MemberBloc _memberBloc = MemberBloc();
   ScrollController _scrollController;
   bool _shouldLoadMore = true;
-  int _currentPage = 0;
+  int _currentPage = 1;
   int _memberType = 0;
   List<int> _numberMember = [0, 0];
 
@@ -41,7 +41,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
     _group = routeArgs;
     _memberBloc.requestGetMembers(_currentPage,
         memberType: _memberType, userGroupId: _group.userGroupId);
-    _currentPage = 1;
+    _currentPage = 2;
     _memberBloc.numberOfMembersStream.listen((event) {
       setState(() {
         _numberMember = event;
@@ -215,11 +215,11 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   children: [
                     FlatButton(
                       onPressed: () {
-                        _memberBloc.requestGetMembers(0,
+                        _memberBloc.requestGetMembers(1,
                             memberType: 0, userGroupId: _group.userGroupId);
                         setState(() {
                           _memberType = 0;
-                          _currentPage = 1;
+                          _currentPage = 2;
                           _members.clear();
                         });
                       },
@@ -232,11 +232,11 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                     ),
                     FlatButton(
                       onPressed: () {
-                        _memberBloc.requestGetMembers(0,
+                        _memberBloc.requestGetMembers(1,
                             memberType: 1, userGroupId: _group.userGroupId);
                         setState(() {
                           _memberType = 1;
-                          _currentPage = 1;
+                          _currentPage = 2;
                           _members.clear();
                         });
                       },
@@ -290,7 +290,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                     "type": _memberType
                                                   }).then((value) {
                                                 _members.clear();
-                                                _memberBloc.requestGetMembers(0,
+                                                _memberBloc.requestGetMembers(1,
                                                     memberType: _memberType,
                                                     userGroupId:
                                                         _group.userGroupId);
@@ -507,7 +507,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                         _members.clear();
                                                         _memberBloc
                                                             .requestGetMembers(
-                                                                0,
+                                                                1,
                                                                 memberType:
                                                                     _memberType,
                                                                 userGroupId: _group
@@ -531,7 +531,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                         _members.clear();
                                                         _memberBloc
                                                             .requestGetMembers(
-                                                                0,
+                                                                1,
                                                                 memberType:
                                                                     _memberType,
                                                                 userGroupId: _group
@@ -595,7 +595,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                 .then((value) {
               if (value == 1) {
                 _members.clear();
-                _memberBloc.requestGetMembers(0,
+                _memberBloc.requestGetMembers(1,
                     memberType: _memberType, userGroupId: _group.userGroupId);
               }
             });

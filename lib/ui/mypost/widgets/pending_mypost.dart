@@ -17,15 +17,15 @@ class _PendingMyPostState extends State<PendingMyPost> {
   List<MyPost> myPosts = List();
   ScrollController _scrollController;
   bool _shouldLoadMore = true;
-  int _currentPage = 0;
+  int _currentPage = 1;
 
   @override
   void initState() {
     super.initState();
     _myPostBloc = MyPostBloc();
     _scrollController = new ScrollController()..addListener(_scrollListener);
-    _myPostBloc.requestGetPending(0);
-    _currentPage = 1;
+    _myPostBloc.requestGetPending(1);
+    _currentPage = 2;
   }
 
   void _scrollListener() {
@@ -65,22 +65,21 @@ class _PendingMyPostState extends State<PendingMyPost> {
                         controller: _scrollController,
                         itemBuilder: (context, index) {
                           return ItemMyPost(
-                            myPost: myPosts[index],
-                            key: ValueKey("pending"),
-                            index: index,
-                            status: MyPostStatus.Pending,
-                            callback: (id) {
-                              myPosts.removeWhere(
-                                  (element) => element.postId == id);
-                              setState(() {});
-                            },
-                            refresh: (value) {
-                              if (value != null && value) {
-                                _myPostBloc.requestGetPending(0);
-                                _currentPage = 1;
-                              }
-                            },
-                          );
+                              myPost: myPosts[index],
+                              key: ValueKey("pending"),
+                              index: index,
+                              status: MyPostStatus.Pending,
+                              callback: (id) {
+                                myPosts.removeWhere(
+                                    (element) => element.postId == id);
+                                setState(() {});
+                              },
+                              refresh: (value) {
+                                if (value != null && value) {
+                                  _myPostBloc.requestGetPending(1);
+                                  _currentPage = 2;
+                                }
+                              });
                         });
                   }
                   return Container(

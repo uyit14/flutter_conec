@@ -17,15 +17,15 @@ class _ApproveMyPostState extends State<ApproveMyPost> {
   List<MyPost> myPosts = List();
   ScrollController _scrollController;
   bool _shouldLoadMore = true;
-  int _currentPage = 0;
+  int _currentPage = 1;
 
   @override
   void initState() {
     super.initState();
     _myPostBloc = MyPostBloc();
     _scrollController = new ScrollController()..addListener(_scrollListener);
-    _myPostBloc.requestApprove(0);
-    _currentPage = 1;
+    _myPostBloc.requestApprove(1);
+    _currentPage = 2;
   }
 
   void _scrollListener() {
@@ -76,8 +76,8 @@ class _ApproveMyPostState extends State<ApproveMyPost> {
                             },
                             refresh: (value) {
                               if (value != null && value) {
-                                _myPostBloc.requestApprove(0);
-                                _currentPage = 1;
+                                _myPostBloc.requestApprove(1);
+                                _currentPage = 2;
                               }
                             },
                           );

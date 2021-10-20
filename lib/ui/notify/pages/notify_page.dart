@@ -2,6 +2,7 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/notify/notify_response.dart';
+import 'package:conecapp/repositories/home/home_remote_repository.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/member2/member2_detail_page.dart';
@@ -11,6 +12,7 @@ import 'package:conecapp/ui/news/pages/sell_detail_page.dart';
 import 'package:conecapp/ui/notify/blocs/notify_bloc.dart';
 import 'package:conecapp/ui/notify/pages/notify_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:html/parser.dart';
 
 class NotifyPage extends StatefulWidget {
@@ -125,7 +127,7 @@ class _NotifyPageState extends State<NotifyPage> {
                                         .documentElement
                                         .text;
                                 return InkWell(
-                                  onTap: () {
+                                  onTap: () async {
                                     print('at index $index :' +
                                         notifyList[index].read.toString());
                                     notifyList[index].read = true;
@@ -133,12 +135,24 @@ class _NotifyPageState extends State<NotifyPage> {
                                             "DETAIL" &&
                                         notifyList[index].type ==
                                             "USER_MEMBER") {
-                                      Navigator.of(context).pushNamed(
-                                          Member3DetailPage.ROUTE_NAME,
-                                          arguments: {
-                                            'id': notifyList[index].typeId,
-                                            'title': ""
-                                          });
+                                      HomeRemoteRepository _repository =
+                                          HomeRemoteRepository();
+                                      final result =
+                                          await _repository.fetMember3Detail(
+                                              notifyList[index].typeId);
+                                      if (result.status == false) {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "Yêu cầu này đã được chấp nhận hoặc đã bị hủy",
+                                            gravity: ToastGravity.CENTER);
+                                      } else {
+                                        Navigator.of(context).pushNamed(
+                                            Member3DetailPage.ROUTE_NAME,
+                                            arguments: {
+                                              'id': notifyList[index].typeId,
+                                              'title': ""
+                                            });
+                                      }
                                     } else {
                                       Navigator.of(context)
                                           .pushNamed(
