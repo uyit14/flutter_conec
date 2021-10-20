@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/partner_module/models/group_response.dart';
+import 'package:conecapp/partner_module/models/member_info_response.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
 import 'package:conecapp/partner_module/models/p_notify_detail.dart';
 import 'package:conecapp/partner_module/models/p_notify_reponse.dart';
 import 'package:conecapp/partner_module/models/push_notify_response.dart';
+import 'package:conecapp/partner_module/models/requestsmember_response.dart';
 import 'package:conecapp/partner_module/models/search_m_response.dart';
 import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
 
@@ -83,6 +85,13 @@ class PartnerRepository {
 
   Future<Member> addMember(dynamic body) async {
     final response = await _helper.post('/api/Member/AddMember',
+        body: body, headers: await Helper.header());
+    print(response);
+    return Member.fromJson(response);
+  }
+
+  Future<Member> confirmRequest(dynamic body) async {
+    final response = await _helper.post('/api/RequestMember/confirmRequestMember',
         body: body, headers: await Helper.header());
     print(response);
     return Member.fromJson(response);
@@ -177,5 +186,28 @@ class PartnerRepository {
         headers: await Helper.header());
     print(response);
     return Group.fromJson(response['group']);
+  }
+
+  Future<MemberInfoResponse> fetchMemberInfo(String id) async {
+    final response = await _helper.get(
+        "/api/RequestMember/GetRequestMember?id=$id",
+        headers: await Helper.header());
+    print(response);
+    return MemberInfoResponse.fromJson(response);
+  }
+
+  Future<RequestMemberResponse> fetchMemberRequest() async {
+    final response = await _helper.get("/api/RequestMember/GetAllRequests",
+        headers: await Helper.header());
+    print(response);
+    return RequestMemberResponse.fromJson(response);
+  }
+
+  Future<bool> deleteRequest(String id) async {
+    final response = await _helper.post(
+        "/api/RequestMember/DeleteRequestMember?id=$id",
+        headers: await Helper.header());
+    print(response);
+    return response['status'];
   }
 }

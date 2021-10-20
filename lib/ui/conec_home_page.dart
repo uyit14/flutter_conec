@@ -7,6 +7,7 @@ import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/partner_module/ui/member/add_member_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_page.dart';
+import 'package:conecapp/partner_module/ui/member/requests_page.dart';
 import 'package:conecapp/partner_module/ui/notify/add_notify_page.dart';
 import 'package:conecapp/partner_module/ui/notify/notify_partner_page.dart';
 import 'package:conecapp/ui/chat/chat_list_page.dart';
@@ -577,6 +578,32 @@ class _ConecHomePageState extends State<ConecHomePage> {
                                 shape: CircleBorder(),
                               ),
                               Text("Thành viên",
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.w400))
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed(RequestPage.ROUTE_NAME);
+                          },
+                          child: Row(
+                            children: [
+                              RawMaterialButton(
+                                onPressed: () {},
+                                elevation: 2.0,
+                                fillColor: Colors.white,
+                                child: Icon(
+                                  Icons.group_add,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                                padding: EdgeInsets.all(8),
+                                shape: CircleBorder(),
+                              ),
+                              Text("Yêu cầu kết nạp",
                                   style: TextStyle(
                                       fontSize: 18, fontWeight: FontWeight.w400))
                             ],

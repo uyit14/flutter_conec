@@ -206,6 +206,11 @@ class HomeBloc {
     return response;
   }
 
+  Future<bool> requestMember(dynamic body) async {
+    final response = await _repository.requestMember(body);
+    return response;
+  }
+
   void dispose() {
     _topicController.close();
     _sliderController.close();

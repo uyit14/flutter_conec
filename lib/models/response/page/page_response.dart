@@ -36,6 +36,8 @@ class Profile {
   num ratingCount;
   String about;
   String videoLink;
+  bool isMember;
+  String userMemberId;
   List<Images> images;
   List<Posts> posts;
 
@@ -60,6 +62,8 @@ class Profile {
         this.ratingCount,
         this.about,
         this.videoLink,
+        this.userMemberId,
+        this.isMember,
         this.images,
         this.posts});
 
@@ -84,6 +88,8 @@ class Profile {
     ratingCount = json['ratingCount'];
     about = json['about'];
     videoLink = json['videoLink'] !=null ? Helper.baseURL + json['videoLink'] : null;
+    isMember = json['isMember'];
+    userMemberId = json['userMemberId '];
     if (json['images'] != null) {
       images = new List<Images>();
       json['images'].forEach((v) {

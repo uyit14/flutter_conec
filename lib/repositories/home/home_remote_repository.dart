@@ -173,7 +173,8 @@ class HomeRemoteRepository {
   }
 
   Future<PageResponse> fetchPageIntroduce(String clubId) async {
-    final response = await _helper.get("/api/Club/Details?id=$clubId");
+    final response = await _helper.get("/api/Club/Details?id=$clubId",
+        headers: await Helper.header());
     print(response);
     return PageResponse.fromJson(response);
   }
@@ -321,7 +322,14 @@ class HomeRemoteRepository {
     final response = await _helper.post(
         "/api/MemberJoined/CancelRequest?id=$id",
         headers: await Helper.header());
-    print("acceptInvite" + response.toString());
+    print("rejectInvite" + response.toString());
+    return response['status'];
+  }
+
+  Future<bool> requestMember(dynamic body) async {
+    final response = await _helper.post("/api/Club/requestMember",
+        body: body, headers: await Helper.header());
+    print("requestMember" + response.toString());
     return response['status'];
   }
 }

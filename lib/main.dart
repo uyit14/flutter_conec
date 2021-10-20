@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:conecapp/partner_module/ui/member/accept_request.dart';
 import 'package:conecapp/partner_module/ui/member/add_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/add_member_page.dart';
 import 'package:conecapp/partner_module/ui/member/group_detail_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_group_page.dart';
 import 'package:conecapp/partner_module/ui/member/member_page.dart';
+import 'package:conecapp/partner_module/ui/member/requests_page.dart';
 import 'package:conecapp/partner_module/ui/member/search_group.dart';
 import 'package:conecapp/partner_module/ui/member/search_member_page.dart';
 import 'package:conecapp/partner_module/ui/member/swap_group.dart';
@@ -150,6 +152,8 @@ class ConecApp extends StatelessWidget {
         MyPost.ROUTE_NAME: (context) => MyPost(),
         NewsWidget.ROUTE_NAME: (context) => NewsWidget(),
         SellWidget.ROUTE_NAME: (context) => SellWidget(),
+        RequestPage.ROUTE_NAME: (context) => RequestPage(),
+        AcceptRequestPage.ROUTE_NAME: (context) => AcceptRequestPage(),
       },
     );
   }

@@ -245,6 +245,55 @@ class Helper {
     );
   }
 
+  static void showInputDialog(BuildContext context, title, club, Function onOK) {
+    TextEditingController _controller = TextEditingController();
+
+    Widget cancelButton = TextButton(
+      child: Text("Đóng"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+    Widget continueButton = TextButton(
+      child: Text("Xác nhận"),
+      onPressed: () => onOK(_controller.text),
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Bạn muốn gửi yêu cầu kết nạp thành viên với $club ?"),
+          SizedBox(height: 12),
+          Text(
+            "Gửi lời nhắn",
+            style: TextStyle(fontWeight: FontWeight.w500),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            child: TextField(
+              controller: _controller,
+              maxLines: 4,
+            ),
+          )
+        ],
+      ),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   static void showDeleteDialog(
       BuildContext context, String title, String content, VoidCallback onOK) {
     showDialog(

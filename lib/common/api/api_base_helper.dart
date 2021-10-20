@@ -21,7 +21,7 @@ class ApiBaseHelper {
       debugPrint('No net');
       throw FetchDataException('No Internet connection');
     } catch (e) {
-      print("aaaa" + e.toString());
+      print("Error from api: ----> " + e.toString());
     }
     debugPrint('api get recieved!');
     Helper.log("Api Get $url, body", '${responseJson.toString()}');

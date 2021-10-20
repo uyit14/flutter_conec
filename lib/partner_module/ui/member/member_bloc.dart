@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/partner_module/models/group_response.dart';
+import 'package:conecapp/partner_module/models/member_info_response.dart';
 import 'package:conecapp/partner_module/models/members_response.dart';
+import 'package:conecapp/partner_module/models/requestsmember_response.dart';
 import 'package:conecapp/partner_module/models/search_m_response.dart';
 import 'package:conecapp/partner_module/repository/partner_repository.dart';
 import 'package:conecapp/partner_module/ui/member/member_detail_page.dart';
@@ -28,6 +30,13 @@ class MemberBloc {
 
   Stream<ApiResponse<Member>> get addMemberStream =>
       _addMemberController.stream;
+
+  //confirm request
+  StreamController<ApiResponse<Member>> _confirmRequestController =
+  StreamController();
+
+  Stream<ApiResponse<Member>> get confirmRequestStream =>
+      _confirmRequestController.stream;
 
   //update member
   StreamController<ApiResponse<Member>> _updateMemberController =
@@ -65,19 +74,33 @@ class MemberBloc {
       _groupDetailController.stream;
 
   //gr detail
-  StreamController<List<int>> _numberOfMembers =
+  StreamController<List<int>> _numberOfMembers = StreamController();
+
+  Stream<List<int>> get numberOfMembersStream => _numberOfMembers.stream;
+
+  //group
+  StreamController<ApiResponse<List<Request>>> _requestController =
+      StreamController();
+
+  Stream<ApiResponse<List<Request>>> get requestStream =>
+      _requestController.stream;
+
+  //gr detail
+  StreamController<ApiResponse<MemberInfo>> _memberInfoController =
   StreamController();
 
-  Stream<List<int>> get numberOfMembersStream =>
-      _numberOfMembers.stream;
+  Stream<ApiResponse<MemberInfo>> get memberInfoStream =>
+      _memberInfoController.stream;
 
-  void requestGetMembers(int page, {String userGroupId, int memberType = 0}) async {
+  void requestGetMembers(int page,
+      {String userGroupId, int memberType = 0}) async {
     print('page $page');
     _membersController.sink.add(ApiResponse.completed([]));
     try {
       final result =
           await _repository.getAllMember(page, userGroupId: userGroupId);
-      _numberOfMembers.sink.add([result.members.length, result.pendingMembers.length]);
+      _numberOfMembers.sink
+          .add([result.members.length, result.pendingMembers.length]);
       if (memberType == 0) {
         print("sink members $page ${result.members.length}");
         _membersController.sink.add(ApiResponse.completed(result.members));
@@ -114,6 +137,17 @@ class MemberBloc {
     }
   }
 
+  void requestConfirmRequest(dynamic body) async {
+    _confirmRequestController.sink.add(ApiResponse.loading());
+    try {
+      final result = await _repository.confirmRequest(body);
+      _confirmRequestController.sink.add(ApiResponse.completed(result));
+    } catch (e) {
+      _confirmRequestController.sink.add(ApiResponse.error(e.toString()));
+      print("Confirm_Request_Error: " + e.toString());
+    }
+  }
+
   void requestUpdateMember(dynamic body) async {
     _updateMemberController.sink.add(ApiResponse.loading());
     try {
@@ -142,6 +176,11 @@ class MemberBloc {
   }
 
   Future<bool> requestDeleteGroup(String id) async {
+    final response = await _repository.deleteGroup(id);
+    return response;
+  }
+
+  Future<bool> requestDeleteRequest(String id) async {
     final response = await _repository.deleteGroup(id);
     return response;
   }
@@ -202,6 +241,26 @@ class MemberBloc {
     }
   }
 
+  void requestGetMemberInfo(String id) async {
+    _memberInfoController.sink.add(ApiResponse.loading());
+    try {
+      final result = await _repository.fetchMemberInfo(id);
+      _memberInfoController.sink.add(ApiResponse.completed(result.memberInfo));
+    } catch (e) {
+      _memberInfoController.sink.addError(ApiResponse.error(e.toString()));
+    }
+  }
+
+  void requestGetMemberRequest() async {
+    _requestController.sink.add(ApiResponse.loading());
+    try {
+      final result = await _repository.fetchMemberRequest();
+      _requestController.sink.add(ApiResponse.completed(result.requests));
+    } catch (e) {
+      _requestController.sink.addError(ApiResponse.error(e.toString()));
+    }
+  }
+
   void dispose() {
     _membersController?.close();
     _addMemberController?.close();
@@ -211,5 +270,8 @@ class MemberBloc {
     _groupController?.close();
     _groupDetailController?.close();
     _numberOfMembers?.close();
+    _requestController?.close();
+    _memberInfoController?.close();
+    _confirmRequestController?.close();
   }
 }
