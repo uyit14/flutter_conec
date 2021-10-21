@@ -88,8 +88,8 @@ class _ForGotPasswordPageState extends State<ForGotPasswordPage> {
                 keyboardType: TextInputType.text,
                 style: TextStyle(fontSize: 18),
                 decoration: InputDecoration(
-                    hintText: 'Nhập tên đăng nhập',
-                    errorText: _isError ? "Vui lòng nhập tên đăng nhập" : null,
+                    hintText: 'Nhập số điện thoại',
+                    errorText: _isError ? "Vui lòng nhập số điện thoại" : null,
                     enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.red, width: 1)),
                     focusedBorder: const OutlineInputBorder(

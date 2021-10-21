@@ -211,43 +211,48 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                   ],
                 ),
                 SizedBox(height: 12),
-                Row(
-                  children: [
-                    FlatButton(
-                      onPressed: () {
-                        _memberBloc.requestGetMembers(1,
-                            memberType: 0, userGroupId: _group.userGroupId);
-                        setState(() {
-                          _memberType = 0;
-                          _currentPage = 2;
-                          _members.clear();
-                        });
-                      },
-                      //icon: Icon(Icons.person, color: _memberType == 0 ? Colors.red : null),
-                      child: Text("Danh sách thành viên (${_numberMember[0]})",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: _memberType == 0 ? Colors.red : null)),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Expanded(
+                    child: Row(
+                      children: [
+                        FlatButton(
+                          onPressed: () {
+                            _memberBloc.requestGetMembers(1,
+                                memberType: 0, userGroupId: _group.userGroupId);
+                            setState(() {
+                              _memberType = 0;
+                              _currentPage = 2;
+                              _members.clear();
+                            });
+                          },
+                          //icon: Icon(Icons.person, color: _memberType == 0 ? Colors.red : null),
+                          child: Text("Danh sách thành viên (${_numberMember[0]})",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: _memberType == 0 ? Colors.red : null)),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            _memberBloc.requestGetMembers(1,
+                                memberType: 1, userGroupId: _group.userGroupId);
+                            setState(() {
+                              _memberType = 1;
+                              _currentPage = 2;
+                              _members.clear();
+                            });
+                          },
+                          //icon: Icon(Icons.pending_actions, color: _memberType == 1 ? Colors.red : null),
+                          child: Text("Chờ xác nhận (${_numberMember[1]})",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: _memberType == 1 ? Colors.red : null)),
+                        )
+                      ],
                     ),
-                    FlatButton(
-                      onPressed: () {
-                        _memberBloc.requestGetMembers(1,
-                            memberType: 1, userGroupId: _group.userGroupId);
-                        setState(() {
-                          _memberType = 1;
-                          _currentPage = 2;
-                          _members.clear();
-                        });
-                      },
-                      //icon: Icon(Icons.pending_actions, color: _memberType == 1 ? Colors.red : null),
-                      child: Text("Chờ xác nhận (${_numberMember[1]})",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
-                              color: _memberType == 1 ? Colors.red : null)),
-                    )
-                  ],
+                  ),
                 ),
                 Container(
                   margin:

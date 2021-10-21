@@ -30,18 +30,19 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ApiResponse<List<LatestItem>>>(
-        stream: _homeBloc.latestItemStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            switch (snapshot.data.status) {
-              case Status.LOADING:
-                return UILoading(loadingMessage: snapshot.data.message);
-              case Status.COMPLETED:
-                List<LatestItem> items = snapshot.data.data;
-                return Container(
-                  child: GridView.builder(
+    return Container(
+      child: StreamBuilder<ApiResponse<List<LatestItem>>>(
+          stream: _homeBloc.latestItemStream,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              switch (snapshot.data.status) {
+                case Status.LOADING:
+                  return UILoading(loadingMessage: snapshot.data.message);
+                case Status.COMPLETED:
+                  List<LatestItem> items = snapshot.data.data;
+                  return GridView.builder(
                       physics: NeverScrollableScrollPhysics(),
+                      padding: EdgeInsets.only(bottom: 6),
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       itemCount: items.length,
@@ -153,15 +154,15 @@ class _LatestItemsWidgetState extends State<LatestItemsWidget> {
                             ),
                           ),
                         );
-                      }),
-                );
-              case Status.ERROR:
-                return UIError(
-                    errorMessage: snapshot.data.message,
-                    onRetryPressed: () => _homeBloc.requestGetLatestItem());
+                      });
+                case Status.ERROR:
+                  return UIError(
+                      errorMessage: snapshot.data.message,
+                      onRetryPressed: () => _homeBloc.requestGetLatestItem());
+              }
             }
-          }
-          return Center(child: Text("Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
-        });
+            return Center(child: Text("Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+          }),
+    );
   }
 }

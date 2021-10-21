@@ -385,7 +385,7 @@ class _LoginPageState extends State<LoginPage> {
                         : Container(),
                     Container(
                       //padding: MediaQuery.of(context).viewInsets,
-                      margin: EdgeInsets.only(top: 8),
+                      margin: EdgeInsets.only(top: 12),
                       width: double.infinity,
                       child: RichText(
                         textAlign: TextAlign.center,
@@ -406,66 +406,66 @@ class _LoginPageState extends State<LoginPage> {
                             ]),
                       ),
                     ),
-                    SizedBox(
-                      height: 32,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                            onTap: () async {
-                              if (await _googleSignIn.isSignedIn()) {
-                                _handleSignOut();
-                              }
-                              _handleSignIn();
-                            },
-                            child: CircleAvatar(
-                              radius: 25,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage:
-                                  AssetImage("assets/images/google.png"),
-                            )),
-                        SizedBox(width: 16),
-                        InkWell(
-                            onTap: () async {
-                              _handleFbSignIn();
-                            },
-                            child: CircleAvatar(
-                              radius: 25,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage:
-                                  AssetImage("assets/images/facebook.png"),
-                            )),
-                        SizedBox(width: 13),
-                        InkWell(
-                            onTap: _loginZalo,
-                            child: CircleAvatar(
-                              radius: 28,
-                              backgroundColor: Colors.transparent,
-                              backgroundImage:
-                                  AssetImage("assets/images/zalo-logo.png"),
-                            )),
-//                        SizedBox(width: 6),
-//                        Platform.isIOS ? InkWell(
-//                            onTap: _loginApple,
-//                            child: Image.asset("assets/images/apple.png", width: 55, height: 55, fit: BoxFit.fill,)) : Container(),
-                      ],
-                    ),
-                    Platform.isIOS
-                        ? SizedBox(
-                            height: 16,
-                          )
-                        : Container(),
-                    Platform.isIOS
-                        ? SignInWithAppleButton(
-                            onPressed: _loginApple,
-                          )
-                        : Container(),
-                    Platform.isIOS
-                        ? SizedBox(
-                            height: 4,
-                          )
-                        : Container(),
+                    // SizedBox(
+                    //   height: 32,
+                    // ),
+//                     Row(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         InkWell(
+//                             onTap: () async {
+//                               if (await _googleSignIn.isSignedIn()) {
+//                                 _handleSignOut();
+//                               }
+//                               _handleSignIn();
+//                             },
+//                             child: CircleAvatar(
+//                               radius: 25,
+//                               backgroundColor: Colors.transparent,
+//                               backgroundImage:
+//                                   AssetImage("assets/images/google.png"),
+//                             )),
+//                         SizedBox(width: 16),
+//                         InkWell(
+//                             onTap: () async {
+//                               _handleFbSignIn();
+//                             },
+//                             child: CircleAvatar(
+//                               radius: 25,
+//                               backgroundColor: Colors.transparent,
+//                               backgroundImage:
+//                                   AssetImage("assets/images/facebook.png"),
+//                             )),
+//                         SizedBox(width: 13),
+//                         InkWell(
+//                             onTap: _loginZalo,
+//                             child: CircleAvatar(
+//                               radius: 28,
+//                               backgroundColor: Colors.transparent,
+//                               backgroundImage:
+//                                   AssetImage("assets/images/zalo-logo.png"),
+//                             )),
+// //                        SizedBox(width: 6),
+// //                        Platform.isIOS ? InkWell(
+// //                            onTap: _loginApple,
+// //                            child: Image.asset("assets/images/apple.png", width: 55, height: 55, fit: BoxFit.fill,)) : Container(),
+//                       ],
+//                     ),
+//                     Platform.isIOS
+//                         ? SizedBox(
+//                             height: 16,
+//                           )
+//                         : Container(),
+//                     Platform.isIOS
+//                         ? SignInWithAppleButton(
+//                             onPressed: _loginApple,
+//                           )
+//                         : Container(),
+//                     Platform.isIOS
+//                         ? SizedBox(
+//                             height: 4,
+//                           )
+//                         : Container(),
                     Align(
                       alignment: Alignment.center,
                       child: FlatButton(

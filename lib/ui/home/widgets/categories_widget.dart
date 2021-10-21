@@ -98,8 +98,8 @@ class _CategoriesWidgetState extends State<CategoriesWidget> {
                             Navigator.of(context).pushNamed(
                                 ItemByCategory.ROUTE_NAME,
                                 arguments: {
-                                  'id': topics[index-1].id,
-                                  'title': topics[index-1].title
+                                  'id': topics[index].id,
+                                  'title': topics[index].title
                                 });
                           },
                           child: Container(
