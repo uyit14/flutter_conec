@@ -360,8 +360,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   }
 
   void getLocation() async {
-    Position position =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition();
     print("latttt: ${position.latitude}" ?? "---aaa---");
     print("longgg: ${position.longitude}" ?? "---aaa---");
     globals.latitude = position.latitude;

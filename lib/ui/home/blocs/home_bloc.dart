@@ -124,10 +124,10 @@ class HomeBloc {
     }
   }
 
-  void requestGetLatestItem() async {
+  void requestGetLatestItem(double lat, double lng) async {
     _latestItemController.sink.add(ApiResponse.loading());
     try {
-      final items = await _repository.fetchLatestItem();
+      final items = await _repository.fetchLatestItem(lat, lng);
       _latestItemController.sink.add(ApiResponse.completed(items));
     } catch (e) {
       _latestItemController.sink.addError(ApiResponse.error(e.toString()));

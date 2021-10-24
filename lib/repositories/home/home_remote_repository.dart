@@ -45,8 +45,12 @@ class HomeRemoteRepository {
     return SliderResponse.fromJson(response).sliders;
   }
 
-  Future<List<LatestItem>> fetchLatestItem() async {
-    final response = await _helper.get("/api/hottopic/post");
+  Future<List<LatestItem>> fetchLatestItem(double lat, double lng) async {
+    if (lat == null || lng == null) {
+      lat = 22.370297;
+      lng = 114.173564;
+    }
+    final response = await _helper.get("/api/hottopic/post?lat=$lat&lng=$lng");
     return LatestResponse.fromJson(response).items;
   }
 

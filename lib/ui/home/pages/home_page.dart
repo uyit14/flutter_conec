@@ -20,6 +20,7 @@ import 'package:geolocator/geolocator.dart';
 import '../../../common/globals.dart' as globals;
 import 'item_detail_page.dart';
 import 'items_by_category_page.dart';
+import 'nearby_page.dart';
 
 class HomePage extends StatefulWidget {
   final void Function(int, int) callback;
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if(isCallApi){
-      getLocation();
+      //getLocation();
       isCallApi = false;
     }
 
@@ -503,9 +504,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).pushNamed(
-                                ItemByCategory.ROUTE_NAME,
-                                arguments: {'id': null, 'title': null});
+                            // Navigator.of(context).pushNamed(
+                            //     ItemByCategory.ROUTE_NAME,
+                            //     arguments: {'id': null, 'title': null});
+                                  Navigator.of(context).pushNamed(
+                                      NearByPage.ROUTE_NAME);
                           },
                           child: Text(
                             "Xem thêm",
