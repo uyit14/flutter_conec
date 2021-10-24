@@ -302,9 +302,13 @@ class _IntroducePageState extends State<IntroducePage> {
                                                       BorderRadius.circular(8)),
                                               onPressed: () async {
                                                 if (profile.isMember) {
-                                                  Navigator.of(context).pushNamed(Member2DetailPage.ROUTE_NAME,
-                                                      arguments: {
-                                                        'id': profile.userMemberId,
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          Member2DetailPage
+                                                              .ROUTE_NAME,
+                                                          arguments: {
+                                                        'id': profile
+                                                            .userMemberId,
                                                         'title': profile.name
                                                       });
                                                 } else {
@@ -313,7 +317,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                                       "Đăng ký thành viên",
                                                       profile.name,
                                                       (value) async {
-                                                        Navigator.of(context).pop();
+                                                    Navigator.of(context).pop();
                                                     setState(() {
                                                       _isLoading = true;
                                                     });
@@ -337,20 +341,22 @@ class _IntroducePageState extends State<IntroducePage> {
                                               },
                                               color: Colors.green,
                                               textColor: Colors.white,
-                                              child: Text(
-                                                  profile.isMember
-                                                      ? "Thông tin thành viên"
-                                                      : "Đăng ký thành viên",
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w500))),
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                width: 100,
+                                                child: Text(
+                                                    profile.isMember
+                                                        ? "Thông tin"
+                                                        : "Đăng ký",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                              )),
                                           FlatButton(
                                               shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(8)),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 42),
                                               onPressed: !_shouldShow
                                                   ? () async {
                                                       HiddenResponse response =
@@ -372,11 +378,15 @@ class _IntroducePageState extends State<IntroducePage> {
                                                   ? Colors.blue
                                                   : Colors.grey,
                                               textColor: Colors.white,
-                                              child: Text("Xem chi tiết",
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w500)))
+                                              child: Container(
+                                                width: 100,
+                                                alignment: Alignment.center,
+                                                child: Text("Xem chi tiết",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                              ))
                                         ],
                                       ),
                                     ),

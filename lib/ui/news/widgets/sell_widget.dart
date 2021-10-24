@@ -340,7 +340,7 @@ class _SellWidgetState extends State<SellWidget> {
                             itemBuilder: (context, index) {
                               return ConstrainedBox(
                                 constraints: BoxConstraints(
-                                    minHeight: 130, maxHeight: 150),
+                                    minHeight: 130, maxHeight: 170),
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.of(context).pushNamed(
