@@ -338,121 +338,117 @@ class _SellWidgetState extends State<SellWidget> {
                             controller: _scrollController,
                             itemCount: totalItemList.length,
                             itemBuilder: (context, index) {
-                              return ConstrainedBox(
-                                constraints: BoxConstraints(
-                                    minHeight: 130, maxHeight: 185),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        SellDetailPage.ROUTE_NAME,
-                                        arguments: {
-                                          'postId': totalItemList[index].postId,
-                                        });
-                                  },
-                                  child: Card(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          ClipRRect(
-                                            borderRadius:
-                                            BorderRadius.circular(6),
-                                            child: Hero(
-                                              tag: totalItemList[index].postId,
-                                              child: CachedNetworkImage(
-                                                imageUrl: totalItemList[index]
-                                                    .thumbnail,
-                                                placeholder: (context, url) =>
-                                                    Image.asset(
-                                                        "assets/images/placeholder.png",
-                                                        width: 100,
-                                                        height: 100),
-                                                fit: BoxFit.cover,
-                                                width: 100,
-                                                height: 100,
-                                              ),
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                      SellDetailPage.ROUTE_NAME,
+                                      arguments: {
+                                        'postId': totalItemList[index].postId,
+                                      });
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(6),
+                                          child: Hero(
+                                            tag: totalItemList[index].postId,
+                                            child: CachedNetworkImage(
+                                              imageUrl: totalItemList[index]
+                                                  .thumbnail,
+                                              placeholder: (context, url) =>
+                                                  Image.asset(
+                                                      "assets/images/placeholder.png",
+                                                      width: 100,
+                                                      height: 100),
+                                              fit: BoxFit.cover,
+                                              width: 100,
+                                              height: 100,
                                             ),
                                           ),
-                                          SizedBox(width: 8),
-                                          Expanded(
-                                              child: Container(
-                                                height: 100,
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      totalItemList[index].title,
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                      TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 6),
-                                                    Text(
-                                                      totalItemList[index].price !=
-                                                          null &&
-                                                          totalItemList[index]
-                                                              .price !=
-                                                              0
-                                                          ? '${Helper.formatCurrency(totalItemList[index].price)} VND'
-                                                          : "Liên hệ",
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.red),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                      TextOverflow.ellipsis,
-                                                    ),
-                                                    SizedBox(height: 6),
-                                                    //TODO - add address
-                                                    Text(
-                                                      '${totalItemList[index].district ?? ""}' ?? "",
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: Colors.grey),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                      TextOverflow.ellipsis,
-                                                    ),
-                                                    Expanded(
-                                                      child: Container(),
-                                                    ),
-                                                    Text(
-                                                      totalItemList[index]
-                                                          .approvedDate,
-                                                      style: TextStyle(
+                                        ),
+                                        SizedBox(width: 8),
+                                        Expanded(
+                                            child: Container(
+                                              height: 100,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.max,
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    totalItemList[index].title,
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                        FontWeight.w600),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                    TextOverflow.ellipsis,
+                                                  ),
+                                                  SizedBox(height: 6),
+                                                  Text(
+                                                    totalItemList[index].price !=
+                                                        null &&
+                                                        totalItemList[index]
+                                                            .price !=
+                                                            0
+                                                        ? '${Helper.formatCurrency(totalItemList[index].price)} VND'
+                                                        : "Liên hệ",
+                                                    style: TextStyle(
                                                         fontSize: 16,
-                                                        color: Colors.grey,
-                                                        fontStyle: FontStyle.italic,
-                                                      ),
-                                                      textAlign: TextAlign.end,
-                                                      textDirection:
-                                                      TextDirection.rtl,
-                                                      maxLines: 1,
-                                                      overflow:
-                                                      TextOverflow.ellipsis,
+                                                        color: Colors.red),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                    TextOverflow.ellipsis,
+                                                  ),
+                                                  SizedBox(height: 6),
+                                                  //TODO - add address
+                                                  Text(
+                                                    '${totalItemList[index].district ?? ""}' ?? "",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.grey),
+                                                    maxLines: 1,
+                                                    overflow:
+                                                    TextOverflow.ellipsis,
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(),
+                                                  ),
+                                                  Text(
+                                                    totalItemList[index]
+                                                        .approvedDate,
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                      fontStyle: FontStyle.italic,
                                                     ),
-                                                  ],
-                                                ),
-                                              )),
-                                          SizedBox(width: 2),
-                                          Container(
-                                              child: Center(
-                                                  child: Icon(
-                                                    Icons.navigate_next,
-                                                    size: 30,
-                                                    color: Colors.red,
-                                                  )),
-                                              height: 70)
-                                        ],
-                                      ),
+                                                    textAlign: TextAlign.end,
+                                                    textDirection:
+                                                    TextDirection.rtl,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                    TextOverflow.ellipsis,
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                        SizedBox(width: 2),
+                                        Container(
+                                            child: Center(
+                                                child: Icon(
+                                                  Icons.navigate_next,
+                                                  size: 30,
+                                                  color: Colors.red,
+                                                )),
+                                            height: 70)
+                                      ],
                                     ),
                                   ),
                                 ),
