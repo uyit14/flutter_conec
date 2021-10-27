@@ -364,18 +364,18 @@ class _SellWidgetState extends State<SellWidget> {
                                               placeholder: (context, url) =>
                                                   Image.asset(
                                                       "assets/images/placeholder.png",
-                                                      width: 100,
-                                                      height: 100),
+                                                      width: 110,
+                                                      height: 110),
                                               fit: BoxFit.cover,
-                                              width: 100,
-                                              height: 100,
+                                              width: 110,
+                                              height: 110,
                                             ),
                                           ),
                                         ),
                                         SizedBox(width: 8),
                                         Expanded(
                                             child: Container(
-                                              height: 100,
+                                              height: 110,
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.max,
                                                 crossAxisAlignment:
