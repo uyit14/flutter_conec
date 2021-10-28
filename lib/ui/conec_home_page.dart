@@ -192,7 +192,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
     if (pf.Platform.isIOS) {
       checkAppVersionApi();
     } else {
-      //checkVersion(context);
+      checkVersion(context);
     }
     initOneSignal("7075e16c-c1fb-4d33-93b1-1c8cf007c294");
     getToken();
@@ -241,7 +241,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
 //        newStoreVersion = status.storeVersion;
 //      }
 //    }
-    print(status.localVersion + "-" + status.storeVersion);
+    print("localVersion : " + status.localVersion + " - " + "storeVersion: " + status.storeVersion);
 
     if (status.localVersion != status.storeVersion) {
       Helper.showUpdateVersionDialog(

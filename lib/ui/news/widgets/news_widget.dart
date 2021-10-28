@@ -147,84 +147,80 @@ class _NewsWidgetState extends State<NewsWidget> {
                             itemBuilder: (context, index) {
                               final document = parse(news[index].description ?? "");
                               final String parsedString = parse(document.body.text).documentElement.text;
-                              return ConstrainedBox(
-                                constraints: BoxConstraints(
-                                    minHeight: 180, maxHeight: 180),
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(
-                                        NewsDetailPage.ROUTE_NAME,
-                                        arguments: {
-                                          'postId': news[index].postId,
-                                        });
-                                  },
-                                  child: Card(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            news[index].title,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          SizedBox(height: 8),
-                                          Row(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Flexible(
-                                                flex: 4,
-                                                child: Hero(
-                                                  tag: news[index].postId,
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: news[index].thumbnail,
-                                                    placeholder: (context,
-                                                        url) =>
-                                                        Image.asset(
-                                                            "assets/images/placeholder.png",
-                                                            width: 100,
-                                                            height: 120),
-                                                    errorWidget: (context, url,
-                                                        error) =>
-                                                        Image.asset(
-                                                          "assets/images/error.png", height: 100, width: 120,),
-                                                    fit: BoxFit.cover,
-                                                    height: 100,
-                                                    width: 120,
-                                                  ),
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                      NewsDetailPage.ROUTE_NAME,
+                                      arguments: {
+                                        'postId': news[index].postId,
+                                      });
+                                },
+                                child: Card(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          news[index].title,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Row(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Flexible(
+                                              flex: 4,
+                                              child: Hero(
+                                                tag: news[index].postId,
+                                                child: CachedNetworkImage(
+                                                  imageUrl: news[index].thumbnail,
+                                                  placeholder: (context,
+                                                      url) =>
+                                                      Image.asset(
+                                                          "assets/images/placeholder.png",
+                                                          width: 100,
+                                                          height: 120),
+                                                  errorWidget: (context, url,
+                                                      error) =>
+                                                      Image.asset(
+                                                        "assets/images/error.png", height: 100, width: 120,),
+                                                  fit: BoxFit.cover,
+                                                  height: 100,
+                                                  width: 120,
                                                 ),
                                               ),
-                                              SizedBox(width: 6),
-                                              Flexible(
-                                                flex: 6,
-                                                child: Text(
-                                                  parsedString ?? "",
-                                                  maxLines: 3,
-                                                  style:
-                                                  TextStyle(fontSize: 16),
-                                                  overflow:
-                                                  TextOverflow.ellipsis,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          Container(
-                                            child: Text(
-                                              news[index].approvedDate,
-                                              textAlign: TextAlign.end,
                                             ),
-                                            width: double.infinity,
-                                          )
-                                        ],
-                                      ),
+                                            SizedBox(width: 6),
+                                            Flexible(
+                                              flex: 6,
+                                              child: Text(
+                                                parsedString ?? "",
+                                                maxLines: 3,
+                                                style:
+                                                TextStyle(fontSize: 16),
+                                                overflow:
+                                                TextOverflow.ellipsis,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Container(
+                                          child: Text(
+                                            news[index].approvedDate,
+                                            textAlign: TextAlign.end,
+                                          ),
+                                          width: double.infinity,
+                                        )
+                                      ],
                                     ),
                                   ),
                                 ),
