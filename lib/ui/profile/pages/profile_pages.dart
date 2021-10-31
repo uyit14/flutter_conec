@@ -82,6 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
             globals.name = profile.name;
             globals.email = profile.email;
             globals.phone = profile.phoneNumber;
+            globals.type = profile.type;
 
             setState(() {
               _isLoading = false;
@@ -158,7 +159,7 @@ class _ProfilePageState extends State<ProfilePage> {
             break;
           case Status.COMPLETED:
             Profile profile = event.data;
-
+            globals.type = profile.type;
             setState(() {
               _isLoading = false;
               _name = profile.name;

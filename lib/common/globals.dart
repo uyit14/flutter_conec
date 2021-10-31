@@ -10,6 +10,7 @@ String province = "";
 String district = "";
 String ward = "";
 String address = "";
+String type = "";
 
 String deviceToken = "";
 

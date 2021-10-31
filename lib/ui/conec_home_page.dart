@@ -159,7 +159,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   }
 
   void _selectPage(int index) {
-    if(index == 0){
+    if (index == 0 && globals.type != _profile.type) {
       getToken();
     }
     setState(() {
