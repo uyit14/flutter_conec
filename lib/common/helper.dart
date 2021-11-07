@@ -744,7 +744,7 @@ class Helper {
   //                         Radio(
   //                           value: reportList[index],
   //                           groupValue: selectedIndex,
-  //                           activeColor:
+  //                           activeColor:Static.Configs.print_grand_total
   //                           Color.fromRGBO(220, 65, 50, 1),
   //                           onChanged: (value) {
   //                             selectedIndex = value;

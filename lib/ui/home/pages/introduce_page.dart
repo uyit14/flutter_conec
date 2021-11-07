@@ -63,8 +63,8 @@ class _IntroducePageState extends State<IntroducePage> {
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
     clubId = routeArgs['clubId'];
-    _homeBloc.requestPageIntroduce(
-        routeArgs['clubId'] ?? "40fcdb4a-6c82-4150-be23-4509a7d64ec6");
+    if (routeArgs['clubId'] != null)
+      _homeBloc.requestPageIntroduce(routeArgs['clubId']);
   }
 
   @override
@@ -381,7 +381,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                               child: Container(
                                                 width: 100,
                                                 alignment: Alignment.center,
-                                                child: Text("Xem chi tiết",
+                                                child: Text("Chi tiết",
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
