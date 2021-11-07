@@ -521,6 +521,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 10),
                   LatestItemsWidget(),
                 ],
               ),
@@ -552,6 +553,7 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 10),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
