@@ -215,38 +215,41 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                           ),
                           SizedBox(height: 8),
                           Card(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                FlatButton.icon(
-                                    onPressed: _member.memberId != null
-                                        ? () {
-                                            Navigator.of(context).pushNamed(
-                                                ChatPage.ROUTE_NAME,
-                                                arguments: {
-                                                  "memberId": _member.memberId
-                                                });
-                                          }
-                                        : null,
-                                    icon: Icon(Icons.messenger,
-                                        color: _member.memberId == null
-                                            ? Colors.grey[300]
-                                            : Colors.indigoAccent),
-                                    label: Text("Nhắn tin")),
-                                FlatButton.icon(
-                                    onPressed: _member.memberId != null
-                                        ? () {
-                                            sendNotify(_member.id);
-                                          }
-                                        : null,
-                                    icon: Icon(Icons.notifications,
-                                        color: _member.memberId == null
-                                            ? Colors.grey[300]
-                                            : Colors.yellow),
-                                    label: Text(_memberType == 0
-                                        ? "Nhắc nhỡ đóng tiền"
-                                        : "Nhắc nhỡ xác nhận thành viên"))
-                              ],
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  FlatButton.icon(
+                                      onPressed: _member.memberId != null
+                                          ? () {
+                                              Navigator.of(context).pushNamed(
+                                                  ChatPage.ROUTE_NAME,
+                                                  arguments: {
+                                                    "memberId": _member.memberId
+                                                  });
+                                            }
+                                          : null,
+                                      icon: Icon(Icons.messenger,
+                                          color: _member.memberId == null
+                                              ? Colors.grey[300]
+                                              : Colors.indigoAccent),
+                                      label: Text("Nhắn tin")),
+                                  FlatButton.icon(
+                                      onPressed: _member.memberId != null
+                                          ? () {
+                                              sendNotify(_member.id);
+                                            }
+                                          : null,
+                                      icon: Icon(Icons.notifications,
+                                          color: _member.memberId == null
+                                              ? Colors.grey[300]
+                                              : Colors.yellow),
+                                      label: Text(_memberType == 0
+                                          ? "Nhắc nhỡ đóng tiền"
+                                          : "Nhắc nhỡ xác nhận thành viên"))
+                                ],
+                              ),
                             ),
                           ),
                           SizedBox(height: 12),

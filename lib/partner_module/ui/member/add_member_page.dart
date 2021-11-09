@@ -34,6 +34,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
   int _selectedType;
   Group _group;
   bool _isLoading = false;
+  bool _apiCall = true;
   String _type = "";
   MemberSearch _member = MemberSearch();
   TextEditingController _joiningFreeController = TextEditingController();
@@ -48,8 +49,11 @@ class _AddMemberPageState extends State<AddMemberPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final routeArgs = ModalRoute.of(context).settings.arguments;
-    _group = routeArgs;
+    if(_apiCall){
+      final routeArgs = ModalRoute.of(context).settings.arguments;
+      _group = routeArgs;
+      _apiCall = false;
+    }
   }
 
   @override

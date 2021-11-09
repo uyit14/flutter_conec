@@ -226,7 +226,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                           });
                         },
                         //icon: Icon(Icons.person, color: _memberType == 0 ? Colors.red : null),
-                        child: Text("Danh sách thành viên (${_numberMember[0]})",
+                        child: Text("Thành viên (${_numberMember[0]})",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
@@ -243,7 +243,7 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                           });
                         },
                         //icon: Icon(Icons.pending_actions, color: _memberType == 1 ? Colors.red : null),
-                        child: Text("Chờ xác nhận (${_numberMember[1]})",
+                        child: Text("Xác nhận (${_numberMember[1]})",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
