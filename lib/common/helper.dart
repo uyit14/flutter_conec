@@ -210,7 +210,7 @@ class Helper {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Nhắc nhỡ đóng tiền"),
+      title: Text("Nhắc nhở đóng tiền"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -465,8 +465,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                                           value: 'notify',
                                                           child: Text(_memberType ==
                                                                   0
-                                                              ? 'Nhắc nhỡ đóng tiền'
-                                                              : "Nhắc nhỡ xác nhận thành viên"),
+                                                              ? 'Nhắc nhở đóng tiền'
+                                                              : "Nhắc nhở xác nhận thành viên"),
                                                         )
                                                       : null,
                                                   _memberType == 0
@@ -622,8 +622,8 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
             msg: "Gửi thông báo thành công", textColor: Colors.black87);
       });
     } else {
-      Helper.showAlertDialog(context, "Nhắc nhỡ xác nhận thành viên",
-          "Một thông báo nhắc nhỡ xác nhận thành viên sẽ được gửi đến người dùng này",
+      Helper.showAlertDialog(context, "Nhắc nhở xác nhận thành viên",
+          "Một thông báo nhắc nhở xác nhận thành viên sẽ được gửi đến người dùng này",
           () async {
         var requestParam = jsonEncode({"id": id});
         _memberBloc.requestNotifyMemberConfirm(requestParam);

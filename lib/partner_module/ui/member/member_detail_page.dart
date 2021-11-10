@@ -52,8 +52,8 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             msg: "Gửi thông báo thành công", textColor: Colors.black87);
       });
     } else {
-      Helper.showAlertDialog(context, "Nhắc nhỡ xác nhận thành viên",
-          "Một thông báo nhắc nhỡ xác nhận thành viên sẽ được gửi đến người dùng này",
+      Helper.showAlertDialog(context, "Nhắc nhở xác nhận thành viên",
+          "Một thông báo nhắc nhở xác nhận thành viên sẽ được gửi đến người dùng này",
           () async {
         var requestParam = jsonEncode({"id": id});
         _memberBloc.requestNotifyMemberConfirm(requestParam);
@@ -88,8 +88,8 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                     ? PopupMenuItem(
                         value: 'notify',
                         child: Text(_memberType == 0
-                            ? 'Nhắc nhỡ đóng tiền'
-                            : "Nhắc nhỡ xác nhận thành viên"),
+                            ? 'Nhắc nhở đóng tiền'
+                            : "Nhắc nhở xác nhận thành viên"),
                       )
                     : null,
                 _memberType == 0
@@ -215,41 +215,38 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                           ),
                           SizedBox(height: 8),
                           Card(
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  FlatButton.icon(
-                                      onPressed: _member.memberId != null
-                                          ? () {
-                                              Navigator.of(context).pushNamed(
-                                                  ChatPage.ROUTE_NAME,
-                                                  arguments: {
-                                                    "memberId": _member.memberId
-                                                  });
-                                            }
-                                          : null,
-                                      icon: Icon(Icons.messenger,
-                                          color: _member.memberId == null
-                                              ? Colors.grey[300]
-                                              : Colors.indigoAccent),
-                                      label: Text("Nhắn tin")),
-                                  FlatButton.icon(
-                                      onPressed: _member.memberId != null
-                                          ? () {
-                                              sendNotify(_member.id);
-                                            }
-                                          : null,
-                                      icon: Icon(Icons.notifications,
-                                          color: _member.memberId == null
-                                              ? Colors.grey[300]
-                                              : Colors.yellow),
-                                      label: Text(_memberType == 0
-                                          ? "Nhắc nhỡ đóng tiền"
-                                          : "Nhắc nhỡ xác nhận thành viên"))
-                                ],
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                FlatButton.icon(
+                                    onPressed: _member.memberId != null
+                                        ? () {
+                                            Navigator.of(context).pushNamed(
+                                                ChatPage.ROUTE_NAME,
+                                                arguments: {
+                                                  "memberId": _member.memberId
+                                                });
+                                          }
+                                        : null,
+                                    icon: Icon(Icons.messenger,
+                                        color: _member.memberId == null
+                                            ? Colors.grey[300]
+                                            : Colors.indigoAccent),
+                                    label: Text("Nhắn tin")),
+                                FlatButton.icon(
+                                    onPressed: _member.memberId != null
+                                        ? () {
+                                            sendNotify(_member.id);
+                                          }
+                                        : null,
+                                    icon: Icon(Icons.notifications,
+                                        color: _member.memberId == null
+                                            ? Colors.grey[300]
+                                            : Colors.yellow),
+                                    label: Text(_memberType == 0
+                                        ? "Nhắc nhở đóng tiền"
+                                        : "Nhắc nhở"))
+                              ],
                             ),
                           ),
                           SizedBox(height: 12),
