@@ -42,6 +42,13 @@ class NewsBloc {
   Stream<ApiResponse<AdsDetail>> get adsDetailStream =>
       _adsDetailController.stream;
 
+  //ads detail
+  StreamController<ApiResponse<AdsDetail>> _adsDetailController2 =
+  StreamController();
+
+  Stream<ApiResponse<AdsDetail>> get adsDetailStream2 =>
+      _adsDetailController2.stream;
+
   List<News> _originalNews = List<News>();
   List<Sport> _originalSport = List<Sport>();
 
@@ -95,6 +102,7 @@ class NewsBloc {
     try {
       final adsDetail = await _repository.fetchAdsDetail(postId);
       _adsDetailController.sink.add(ApiResponse.completed(adsDetail));
+      _adsDetailController2.sink.add(ApiResponse.completed(adsDetail));
     } catch (e) {
       _adsDetailController.sink.addError(ApiResponse.error(e.toString()));
     }
@@ -154,5 +162,6 @@ class NewsBloc {
     _newsDetailController.close();
     _allAdsController.close();
     _adsDetailController.close();
+    _adsDetailController2?.close();
   }
 }

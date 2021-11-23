@@ -17,6 +17,7 @@ import 'package:conecapp/ui/profile/pages/change_password_page.dart';
 import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/guide_page.dart';
 import 'package:conecapp/ui/profile/pages/help_page.dart';
+import 'package:conecapp/ui/profile/pages/phone_info_page.dart';
 import 'package:conecapp/ui/profile/widgets/custom_profile_clipper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -560,12 +561,17 @@ class _ProfilePageState extends State<ProfilePage> {
                           : Container(),
                     ),
                     SizedBox(height: 20),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Version 1.0.12",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
+                    InkWell(
+                      onLongPress: (){
+                        //Navigator.of(context).pushNamed(PhoneInfoPage.ROUTE_NAME);
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Version 1.0.12",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
+                        ),
                       ),
                     ),
                     SizedBox(height: 24),

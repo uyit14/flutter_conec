@@ -75,6 +75,7 @@ dependencies:
   logging:
   rxdart:
   observable:
+  device_info:
 
 dev_dependencies:
   flutter_test:

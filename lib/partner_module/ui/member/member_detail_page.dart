@@ -446,12 +446,15 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       children: [
         Text(strFirst,
             style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
-        Spacer(),
-        Container(
-          alignment: Alignment.centerRight,
-          child: Text(strSecond,
-              textAlign: TextAlign.right,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        SizedBox(width: 4),
+        Expanded(
+          child: Container(
+            alignment: Alignment.centerRight,
+            child: Text(strSecond,
+                textAlign: TextAlign.right,
+                maxLines: 2,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          ),
         ),
       ],
     );

@@ -627,16 +627,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   children: <Widget>[
                                     Icon(Icons.home),
                                     SizedBox(width: 16),
-                                    Text(
-                                      districtData != null
-                                          ? districtData.name
-                                          : "Quận/Huyện",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
+                                    Expanded(
+                                      child: Text(
+                                        districtData != null
+                                            ? districtData.name
+                                            : "Quận/Huyện",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500),
+                                      ),
                                     ),
-                                    Spacer(),
                                     Text("Thay đổi",
                                         style: AppTheme.changeTextStyle(
                                             provinceData != null))

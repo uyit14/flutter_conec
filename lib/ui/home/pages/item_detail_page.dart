@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -7,15 +8,19 @@ import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
+import 'package:conecapp/common/ui/ui_loading_opacity.dart';
 import 'package:conecapp/models/response/image.dart' as myImage;
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/page/hidden_response.dart';
+import 'package:conecapp/models/response/page/page_response.dart';
 import 'package:conecapp/models/response/profile/gift_response.dart';
+import 'package:conecapp/repositories/home/home_remote_repository.dart';
 import 'package:conecapp/ui/chat/chat_page.dart';
 import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/pages/report_page.dart';
 import 'package:conecapp/ui/home/widgets/comment_widget.dart';
+import 'package:conecapp/ui/member2/member2_detail_page.dart';
 import 'package:conecapp/ui/mypost/blocs/post_action_bloc.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,8 +57,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
   PageController _pageController = PageController(initialPage: 0);
   String _token;
   bool _isTokenExpired = true;
+  bool _isLoading = false;
   int _userViewPostCount = 0;
   ProfileBloc _profileBloc = ProfileBloc();
+  HomeRemoteRepository _repository = HomeRemoteRepository();
+  bool needReload = true;
+  bool needReload2 = true;
 
   void getToken() async {
     String token = await Helper.getToken();
@@ -158,6 +167,8 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 
   void doReload() {
     debugPrint("doReload");
+    needReload = true;
+    needReload2 = true;
     _itemsByCategoryBloc.requestItemDetail(postId);
   }
 
@@ -273,114 +284,119 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
             ),
           ],
         ),
-        body: StreamBuilder<ApiResponse<ItemDetail>>(
-            stream: _itemsByCategoryBloc.itemDetailStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                switch (snapshot.data.status) {
-                  case Status.LOADING:
-                    return UILoading(loadingMessage: snapshot.data.message);
-                  case Status.COMPLETED:
-                    ItemDetail itemDetail = snapshot.data.data;
-                    isApprove = itemDetail.status == "APPROVED";
-                    ownerId = itemDetail.ownerId;
-                    // if (itemDetail.images.length > 0 && _setBanners) {
-                    //   autoPlayBanners(itemDetail.images);
-                    //   _setBanners = false;
-                    // }
-                    //phoneNumber = itemDetail.phoneNumber;
-                    linkShare = itemDetail.shareLink;
+        body: Stack(
+          children: [
+            StreamBuilder<ApiResponse<ItemDetail>>(
+                stream: _itemsByCategoryBloc.itemDetailStream,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    switch (snapshot.data.status) {
+                      case Status.LOADING:
+                        return UILoading(loadingMessage: snapshot.data.message);
+                      case Status.COMPLETED:
+                        ItemDetail itemDetail = snapshot.data.data;
+                        isApprove = itemDetail.status == "APPROVED";
+                        ownerId = itemDetail.ownerId;
+                        // if (itemDetail.images.length > 0 && _setBanners) {
+                        //   autoPlayBanners(itemDetail.images);
+                        //   _setBanners = false;
+                        // }
+                        //phoneNumber = itemDetail.phoneNumber;
+                        linkShare = itemDetail.shareLink;
 //                    if (_firstCalculate) {
 //                      getLatLng(itemDetail.getAddress);
 //                      _firstCalculate = false;
 //                    }
-                    return SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                  opaque: false,
-                                  pageBuilder: (BuildContext context, _, __) =>
-                                      ImageViewerPage(
-                                          itemDetail.images, _currentIndex)));
-                            },
-                            child: Hero(
-                              tag: postId,
-                              child: itemDetail.images.length > 0
-                                  ? Stack(
-                                      children: [
-                                        CarouselSlider(
-                                          options: CarouselOptions(
-                                            onPageChanged:
-                                                (currentPage, reason) {
-                                              setState(() {
-                                                _currentIndex = currentPage;
-                                              });
-                                            },
-                                            //height: 225,
-                                            height: Helper.isTablet(context)
-                                                ? 320
-                                                : 225,
-                                            autoPlay: true,
-                                            enlargeCenterPage: false,
-                                            viewportFraction: 1.0,
-                                          ),
-                                          items: itemDetail.images
-                                              .map((item) => Container(
-                                                    child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    8)),
-                                                        child: Stack(
-                                                          children: <Widget>[
-                                                            CachedNetworkImage(
-                                                              imageUrl:
-                                                                  item.fileName,
-                                                              placeholder: (context,
-                                                                      url) =>
-                                                                  Image.asset(
-                                                                      "assets/images/placeholder.png"),
-                                                              errorWidget: (context,
-                                                                      url,
-                                                                      error) =>
-                                                                  Image.asset(
-                                                                      "assets/images/error.png"),
-                                                              width: double
-                                                                  .infinity,
-                                                              fit: BoxFit.cover,
-                                                            ),
-                                                            Positioned(
-                                                              bottom: 0.0,
-                                                              left: 0.0,
-                                                              right: 0.0,
-                                                              child: Container(
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  gradient:
-                                                                      LinearGradient(
-                                                                    colors: [
-                                                                      Color.fromARGB(
-                                                                          200,
-                                                                          0,
-                                                                          0,
-                                                                          0),
-                                                                      Color
-                                                                          .fromARGB(
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(PageRouteBuilder(
+                                      opaque: false,
+                                      pageBuilder:
+                                          (BuildContext context, _, __) =>
+                                              ImageViewerPage(itemDetail.images,
+                                                  _currentIndex)));
+                                },
+                                child: Hero(
+                                  tag: postId,
+                                  child: itemDetail.images.length > 0
+                                      ? Stack(
+                                          children: [
+                                            CarouselSlider(
+                                              options: CarouselOptions(
+                                                onPageChanged:
+                                                    (currentPage, reason) {
+                                                  setState(() {
+                                                    _currentIndex = currentPage;
+                                                  });
+                                                },
+                                                //height: 225,
+                                                height: Helper.isTablet(context)
+                                                    ? 320
+                                                    : 225,
+                                                autoPlay: true,
+                                                enlargeCenterPage: false,
+                                                viewportFraction: 1.0,
+                                              ),
+                                              items: itemDetail.images
+                                                  .map((item) => Container(
+                                                        child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            8)),
+                                                            child: Stack(
+                                                              children: <
+                                                                  Widget>[
+                                                                CachedNetworkImage(
+                                                                  imageUrl: item
+                                                                      .fileName,
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      Image.asset(
+                                                                          "assets/images/placeholder.png"),
+                                                                  errorWidget: (context,
+                                                                          url,
+                                                                          error) =>
+                                                                      Image.asset(
+                                                                          "assets/images/error.png"),
+                                                                  width: double
+                                                                      .infinity,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                ),
+                                                                Positioned(
+                                                                  bottom: 0.0,
+                                                                  left: 0.0,
+                                                                  right: 0.0,
+                                                                  child:
+                                                                      Container(
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      gradient:
+                                                                          LinearGradient(
+                                                                        colors: [
+                                                                          Color.fromARGB(
+                                                                              200,
+                                                                              0,
+                                                                              0,
+                                                                              0),
+                                                                          Color.fromARGB(
                                                                               0,
                                                                               0,
                                                                               0,
                                                                               0)
-                                                                    ],
-                                                                    begin: Alignment
-                                                                        .bottomCenter,
-                                                                    end: Alignment
-                                                                        .topCenter,
-                                                                  ),
-                                                                ),
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
+                                                                        ],
+                                                                        begin: Alignment
+                                                                            .bottomCenter,
+                                                                        end: Alignment
+                                                                            .topCenter,
+                                                                      ),
+                                                                    ),
+                                                                    padding: EdgeInsets.symmetric(
                                                                         vertical:
                                                                             10.0,
                                                                         horizontal:
@@ -393,423 +409,570 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
 //                                                    fontWeight: FontWeight.bold,
 //                                                  ),
 //                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )),
-                                                  ))
-                                              .toList(),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )),
+                                                      ))
+                                                  .toList(),
+                                            ),
+                                            Positioned(
+                                              bottom: 24,
+                                              child: Container(
+                                                height: 24,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                child: Center(
+                                                  child: ListView.builder(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      shrinkWrap: true,
+                                                      itemCount: itemDetail
+                                                          .images.length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return Container(
+                                                          width: 16,
+                                                          height: 16,
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                  right: 6),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  //borderRadius: BorderRadius.all(Radius.circular(16)),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  border: Border.all(
+                                                                      width: 1,
+                                                                      color: Colors
+                                                                          .white),
+                                                                  color: _currentIndex ==
+                                                                          index
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .transparent),
+                                                        );
+                                                      }),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: itemDetail.thumbnail,
+                                          placeholder: (context, url) =>
+                                              Image.asset(
+                                                  "assets/images/placeholder.png"),
+                                          errorWidget: (context, url, error) =>
+                                              Image.asset(
+                                                  "assets/images/error.png"),
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: 225,
                                         ),
-                                        Positioned(
-                                          bottom: 24,
+                                ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                       Expanded(
+                                         child: Row(
+                                           children: [
+                                             Icon(
+                                               Icons.streetview,
+                                               color: Colors.green,
+                                             ),
+                                             SizedBox(width: 8),
+                                             Text("Xem thông tin",
+                                                 style: AppTheme.commonDetail),
+                                           ],
+                                         ),
+                                       ),
+                                        //Spacer(),
+                                        FutureBuilder(
+                                            future: needReload
+                                                ? _repository
+                                                    .fetchPageIntroduce(
+                                                        itemDetail.ownerId)
+                                                : null,
+                                            builder: (context, snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return Center(
+                                                    child:
+                                                        CircularProgressIndicator());
+                                              }
+                                              Profile profile =
+                                                  snapshot.data.profile;
+                                              needReload = false;
+                                              return FlatButton(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                  onPressed: () async {
+                                                    if (profile.isMember) {
+                                                      print("push: " +
+                                                          profile.userMemberId);
+                                                      Navigator.of(context)
+                                                          .pushNamed(
+                                                              Member2DetailPage
+                                                                  .ROUTE_NAME,
+                                                              arguments: {
+                                                            'id': profile
+                                                                .userMemberId,
+                                                            'title':
+                                                                profile.name
+                                                          });
+                                                    } else {
+                                                      Helper.showInputDialog(
+                                                          context,
+                                                          "Đăng ký thành viên",
+                                                          profile.name,
+                                                          (value) async {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        setState(() {
+                                                          _isLoading = true;
+                                                        });
+                                                        bool result =
+                                                            await _repository
+                                                                .requestMember(
+                                                                    jsonEncode({
+                                                          'userId':
+                                                              globals.ownerId,
+                                                          'notes': value
+                                                        }));
+                                                        if (result)
+                                                          setState(() {
+                                                            _isLoading = false;
+                                                          });
+                                                        Fluttertoast.showToast(
+                                                            msg: "Thành công",
+                                                            textColor:
+                                                                Colors.black87);
+                                                      });
+                                                    }
+                                                  },
+                                                  color: Colors.green,
+                                                  textColor: Colors.white,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    width: 100,
+                                                    child: Text(
+                                                        profile.isMember
+                                                            ? "Thông tin"
+                                                            : "Đăng ký",
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500)),
+                                                  ));
+                                            }),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          IntroducePage
+                                                              .ROUTE_NAME,
+                                                          arguments: {
+                                                        'clubId':
+                                                            itemDetail.ownerId
+                                                      });
+                                                },
+                                                child: Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      radius: 25,
+                                                      backgroundColor:
+                                                          Colors.grey,
+                                                      backgroundImage: itemDetail
+                                                                  .ownerAvatar !=
+                                                              null
+                                                          ? NetworkImage(
+                                                              itemDetail
+                                                                  .ownerAvatar)
+                                                          : AssetImage(
+                                                              "assets/images/avatar.png"),
+                                                    ),
+                                                    SizedBox(width: 8),
+                                                    Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width -
+                                                              250,
+                                                      child: Text(
+                                                          itemDetail.owner,
+                                                          style: TextStyle(
+                                                              fontSize: 18)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              FlatButton.icon(
+                                                  padding:
+                                                      EdgeInsets.only(right: 0),
+                                                  onPressed: () async {
+                                                    HiddenResponse response =
+                                                        await _itemsByCategoryBloc
+                                                            .requestHiddenPostInfo(
+                                                                globals.ownerId,
+                                                                itemDetail
+                                                                    .ownerId,
+                                                                postId);
+                                                    if (response.status) {
+                                                      setState(() {
+                                                        _userViewPostCount =
+                                                            response
+                                                                .userViewPostCount;
+                                                      });
+                                                      Helper.showInfoDialog(
+                                                          context,
+                                                          itemDetail
+                                                              .phoneNumber,
+                                                          itemDetail.getAddress,
+                                                          () async {
+                                                        await launch(
+                                                            'tel:${itemDetail.phoneNumber}');
+                                                      });
+                                                    } else {
+                                                      Helper.showHiddenDialog(
+                                                          context,
+                                                          response.message ??
+                                                              "Có lỗi xảy ra, xin thử lại sau",
+                                                          () {
+                                                        Navigator.pop(context);
+                                                      });
+                                                    }
+                                                  },
+                                                  icon: Icon(Icons.phone,
+                                                      color: Colors.blue),
+                                                  label: Text(
+                                                    "(${_userViewPostCount > 0 ? _userViewPostCount : itemDetail.userViewPostCount}) Liên hệ",
+                                                    style: TextStyle(
+                                                        color: Colors.blue,
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ))
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 1,
+                                      color: Colors.black12,
+                                    ),
+                                    SizedBox(height: 8),
+                                    Row(
+                                      children: <Widget>[
+                                        Icon(Icons.access_time,
+                                            color: Colors.green),
+                                        SizedBox(width: 8),
+                                        Text("Ngày đăng",
+                                            style: AppTheme.commonDetail),
+                                        Spacer(),
+                                        Text(itemDetail.approvedDate ?? "",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontStyle: FontStyle.italic))
+                                      ],
+                                    ),
+                                    Container(
+                                        width: double.infinity,
+                                        height: 1,
+                                        color: Colors.black12,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 8)),
+                                    Row(
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.attach_money,
+                                          color: Colors.green,
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        Text("Lệ phí",
+                                            style: AppTheme.commonDetail),
+                                        SizedBox(width: 12),
+                                        Expanded(
                                           child: Container(
-                                            height: 24,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: Center(
-                                              child: ListView.builder(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  shrinkWrap: true,
-                                                  itemCount:
-                                                      itemDetail.images.length,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    return Container(
-                                                      width: 16,
-                                                      height: 16,
-                                                      margin: EdgeInsets.only(
-                                                          right: 6),
-                                                      decoration: BoxDecoration(
-                                                          //borderRadius: BorderRadius.all(Radius.circular(16)),
-                                                          shape:
-                                                              BoxShape.circle,
-                                                          border: Border.all(
-                                                              width: 1,
-                                                              color:
-                                                                  Colors.white),
-                                                          color: _currentIndex ==
-                                                                  index
-                                                              ? Colors.white
-                                                              : Colors
-                                                                  .transparent),
-                                                    );
-                                                  }),
+                                            child: Text(
+                                              itemDetail.joiningFee != null &&
+                                                      itemDetail.joiningFee != 0
+                                                  ? '${Helper.formatCurrency(itemDetail.joiningFee)} ${itemDetail.joiningFeePeriod != null ? "/" : ""} ${itemDetail.joiningFeePeriod ?? ""}'
+                                                  : "Liên hệ",
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ),
                                         )
                                       ],
-                                    )
-                                  : CachedNetworkImage(
-                                      imageUrl: itemDetail.thumbnail,
-                                      placeholder: (context, url) =>
-                                          Image.asset(
-                                              "assets/images/placeholder.png"),
-                                      errorWidget: (context, url, error) =>
-                                          Image.asset(
-                                              "assets/images/error.png"),
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      height: 225,
                                     ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.streetview,
-                                      color: Colors.green,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text("Xem thông tin",
-                                        style: AppTheme.commonDetail)
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.of(context).pushNamed(
-                                                  IntroducePage.ROUTE_NAME,
-                                                  arguments: {
-                                                    'clubId': itemDetail.ownerId
-                                                  });
-                                            },
-                                            child: Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 25,
-                                                  backgroundColor: Colors.grey,
-                                                  backgroundImage: itemDetail
-                                                              .ownerAvatar !=
-                                                          null
-                                                      ? NetworkImage(itemDetail
-                                                          .ownerAvatar)
-                                                      : AssetImage(
-                                                          "assets/images/avatar.png"),
-                                                ),
-                                                SizedBox(width: 8),
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width -
-                                                      250,
-                                                  child: Text(itemDetail.owner,
-                                                      style: TextStyle(
-                                                          fontSize: 18)),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          FlatButton.icon(
-                                              padding:
-                                                  EdgeInsets.only(right: 0),
-                                              onPressed: () async {
-                                                HiddenResponse response =
-                                                    await _itemsByCategoryBloc
-                                                        .requestHiddenPostInfo(
-                                                            globals.ownerId,
-                                                            itemDetail.ownerId,
-                                                            postId);
-                                                if (response.status) {
-                                                  setState(() {
-                                                    _userViewPostCount =
-                                                        response
-                                                            .userViewPostCount;
-                                                  });
-                                                  Helper.showInfoDialog(
-                                                      context,
-                                                      itemDetail.phoneNumber,
-                                                      itemDetail.getAddress,
-                                                      () async {
-                                                    await launch(
-                                                        'tel:${itemDetail.phoneNumber}');
-                                                  });
-                                                } else {
-                                                  Helper.showHiddenDialog(
-                                                      context,
-                                                      response.message ??
-                                                          "Có lỗi xảy ra, xin thử lại sau",
-                                                      () {
-                                                    Navigator.pop(context);
-                                                  });
-                                                }
-                                              },
-                                              icon: Icon(Icons.phone,
-                                                  color: Colors.blue),
-                                              label: Text(
-                                                "(${_userViewPostCount > 0 ? _userViewPostCount : itemDetail.userViewPostCount}) Liên hệ",
-                                                style: TextStyle(
-                                                    color: Colors.blue,
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ))
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  width: double.infinity,
-                                  height: 1,
-                                  color: Colors.black12,
-                                ),
-                                SizedBox(height: 8),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(Icons.access_time,
-                                        color: Colors.green),
-                                    SizedBox(width: 8),
-                                    Text("Ngày đăng",
-                                        style: AppTheme.commonDetail),
-                                    Spacer(),
-                                    Text(itemDetail.approvedDate ?? "",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontStyle: FontStyle.italic))
-                                  ],
-                                ),
-                                Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: Colors.black12,
-                                    margin: EdgeInsets.symmetric(vertical: 8)),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.attach_money,
-                                      color: Colors.green,
-                                    ),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text("Lệ phí",
-                                        style: AppTheme.commonDetail),
-                                    SizedBox(width: 12),
-                                    Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          itemDetail.joiningFee != null &&
-                                                  itemDetail.joiningFee != 0
-                                              ? '${Helper.formatCurrency(itemDetail.joiningFee)} ${itemDetail.joiningFeePeriod != null ? "/" : ""} ${itemDetail.joiningFeePeriod ?? ""}'
-                                              : "Liên hệ",
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                itemDetail.notifications != null &&
-                                        itemDetail.notifications.length > 0 &&
-                                        _showNotify
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                              width: double.infinity,
-                                              height: 1,
-                                              color: Colors.black12,
-                                              margin: EdgeInsets.symmetric(vertical: 8)),
-                                          Card(
-                                            elevation: 5,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Row(
+                                    itemDetail.notifications != null &&
+                                            itemDetail.notifications.length >
+                                                0 &&
+                                            _showNotify
+                                        ? Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                  width: double.infinity,
+                                                  height: 1,
+                                                  color: Colors.black12,
+                                                  margin: EdgeInsets.symmetric(
+                                                      vertical: 8)),
+                                              Card(
+                                                elevation: 5,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Icon(
-                                                      Icons
-                                                          .notifications_active,
-                                                      color: Colors.yellow,
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .notifications_active,
+                                                          color: Colors.yellow,
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                        Text("Thông báo",
+                                                            style: AppTheme
+                                                                .commonDetail),
+                                                        Spacer(),
+                                                        IconButton(
+                                                          icon: Icon(
+                                                              Icons
+                                                                  .clear_outlined,
+                                                              size: 28),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              _showNotify =
+                                                                  false;
+                                                            });
+                                                          },
+                                                        ),
+                                                      ],
                                                     ),
-                                                    SizedBox(width: 8),
-                                                    Text("Thông báo",
-                                                        style: AppTheme
-                                                            .commonDetail),
-                                                    Spacer(),
-                                                    IconButton(
-                                                      icon: Icon(
-                                                          Icons.clear_outlined,
-                                                          size: 28),
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          _showNotify = false;
-                                                        });
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                                ListView.builder(
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    shrinkWrap: true,
-                                                    physics:
-                                                        NeverScrollableScrollPhysics(),
-                                                    itemCount: itemDetail
-                                                        .notifications.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return Container(
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width -
-                                                            100,
-                                                        margin:
-                                                            EdgeInsets.all(8),
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 12,
-                                                                vertical: 8),
-                                                        color: Helper.getColorNotify(
-                                                                itemDetail
+                                                    ListView.builder(
+                                                        scrollDirection:
+                                                            Axis.vertical,
+                                                        shrinkWrap: true,
+                                                        physics:
+                                                            NeverScrollableScrollPhysics(),
+                                                        itemCount: itemDetail
+                                                            .notifications
+                                                            .length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Container(
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width -
+                                                                100,
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    8),
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical:
+                                                                        8),
+                                                            color: Helper.getColorNotify(
+                                                                    itemDetail
+                                                                        .notifications[
+                                                                            index]
+                                                                        .color)
+                                                                .color,
+                                                            // child: Text(
+                                                            //     itemDetail
+                                                            //         .notifications[
+                                                            //             index]
+                                                            //         .content,
+                                                            //     maxLines: 2,
+                                                            //     overflow:
+                                                            //         TextOverflow
+                                                            //             .ellipsis),
+                                                            child: Html(
+                                                                data: itemDetail
                                                                     .notifications[
                                                                         index]
-                                                                    .color)
-                                                            .color,
-                                                        // child: Text(
-                                                        //     itemDetail
-                                                        //         .notifications[
-                                                        //             index]
-                                                        //         .content,
-                                                        //     maxLines: 2,
-                                                        //     overflow:
-                                                        //         TextOverflow
-                                                        //             .ellipsis),
-                                                        child: Html(data:itemDetail.notifications[index].content),
-                                                      );
-                                                    }),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : Container(),
-                                Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: Colors.black12,
-                                    margin: EdgeInsets.symmetric(vertical: 8)),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.description,
-                                      color: Colors.green,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text("Mô tả", style: AppTheme.commonDetail),
-                                  ],
-                                ),
-                                Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: itemDetail.content.contains("<")
-                                        ? Html(
-                                            data: itemDetail.content ?? "",
-                                          )
-                                        : Text(itemDetail.content)),
-                                Container(
-                                    width: double.infinity,
-                                    height: 1,
-                                    color: Colors.black12,
-                                    margin: EdgeInsets.symmetric(vertical: 8)),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.question_answer,
-                                      color: Colors.green,
-                                    ),
-                                    SizedBox(width: 8),
-                                    Text("Trao đổi với CLB qua chat",
-                                        style: AppTheme.commonDetail),
-                                  ],
-                                ),
-                                SizedBox(height: 8),
-                                Container(
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: Helper.hardCodeMPost
-                                        .map((e) => InkWell(
-                                              onTap: () {
-                                                Navigator.of(context).pushNamed(
-                                                    ChatPage.ROUTE_NAME,
-                                                    arguments: {
-                                                      "memberId": ownerId,
-                                                      "postId": postId,
-                                                      "mess": e
-                                                    });
-                                              },
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                margin: EdgeInsets.all(4),
-                                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-                                                decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                        color: Colors.red,
-                                                        width: 1),
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                8))),
-                                                child: Text(e,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.red)),
+                                                                    .content),
+                                                          );
+                                                        }),
+                                                  ],
+                                                ),
                                               ),
-                                            ))
-                                        .toList(),
-                                  ),
+                                            ],
+                                          )
+                                        : Container(),
+                                    Container(
+                                        width: double.infinity,
+                                        height: 1,
+                                        color: Colors.black12,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 8)),
+                                    Row(
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.description,
+                                          color: Colors.green,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text("Mô tả",
+                                            style: AppTheme.commonDetail),
+                                      ],
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: itemDetail.content.contains("<")
+                                            ? Html(
+                                                data: itemDetail.content ?? "",
+                                              )
+                                            : Text(itemDetail.content)),
+                                    Container(
+                                        width: double.infinity,
+                                        height: 1,
+                                        color: Colors.black12,
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 8)),
+                                    Row(
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.question_answer,
+                                          color: Colors.green,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text("Trao đổi với CLB qua chat",
+                                            style: AppTheme.commonDetail),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8),
+                                    Container(
+                                      height: 50,
+                                      alignment: Alignment.center,
+                                      child: ListView(
+                                        scrollDirection: Axis.horizontal,
+                                        children: Helper.hardCodeMPost
+                                            .map((e) => InkWell(
+                                                  onTap: itemDetail.ownerId !=
+                                                          globals.ownerId
+                                                      ? () {
+                                                          Navigator.of(context)
+                                                              .pushNamed(
+                                                                  ChatPage
+                                                                      .ROUTE_NAME,
+                                                                  arguments: {
+                                                                "memberId":
+                                                                    ownerId,
+                                                                "postId":
+                                                                    postId,
+                                                                "mess": e
+                                                              });
+                                                        }
+                                                      : null,
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    margin: EdgeInsets.all(4),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 8,
+                                                            vertical: 0),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors.red,
+                                                            width: 1),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8))),
+                                                    child: Text(e,
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors.red)),
+                                                  ),
+                                                ))
+                                            .toList(),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              CommentWidget(postId, itemDetail, doReload),
+                              SizedBox(height: 45)
+                            ],
                           ),
-                          CommentWidget(postId, itemDetail, doReload),
-                          SizedBox(height: 45)
-                        ],
-                      ),
-                    );
-                  case Status.ERROR:
-                    return UIError(
-                        errorMessage: snapshot.data.message,
-                        onRetryPressed: () =>
-                            _itemsByCategoryBloc.requestItemDetail(postId));
+                        );
+                      case Status.ERROR:
+                        return UIError(
+                            errorMessage: snapshot.data.message,
+                            onRetryPressed: () =>
+                                _itemsByCategoryBloc.requestItemDetail(postId));
+                    }
+                  }
+                  return Container(
+                      child: Text(
+                          "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+                }),
+            _isLoading ? UILoadingOpacity() : Container()
+          ],
+        ),
+        floatingActionButton: StreamBuilder<ApiResponse<ItemDetail>>(
+            stream: _itemsByCategoryBloc.itemDetailStream2,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                switch (snapshot.data.status) {
+                  case Status.COMPLETED:
+                    ItemDetail detail = snapshot.data.data;
+                    return detail != null && detail.ownerId != globals.ownerId
+                        ? FloatingActionButton.extended(
+                            label: Text("Nhắn tin"),
+                            icon: Icon(Icons.chat),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(ChatPage.ROUTE_NAME, arguments: {
+                                "memberId": ownerId,
+                                "postId": postId
+                              });
+                            },
+                          )
+                        : Container();
+                  default:
+                    return Container();
                 }
               }
-              return Container(
-                  child: Text(
-                      "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
+              return Container();
             }),
-        floatingActionButton: FloatingActionButton.extended(
-          label: Text("Nhắn tin"),
-          icon: Icon(Icons.chat),
-          onPressed: () {
-            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME,
-                arguments: {"memberId": ownerId, "postId": postId});
-          },
-        ),
       ),
     );
   }

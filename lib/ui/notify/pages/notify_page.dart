@@ -49,26 +49,26 @@ class _NotifyPageState extends State<NotifyPage> {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final data = ModalRoute.of(context).settings.arguments;
-    // if (data != null &&
-    //     data == "open_notify" &&
-    //     notifyList != null &&
-    //     notifyList.length > 0) {
-    //   print('at index 0 :' + notifyList[0].read.toString());
-    //   notifyList[0].read = true;
-    //   Navigator.of(context)
-    //       .pushNamed(NotifyDetailPage.ROUTE_NAME, arguments: notifyList[0])
-    //       .then((value) {
-    //     if (value == 1) {
-    //       _notifyBloc.requestGetNotify(1);
-    //       notifyList.clear();
-    //     }
-    //   });
-    // }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   final data = ModalRoute.of(context).settings.arguments;
+  //   // if (data != null &&
+  //   //     data == "open_notify" &&
+  //   //     notifyList != null &&
+  //   //     notifyList.length > 0) {
+  //   //   print('at index 0 :' + notifyList[0].read.toString());
+  //   //   notifyList[0].read = true;
+  //   //   Navigator.of(context)
+  //   //       .pushNamed(NotifyDetailPage.ROUTE_NAME, arguments: notifyList[0])
+  //   //       .then((value) {
+  //   //     if (value == 1) {
+  //   //       _notifyBloc.requestGetNotify(1);
+  //   //       notifyList.clear();
+  //   //     }
+  //   //   });
+  //   // }
+  // }
 
   @override
   void dispose() {
@@ -170,31 +170,52 @@ class _NotifyPageState extends State<NotifyPage> {
                                     color: notifyList[index].read
                                         ? Colors.white70
                                         : Colors.white,
-                                    margin: EdgeInsets.symmetric(vertical: 2),
+                                    margin:
+                                        EdgeInsets.symmetric(vertical: 2),
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(notifyList[index].title,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16)),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            parsedString ?? "",
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                      child: Stack(
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(notifyList[index].title,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16)),
+                                              SizedBox(height: 4),
+                                              Text(
+                                                parsedString ?? "",
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              SizedBox(height: 4),
+                                              Text(
+                                                  notifyList[index].createdDate,
+                                                  style: TextStyle(
+                                                      color: Colors.blue,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400)),
+                                            ],
                                           ),
-                                          SizedBox(height: 4),
-                                          Text(notifyList[index].createdDate,
-                                              style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400)),
+                                          Positioned(
+                                              top: -16,
+                                              right: -16,
+                                              child: IconButton(
+                                                onPressed: (){
+                                                  _notifyBloc.requestDeleteOrRead(notifyList[index].id, "Remove");
+                                                  setState(() {
+                                                    notifyList.removeAt(index);
+                                                  });
+                                                },
+                                                icon: Icon(Icons.delete),
+                                              ))
                                         ],
                                       ),
                                     ),

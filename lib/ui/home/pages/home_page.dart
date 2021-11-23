@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void doCallback({int page}) {
-    this.widget.callback(1, page == 0 ? 0 : _selectedPageIndex);
+    this.widget.callback(_selectedPageIndex == 0 ? 1 : 2, page == 0 ? 0 : _selectedPageIndex);
   }
 
   @override

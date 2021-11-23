@@ -37,6 +37,13 @@ class ItemsByCategoryBloc {
   Stream<ApiResponse<ItemDetail>> get itemDetailStream =>
       _itemDetailController.stream;
 
+  //item detail
+  StreamController<ApiResponse<ItemDetail>> _itemDetailController2 =
+  StreamController();
+
+  Stream<ApiResponse<ItemDetail>> get itemDetailStream2 =>
+      _itemDetailController2.stream;
+
   //follower
   StreamController<ApiResponse<List<Follower>>> _followerController =
       StreamController.broadcast();
@@ -104,6 +111,7 @@ class ItemsByCategoryBloc {
 
     final itemDetail = await _repository.fetchItemDetail(postId);
     _itemDetailController.sink.add(ApiResponse.completed(itemDetail));
+    _itemDetailController2.sink.add(ApiResponse.completed(itemDetail));
   }
 
   void requestGetFollower(String postId) async {
@@ -235,6 +243,7 @@ class ItemsByCategoryBloc {
     _parentCommentController?.close();
     _avatarController?.close();
     _followerController?.close();
+    _itemDetailController2?.close();
     //_childCommentController?.close();
   }
 }

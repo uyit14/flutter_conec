@@ -31,6 +31,7 @@ class _Member2DetailPageState extends State<Member2DetailPage> {
     super.didChangeDependencies();
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
+    print(routeArgs['id']);
     id = routeArgs['id'];
     title = routeArgs['title'];
     _memberBloc.requestGetMember2Detail(id);

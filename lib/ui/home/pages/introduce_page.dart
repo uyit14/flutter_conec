@@ -302,6 +302,7 @@ class _IntroducePageState extends State<IntroducePage> {
                                                       BorderRadius.circular(8)),
                                               onPressed: () async {
                                                 if (profile.isMember) {
+                                                  print("push: " + profile.userMemberId);
                                                   Navigator.of(context)
                                                       .pushNamed(
                                                           Member2DetailPage
@@ -641,18 +642,23 @@ class _IntroducePageState extends State<IntroducePage> {
                                                           .text;
                                                   return InkWell(
                                                     onTap: () {
-                                                      Navigator.of(context)
-                                                          .pushNamed(
-                                                              ItemDetailPage
-                                                                  .ROUTE_NAME,
-                                                              arguments: {
-                                                            'postId': profile
-                                                                .posts[index]
-                                                                .postId,
-                                                            'title': profile
-                                                                .posts[index]
-                                                                .title
-                                                          });
+                                                      // Navigator.of(context)
+                                                      //     .pushNamed(
+                                                      //         ItemDetailPage
+                                                      //             .ROUTE_NAME,
+                                                      //         arguments: {
+                                                      //       'postId': profile
+                                                      //           .posts[index]
+                                                      //           .postId,
+                                                      //       'title': profile
+                                                      //           .posts[index]
+                                                      //           .title
+                                                      //     });
+                                                      Helper.navigatorToPost(
+                                                          profile.posts[index].postId,
+                                                          profile.posts[index].topicId,
+                                                          profile.posts[index].title,
+                                                          context);
                                                     },
                                                     child: Container(
                                                       margin: EdgeInsets.all(4),

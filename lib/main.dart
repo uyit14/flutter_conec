@@ -49,6 +49,7 @@ import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/change_password_page.dart';
 import 'package:conecapp/ui/profile/pages/guide_page.dart';
+import 'package:conecapp/ui/profile/pages/phone_info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'partner_module/ui/member/add_custom_member.dart';
@@ -154,6 +155,7 @@ class ConecApp extends StatelessWidget {
         SellWidget.ROUTE_NAME: (context) => SellWidget(),
         RequestPage.ROUTE_NAME: (context) => RequestPage(),
         AcceptRequestPage.ROUTE_NAME: (context) => AcceptRequestPage(),
+        PhoneInfoPage.ROUTE_NAME: (context) => PhoneInfoPage(),
       },
     );
   }

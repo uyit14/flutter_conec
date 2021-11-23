@@ -24,6 +24,7 @@ class _NewsWidgetState extends State<NewsWidget> {
   int _currentPage = 1;
   bool _shouldLoadMore = true;
   String _keyword;
+  bool _needAddUI = true;
 
   @override
   void initState() {
@@ -36,6 +37,9 @@ class _NewsWidgetState extends State<NewsWidget> {
   void _scrollListener() {
     print(_scrollController.position.extentAfter);
     if (_scrollController.position.extentAfter < 300) {
+      setState(() {
+        _needAddUI = true;
+      });
       if (_shouldLoadMore) {
         _shouldLoadMore = false;
         _newsBloc.requestGetAllNews(_currentPage, keyword: _keyword);
@@ -85,6 +89,9 @@ class _NewsWidgetState extends State<NewsWidget> {
                         });
                       },
                       onFieldSubmitted: (value){
+                        setState(() {
+                          _needAddUI = true;
+                        });
                         news.clear();
                         _currentPage = 1;
                         _newsBloc.requestGetAllNews(_currentPage, keyword: value);
@@ -112,6 +119,9 @@ class _NewsWidgetState extends State<NewsWidget> {
                   //child: Text("Hủy", style: AppTheme.changeTextStyle(true)),
                   child: Icon(Icons.search),
                   onTap: () {
+                    setState(() {
+                      _needAddUI = true;
+                    });
                     news.clear();
                     _currentPage = 1;
                     _newsBloc.requestGetAllNews(_currentPage, keyword: _keyword);
@@ -133,11 +143,12 @@ class _NewsWidgetState extends State<NewsWidget> {
                       case Status.LOADING:
                         return UILoading(loadingMessage: snapshot.data.message);
                       case Status.COMPLETED:
-                        if (snapshot.data.data.length > 0) {
+                        if (snapshot.data.data.length > 0 && _needAddUI) {
                           print(
                               "at UI: " + snapshot.data.data.length.toString());
                           news.addAll(snapshot.data.data);
                           _shouldLoadMore = true;
+                          _needAddUI = false;
                         } else {
                           _shouldLoadMore = false;
                         }

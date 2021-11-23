@@ -24,6 +24,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../common/globals.dart' as globals;
 
 class SellDetailPage extends StatefulWidget {
   static const ROUTE_NAME = '/sell-detail';
@@ -283,7 +284,7 @@ class _SellDetailPageState extends State<SellDetailPage> {
                     AdsDetail adsDetail = snapshot.data.data;
                     linkShare = adsDetail.shareLink;
                     isApprove = adsDetail.status == "APPROVED";
-                    ownerId =  adsDetail.ownerId;
+                    ownerId = adsDetail.ownerId;
                     // if (adsDetail.images.length > 0 && _setBanners) {
                     //   autoPlayBanners(adsDetail.images);
                     //   _setBanners = false;
@@ -673,92 +674,97 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                   ],
                                 ),
                                 adsDetail.notifications != null &&
-                                    adsDetail.notifications.length > 0 &&
-                                    _showNotify
+                                        adsDetail.notifications.length > 0 &&
+                                        _showNotify
                                     ? Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                        width: double.infinity,
-                                        height: 1,
-                                        color: Colors.black12,
-                                        margin: EdgeInsets.symmetric(vertical: 8)),
-                                    Card(
-                                      elevation: 5,
-                                      child: Column(
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons
-                                                    .notifications_active,
-                                                color: Colors.yellow,
-                                              ),
-                                              SizedBox(width: 8),
-                                              Text("Thông báo",
-                                                  style: AppTheme
-                                                      .commonDetail),
-                                              Spacer(),
-                                              IconButton(
-                                                icon: Icon(
-                                                    Icons.clear_outlined,
-                                                    size: 28),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _showNotify = false;
-                                                  });
-                                                },
-                                              ),
-                                            ],
+                                          Container(
+                                              width: double.infinity,
+                                              height: 1,
+                                              color: Colors.black12,
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 8)),
+                                          Card(
+                                            elevation: 5,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .notifications_active,
+                                                      color: Colors.yellow,
+                                                    ),
+                                                    SizedBox(width: 8),
+                                                    Text("Thông báo",
+                                                        style: AppTheme
+                                                            .commonDetail),
+                                                    Spacer(),
+                                                    IconButton(
+                                                      icon: Icon(
+                                                          Icons.clear_outlined,
+                                                          size: 28),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _showNotify = false;
+                                                        });
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                                ListView.builder(
+                                                    scrollDirection:
+                                                        Axis.vertical,
+                                                    shrinkWrap: true,
+                                                    physics:
+                                                        NeverScrollableScrollPhysics(),
+                                                    itemCount: adsDetail
+                                                        .notifications.length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width -
+                                                            100,
+                                                        margin:
+                                                            EdgeInsets.all(8),
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                horizontal: 12,
+                                                                vertical: 8),
+                                                        color: Helper.getColorNotify(
+                                                                adsDetail
+                                                                    .notifications[
+                                                                        index]
+                                                                    .color)
+                                                            .color,
+                                                        // child: Text(
+                                                        //     adsDetail
+                                                        //         .notifications[
+                                                        //     index]
+                                                        //         .content,
+                                                        //     maxLines: 2,
+                                                        //     overflow:
+                                                        //     TextOverflow
+                                                        //         .ellipsis),
+                                                        child: Html(
+                                                            data: adsDetail
+                                                                .notifications[
+                                                                    index]
+                                                                .content),
+                                                      );
+                                                    }),
+                                              ],
+                                            ),
                                           ),
-                                          ListView.builder(
-                                              scrollDirection:
-                                              Axis.vertical,
-                                              shrinkWrap: true,
-                                              physics:
-                                              NeverScrollableScrollPhysics(),
-                                              itemCount: adsDetail
-                                                  .notifications.length,
-                                              itemBuilder:
-                                                  (context, index) {
-                                                return Container(
-                                                  width: MediaQuery.of(
-                                                      context)
-                                                      .size
-                                                      .width -
-                                                      100,
-                                                  margin:
-                                                  EdgeInsets.all(8),
-                                                  padding: EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 8),
-                                                  color: Helper.getColorNotify(
-                                                      adsDetail
-                                                          .notifications[
-                                                      index]
-                                                          .color)
-                                                      .color,
-                                                  // child: Text(
-                                                  //     adsDetail
-                                                  //         .notifications[
-                                                  //     index]
-                                                  //         .content,
-                                                  //     maxLines: 2,
-                                                  //     overflow:
-                                                  //     TextOverflow
-                                                  //         .ellipsis),
-                                                  child: Html(data: adsDetail.notifications[index].content),
-                                                );
-                                              }),
                                         ],
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                      )
                                     : Container(),
                                 Container(
                                     width: double.infinity,
@@ -858,33 +864,34 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                     scrollDirection: Axis.horizontal,
                                     children: Helper.hardCodeMSell
                                         .map((e) => InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).pushNamed(
-                                            ChatPage.ROUTE_NAME,
-                                            arguments: {
-                                              "memberId": ownerId,
-                                              "postId": postId,
-                                              "mess": e
-                                            });
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        margin: EdgeInsets.all(4),
-                                        padding: EdgeInsets.symmetric(horizontal: 8),
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.red,
-                                                width: 1),
-                                            borderRadius:
-                                            BorderRadius.all(
-                                                Radius.circular(
-                                                    8))),
-                                        child: Text(e,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.red)),
-                                      ),
-                                    ))
+                                              onTap: adsDetail.ownerId != globals.ownerId ? () {
+                                                Navigator.of(context).pushNamed(
+                                                    ChatPage.ROUTE_NAME,
+                                                    arguments: {
+                                                      "memberId": ownerId,
+                                                      "postId": postId,
+                                                      "mess": e
+                                                    });
+                                              } : null,
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                margin: EdgeInsets.all(4),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.red,
+                                                        width: 1),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8))),
+                                                child: Text(e,
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.red)),
+                                              ),
+                                            ))
                                         .toList(),
                                   ),
                                 ),
@@ -908,13 +915,31 @@ class _SellDetailPageState extends State<SellDetailPage> {
                   child: Text(
                       "Không có dữ liệu, kiểm tra lại kết nối internet của bạn"));
             }),
-        floatingActionButton: FloatingActionButton.extended(
-          label: Text("Nhắn tin"),
-          icon: Icon(Icons.chat),
-          onPressed: () {
-            Navigator.of(context).pushNamed(ChatPage.ROUTE_NAME, arguments: {"memberId" : ownerId, "postId" : postId});
-          },
-        ),
+        floatingActionButton: StreamBuilder<ApiResponse<AdsDetail>>(
+            stream: _newsBloc.adsDetailStream2,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                switch (snapshot.data.status) {
+                  case Status.COMPLETED:
+                    AdsDetail adsDetail = snapshot.data.data;
+                    return adsDetail != null &&
+                            adsDetail.ownerId != globals.ownerId
+                        ? FloatingActionButton.extended(
+                            label: Text("Nhắn tin"),
+                            icon: Icon(Icons.chat),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(ChatPage.ROUTE_NAME, arguments: {
+                                "memberId": ownerId,
+                                "postId": postId
+                              });
+                            },
+                          )
+                        : Container();
+                }
+              }
+              return Container();
+            }),
       ),
     );
   }

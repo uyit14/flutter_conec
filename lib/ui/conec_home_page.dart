@@ -19,6 +19,7 @@ import 'package:conecapp/ui/news/widgets/sell_widget.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -244,7 +245,11 @@ class _ConecHomePageState extends State<ConecHomePage> {
 //        newStoreVersion = status.storeVersion;
 //      }
 //    }
-    print("localVersion : " + status.localVersion + " - " + "storeVersion: " + status.storeVersion);
+    print("localVersion : " +
+        status.localVersion +
+        " - " +
+        "storeVersion: " +
+        status.storeVersion);
 
     if (status.localVersion != status.storeVersion) {
       Helper.showUpdateVersionDialog(
@@ -374,6 +379,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
     return _profile != null &&
         (_profile.type == "Trainer" || _profile.type == "Club");
   }
+
   DateTime currentBackPressTime;
 
   Future<bool> onWillPop() {
@@ -506,7 +512,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
           endDrawer: _selectedPageIndex == 0 && isShowPartner()
               ? Drawer(
                   child: SingleChildScrollView(
-                    child: Container(
+                  child: Container(
                     color: Colors.white10,
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                     child: Column(
@@ -519,10 +525,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
                           child: CircleAvatar(
                             radius: 50,
                             backgroundColor: Colors.grey,
-                            backgroundImage:
-                                _profile != null && _profile.avatar != null
-                                    ? CachedNetworkImageProvider(_profile.avatar)
-                                    : AssetImage("assets/images/avatar.png"),
+                            backgroundImage: _profile != null &&
+                                    _profile.avatar != null
+                                ? CachedNetworkImageProvider(_profile.avatar)
+                                : AssetImage("assets/images/avatar.png"),
                           ),
                         ),
                         SizedBox(height: 8),
@@ -532,7 +538,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
                             child: Text(_profile.name,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w400))),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400))),
                         SizedBox(height: 24),
                         InkWell(
                           onTap: () {
@@ -555,7 +562,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
                               ),
                               Text("Thêm thành viên",
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.w400))
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400))
                             ],
                           ),
                         ),
@@ -581,7 +589,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
                               ),
                               Text("Thành viên",
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.w400))
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400))
                             ],
                           ),
                         ),
@@ -607,7 +616,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
                               ),
                               Text("Yêu cầu kết nạp",
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.w400))
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400))
                             ],
                           ),
                         ),
@@ -633,7 +643,8 @@ class _ConecHomePageState extends State<ConecHomePage> {
                               ),
                               Text("Thông báo",
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.w400))
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400))
                             ],
                           ),
                         ),
@@ -677,14 +688,15 @@ class _ConecHomePageState extends State<ConecHomePage> {
                               ),
                               Text("Trò chuyện",
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.w400))
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400))
                             ],
                           ),
                         ),
                       ],
                     ),
-                ),
-                  ))
+                  ),
+                ))
               : null,
           body: Stack(
             children: [
