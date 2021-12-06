@@ -76,6 +76,8 @@ class _ApproveMyPostState extends State<ApproveMyPost> {
                             },
                             refresh: (value) {
                               if (value != null && value) {
+                                _currentPage = 1;
+                                myPosts.clear();
                                 _myPostBloc.requestApprove(1);
                                 _currentPage = 2;
                               }
