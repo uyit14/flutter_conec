@@ -73,6 +73,7 @@ class Helper {
 
   static String topicNews = "333f691d-6595-443d-bae3-9a2681025b53";
   static String topicAds = "333f691d-6585-443a-bae3-9a2681025b53";
+  static String errorMessage = "Có lỗi xảy ra, vui lòng kiểm tra lại kết nối internet của bạn!";
 
   static bool isNews(String topicId){
     return topicId == topicNews;

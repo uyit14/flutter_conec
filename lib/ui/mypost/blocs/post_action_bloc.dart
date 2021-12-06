@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/request/post_action_request.dart';
 import 'package:conecapp/models/response/item_detail.dart';
 import 'package:conecapp/models/response/location/city_response.dart';
@@ -171,7 +172,7 @@ class PostActionBloc {
       final result = await _repository.postMyPost(body, type);
       _addPostController.sink.add(ApiResponse.completed(result));
     } catch (e) {
-      _addPostController.sink.add(ApiResponse.error(e.toString()));
+      _addPostController.sink.add(ApiResponse.error(Helper.errorMessage));
       print("ERROR: " + e.toString());
     }
   }

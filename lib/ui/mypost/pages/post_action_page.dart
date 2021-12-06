@@ -1076,6 +1076,9 @@ class _PostActionPageState extends State<PostActionPage> {
           showOKDialog();
           break;
         case Status.ERROR:
+          setState(() {
+            _isLoading = false;
+          });
           Fluttertoast.showToast(msg: event.message, textColor: Colors.black87);
           break;
       }
