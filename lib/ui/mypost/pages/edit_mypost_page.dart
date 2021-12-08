@@ -1189,6 +1189,7 @@ class _EditMyPostPageState extends State<EditMyPostPage> {
           lng: result.long ?? 0.0,
           status: "SUBMITTED");
     }
+    print("images: " + base64ListImage(_images).length.toString());
     _postActionBloc.requestAddMyPost(
         jsonEncode(_postActionRequest.toJson()), "Update");
     _postActionBloc.addMyPostStream.listen((event) {

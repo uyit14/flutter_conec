@@ -39,7 +39,7 @@ class ApiBaseHelper {
           .post(_baseUrl + url,
               body: body,
               headers: headers == null ? Helper.headerNoToken : headers)
-          .timeout(Duration(seconds: 15));
+          .timeout(Duration(seconds: 60));
       responseJson = _returnResponse(response);
     } catch (e) {
       debugPrint(e.toString() + "--------");
