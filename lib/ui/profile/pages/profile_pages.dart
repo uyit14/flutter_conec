@@ -17,7 +17,6 @@ import 'package:conecapp/ui/profile/pages/change_password_page.dart';
 import 'package:conecapp/ui/profile/pages/detail_profile_page.dart';
 import 'package:conecapp/ui/profile/pages/guide_page.dart';
 import 'package:conecapp/ui/profile/pages/help_page.dart';
-import 'package:conecapp/ui/profile/pages/phone_info_page.dart';
 import 'package:conecapp/ui/profile/widgets/custom_profile_clipper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

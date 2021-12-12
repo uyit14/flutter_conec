@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
+import 'package:conecapp/models/response/ads_home.dart';
 import 'package:conecapp/models/response/avatar_response.dart';
 import 'package:conecapp/models/response/comment/comment_response.dart';
 import 'package:conecapp/models/response/comment/follow_response.dart';
@@ -171,9 +172,9 @@ class HomeRemoteRepository {
     return NearbyResponse.fromJson(response);
   }
 
-  Future<List<LatestItem>> fetchNearByClub(double lat, double lng) async {
-    final response = await _helper.get('/api/Post/GetPriorities');
-    return LatestResponse.fromJson(response).items;
+  Future<List<Ads>> fetchNearByClub(double lat, double lng) async {
+    final response = await _helper.get('/api/HotTopic/PriorityAds');
+    return AdsHome.fromJson(response).ads;
   }
 
   Future<PageResponse> fetchPageIntroduce(String clubId) async {

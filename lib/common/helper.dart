@@ -36,9 +36,9 @@ class Helper {
         : "";
   }
 
-  static String formatMoney(int data){
+  static String formatMoney(int data) {
     var formatter = NumberFormat('#,###');
-    if(data == 0 || data == null) return "";
+    if (data == 0 || data == null) return "";
     return '${formatter.format(data)} VND';
   }
 
@@ -73,20 +73,21 @@ class Helper {
 
   static String topicNews = "333f691d-6595-443d-bae3-9a2681025b53";
   static String topicAds = "333f691d-6585-443a-bae3-9a2681025b53";
-  static String errorMessage = "Có lỗi xảy ra, vui lòng kiểm tra lại kết nối internet của bạn!";
+  static String errorMessage =
+      "Có lỗi xảy ra, vui lòng kiểm tra lại kết nối internet của bạn!";
 
-  static bool isNews(String topicId){
+  static bool isNews(String topicId) {
     return topicId == topicNews;
   }
 
   static void navigatorToPost(
       String postId, String topicId, String title, BuildContext context) {
     if (topicId == "333f691d-6595-443d-bae3-9a2681025b53") {
-      Navigator.of(context).pushNamed(NewsDetailPage.ROUTE_NAME,
-          arguments: {'postId': postId});
+      Navigator.of(context)
+          .pushNamed(NewsDetailPage.ROUTE_NAME, arguments: {'postId': postId});
     } else if (topicId == "333f691d-6585-443a-bae3-9a2681025b53") {
-      Navigator.of(context).pushNamed(SellDetailPage.ROUTE_NAME,
-          arguments: {'postId': postId});
+      Navigator.of(context)
+          .pushNamed(SellDetailPage.ROUTE_NAME, arguments: {'postId': postId});
     } else {
       Navigator.of(context).pushNamed(ItemDetailPage.ROUTE_NAME,
           arguments: {'postId': postId, 'title': title});
@@ -246,7 +247,8 @@ class Helper {
     );
   }
 
-  static void showInputDialog(BuildContext context, title, club, Function onOK) {
+  static void showInputDialog(
+      BuildContext context, title, club, Function onOK) {
     TextEditingController _controller = TextEditingController();
 
     Widget cancelButton = TextButton(
@@ -588,7 +590,13 @@ class Helper {
 
   static Future<String> getAppVersion() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var appVersion = prefs.getString('app_ver');
+    var appVersion;
+    try {
+      appVersion = prefs.getString('app_ver');
+    } catch (Unhandled) {
+      appVersion = null;
+    }
+
     return appVersion;
   }
 
@@ -709,9 +717,12 @@ class Helper {
     }
   }
 
-  static String storeNote = "Bạn nên đăng ảnh đa dạng sản phẩm để có nhiều khách hàng hơn";
-  static String trainerNote = "Bạn đăng ảnh CMND/CCCD, Bằng cấp, Thành tích và ít nhất 03 ảnh huấn luyện cùng học viên của bạn";
-  static String clubNote = "Bạn đăng ảnh giấy phép kinh doanh, giấy phép hoạt động hoặc các giấy phép có liên quan và hình ảnh thực câu lạc bộ của bạn";
+  static String storeNote =
+      "Bạn nên đăng ảnh đa dạng sản phẩm để có nhiều khách hàng hơn";
+  static String trainerNote =
+      "Bạn đăng ảnh CMND/CCCD, Bằng cấp, Thành tích và ít nhất 03 ảnh huấn luyện cùng học viên của bạn";
+  static String clubNote =
+      "Bạn đăng ảnh giấy phép kinh doanh, giấy phép hoạt động hoặc các giấy phép có liên quan và hình ảnh thực câu lạc bộ của bạn";
 
   static bool statusRequest(String value) {
     if (value == statusList[0]) return true;
@@ -801,7 +812,6 @@ class Helper {
   static const String loadingMessage = "Đang tải...";
   static const String verifyMessage =
       "Nhập mã xác nhận bao gôm 5 ký tự chúng tôi đã gửi đến email của bạn!";
-
 }
 
 class ColorNotify {
@@ -810,5 +820,3 @@ class ColorNotify {
 
   ColorNotify({this.text, this.color});
 }
-
-

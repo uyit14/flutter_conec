@@ -16,9 +16,9 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 #android
-version: 1.0.3+15
+#version: 1.0.5+17
 #ios
-#version: 1.0.13
+version: 1.0.15
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -41,9 +41,9 @@ dependencies:
   package_info: ^0.4.0+16
   chips_choice: ^2.0.1
   zefyr:
-    git:
-      url: https://github.com/memspace/zefyr.git
-      path: packages/zefyr
+#    git:
+#      url: https://github.com/memspace/zefyr.git
+#      path: packages/zefyr
   cached_network_image: ^2.2.0+1
   image_picker: ^0.6.7+4
   characters: ^1.0.0
@@ -60,12 +60,12 @@ dependencies:
   flutter_datetime_picker: ^1.4.0
   google_sign_in: ^4.5.4
   flutter_facebook_login: ^3.0.0
-  flutter_zalo_login: 0.1.3
+  flutter_zalo_login:
   badges: ^1.1.3
   sign_in_with_apple: ^2.5.4
   multi_image_picker: ^4.7.14
   flutter_absolute_path: ^1.0.6
-  onesignal_flutter: 2.6.3
+  onesignal_flutter:
   new_version: ^0.0.6
   photo_view: ^0.10.2
   firebase_analytics: ^7.0.1
@@ -75,7 +75,6 @@ dependencies:
   logging:
   rxdart:
   observable:
-  device_info:
 
 dev_dependencies:
   flutter_test:

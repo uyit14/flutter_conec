@@ -2,11 +2,12 @@ buildscript {
     repositories {
         // ...
         maven { url 'https://plugins.gradle.org/m2/' } // Gradle Plugin Portal
+        maven { url 'https://maven.google.com' }
     }
     dependencies {
         // ...
         // OneSignal-Gradle-Plugin
-        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.10.2, 0.99.99]'
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.12.6'
     }
 }
 
@@ -47,7 +48,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -61,7 +62,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.conec.flutter_conec"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 30
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

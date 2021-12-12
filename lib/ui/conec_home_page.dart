@@ -19,7 +19,6 @@ import 'package:conecapp/ui/news/widgets/sell_widget.dart';
 import 'package:conecapp/ui/notify/pages/notify_page.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
-import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -226,6 +225,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
         }
       });
     }
+    print("localVersion : " + currentAppVersion + " - " + "storeVersion: " + apiAppVersion);
   }
 
   void checkVersion(BuildContext context) async {

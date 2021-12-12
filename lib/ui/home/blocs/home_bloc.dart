@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:conecapp/common/api/api_response.dart';
+import 'package:conecapp/models/response/ads_home.dart';
 import 'package:conecapp/models/response/latest_item.dart';
 import 'package:conecapp/models/response/nearby_club_response.dart';
 import 'package:conecapp/models/response/nearby_response.dart';
@@ -48,9 +49,9 @@ class HomeBloc {
   Stream<ApiResponse<NearbyResponse>> get nearByStream => _nearByController.stream;
 
   //nearby
-  StreamController<ApiResponse<List<LatestItem>>> _nearByClubController =
+  StreamController<ApiResponse<List<Ads>>> _nearByClubController =
   StreamController();
-  Stream<ApiResponse<List<LatestItem>>> get nearByClubStream => _nearByClubController.stream;
+  Stream<ApiResponse<List<Ads>>> get nearByClubStream => _nearByClubController.stream;
 
   //page response
   StreamController<ApiResponse<Profile>> _pageIntroController =
