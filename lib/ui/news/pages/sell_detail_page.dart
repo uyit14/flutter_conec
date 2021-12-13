@@ -24,6 +24,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../../common/globals.dart' as globals;
 
 class SellDetailPage extends StatefulWidget {
@@ -864,15 +865,23 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                     scrollDirection: Axis.horizontal,
                                     children: Helper.hardCodeMSell
                                         .map((e) => InkWell(
-                                              onTap: adsDetail.ownerId != globals.ownerId ? () {
-                                                Navigator.of(context).pushNamed(
-                                                    ChatPage.ROUTE_NAME,
-                                                    arguments: {
-                                                      "memberId": ownerId,
-                                                      "postId": postId,
-                                                      "mess": e
-                                                    });
-                                              } : null,
+                                              onTap: adsDetail.ownerId !=
+                                                      globals.ownerId
+                                                  ? () {
+                                                      Navigator.of(context)
+                                                          .pushNamed(
+                                                              ChatPage
+                                                                  .ROUTE_NAME,
+                                                              arguments: {
+                                                            "memberId": ownerId,
+                                                            "postId": postId,
+                                                            "mess": e
+                                                          });
+                                                    }
+                                                  : (){
+                                                Fluttertoast.showToast(
+                                                    msg: "Bạn không thể chat với chính mình");
+                                              },
                                               child: Container(
                                                 alignment: Alignment.center,
                                                 margin: EdgeInsets.all(4),
@@ -880,7 +889,11 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                                     horizontal: 8),
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
-                                                        color: Colors.red,
+                                                        color: adsDetail
+                                                                    .ownerId !=
+                                                                globals.ownerId
+                                                            ? Colors.red
+                                                            : Colors.grey,
                                                         width: 1),
                                                     borderRadius:
                                                         BorderRadius.all(
@@ -888,8 +901,13 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                                                 8))),
                                                 child: Text(e,
                                                     style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.red)),
+                                                      fontSize: 14,
+                                                      color: adsDetail
+                                                                  .ownerId !=
+                                                              globals.ownerId
+                                                          ? Colors.red
+                                                          : Colors.grey,
+                                                    )),
                                               ),
                                             ))
                                         .toList(),

@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
     print("longgg: ${position.longitude}" ?? "---aaa---");
     globals.latitude = position.latitude;
     globals.longitude = position.longitude;
-    _homeBloc.requestGetNearByClub(position.latitude, position.longitude);
+    _homeBloc.requestGetNearByClub();
     _homeBloc.nearByClubStream.listen((event) {
       if (event.status == Status.COMPLETED) {
         if (event.data.length > 0) {

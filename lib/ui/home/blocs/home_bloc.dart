@@ -92,14 +92,14 @@ class HomeBloc {
     }
   }
 
-  void requestGetNearByClub(double lat, double lng) async {
+  void requestGetNearByClub() async {
     _nearByClubController.sink.add(ApiResponse.loading());
     try {
-      final nearby = await _repository.fetchNearByClub(lat, lng);
+      final nearby = await _repository.fetchNearByClub();
       _nearByClubController.sink.add(ApiResponse.completed(nearby));
     } catch (e) {
       _nearByClubController.sink.addError(ApiResponse.error(e.toString()));
-      debugPrint(e.toString());
+      debugPrint("GetNearByClub: " + e.toString());
     }
   }
 

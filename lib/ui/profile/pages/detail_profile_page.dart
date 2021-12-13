@@ -1,17 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
-import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
+import 'package:conecapp/ui/home/pages/image_viewr_intropage_2.dart';
 import 'package:conecapp/ui/profile/blocs/profile_bloc.dart';
 import 'package:conecapp/ui/profile/pages/edit_profile_page.dart';
 import 'package:conecapp/ui/profile/widgets/detail_clipper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-
-import 'video_player_page.dart';
 
 class DetailProfilePage extends StatefulWidget {
   static const ROUTE_NAME = '/detail-profile';
@@ -194,33 +192,52 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                                           scrollDirection: Axis.horizontal,
                                           child: Row(
                                             children: profile.images
-                                                .map((image) => Container(
-                                                      margin: EdgeInsets.only(
-                                                          right: 8),
-                                                      child: ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(6),
-                                                        child:
-                                                            CachedNetworkImage(
-                                                          imageUrl:
-                                                              image.fileName,
-                                                          placeholder: (context,
-                                                                  url) =>
-                                                              Image.asset(
-                                                                  "assets/images/placeholder.png",
-                                                                  width: 100,
-                                                                  height: 100),
-                                                          errorWidget: (context,
-                                                                  url, error) =>
-                                                              Image.asset(
-                                                            "assets/images/error.png",
+                                                .map((image) => InkWell(
+                                                      onTap: () {
+                                                        Navigator.of(context).push(PageRouteBuilder(
+                                                            opaque: false,
+                                                            pageBuilder: (BuildContext
+                                                                        context,
+                                                                    _,
+                                                                    __) =>
+                                                                ImageViewerPage2(
+                                                                    profile
+                                                                        .images,
+                                                                    profile
+                                                                        .images
+                                                                        .indexOf(
+                                                                            image))));
+                                                      },
+                                                      child: Container(
+                                                        margin: EdgeInsets.only(
+                                                            right: 8),
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(6),
+                                                          child:
+                                                              CachedNetworkImage(
+                                                            imageUrl:
+                                                                image.fileName,
+                                                            placeholder: (context,
+                                                                    url) =>
+                                                                Image.asset(
+                                                                    "assets/images/placeholder.png",
+                                                                    width: 100,
+                                                                    height:
+                                                                        100),
+                                                            errorWidget:
+                                                                (context, url,
+                                                                        error) =>
+                                                                    Image.asset(
+                                                              "assets/images/error.png",
+                                                              width: 100,
+                                                              height: 100,
+                                                            ),
+                                                            fit: BoxFit.cover,
                                                             width: 100,
                                                             height: 100,
                                                           ),
-                                                          fit: BoxFit.cover,
-                                                          width: 100,
-                                                          height: 100,
                                                         ),
                                                       ),
                                                     ))

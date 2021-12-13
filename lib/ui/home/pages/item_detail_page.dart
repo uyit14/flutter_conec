@@ -482,101 +482,111 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                   children: <Widget>[
                                     Row(
                                       children: <Widget>[
-                                       Expanded(
-                                         child: Row(
-                                           children: [
-                                             Icon(
-                                               Icons.streetview,
-                                               color: Colors.green,
-                                             ),
-                                             SizedBox(width: 8),
-                                             Text("Xem thông tin",
-                                                 style: AppTheme.commonDetail),
-                                           ],
-                                         ),
-                                       ),
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.streetview,
+                                                color: Colors.green,
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text("Xem thông tin",
+                                                  style: AppTheme.commonDetail),
+                                            ],
+                                          ),
+                                        ),
                                         //Spacer(),
-                                        FutureBuilder(
-                                            future: needReload
-                                                ? _repository
-                                                    .fetchPageIntroduce(
-                                                        itemDetail.ownerId)
-                                                : null,
-                                            builder: (context, snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return Center(
-                                                    child:
-                                                        CircularProgressIndicator());
-                                              }
-                                              Profile profile =
-                                                  snapshot.data.profile;
-                                              needReload = false;
-                                              return FlatButton(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8)),
-                                                  onPressed: () async {
-                                                    if (profile.isMember) {
-                                                      print("push: " +
-                                                          profile.userMemberId);
-                                                      Navigator.of(context)
-                                                          .pushNamed(
-                                                              Member2DetailPage
-                                                                  .ROUTE_NAME,
-                                                              arguments: {
-                                                            'id': profile
-                                                                .userMemberId,
-                                                            'title':
-                                                                profile.name
+                                        itemDetail.ownerId == globals.ownerId
+                                            ? Container()
+                                            : FutureBuilder(
+                                                future: needReload
+                                                    ? _repository
+                                                        .fetchPageIntroduce(
+                                                            itemDetail.ownerId)
+                                                    : null,
+                                                builder: (context, snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return Center(
+                                                        child:
+                                                            CircularProgressIndicator());
+                                                  }
+                                                  Profile profile =
+                                                      snapshot.data.profile;
+                                                  needReload = false;
+                                                  return FlatButton(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8)),
+                                                      onPressed: () async {
+                                                        if (profile.isMember) {
+                                                          print("push: " +
+                                                              profile
+                                                                  .userMemberId);
+                                                          Navigator.of(context)
+                                                              .pushNamed(
+                                                                  Member2DetailPage
+                                                                      .ROUTE_NAME,
+                                                                  arguments: {
+                                                                'id': profile
+                                                                    .userMemberId,
+                                                                'title':
+                                                                    profile.name
+                                                              });
+                                                        } else {
+                                                          Helper.showInputDialog(
+                                                              context,
+                                                              "Đăng ký thành viên",
+                                                              profile.name,
+                                                              (value) async {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            setState(() {
+                                                              _isLoading = true;
+                                                            });
+                                                            bool result =
+                                                                await _repository
+                                                                    .requestMember(
+                                                                        jsonEncode({
+                                                              'userId': globals
+                                                                  .ownerId,
+                                                              'notes': value
+                                                            }));
+                                                            if (result)
+                                                              setState(() {
+                                                                _isLoading =
+                                                                    false;
+                                                              });
+                                                            Fluttertoast.showToast(
+                                                                msg:
+                                                                    "Thành công",
+                                                                textColor: Colors
+                                                                    .black87);
                                                           });
-                                                    } else {
-                                                      Helper.showInputDialog(
-                                                          context,
-                                                          "Đăng ký thành viên",
-                                                          profile.name,
-                                                          (value) async {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        setState(() {
-                                                          _isLoading = true;
-                                                        });
-                                                        bool result =
-                                                            await _repository
-                                                                .requestMember(
-                                                                    jsonEncode({
-                                                          'userId':
-                                                              globals.ownerId,
-                                                          'notes': value
-                                                        }));
-                                                        if (result)
-                                                          setState(() {
-                                                            _isLoading = false;
-                                                          });
-                                                        Fluttertoast.showToast(
-                                                            msg: "Thành công",
-                                                            textColor:
-                                                                Colors.black87);
-                                                      });
-                                                    }
-                                                  },
-                                                  color: Colors.green,
-                                                  textColor: Colors.white,
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    width: 100,
-                                                    child: Text(
-                                                        profile.isMember
-                                                            ? "Thông tin"
-                                                            : "Đăng ký",
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500)),
-                                                  ));
-                                            }),
+                                                        }
+                                                      },
+                                                      color: Colors.green,
+                                                      textColor: Colors.white,
+                                                      child: Container(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        width: 100,
+                                                        child: Text(
+                                                            profile.isMember
+                                                                ? "Thông tin"
+                                                                : "Đăng ký",
+                                                            style: TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500)),
+                                                      ));
+                                                }),
                                       ],
                                     ),
                                     SizedBox(height: 8),
@@ -900,7 +910,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                                 "mess": e
                                                               });
                                                         }
-                                                      : null,
+                                                      : (){
+                                                    Fluttertoast.showToast(
+                                                        msg: "Bạn không thể chat với chính mình");
+                                                  },
                                                   child: Container(
                                                     alignment: Alignment.center,
                                                     margin: EdgeInsets.all(4),
@@ -910,7 +923,12 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                             vertical: 0),
                                                     decoration: BoxDecoration(
                                                         border: Border.all(
-                                                            color: Colors.red,
+                                                            color: itemDetail
+                                                                        .ownerId !=
+                                                                    globals
+                                                                        .ownerId
+                                                                ? Colors.red
+                                                                : Colors.grey,
                                                             width: 1),
                                                         borderRadius:
                                                             BorderRadius.all(
@@ -918,8 +936,14 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                                                     8))),
                                                     child: Text(e,
                                                         style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors.red)),
+                                                          fontSize: 14,
+                                                          color: itemDetail
+                                                                      .ownerId !=
+                                                                  globals
+                                                                      .ownerId
+                                                              ? Colors.red
+                                                              : Colors.grey,
+                                                        )),
                                                   ),
                                                 ))
                                             .toList(),

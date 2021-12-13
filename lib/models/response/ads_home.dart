@@ -13,14 +13,6 @@ class AdsHome {
       });
     }
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.ads != null) {
-      data['ads'] = this.ads.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
 }
 
 class Ads {
@@ -41,9 +33,10 @@ class Ads {
   String ward;
   String address;
   String getAddress;
-  double lat;
-  double lng;
+  num lat;
+  num lng;
   int ratingAvg;
+  int ratingAvg2;
 
   Ads(
       {this.postId,
@@ -65,6 +58,7 @@ class Ads {
         this.getAddress,
         this.lat,
         this.lng,
+        this.ratingAvg2,
         this.ratingAvg});
 
   Ads.fromJson(Map<String, dynamic> json) {
@@ -88,30 +82,6 @@ class Ads {
     lat = json['lat'];
     lng = json['lng'];
     ratingAvg = json['ratingAvg'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['postId'] = this.postId;
-    data['title'] = this.title;
-    data['description'] = this.description;
-    data['approvedDate'] = this.approvedDate;
-    data['owner'] = this.owner;
-    data['ownerId'] = this.ownerId;
-    data['price'] = this.price;
-    data['generalCondition'] = this.generalCondition;
-    data['thumbnail'] = this.thumbnail;
-    data['topic'] = this.topic;
-    data['topicMetaLink'] = this.topicMetaLink;
-    data['metaLink'] = this.metaLink;
-    data['province'] = this.province;
-    data['district'] = this.district;
-    data['ward'] = this.ward;
-    data['address'] = this.address;
-    data['getAddress'] = this.getAddress;
-    data['lat'] = this.lat;
-    data['lng'] = this.lng;
-    data['ratingAvg'] = this.ratingAvg;
-    return data;
+    ratingAvg2 = json['ratingAvg2'];
   }
 }

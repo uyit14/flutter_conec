@@ -172,7 +172,7 @@ class HomeRemoteRepository {
     return NearbyResponse.fromJson(response);
   }
 
-  Future<List<Ads>> fetchNearByClub(double lat, double lng) async {
+  Future<List<Ads>> fetchNearByClub() async {
     final response = await _helper.get('/api/HotTopic/PriorityAds');
     return AdsHome.fromJson(response).ads;
   }

@@ -125,7 +125,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
       } else if (profile.type == "Personal") {
         _type = "Personal";
         _selectedType = 1;
-      } else {
+      } else if(profile.type == "Store") {
+        _selectedType = 3;
+        noteForUser = Helper.storeNote;
+        _type = "Store";
+      }else{
         _type = "Trainer";
         noteForUser = Helper.trainerNote;
         _selectedType = 2;
@@ -390,7 +394,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         : Colors.grey,
                                     onPressed: () {
                                       setState(() {
-                                        _type = "Personal";
+                                        _type = "Store";
                                         noteForUser = Helper.storeNote;
                                         _selectedType = 3;
                                       });
@@ -431,7 +435,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 border: const OutlineInputBorder()),
                           ),
                           SizedBox(height: 8),
-                          _selectedType == 0
+                          _selectedType == 0 || _selectedType == 3
                               ? Container()
                               : Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

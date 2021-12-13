@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_error.dart';
@@ -11,6 +12,7 @@ import 'package:conecapp/ui/home/pages/introduce_page.dart';
 import 'package:conecapp/ui/home/widgets/item_comment_parent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:share/share.dart';
 
 class CommentWidget extends StatefulWidget {
@@ -139,12 +141,9 @@ class _CommentWidgetState extends State<CommentWidget> {
     return Container(
       margin: EdgeInsets.all(8),
       child: InkWell(
-        onTap: (){
-          Navigator.of(context).pushNamed(
-              IntroducePage.ROUTE_NAME,
-              arguments: {
-                'clubId': fl.id
-              });
+        onTap: () {
+          Navigator.of(context).pushNamed(IntroducePage.ROUTE_NAME,
+              arguments: {'clubId': fl.id});
         },
         child: Column(
           children: [
@@ -175,6 +174,41 @@ class _CommentWidgetState extends State<CommentWidget> {
         ),
       ),
     );
+  }
+
+  void _shareLink() {
+    final act = CupertinoActionSheet(
+        actions: <Widget>[
+          CupertinoActionSheetAction(
+            child:
+                Text('Sao chép liên kết', style: TextStyle(color: Colors.blue)),
+            onPressed: () => {
+              Clipboard.setData(new ClipboardData(text: widget.itemDetail.shareLink ?? ""))
+                  .then((_) {
+                Navigator.pop(context);
+                Scaffold.of(context).showSnackBar(
+                    SnackBar(content: Text('Đã sao chép!')));
+              })
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text('Chia sẻ', style: TextStyle(color: Colors.blue)),
+            onPressed: () {
+              print("shared: ${widget.itemDetail.shareLink}");
+              Share.share(
+                  widget.itemDetail.shareLink ?? Helper.applicationUrl());
+              Navigator.pop(context);
+            },
+          )
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text('Hủy'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ));
+    showCupertinoModalPopup(
+        context: context, builder: (BuildContext context) => act);
   }
 
   @override
@@ -313,11 +347,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                   ),
                   Spacer(),
                   InkWell(
-                    onTap: () {
-                      print("shared: ${widget.itemDetail.shareLink}");
-                      Share.share(widget.itemDetail.shareLink ??
-                          Helper.applicationUrl());
-                    },
+                    onTap: _shareLink,
                     child: Row(
                       children: [
                         Icon(

@@ -12,6 +12,7 @@ import 'package:conecapp/ui/home/blocs/items_by_category_bloc.dart';
 import 'package:conecapp/ui/home/widgets/item_comment_parent.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:share/share.dart';
 import 'package:conecapp/models/response/comment/follow_response.dart';
 import '../../../common/globals.dart' as globals;
@@ -166,6 +167,41 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
     );
   }
 
+  void _shareLink() {
+    final act = CupertinoActionSheet(
+        actions: <Widget>[
+          CupertinoActionSheetAction(
+            child:
+            Text('Sao chép liên kết', style: TextStyle(color: Colors.blue)),
+            onPressed: () => {
+              Clipboard.setData(new ClipboardData(text: widget.itemDetail.shareLink ?? ""))
+                  .then((_) {
+                Navigator.pop(context);
+                Scaffold.of(context).showSnackBar(
+                    SnackBar(content: Text('Đã sao chép!')));
+              })
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text('Chia sẻ', style: TextStyle(color: Colors.blue)),
+            onPressed: () {
+              print("shared: ${widget.itemDetail.shareLink}");
+              Share.share(
+                  widget.itemDetail.shareLink ?? Helper.applicationUrl());
+              Navigator.pop(context);
+            },
+          )
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text('Hủy'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ));
+    showCupertinoModalPopup(
+        context: context, builder: (BuildContext context) => act);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -315,11 +351,7 @@ class _CommentWidgetState extends State<AdsCommentWidget> {
                   ),
                   Spacer(),
                   InkWell(
-                    onTap: () {
-                      print("shared: ${widget.itemDetail.shareLink}");
-                      Share.share(widget.itemDetail.shareLink ??
-                          Helper.applicationUrl());
-                    },
+                    onTap: _shareLink,
                     child: Row(
                       children: [
                         Icon(
