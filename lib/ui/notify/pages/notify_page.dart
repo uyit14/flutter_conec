@@ -3,8 +3,9 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/notify/notify_response.dart';
 import 'package:conecapp/repositories/home/home_remote_repository.dart';
-import 'package:conecapp/ui/home/pages/introduce_page.dart';
-import 'package:conecapp/ui/home/pages/item_detail_page.dart';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';item_detail_page.dart
+import 'package:conecapp/ui/home/pages/';
+import 'package:conecapp/ui/member2/fl_main_page.dart';
 import 'package:conecapp/ui/member2/member2_detail_page.dart';
 import 'package:conecapp/ui/member2/member3_detail_page.dart';
 import 'package:conecapp/ui/news/pages/news_detail_page.dart';
@@ -130,11 +131,15 @@ class _NotifyPageState extends State<NotifyPage> {
                                   onTap: () async {
                                     print('at index $index :' +
                                         notifyList[index].read.toString());
+                                    print('type $index :' +
+                                        notifyList[index].type.toString());
+                                    print('opentype $index :' +
+                                        notifyList[index].openType.toString());
                                     notifyList[index].read = true;
                                     if (notifyList[index].openType ==
                                             "DETAIL" &&
                                         notifyList[index].type ==
-                                            "USER_MEMBER") {
+                                            "REQUEST_USER") {
                                       HomeRemoteRepository _repository =
                                           HomeRemoteRepository();
                                       final result =
@@ -151,7 +156,12 @@ class _NotifyPageState extends State<NotifyPage> {
                                             arguments: {
                                               'id': notifyList[index].typeId,
                                               'title': ""
-                                            });
+                                            }).then((value) {
+                                              if(value == 1){
+                                                Navigator.of(context)
+                                                    .pushNamed(FlMainPage.ROUTE_NAME);
+                                              }
+                                        });
                                       }
                                     } else {
                                       Navigator.of(context)
@@ -222,21 +232,21 @@ class _NotifyPageState extends State<NotifyPage> {
                                   ),
                                 );
                               });
+                        }else{
+                          return Center(
+                              child: Text(
+                                "Chưa có thông báo",
+                                style: TextStyle(fontSize: 18),
+                              ));
                         }
                         return Center(
-                            child: Text(
-                          "Chưa có thông báo",
-                          style: TextStyle(fontSize: 18),
-                        ));
+                            child: CircularProgressIndicator());
                       case Status.ERROR:
                         return UIError(errorMessage: snapshot.data.message);
                     }
                   }
                   return Center(
-                      child: Text(
-                    "Chưa có thông báo",
-                    style: TextStyle(fontSize: 18),
-                  ));
+                      child: CircularProgressIndicator());
                 })),
       ),
     );

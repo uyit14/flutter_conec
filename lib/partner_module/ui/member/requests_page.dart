@@ -71,10 +71,14 @@ class _RequestPageState extends State<RequestPage> {
                                                   borderRadius:
                                                       BorderRadius.circular(8)),
                                               onPressed: () async {
-                                                Navigator.of(context).pushNamed(
-                                                    AcceptRequestPage
-                                                        .ROUTE_NAME,
-                                                    arguments: requests[index]);
+                                                Navigator.of(context)
+                                                    .pushNamed(
+                                                        AcceptRequestPage
+                                                            .ROUTE_NAME,
+                                                        arguments:
+                                                            requests[index])
+                                                    .then((value) => _memberBloc
+                                                        .requestGetMemberRequest());
                                               },
                                               color: Colors.blue,
                                               textColor: Colors.white,

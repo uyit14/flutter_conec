@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:conecapp/common/helper.dart';
+
 class MemberInfoResponse {
   bool status;
   MemberInfo memberInfo;
@@ -47,7 +49,7 @@ class MemberInfo {
   MemberInfo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     memberId = json['memberId'];
-    avatar = json['avatar'];
+    avatar = json['avatar'] !=null && !json['avatar'].contains("http") ? Helper.baseURL + json['avatar'] : json['avatar'];
     userName = json['userName'];
     name = json['name'];
     email = json['email'];

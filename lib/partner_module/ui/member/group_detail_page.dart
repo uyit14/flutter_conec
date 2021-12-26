@@ -576,12 +576,15 @@ class _GroupDetailPageState extends State<GroupDetailPage> {
                                         ],
                                       );
                                     });
+                              }else{
+                                return Center(
+                                    child: Text(
+                                      "Chưa có thành viên nào",
+                                      style: TextStyle(fontSize: 18),
+                                    ));
                               }
                               return Center(
-                                  child: Text(
-                                "Chưa có thành viên nào",
-                                style: TextStyle(fontSize: 18),
-                              ));
+                                  child: CircularProgressIndicator());
                           }
                         }
                         return CircularProgressIndicator();

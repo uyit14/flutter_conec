@@ -248,10 +248,7 @@ class _Member3DetailPageState extends State<Member3DetailPage> {
                                                 setState(() {
                                                   _isLoading = false;
                                                 });
-                                              Fluttertoast.showToast(
-                                                  msg: "Thành công",
-                                                  textColor: Colors.black87);
-                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop(1);
                                             },
                                             color: Colors.green,
                                             textColor: Colors.white,
