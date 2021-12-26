@@ -3,8 +3,8 @@ import 'package:conecapp/common/ui/ui_error.dart';
 import 'package:conecapp/common/ui/ui_loading.dart';
 import 'package:conecapp/models/response/notify/notify_response.dart';
 import 'package:conecapp/repositories/home/home_remote_repository.dart';
-import 'package:conecapp/ui/home/pages/introduce_page.dart';item_detail_page.dart
-import 'package:conecapp/ui/home/pages/';
+import 'package:conecapp/ui/home/pages/introduce_page.dart';
+import 'package:conecapp/ui/home/pages/item_detail_page.dart';
 import 'package:conecapp/ui/member2/fl_main_page.dart';
 import 'package:conecapp/ui/member2/member2_detail_page.dart';
 import 'package:conecapp/ui/member2/member3_detail_page.dart';
