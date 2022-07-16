@@ -430,7 +430,11 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: 8),
                     InkWell(
                       onTap: () {
-                        showRemindDialog(context);
+                        if (_token == null || _token.length == 0) {
+                          Helper.showAuthenticationDialog(context);
+                        }else{
+                          showRemindDialog(context);
+                        }
                       },
                       child: Row(
                         children: <Widget>[

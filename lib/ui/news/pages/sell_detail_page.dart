@@ -65,6 +65,10 @@ class _SellDetailPageState extends State<SellDetailPage> {
     });
   }
 
+  bool isTokenInValid() {
+    return _token == null || _token.length == 0;
+  }
+
   int pushNumber = 0;
   int postNumber = 0;
 
@@ -550,11 +554,16 @@ class _SellDetailPageState extends State<SellDetailPage> {
 //                                        ),
                                         InkWell(
                                           onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                                IntroducePage.ROUTE_NAME,
-                                                arguments: {
-                                                  'clubId': adsDetail.ownerId
-                                                });
+                                            if (isTokenInValid()) {
+                                              Helper.showAuthenticationDialog(
+                                                  context);
+                                            } else {
+                                              Navigator.of(context).pushNamed(
+                                                  IntroducePage.ROUTE_NAME,
+                                                  arguments: {
+                                                    'clubId': adsDetail.ownerId
+                                                  });
+                                            }
                                           },
                                           child: Row(
                                             children: [
@@ -865,22 +874,28 @@ class _SellDetailPageState extends State<SellDetailPage> {
                                     scrollDirection: Axis.horizontal,
                                     children: Helper.hardCodeMSell
                                         .map((e) => InkWell(
-                                              onTap: adsDetail.ownerId !=
-                                                      globals.ownerId
-                                                  ? () {
-                                                      Navigator.of(context)
-                                                          .pushNamed(
-                                                              ChatPage
-                                                                  .ROUTE_NAME,
-                                                              arguments: {
-                                                            "memberId": ownerId,
-                                                            "postId": postId,
-                                                            "mess": e
-                                                          });
-                                                    }
-                                                  : (){
-                                                Fluttertoast.showToast(
-                                                    msg: "Bạn không thể chat với chính mình");
+                                              onTap: () {
+                                                if (isTokenInValid()) {
+                                                  Helper
+                                                      .showAuthenticationDialog(
+                                                          context);
+                                                } else {
+                                                  if (adsDetail.ownerId !=
+                                                      globals.ownerId) {
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                            ChatPage.ROUTE_NAME,
+                                                            arguments: {
+                                                          "memberId": ownerId,
+                                                          "postId": postId,
+                                                          "mess": e
+                                                        });
+                                                  } else {
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Bạn không thể chat với chính mình");
+                                                  }
+                                                }
                                               },
                                               child: Container(
                                                 alignment: Alignment.center,
@@ -946,11 +961,15 @@ class _SellDetailPageState extends State<SellDetailPage> {
                             label: Text("Nhắn tin"),
                             icon: Icon(Icons.chat),
                             onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(ChatPage.ROUTE_NAME, arguments: {
-                                "memberId": ownerId,
-                                "postId": postId
-                              });
+                              if (isTokenInValid()) {
+                                Helper.showAuthenticationDialog(context);
+                              } else {
+                                Navigator.of(context)
+                                    .pushNamed(ChatPage.ROUTE_NAME, arguments: {
+                                  "memberId": ownerId,
+                                  "postId": postId
+                                });
+                              }
                             },
                           )
                         : Container();

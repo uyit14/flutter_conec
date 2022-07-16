@@ -32,13 +32,15 @@ class _SplashScreenState extends State<SplashScreen> {
   void navigationToHomeOrSignIn() async {
     String token = await Helper.getToken();
     bool expired = await Helper.isTokenExpired();
-    if (!expired && token != null) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
-    } else {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-          LoginPage.ROUTE_NAME, (Route<dynamic> route) => false);
-    }
+    // if (!expired && token != null) {
+    //   Navigator.of(context).pushNamedAndRemoveUntil(
+    //       ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
+    // } else {
+    //   Navigator.of(context).pushNamedAndRemoveUntil(
+    //       LoginPage.ROUTE_NAME, (Route<dynamic> route) => false);
+    // }
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        ConecHomePage.ROUTE_NAME, (Route<dynamic> route) => false);
   }
 
   void navigationToOnBoarding() {

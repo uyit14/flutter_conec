@@ -669,7 +669,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                           children: <Widget>[
                                             Icon(Icons.location_city),
                                             Text(
-                                              provinceData != null
+                                              provinceData != null && provinceData.name != null
                                                   ? provinceData.name
                                                   : "Tỉnh/Thành phố",
                                               textAlign: TextAlign.left,
@@ -719,7 +719,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                           children: <Widget>[
                                             Icon(Icons.home),
                                             Text(
-                                              districtData != null
+                                              districtData != null && districtData.name != null
                                                   ? districtData.name
                                                   : "Quận/Huyện",
                                               textAlign: TextAlign.left,
@@ -768,7 +768,7 @@ class _PostActionPageState extends State<PostActionPage> {
                                           children: <Widget>[
                                             Icon(Icons.wallpaper),
                                             Text(
-                                              wardData != null
+                                              wardData != null && wardData.name != null
                                                   ? wardData.name
                                                   : "Phường/Xã",
                                               textAlign: TextAlign.left,

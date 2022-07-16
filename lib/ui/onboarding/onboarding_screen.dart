@@ -54,7 +54,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     prefs.setBool('onboarding', false);
     Navigator.pushReplacementNamed(
       context,
-      LoginPage.ROUTE_NAME,
+      ConecHomePage.ROUTE_NAME,
     );
   }
 

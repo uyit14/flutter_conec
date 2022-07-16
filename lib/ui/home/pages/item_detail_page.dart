@@ -73,6 +73,10 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
     });
   }
 
+  bool isTokenInValid() {
+    return _token == null || _token.length == 0;
+  }
+
   int pushNumber = 0;
   int postNumber = 0;
 
@@ -496,7 +500,9 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                           ),
                                         ),
                                         //Spacer(),
-                                        itemDetail.ownerId == globals.ownerId
+                                        (isTokenInValid() ||
+                                                itemDetail.ownerId ==
+                                                    globals.ownerId)
                                             ? Container()
                                             : FutureBuilder(
                                                 future: needReload
@@ -598,14 +604,20 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                             children: <Widget>[
                                               InkWell(
                                                 onTap: () {
-                                                  Navigator.of(context)
-                                                      .pushNamed(
-                                                          IntroducePage
-                                                              .ROUTE_NAME,
-                                                          arguments: {
-                                                        'clubId':
-                                                            itemDetail.ownerId
-                                                      });
+                                                  if (isTokenInValid()) {
+                                                    Helper
+                                                        .showAuthenticationDialog(
+                                                            context);
+                                                  } else {
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                            IntroducePage
+                                                                .ROUTE_NAME,
+                                                            arguments: {
+                                                          'clubId':
+                                                              itemDetail.ownerId
+                                                        });
+                                                  }
                                                 },
                                                 child: Row(
                                                   children: [
@@ -895,24 +907,30 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                                         scrollDirection: Axis.horizontal,
                                         children: Helper.hardCodeMPost
                                             .map((e) => InkWell(
-                                                  onTap: itemDetail.ownerId !=
-                                                          globals.ownerId
-                                                      ? () {
-                                                          Navigator.of(context)
-                                                              .pushNamed(
-                                                                  ChatPage
-                                                                      .ROUTE_NAME,
-                                                                  arguments: {
-                                                                "memberId":
-                                                                    ownerId,
-                                                                "postId":
-                                                                    postId,
-                                                                "mess": e
-                                                              });
-                                                        }
-                                                      : (){
-                                                    Fluttertoast.showToast(
-                                                        msg: "Bạn không thể chat với chính mình");
+                                                  onTap: () {
+                                                    if (isTokenInValid()) {
+                                                      Helper
+                                                          .showAuthenticationDialog(
+                                                              context);
+                                                    } else {
+                                                      if (itemDetail.ownerId !=
+                                                          globals.ownerId) {
+                                                        Navigator.of(context)
+                                                            .pushNamed(
+                                                                ChatPage
+                                                                    .ROUTE_NAME,
+                                                                arguments: {
+                                                              "memberId":
+                                                                  ownerId,
+                                                              "postId": postId,
+                                                              "mess": e
+                                                            });
+                                                      } else {
+                                                        Fluttertoast.showToast(
+                                                            msg:
+                                                                "Bạn không thể chat với chính mình");
+                                                      }
+                                                    }
                                                   },
                                                   child: Container(
                                                     alignment: Alignment.center,
@@ -983,11 +1001,15 @@ class _ItemDetailPageState extends State<ItemDetailPage> {
                             label: Text("Nhắn tin"),
                             icon: Icon(Icons.chat),
                             onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(ChatPage.ROUTE_NAME, arguments: {
-                                "memberId": ownerId,
-                                "postId": postId
-                              });
+                              if (isTokenInValid()) {
+                                Helper.showAuthenticationDialog(context);
+                              } else {
+                                Navigator.of(context)
+                                    .pushNamed(ChatPage.ROUTE_NAME, arguments: {
+                                  "memberId": ownerId,
+                                  "postId": postId
+                                });
+                              }
                             },
                           )
                         : Container();

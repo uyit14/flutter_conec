@@ -31,6 +31,7 @@ import 'package:signalr_client/hub_connection_builder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../common/globals.dart' as globals;
+import '../common/ui/speed_dial.dart' as mySpeedDial;
 import 'home/blocs/home_bloc.dart';
 import 'home/pages/item_detail_page.dart';
 import 'home/pages/items_by_category_page.dart';
@@ -40,7 +41,6 @@ import 'news/pages/news_detail_page.dart';
 import 'news/pages/news_page.dart';
 import 'news/pages/sell_detail_page.dart';
 import 'profile/pages/profile_pages.dart';
-import '../common/ui/speed_dial.dart' as mySpeedDial;
 
 class ConecHomePage extends StatefulWidget {
   static const ROUTE_NAME = '/home';
@@ -88,6 +88,10 @@ class _ConecHomePageState extends State<ConecHomePage> {
       _token = token;
       _isTokenExpired = expired;
     });
+    if (_token != null && _token.length > 0) {
+      initSignalR();
+      startConnection();
+    }
     if (!_isTokenExpired && _token != null) {
       _profileBloc.requestGetProfile();
       getNumberOfNotify();
@@ -159,7 +163,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   }
 
   void _selectPage(int index) {
-    if (index == 0 && globals.type != _profile.type) {
+    if (index == 0 && _profile != null && globals.type != _profile.type) {
       getToken();
     }
     setState(() {
@@ -180,8 +184,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
   void initState() {
     super.initState();
     isCallApi = true;
-    initSignalR();
-    startConnection();
+
     //getLocation();
     // NewVersion(
     //     context: context,
@@ -225,7 +228,11 @@ class _ConecHomePageState extends State<ConecHomePage> {
         }
       });
     }
-    print("localVersion : " + currentAppVersion + " - " + "storeVersion: " + apiAppVersion);
+    print("localVersion : " +
+        currentAppVersion +
+        " - " +
+        "storeVersion: " +
+        apiAppVersion);
   }
 
   void checkVersion(BuildContext context) async {
@@ -268,10 +275,14 @@ class _ConecHomePageState extends State<ConecHomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (isCallApi) {
+    if (isCallApi && !isShowAuthenDialog()) {
       giftCheck(context);
       isCallApi = false;
     }
+  }
+
+  bool isShowAuthenDialog() {
+    return _token == null || _token.length == 0;
   }
 
   void giftCheck(BuildContext context) async {
@@ -435,28 +446,31 @@ class _ConecHomePageState extends State<ConecHomePage> {
                           arguments: {'id': null, 'title': null}),
                       child: Icon(Icons.search, size: 28),
                     ),
-                    SizedBox(width: 8),
-                    Badge(
-                      padding: const EdgeInsets.all(3.0),
-                      position: BadgePosition.topEnd(top: 4, end: -2),
-                      badgeContent: Text(
-                        _numberMessage,
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      badgeColor: Colors.yellowAccent,
-                      showBadge: _numberMessage.length == 0 ? false : true,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(ChatListPage.ROUTE_NAME)
-                              .then((value) => getNumberOfNotify());
-                        },
-                        child: Icon(Icons.chat_bubble, size: 24),
-                      ),
-                    ),
+                    isShowAuthenDialog() ? Container() : SizedBox(width: 8),
+                    isShowAuthenDialog()
+                        ? Container()
+                        : Badge(
+                            padding: const EdgeInsets.all(3.0),
+                            position: BadgePosition.topEnd(top: 4, end: -2),
+                            badgeContent: Text(
+                              _numberMessage,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            badgeColor: Colors.yellowAccent,
+                            showBadge:
+                                _numberMessage.length == 0 ? false : true,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .pushNamed(ChatListPage.ROUTE_NAME)
+                                    .then((value) => getNumberOfNotify());
+                              },
+                              child: Icon(Icons.chat_bubble, size: 24),
+                            ),
+                          ),
                     SizedBox(width: 8),
                     _token != null && !_isTokenExpired
                         ? Badge(
@@ -490,7 +504,7 @@ class _ConecHomePageState extends State<ConecHomePage> {
                     SizedBox(
                       width: 8,
                     ),
-                    _selectedPageIndex == 0
+                    (_selectedPageIndex == 0 && !isShowAuthenDialog())
                         ? Builder(builder: (context) {
                             return InkWell(
                               child: Icon(Icons.group, size: 28),
