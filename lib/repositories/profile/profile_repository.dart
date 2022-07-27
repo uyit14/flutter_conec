@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:conecapp/common/api/api_base_helper.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/models/response/page/page_response.dart';
-import 'package:conecapp/models/response/profile/gift_response.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
+import 'package:conecapp/models/response/profile/gift_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
 
 class ProfileRepository {
@@ -57,9 +57,17 @@ class ProfileRepository {
     return response['status'];
   }
 
-  Future<GiftResponse> fetchGiftResponse() async{
-    final response = await _helper.get("/api/MyPost/CheckRemainPushPriority", headers: await Helper.header());
+  Future<GiftResponse> fetchGiftResponse() async {
+    final response = await _helper.get("/api/MyPost/CheckRemainPushPriority",
+        headers: await Helper.header());
     print("fetchGiftResponse $response");
     return GiftResponse.fromJson(response);
+  }
+
+  Future<bool> deleteAccount() async {
+    final response = await _helper.post("/api/account/DeleteAccount",
+        headers: await Helper.header());
+    print(response);
+    return response['status'];
   }
 }

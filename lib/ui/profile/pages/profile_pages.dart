@@ -3,10 +3,9 @@ import 'package:conecapp/common/api/api_response.dart';
 import 'package:conecapp/common/app_theme.dart';
 import 'package:conecapp/common/helper.dart';
 import 'package:conecapp/common/ui/ui_loading_opacity.dart';
-import 'package:conecapp/models/response/profile/gift_response.dart';
 import 'package:conecapp/models/response/profile/change_password_response.dart';
+import 'package:conecapp/models/response/profile/gift_response.dart';
 import 'package:conecapp/models/response/profile/profile_response.dart';
-import 'package:conecapp/partner_module/ui/partner_main.dart';
 import 'package:conecapp/ui/authen/pages/login_page.dart';
 import 'package:conecapp/ui/home/blocs/home_bloc.dart';
 import 'package:conecapp/ui/mypost/pages/mypost_page.dart';
@@ -180,12 +179,13 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  void registerDeviceToken(String deviceToken, String userId) async{
-    String result2 = await _homeBloc.requestRegisterDeviceToken(deviceToken, userId);
+  void registerDeviceToken(String deviceToken, String userId) async {
+    String result2 =
+        await _homeBloc.requestRegisterDeviceToken(deviceToken, userId);
     print("registerDeviceToken: $result2");
   }
 
-  bool isShowPartner(){
+  bool isShowPartner() {
     return _type == "Trainer" || _type == "Club";
   }
 
@@ -205,8 +205,8 @@ class _ProfilePageState extends State<ProfilePage> {
               height: Helper.getScreenHeight(context),
               child: UILoadingOpacity())
           : Stack(
-            children: [
-              Column(
+              children: [
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Stack(
@@ -244,9 +244,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                     InkWell(
                                       onTap: () {
                                         Navigator.of(context)
-                                            .pushNamed(DetailProfilePage.ROUTE_NAME)
-                                            .then((value) =>
-                                                _profileBloc.requestGetProfile());
+                                            .pushNamed(
+                                                DetailProfilePage.ROUTE_NAME)
+                                            .then((value) => _profileBloc
+                                                .requestGetProfile());
                                       },
                                       child: Text("Xem trang cá nhân",
                                           style: TextStyle(
@@ -268,7 +269,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                             fontWeight: FontWeight.w500)),
                                     FlatButton.icon(
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8)),
+                                            borderRadius:
+                                                BorderRadius.circular(8)),
                                         onPressed: () {
                                           Navigator.of(context)
                                               .pushReplacementNamed(
@@ -287,13 +289,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ],
                                 ),
                         ),
-
                       ],
                     ),
                     SizedBox(height: 32),
                     InkWell(
                       onTap: () {
-                        Navigator.of(context).pushNamed(OpenLetterPage.ROUTE_NAME);
+                        Navigator.of(context)
+                            .pushNamed(OpenLetterPage.ROUTE_NAME);
                       },
                       child: Row(
                         children: <Widget>[
@@ -402,8 +404,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     SizedBox(height: 8),
                     InkWell(
                       onTap: () {
-                        Navigator.of(context)
-                            .pushNamed(MyPost.ROUTE_NAME);
+                        Navigator.of(context).pushNamed(MyPost.ROUTE_NAME);
                       },
                       child: Row(
                         children: <Widget>[
@@ -432,7 +433,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: () {
                         if (_token == null || _token.length == 0) {
                           Helper.showAuthenticationDialog(context);
-                        }else{
+                        } else {
                           showRemindDialog(context);
                         }
                       },
@@ -495,8 +496,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   .pushNamed(ChangePassWordPage.ROUTE_NAME)
                                   .then((value) {
                                 if (value != null) {
-                                  ChangePassWordResponse changePassWordResponse =
-                                      value;
+                                  ChangePassWordResponse
+                                      changePassWordResponse = value;
                                   updateToken(changePassWordResponse.token,
                                       changePassWordResponse.expires);
                                 }
@@ -519,11 +520,67 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Text(
                                   "Đổi mật khẩu",
                                   style: TextStyle(
-                                      fontSize: 20, fontWeight: FontWeight.w400),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w400),
                                 )
                               ],
                             ),
                           )
+                        : Container(),
+                    _token != null && !_isTokenExpired
+                        ? SizedBox(height: 8)
+                        : Container(),
+                    _token != null && !_isTokenExpired && !_isSocial
+                        ? InkWell(
+                      onTap: () {
+                        Helper.showDeleteDialog(context, "Xoá tài khoản",
+                            "Bạn có chắc chắn muốn xoá tài khoản?",
+                                () async {
+                              final result =
+                              await _profileBloc.deleteAccount();
+                              if (result) {
+                                //
+                                Fluttertoast.showToast(
+                                    msg: "Xoá tài khoản thành công",
+                                    gravity: ToastGravity.CENTER);
+                                //
+                                registerDeviceToken(globals.deviceToken, "");
+                                SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                                prefs.setString('token', null);
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    LoginPage.ROUTE_NAME,
+                                        (Route<dynamic> route) => false);
+                              } else {
+                                Fluttertoast.showToast(
+                                    msg: "Vui lòng thử lại",
+                                    gravity: ToastGravity.CENTER);
+                              }
+                            });
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          RawMaterialButton(
+                            onPressed: () {},
+                            elevation: 2.0,
+                            fillColor: Colors.white,
+                            child: Icon(
+                              Icons.person_remove_sharp,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            padding: EdgeInsets.all(15.0),
+                            shape: CircleBorder(),
+                          ),
+                          Text(
+                            "Xoá tài khoản",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400),
+                          )
+                        ],
+                      ),
+                    )
                         : Container(),
                     SizedBox(height: 8),
                     InkWell(
@@ -557,7 +614,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Text(
                                   "Đăng xuất",
                                   style: TextStyle(
-                                      fontSize: 20, fontWeight: FontWeight.w400),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w400),
                                 )
                               ],
                             )
@@ -565,7 +623,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(height: 20),
                     InkWell(
-                      onLongPress: (){
+                      onLongPress: () {
                         //Navigator.of(context).pushNamed(PhoneInfoPage.ROUTE_NAME);
                       },
                       child: Container(
@@ -573,26 +631,27 @@ class _ProfilePageState extends State<ProfilePage> {
                         alignment: Alignment.center,
                         child: Text(
                           "Version 1.0.14",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w300),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w300),
                         ),
                       ),
                     ),
                     SizedBox(height: 24),
                   ],
                 ),
-              Positioned(
-                right: 22,
-                top: MediaQuery.of(context).size.height / 8,
-                child: CircleAvatar(
-                  radius: 58,
-                  backgroundColor: Colors.grey,
-                  backgroundImage: _avatar != null
-                      ? CachedNetworkImageProvider(_avatar)
-                      : AssetImage("assets/images/avatar.png"),
+                Positioned(
+                  right: 22,
+                  top: MediaQuery.of(context).size.height / 8,
+                  child: CircleAvatar(
+                    radius: 58,
+                    backgroundColor: Colors.grey,
+                    backgroundImage: _avatar != null
+                        ? CachedNetworkImageProvider(_avatar)
+                        : AssetImage("assets/images/avatar.png"),
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
     );
   }
 }
